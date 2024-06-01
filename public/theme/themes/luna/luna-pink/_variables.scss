@@ -1,0 +1,12 @@
+//main color scheme
+$primaryColor: #f48fb1 !default;
+$primaryDarkColor: #f06292 !default;
+$primaryDarkerColor: #ec407a !default;
+$primaryTextColor: #212529 !default;
+
+//highlight
+$highlightBg: $primaryColor !default;
+$highlightTextColor: $primaryTextColor !default;
+$highlightFocusBg: rgba($primaryColor, 0.24) !default;
+
+@import "../_variables";

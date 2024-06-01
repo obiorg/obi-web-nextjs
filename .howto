@@ -1,0 +1,20 @@
+
+
+## Installation lodash
+## https://lodash.com/
+## ----------------------------------------------------------------------------
+npm i -g npm
+npm install --save --force  @types/lodash
+npm install --save-dev --force @types/lodash
+
+## Installation langue
+## https://phrase.com/blog/posts/nextjs-i18n/
+## ----------------------------------------------------------------------------
+
+
+
+
+
+
+
+

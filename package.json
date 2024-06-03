@@ -10,23 +10,14 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@next/font": "^14.2.3",
     "@types/node": "20.12.13",
     "@types/react": "18.3.3",
     "@types/react-dom": "18.3.0",
-    "chart.js": "4.4.3",
-    "next": "^14.2.3",
-    "primeflex": "^3.3.1",
-    "primeicons": "^7.0.0",
-    "primereact": "10.6.6",
-    "react": "18.3.1",
-    "react-dom": "18.3.1",
-    "typescript": "^5.4.5",
-
-    
-    "@next/font": "^14.2.3",
     "base64url": "^3.0.1",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
+    "chart.js": "4.4.3",
     "font-awesome": "^4.7.0",
     "i18next": "^23.11.5",
     "i18next-browser-languagedetector": "^8.0.0",
@@ -34,21 +25,27 @@
     "i18next-resources-to-backend": "^1.2.1",
     "i18next-xhr-backend": "^3.2.2",
     "mssql": "^10.0.2",
+    "next": "^14.2.3",
     "next-auth": "latest",
     "next-i18next": "^15.3.0",
+    "ni18n": "^1.1.0",
     "node-jose": "^2.2.0",
-    "nodemailer": "^6.9.13"
-
-
+    "nodemailer": "^6.9.13",
+    "primeflex": "^3.3.1",
+    "primeicons": "^7.0.0",
+    "primereact": "10.6.6",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-i18next": "^14.1.2",
+    "typescript": "^5.4.5"
   },
   "devDependencies": {
+    "@types/node": "20.12.13",
+    "@types/react": "^18.3.3",
     "eslint": "^8.43.0",
     "eslint-config-next": "^14.2.3",
     "prettier": "^3.2.5",
     "sass": "^1.77.3",
-    
-    "@types/node": "20.12.13",
-    "@types/react": "^18.3.3",
     "typescript": "^5.4.5"
   }
 }

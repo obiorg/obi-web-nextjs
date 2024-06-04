@@ -11,7 +11,7 @@ module.exports = {
       locales: ['en', 'fr'],
     },
     fallbackLng: {
-      default: ['en']
+      default: ['fr']
     },
     nonExplicitSupportedLngs: true,
     /** To avoid issues when deploying to some paas (vercel...) */

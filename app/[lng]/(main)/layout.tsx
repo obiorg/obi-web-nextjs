@@ -3,9 +3,6 @@ import Layout from '../../../layout/layout';
 
 interface AppLayoutProps {
     children: React.ReactNode;
-    params: {
-        lang: string;
-    };
 }
 
 export const metadata: Metadata = {
@@ -24,9 +21,8 @@ export const metadata: Metadata = {
     icons: {
         icon: '/favicon.ico'
     }
-}; 
+};
 
 export default function AppLayout({ children }: AppLayoutProps) {
-    // console.log('Layout lang', params.lang);
     return <Layout>{children}</Layout>;
 }

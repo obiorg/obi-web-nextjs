@@ -1,5 +1,5 @@
 'use client';
-import { LayoutContext, LayoutProvider } from '@/layout/context/layoutcontext';
+import { LayoutContext, LayoutProvider } from '../../layout/context/layoutcontext';
 import { PrimeReactProvider } from 'primereact/api';
 import 'primereact/resources/primereact.css';
 import 'primeflex/primeflex.css';
@@ -15,7 +15,7 @@ interface RootLayoutProps {
 export default function RootLayout({ children }: RootLayoutProps) {
     
     const { layoutConfig } = useContext(LayoutContext);
-    console.log('Starting root layout')
+
     return (
         <html lang="fr" suppressHydrationWarning>
             <head>

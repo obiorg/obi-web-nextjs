@@ -12,13 +12,13 @@ const nextConfig = {
     i18n: {
         // These are all the locales you want to support in
         // your application
-        locales: ['fr', 'en'],
+        locales: ['fr-Fr', 'en-US'],
 
         // This is the default locale you want to be used when visiting
         // a non-locale prefixed path e.g. `/hello`
-        defaultLocale: 'fr',
+        defaultLocale: 'fr-Fr',
 
-        localeDetection: false,
+        localeDetection: true,
 
         // This is a list of locale domains and the default locale they
         // should handle (these are only required when setting up domain routing)
@@ -26,15 +26,15 @@ const nextConfig = {
         domains: [
             {
                 domain: 'fr.10.242.14.3',
-                defaultLocale: 'fr',
-                locales: ['fr', 'en'],
+                defaultLocale: 'fr-Fr',
+                locales: ['fr', 'fr-BE'],
                 // an optional http field can also be used to test
                 // locale domains locally with http instead of https
                 http: true
             },
             {
-                domain: 'fr.10.242.14.3',
-                defaultLocale: 'fr'
+                domain: 'en.10.242.14.3',
+                defaultLocale: 'en-US'
             }
         ]
     },
@@ -42,9 +42,9 @@ const nextConfig = {
     trailingSlash: true,
 
     reactStrictMode: true,
-    // experimental: {
-    //     newNextLinkBehavior: false,
-    // },
+    experimental: {
+        newNextLinkBehavior: false,
+    },
     basePath: process.env.NODE_ENV === 'production' ? '/obi' : '',
     publicRuntimeConfig: {
         contextPath: process.env.NODE_ENV === 'production' ? '/obi' : '',

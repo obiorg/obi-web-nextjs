@@ -6,15 +6,11 @@ import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
 import { Menu } from 'primereact/menu';
 import React, { useContext, useEffect, useRef, useState } from 'react';
-<<<<<<<< HEAD:app/(main)/page.tsx
-import { ProductService } from '../../demo/service/ProductService';
-import { LayoutContext } from '../../layout/context/layoutcontext';
-========
-import { ProductService } from '@/demo/service/ProductService';
-// import { LayoutContext } from '../../layout/context/layoutcontext';
 
+
+import { ProductService } from '@/demo/service/ProductService';
 import { LayoutContext } from '@/layout/context/layoutcontext';
->>>>>>>> parent of 7e662ea (Revert "Wrong lang"):app/[lang]/(main)/page.tsx
+
 import Link from 'next/link';
 import { Demo } from '@/types';
 import { ChartData, ChartOptions } from 'chart.js';
@@ -41,12 +37,10 @@ const lineData: ChartData = {
     ]
 };
 
-<<<<<<<< HEAD:app/(main)/page.tsx
-const Dashboard = () => {
-========
+
 const  Dashboard = () => {
     console.log("Dashboard");
->>>>>>>> parent of 7e662ea (Revert "Wrong lang"):app/[lang]/(main)/page.tsx
+    
     const [products, setProducts] = useState<Demo.Product[]>([]);
     const menu1 = useRef<Menu>(null);
     const menu2 = useRef<Menu>(null);

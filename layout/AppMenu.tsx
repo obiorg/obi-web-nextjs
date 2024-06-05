@@ -16,23 +16,115 @@ const AppMenu = () => {
             items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/' }]
         },
         {
-            label: 'Business', icon: 'pi pi-fw pi-briefcase', 
+            label: 'Applications', icon: 'pi pi-fw pi-building-columns',
             items: [
-                { label: 'Entitées', icon: 'pi pi-fw pi-briefcase', to: '/business/entities' },
-                { label: 'Businesses', icon: 'pi pi-fw pi-briefcase', to: '/business/business' },
-                { label: 'Sociétées', icon: 'pi pi-fw pi-briefcase', to: '/business/companies' },
+                {
+                    label: 'Businesses', icon: 'pi pi-fw pi-briefcase',
+                    items: [
+                        { label: 'Entitées', icon: 'pi pi-fw pi-building', to: '/business/entities' },
+                        { label: 'Businesses', icon: 'pi pi-fw pi-briefcase', to: '/business/business' },
+                        { label: 'Sociétées', icon: 'pi pi-fw pi-building-columns', to: '/business/companies' },
+                    ]
+                },
+                {
+                    label: 'Localisations', icon: 'pi pi-fw pi-map',
+                    items: [
+                        { label: 'Pays', icon: 'pi pi-fw pi-globe', to: '/business/entities' },
+                        { label: 'Businesses', icon: 'pi pi-fw pi-briefcase', to: '/business/business' },
+                        { label: 'Sociétées', icon: 'pi pi-fw pi-building-columns', to: '/business/companies' },
+                    ]
+                },
+                {
+                    label: 'Gestion alarmes', icon: 'pi pi-fw pi-bell',
+                    items: [
+                        { label: 'Pays', icon: 'pi pi-fw pi-globe', to: '/business/entities' },
+                        { label: 'Businesses', icon: 'pi pi-fw pi-briefcase', to: '/business/business' },
+                        { label: 'Sociétées', icon: 'pi pi-fw pi-building-columns', to: '/business/companies' },
+                    ]
+                }
             ]
-
         },
+
+
         {
-            label: 'Archivage', icon: 'pi pi-fw pi-database', 
+            label: 'Technologie', icon: 'pi pi-fw pi-globe',
             items: [
-                { label: 'Persistences', icon: 'pi pi-fw pi-database', to: '/persistence' },
-                { label: 'Standard', icon: 'pi pi-fw pi-star', to: '/persistence/pers_standard' },
-                
+                {
+
+                    label: 'Analyses', icon: 'pi pi-fw pi-sitemap',
+                    items: [
+                        { label: 'Drivers', icon: 'pi pi-fw pi-arrows-h', to: '/connexion/drivers' },
+                        { label: 'Machines', icon: 'pi pi-fw pi-sitemap', to: '/connexion/machines' },
+
+                    ]
+                },
+                {
+
+                    label: 'Mesures', icon: 'pi pi-fw pi-server',
+                    items: [
+                        { label: 'Persistences', icon: 'pi pi-fw pi-database', to: '/persistence' },
+                        { label: 'Standard', icon: 'pi pi-fw pi-star', to: '/persistence/pers_standard' },
+
+                    ]
+                },
             ]
 
         },
+
+
+        {
+            label: 'Systèmes', icon: 'pi pi-fw pi-globe',
+            items: [
+                {
+
+                    label: 'Maintenance', icon: 'pi pi-fw pi-flag-fill',
+                    items: [
+                        { label: 'Drivers', icon: 'pi pi-fw pi-arrows-h', to: '/connexion/drivers' },
+                        { label: 'Machines', icon: 'pi pi-fw pi-sitemap', to: '/connexion/machines' },
+
+                    ]
+                }
+            ]
+
+        },
+
+
+        {
+            label: 'Données', icon: 'pi pi-fw pi-globe',
+            items: [
+                {
+
+                    label: 'Connexion', icon: 'pi pi-fw pi-sitemap',
+                    items: [
+                        { label: 'Drivers', icon: 'pi pi-fw pi-arrows-h', to: '/obi/data/connexion/drivers' },
+                        { label: 'Machines', icon: 'pi pi-fw pi-sitemap', to: '/obi/data/connexion/machines' },
+
+                    ]
+                },
+                {
+
+                    label: 'Tags (Variables)', icon: 'pi pi-fw pi-server',
+                    items: [
+                        { label: 'Persistences', icon: 'pi pi-fw pi-database', to: '/obi/data/persistence' },
+                        { label: 'Standard', icon: 'pi pi-fw pi-star', to: '/obi/data/persistence/pers_standard' },
+
+                    ]
+                },
+                {
+
+                    label: 'Archivage', icon: 'pi pi-fw pi-database',
+                    items: [
+                        { label: 'Persistences', icon: 'pi pi-fw pi-database', to: '/obi/data/persistence' },
+                        { label: 'Standard', icon: 'pi pi-fw pi-star', to: '/obi/data/persistence/pers_standard' },
+
+                    ]
+                }
+            ]
+
+        },
+
+
+
         {
             label: 'UI Components',
             items: [

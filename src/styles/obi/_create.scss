@@ -1,0 +1,75 @@
+@use "sass:map";
+
+// X-Small devices (portrait phones, less than 576px) : xs
+// No media query for `xs` since this is the default in Bootstrap
+.layout-main {
+    // margin-left: 0;
+    padding-left: 2rem;
+}
+
+.input {
+
+    margin-bottom: 1rem;
+
+    &-field {
+        line-height: 1.5;
+    }
+
+    &-value{
+        // width: 100%;
+        padding: 0rem;
+        margin-right: 0.5rem;
+        // background-color: #3a4f7a;
+        // color: #495057;
+        font-size: 0.875rem;
+        line-height: 1.24;
+        height: 2.5rem;
+
+        // Pour la gestion des input specifique
+        & input {
+            width: 100%;
+        }
+
+        & .p-editor-container{
+            min-height: 120px !important;
+        }
+
+        & .p-editor-content {
+            height: 120px !important;
+        }
+        &:has(.p-editor-container ){
+            margin-bottom: 0px;
+            padding-bottom: 200px;
+        }
+    }
+}
+
+
+// Small devices (landscape phones, 576px and up) : sm
+@media (min-width: 576px) {  
+
+}
+
+// Medium devices (tablets, 768px and up) : md
+@media (min-width: 768px) { 
+ }
+
+// Large devices (desktops, 992px and up) : lg
+@media (min-width: 992px) {  
+    .layout-main {
+        // margin-left: 0;
+        padding-left: 0rem;
+    }
+}
+
+// X-Large devices (large desktops, 1200px and up) xl
+@media (min-width: 1200px) {  }
+
+// XX-Large devices (larger desktops, 1400px and up) xxl
+@media (min-width: 1400px) {  }
+
+// @media (min-width: map.get($grid-breakpoints, xl)) {
+    
+// }
+
+

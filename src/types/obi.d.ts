@@ -50,7 +50,7 @@ declare namespace OBI {
         deleted?: boolean;
         created?: Date;
         changed?: Date;
-        company: string;
+        company: number;
         designation?: string;
         builded?: number;
         main?: boolean;
@@ -186,6 +186,42 @@ declare namespace OBI {
         loc_countries?: OBI.loc_countries;
         loc_states?: OBI.loc_states;
     };
+    type mach_drivers = {
+        id?: number;
+        deleted?: boolean;
+        created?: Date;
+        changed?: Date;
+        driver?: string;
+        designation?: string;
+    };
+
+    type machines = {
+        id?: number;
+        deleted?: boolean;
+        created?: Date;
+        changed?: Date;
+        company?: number;
+        address?: string;
+        mask?: string;
+        dns?: string;
+        ipv6?: string;
+        port?: number;
+        name?: string;
+        rack?: number;
+        slot?: number;
+        driver?: number;
+        mqtt?: boolean;
+        mqtt_user?: string;
+        mqtt_passwords?: string;
+        webhook?: boolean;
+        webhook_secret?: string;
+        bus?: number;
+        description?: string;
+
+        companies?: OBI.companies;
+        drivers?: OBI.mach_drivers;
+    };
+
 
     type meas_comparators = {
         id?: number;
@@ -309,7 +345,7 @@ declare namespace OBI {
         pers_standard?: OBI.pers_standard;
     };
 
-    type persistence = {
+    type persistences = {
         id?: number;
         deleted?: boolean;
         created?: Date;

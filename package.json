@@ -3,9 +3,9 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 7020",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 7020",
     "format": "prettier --write \"{app,demo,layout,types}/**/*.{js,ts,tsx,d.ts}\"",
     "lint": "next lint"
   },
@@ -19,23 +19,22 @@
     "primeflex": "^3.3.1",
     "primeicons": "^6.0.1",
     "primereact": "10.2.1",
+    "quill": "^2.0.2",
+    "quill-monorepo": "github:quilljs/quill",
     "react": "18.3.1",
     "react-dom": "18.3.1",
+    "react-final-form": "^6.5.9",
+    "react-hook-form": "^7.51.5",
+    "react-intl": "^6.6.8",
     "typescript": "^5.4.5"
-
-    
-
-
-
   },
   "devDependencies": {
+    "@types/node": "20.12.13",
+    "@types/react": "^18.3.3",
     "eslint": "^8.43.0",
     "eslint-config-next": "^14.2.3",
     "prettier": "^3.2.5",
     "sass": "^1.77.3",
-    
-    "@types/node": "20.12.13",
-    "@types/react": "^18.3.3",
     "typescript": "^5.4.5"
   }
 }

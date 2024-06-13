@@ -60,5 +60,7 @@ export type {
     AppMailProps,
     AppMenuItem,
 
+    
+    Admin,
     OBI
 };

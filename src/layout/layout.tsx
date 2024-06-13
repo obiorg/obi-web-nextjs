@@ -67,7 +67,7 @@ const Layout = ({ children }: ChildContainerProps) => {
                 topbarRef.current?.topbarmenu?.isSameNode(event.target as Node) ||
                 topbarRef.current?.topbarmenu?.contains(event.target as Node) ||
                 topbarRef.current?.topbarmenubutton?.isSameNode(event.target as Node) ||
-                topbarRef.current?.topbarmenubutton?.contains(event.target as Node)
+                topbarRef.current?.topbarmenubutton?.contains(event.target as Node)  
             );
 
             if (isOutsideClicked) {

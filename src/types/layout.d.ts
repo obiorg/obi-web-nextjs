@@ -63,6 +63,7 @@ export interface AppTopbarRef {
     menubutton?: HTMLButtonElement | null;
     topbarmenu?: HTMLDivElement | null;
     topbarmenubutton?: HTMLButtonElement | null;
+    locale?: String | null;
 }
 
 /* AppMenu Types */

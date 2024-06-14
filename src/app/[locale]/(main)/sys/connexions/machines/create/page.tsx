@@ -26,6 +26,7 @@ import Link from 'next/link';
 import { useForm, Controller } from 'react-hook-form';
 import { Dialog } from 'primereact/dialog';
 import { classNames } from 'primereact/utils';
+import { Form } from 'react-final-form';
 
 const MachinesCreate = () => {
 
@@ -125,220 +126,6 @@ const MachinesCreate = () => {
         // setLazyLoading(false);
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-
-    const onChangedLazyCompany = (e: any) => {
-        const { id, name, value } = e.target;
-        setEntity((prevState) => {
-            return {
-                ...prevState,
-                [name]: value
-            };
-        });
-    }
-    const onChangedAddress = (value: string) => {
-        // console.log('entity av', entity);
-        setEntity({
-            id: entity.id,
-            deleted: entity.deleted,
-            created: entity.created,
-            changed: entity.changed,
-            company: entity.company,
-            address: value,
-            mask: entity.mask,
-            dns: entity.dns,
-            ipv6: entity.ipv6,
-            port: entity.port,
-            name: entity.name,
-            rack: entity.rack,
-            slot: entity.slot,
-            driver: entity.driver,
-            mqtt: entity.mqtt,
-            mqtt_user: entity.mqtt_user,
-            mqtt_password: entity.mqtt_password,
-            webhook: entity.webhook,
-            webhook_secret: entity.webhook_secret,
-            bus: entity.bus,
-            description: entity.description
-        });
-        // console.log('entity après', entity);
-    }
-    const onChangedMask = (value: any) => {
-        setEntity({
-            id: entity.id,
-            deleted: entity.deleted,
-            created: entity.created,
-            changed: entity.changed,
-            company: entity.company,
-            address: entity.address,
-            mask: value,
-            dns: entity.dns,
-            ipv6: entity.ipv6,
-            port: entity.port,
-            name: entity.name,
-            rack: entity.rack,
-            slot: entity.slot,
-            driver: entity.driver,
-            mqtt: entity.mqtt,
-            mqtt_user: entity.mqtt_user,
-            mqtt_password: entity.mqtt_password,
-            webhook: entity.webhook,
-            webhook_secret: entity.webhook_secret,
-            bus: entity.bus,
-            description: entity.description
-        });
-    }
-    const onChangedDNS = (value: any) => {
-        setEntity({
-            id: entity.id,
-            deleted: entity.deleted,
-            created: entity.created,
-            changed: entity.changed,
-            company: entity.company,
-            address: entity.address,
-            mask: entity.mask,
-            dns: value,
-            ipv6: entity.ipv6,
-            port: entity.port,
-            name: entity.name,
-            rack: entity.rack,
-            slot: entity.slot,
-            driver: entity.driver,
-            mqtt: entity.mqtt,
-            mqtt_user: entity.mqtt_user,
-            mqtt_password: entity.mqtt_password,
-            webhook: entity.webhook,
-            webhook_secret: entity.webhook_secret,
-            bus: entity.bus,
-            description: entity.description
-        });
-    }
-    const onChangedIPv6 = (value: any) => {
-        setEntity({
-            id: entity.id,
-            deleted: entity.deleted,
-            created: entity.created,
-            changed: entity.changed,
-            company: entity.company,
-            address: entity.address,
-            mask: entity.mask,
-            dns: entity.dns,
-            ipv6: value,
-            port: entity.port,
-            name: entity.name,
-            rack: entity.rack,
-            slot: entity.slot,
-            driver: entity.driver,
-            mqtt: entity.mqtt,
-            mqtt_user: entity.mqtt_user,
-            mqtt_password: entity.mqtt_password,
-            webhook: entity.webhook,
-            webhook_secret: entity.webhook_secret,
-            bus: entity.bus,
-            description: entity.description
-        });
-    }
-    const onChangedPort = (value: any) => {
-        setEntity({
-            id: entity.id,
-            deleted: entity.deleted,
-            created: entity.created,
-            changed: entity.changed,
-            company: entity.company,
-            address: entity.address,
-            mask: entity.mask,
-            dns: entity.dns,
-            ipv6: entity.ipv6,
-            port: value,
-            name: entity.name,
-            rack: entity.rack,
-            slot: entity.slot,
-            driver: entity.driver,
-            mqtt: entity.mqtt,
-            mqtt_user: entity.mqtt_user,
-            mqtt_password: entity.mqtt_password,
-            webhook: entity.webhook,
-            webhook_secret: entity.webhook_secret,
-            bus: entity.bus,
-            description: entity.description
-        });
-    }
-    const onChangedName = (value: any) => {
-        setEntity({
-            id: entity.id,
-            deleted: entity.deleted,
-            created: entity.created,
-            changed: entity.changed,
-            company: entity.company,
-            address: entity.address,
-            mask: entity.mask,
-            dns: entity.dns,
-            ipv6: entity.ipv6,
-            port: entity.port,
-            name: value,
-            rack: entity.rack,
-            slot: entity.slot,
-            driver: entity.driver,
-            mqtt: entity.mqtt,
-            mqtt_user: entity.mqtt_user,
-            mqtt_password: entity.mqtt_password,
-            webhook: entity.webhook,
-            webhook_secret: entity.webhook_secret,
-            bus: entity.bus,
-            description: entity.description
-        });
-    }
-    const onChangedRack = (value: any) => {
-        setEntity({
-            id: entity.id,
-            deleted: entity.deleted,
-            created: entity.created,
-            changed: entity.changed,
-            company: entity.company,
-            address: entity.address,
-            mask: entity.mask,
-            dns: entity.dns,
-            ipv6: entity.ipv6,
-            port: entity.port,
-            name: entity.name,
-            rack: value,
-            slot: entity.slot,
-            driver: entity.driver,
-            mqtt: entity.mqtt,
-            mqtt_user: entity.mqtt_user,
-            mqtt_password: entity.mqtt_password,
-            webhook: entity.webhook,
-            webhook_secret: entity.webhook_secret,
-            bus: entity.bus,
-            description: entity.description
-        });
-    }
-    const onChangedSlot = (value: any) => {
-        setEntity({
-            id: entity.id,
-            deleted: entity.deleted,
-            created: entity.created,
-            changed: entity.changed,
-            company: entity.company,
-            address: entity.address,
-            mask: entity.mask,
-            dns: entity.dns,
-            ipv6: entity.ipv6,
-            port: entity.port,
-            name: entity.name,
-            rack: entity.rack,
-            slot: value,
-            driver: entity.driver,
-            mqtt: entity.mqtt,
-            mqtt_user: entity.mqtt_user,
-            mqtt_password: entity.mqtt_password,
-            webhook: entity.webhook,
-            webhook_secret: entity.webhook_secret,
-            bus: entity.bus,
-            description: entity.description
-        });
-    }
-
-
     const loadLazyDataDrivers = () => {
         setLazyLoading(true);
 
@@ -384,207 +171,7 @@ const MachinesCreate = () => {
         // setLazyLoading(false);
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-    const onChangedLazyDriver = (e: { value: any }) => {
-        setEntity({
-            id: entity.id,
-            deleted: entity.deleted,
-            created: entity.created,
-            changed: entity.changed,
-            company: entity.company,
-            address: entity.address,
-            mask: entity.mask,
-            dns: entity.dns,
-            ipv6: entity.ipv6,
-            port: entity.port,
-            name: entity.name,
-            rack: entity.rack,
-            slot: entity.slot,
-            driver: e.value,
-            mqtt: entity.mqtt,
-            mqtt_user: entity.mqtt_user,
-            mqtt_password: entity.mqtt_password,
-            webhook: entity.webhook,
-            webhook_secret: entity.webhook_secret,
-            bus: entity.bus,
-            description: entity.description
-        });
-    }
-    const onChangedMQTT = (value: any) => {
-        // console.log(value);
-        setEntity({
-            id: entity.id,
-            deleted: entity.deleted,
-            created: entity.created,
-            changed: entity.changed,
-            company: entity.company,
-            address: entity.address,
-            mask: entity.mask,
-            dns: entity.dns,
-            ipv6: entity.ipv6,
-            port: entity.port,
-            name: entity.name,
-            rack: entity.rack,
-            slot: entity.slot,
-            driver: entity.driver,
-            mqtt: value,
-            mqtt_user: entity.mqtt_user,
-            mqtt_password: entity.mqtt_password,
-            webhook: entity.webhook,
-            webhook_secret: entity.webhook_secret,
-            bus: entity.bus,
-            description: entity.description
-        });
-    }
-    const onChangedMQTTUser = (value: any) => {
-        setEntity({
-            id: entity.id,
-            deleted: entity.deleted,
-            created: entity.created,
-            changed: entity.changed,
-            company: entity.company,
-            address: entity.address,
-            mask: entity.mask,
-            dns: entity.dns,
-            ipv6: entity.ipv6,
-            port: entity.port,
-            name: entity.name,
-            rack: entity.rack,
-            slot: entity.slot,
-            driver: entity.driver,
-            mqtt: entity.mqtt,
-            mqtt_user: value,
-            mqtt_password: entity.mqtt_password,
-            webhook: entity.webhook,
-            webhook_secret: entity.webhook_secret,
-            bus: entity.bus,
-            description: entity.description
-        });
-    }
-    const onChangedMQTTPassword = (value: any) => {
-        setEntity({
-            id: entity.id,
-            deleted: entity.deleted,
-            created: entity.created,
-            changed: entity.changed,
-            company: entity.company,
-            address: entity.address,
-            mask: entity.mask,
-            dns: entity.dns,
-            ipv6: entity.ipv6,
-            port: entity.port,
-            name: entity.name,
-            rack: entity.rack,
-            slot: entity.slot,
-            driver: entity.driver,
-            mqtt: entity.mqtt,
-            mqtt_user: entity.mqtt_user,
-            mqtt_password: value,
-            webhook: entity.webhook,
-            webhook_secret: entity.webhook_secret,
-            bus: entity.bus,
-            description: entity.description
-        });
-    }
-    const onChangedWebhook = (value: any) => {
-        setEntity({
-            id: entity.id,
-            deleted: entity.deleted,
-            created: entity.created,
-            changed: entity.changed,
-            company: entity.company,
-            address: entity.address,
-            mask: entity.mask,
-            dns: entity.dns,
-            ipv6: entity.ipv6,
-            port: entity.port,
-            name: entity.name,
-            rack: entity.rack,
-            slot: entity.slot,
-            driver: entity.driver,
-            mqtt: entity.mqtt,
-            mqtt_user: entity.mqtt_user,
-            mqtt_password: entity.mqtt_password,
-            webhook: value,
-            webhook_secret: entity.webhook_secret,
-            bus: entity.bus,
-            description: entity.description
-        });
-    }
-    const onChangedWebhookSecret = (value: any) => {
-        setEntity({
-            id: entity.id,
-            deleted: entity.deleted,
-            created: entity.created,
-            changed: entity.changed,
-            company: entity.company,
-            address: entity.address,
-            mask: entity.mask,
-            dns: entity.dns,
-            ipv6: entity.ipv6,
-            port: entity.port,
-            name: entity.name,
-            rack: entity.rack,
-            slot: entity.slot,
-            driver: entity.driver,
-            mqtt: entity.mqtt,
-            mqtt_user: entity.mqtt_user,
-            mqtt_password: entity.mqtt_password,
-            webhook: entity.webhook,
-            webhook_secret: value,
-            bus: entity.bus,
-            description: entity.description
-        });
-    }
-    const onChangedBus = (value: any) => {
-        setEntity({
-            id: entity.id,
-            deleted: entity.deleted,
-            created: entity.created,
-            changed: entity.changed,
-            company: entity.company,
-            address: entity.address,
-            mask: entity.mask,
-            dns: entity.dns,
-            ipv6: entity.ipv6,
-            port: entity.port,
-            name: entity.name,
-            rack: entity.rack,
-            slot: entity.slot,
-            driver: entity.driver,
-            mqtt: entity.mqtt,
-            mqtt_user: entity.mqtt_user,
-            mqtt_password: entity.mqtt_password,
-            webhook: entity.webhook,
-            webhook_secret: entity.webhook_secret,
-            bus: value,
-            description: entity.description
-        });
-    }
-    // const onChangedDescription = (value: any) => {
-    //     setEntity({
-    //         id: entity.id,
-    //         deleted: entity.deleted,
-    //         created: entity.created,
-    //         changed: entity.changed,
-    //         company: entity.company,
-    //         address: entity.address,
-    //         mask: entity.mask,
-    //         dns: entity.dns,
-    //         ipv6: entity.ipv6,
-    //         port: entity.port,
-    //         name: entity.name,
-    //         rack: entity.rack,
-    //         slot: entity.slot,
-    //         driver: entity.driver,
-    //         mqtt: entity.mqtt,
-    //         mqtt_user: entity.mqtt_user,
-    //         mqtt_password: entity.mqtt_password,
-    //         webhook: entity.webhook,
-    //         webhook_secret: entity.webhook_secret,
-    //         bus: entity.bus,
-    //         description: value
-    //     });
-    // }
+
 
 
     /**
@@ -592,12 +179,12 @@ const MachinesCreate = () => {
      */
     const onChangedInput = (e: any) => {
         // Case of input text
-        if (e.target) { 
-            const { id, name, value } = e.target;
+        if (e.target) {
+            const { name, value, checked } = e.target;
             setEntity((prevState) => {
                 return {
                     ...prevState,
-                    [name]: value
+                    [name]: value || checked
                 };
             });
         }
@@ -616,8 +203,8 @@ const MachinesCreate = () => {
 
     /**
      * Handle change on html input element, required name of element
-     * @param e 
-     * @param name 
+     * @param e html input event 
+     * @param name to be use for entity
      */
     const onChangedHtmlInput = (e: any, name: string) => {
         const { source, delta, textValue, htmlValue } = e;
@@ -634,38 +221,48 @@ const MachinesCreate = () => {
     const [formData, setFormData] = useState({});
     const defaultValues = model.defaults;
     // const { control, formState: { errors }, handleSubmit, reset } = useForm({ defaultValues });
-
+    const { control, formState: { errors }, handleSubmit, reset } = useForm({ defaultValues });
 
     const validate = (data: any) => {
+        console.log("validate");
         let errors = {};
 
-        if (!data.name) {
+        console.log('data', data);
+        console.log('entity.name', errors.name);
+        if (!entity.name) {
+
             errors.name = 'Name is required.';
+            console.log('entity.name', errors.name);
         }
 
-        if (!data.email) {
-            errors.email = 'Email is required.';
-        }
-        else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(data.email)) {
-            errors.email = 'Invalid email address. E.g. example@email.com';
-        }
+        // if (!data.email) {
+        //     errors.email = 'Email is required.';
+        // }
+        // else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(data.email)) {
+        //     errors.email = 'Invalid email address. E.g. example@email.com';
+        // }
 
-        if (!data.password) {
-            errors.password = 'Password is required.';
-        }
+        // if (!data.password) {
+        //     errors.password = 'Password is required.';
+        // }
 
-        if (!data.accept) {
-            errors.accept = 'You need to agree to the terms and conditions.';
-        }
+        // if (!data.accept) {
+        //     errors.accept = 'You need to agree to the terms and conditions.';
+        // }
 
         return errors;
     };
 
 
     const onSubmit = (data: any) => {
-        console.log(data)
-        setFormData(data);
-        setShowMessage(true);
+        console.log('on submit', data);
+        if (validate(data)) {
+
+        } else {
+            setFormData(data);
+            setShowMessage(true);
+            // form.restart();
+        }
 
         // form.restart();
     };
@@ -674,8 +271,8 @@ const MachinesCreate = () => {
     const isFormFieldValid = (meta: any) => !!(meta.touched && meta.error);
     const getFormErrorMessage = (name: any) => {
 
-        return <Message className='text-left pt-2 pb-2' severity="error" text="Please specify a company" />
-        // return errors[name] && <small className="p-error">{errors[name].message}</small>
+        //return <Message className='text-left pt-2 pb-2' severity="error" text="Please specify a company" />
+        return errors[name] && <small className="p-error">{errors[name].message}</small>
     };
 
     const dialogFooter = <div className="flex justify-content-center"><Button label="OK" className="p-button-text" autoFocus onClick={() => setShowMessage(false)} /></div>;
@@ -722,7 +319,8 @@ const MachinesCreate = () => {
 
 
 
-            <form className="p-fluid">
+
+            <form onSubmit={handleSubmit(onSubmit)} className="p-fluid">
                 <div className="col-12">
 
 
@@ -783,8 +381,8 @@ const MachinesCreate = () => {
                             tooltipOptions={{ position: 'top' }}
                         />
 
-                        <div className='col-12 md:col-4 p-0 m-0 hidden'>
-                            <Message className='text-left pt-2 pb-2' severity="error" text="Spécifier un nom" />
+                        <div className={'col-12 md:col-4 p-0 m-0 ' }>
+                            <Message className={'text-left pt-2 pb-2' + (errors?.name ?'':'hidden')} severity="error" text={errors.name} />
                         </div>
                     </div>
 
@@ -1211,7 +809,7 @@ const MachinesCreate = () => {
                             className='col-12 md:col-3 mt-0 '
                             tooltip='Enregistrer les informations'
                             tooltipOptions={{ position: 'bottom' }}
-                            onClick={e => onSubmit(e)}
+                            onClick={onSubmit}
                         />
                         {/* </Link> */}
                         <Link href="#"

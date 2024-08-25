@@ -26,13 +26,8 @@ import Link from 'next/link';
 import { useForm, Controller } from 'react-hook-form';
 import { Dialog } from 'primereact/dialog';
 import { classNames } from 'primereact/utils';
-
+import { Form } from 'react-final-form';
 import { Model } from '@/src/obi/models/model';
-import { InputUtil } from '@/src/obi/utilities/InputUtil';
-
-import { scrollIntoViewHelper } from '@/src/obi/utilities/helpers/scrollIntoViewHelper';
-import { creatorServiceHelper } from '@/src/obi/utilities/helpers/creatorServiceHelper';
-import { MachinesService } from '@/src/obi/service/connexions/MachinesService';
 
 const MachinesCreate = () => {
 
@@ -40,12 +35,10 @@ const MachinesCreate = () => {
     let loadLazyTimeout: number | undefined = 0;
     const [loading, setLoading] = useState(false);
 
+    const [company, setCompany] = useState(null);
+    const [companies, setCompanies] = useState<OBI.companies[] | null>([]);
     const model = new MachinesModel();
     const [entity, setEntity] = useState(model.defaults);
-    const [dropdown, setDropDown] = useState({
-        company: null,
-        driver: null,
-    });
 
     const globalModel = new Model();
     const [lazyParams, setLazyParams] = useState(globalModel.getStandardParam());
@@ -55,6 +48,10 @@ const MachinesCreate = () => {
 
 
     const toast = useRef<Toast>(null);
+    const message = useRef<Messages>(null);
+
+
+
 
 
 
@@ -160,38 +157,6 @@ const MachinesCreate = () => {
 
 
 
-    const onChangedDropDown = (e: any) => {
-        // Case of input text
-        if (e.target) {
-            const { name, value, checked } = e.target;
-            let obj = { entity: { id: null } };
-            if (name === 'company') {
-                obj = lazyItemsCompanies[value];
-                console.log('company', lazyItemsCompanies[value])
-            } else {
-                obj = lazyItemsDrivers[value];
-                console.log('driver', lazyItemsDrivers[value]);
-            }
-
-            console.log('entityValue', obj.entity.id);
-            const entityValue = obj.entity.id;
-
-            if (value !== null && value !== undefined) {
-                setDropDown((prevState) => {
-                    return {
-                        ...prevState,
-                        [name]: value,
-                    };
-                });
-                setEntity((prevState) => {
-                    return {
-                        ...prevState,
-                        [name]: entityValue,
-                    };
-                });
-            }
-        }
-    };
 
     /**
      * Handle changes on drowpdown, input and number
@@ -200,21 +165,12 @@ const MachinesCreate = () => {
         // Case of input text
         if (e.target) {
             const { name, value, checked } = e.target;
-            if (value !== null && value !== undefined) {
-                setEntity((prevState) => {
-                    return {
-                        ...prevState,
-                        [name]: value,
-                    };
-                });
-            } else {
-                setEntity((prevState) => {
-                    return {
-                        ...prevState,
-                        [name]: checked
-                    };
-                });
-            }
+            setEntity((prevState) => {
+                return {
+                    ...prevState,
+                    [name]: value || checked
+                };
+            });
         }
         // case of input number
         else {
@@ -227,12 +183,11 @@ const MachinesCreate = () => {
                 };
             });
         }
-        //  console.log('On change Entity param ' + name, entity)
     }
 
     /**
      * Handle change on html input element, required name of element
-     * @param e html input event
+     * @param e html input event 
      * @param name to be use for entity
      */
     const onChangedHtmlInput = (e: any, name: string) => {
@@ -246,354 +201,67 @@ const MachinesCreate = () => {
     }
 
 
-
-
-    const showSuccess = () => {
-        toast.current.show({ severity: 'success', summary: 'Success Message', detail: 'Message Content', life: 3000 });
-    }
-
-
-
-
     const [showMessage, setShowMessage] = useState(false);
+    const [formData, setFormData] = useState({});
     const defaultValues = model.defaults;
-    const [errors, setErrors] = useState(model.errorsEmpty);
+    // const { control, formState: { errors }, handleSubmit, reset } = useForm({ defaultValues });
+    const { control, formState: { errors }, handleSubmit, reset } = useForm({ defaultValues });
 
     /**
-     * Use before validation to reset state
-     */
-    const clearErrors = () => {
-        setErrors(model.errorsEmpty);
-        setErrors((errors) => {
-            return {
-                ...errors,
-                error: false,
-            };
-        });
-    }
-
-
-
-    /**
-     *
-     * @param data
-     * @returns
+     * 
+     * @param data 
+     * @returns 
      */
     const validate = (data: any) => {
-        // Reset validation
-        clearErrors();
-
-        // check company
-        if (!entity.company) {
-            setErrors((errors) => {
-                return {
-                    ...errors,
-                    error: true,
-                    company: {
-                        error: true,
-                        msg: 'Sociéte est requise !'
-                    },
-                };
-            });
-        }
+        console.log("validate", data);
+        let errors = {};
 
 
-        // Check name
+        console.log('entity.name', errors.name);
         if (!entity.name) {
-            setErrors((errors) => {
-                return {
-                    ...errors,
-                    error: true,
-                    name: {
-                        error: true,
-                        msg: 'Nom est requis !'
-                    },
-                };
-            });
+
+            errors.name = 'Name is required.';
+            console.log('entity.name', errors.name);
         }
 
-
-        // Check address
-        // console.log('entity address', entity.address, entity.address.length);
-        if (entity.address == null || entity.address.length == 0) {
-            setErrors((errors) => {
-                return {
-                    ...errors,
-                    error: true,
-                    address: {
-                        error: true,
-                        msg: 'IP ou adresse est requis !'
-                    },
-                };
-            });
-        } else if (!InputUtil.isValidIPv4(entity.address)) {
-            setErrors((errors) => {
-                return {
-                    ...errors,
-                    error: true,
-                    address: {
-                        error: true,
-                        msg: 'Entrer une IP valide (###.###.###.###) !'
-                    },
-                };
-            });
-        }
-
-
-
-        // Check mask
-        if (entity.mask.length !== 0 && !InputUtil.isValidIPv4(entity.address)) {
-            if (!InputUtil.isValidIPv4(entity.mask)) {
-                setErrors((errors) => {
-                    return {
-                        ...errors,
-                        error: true,
-                        mask: {
-                            error: true,
-                            msg: 'Entrer un mask valide (###.###.###.###) !'
-                        },
-                    };
-                });
-            }
-        }
-
-
-
-        // Check DNS
-        if (entity.dns.length !== 0) {
-            if (!InputUtil.isValidIPv4(entity.dns)) {
-                setErrors((errors) => {
-                    return {
-                        ...errors,
-                        error: true,
-                        dns: {
-                            error: true,
-                            msg: 'Entrer un dns valide (###.###.###.###) !'
-                        },
-                    };
-                });
-            }
-        }
-
-
-
-        // Check IPv6
-        if (entity.ipv6.length !== 0) {
-            if (!InputUtil.isValidIPv6(entity.ipv6)) {
-                setErrors((errors) => {
-                    return {
-                        ...errors,
-                        error: true,
-                        ipv6: {
-                            error: true,
-                            msg: 'Entrer une address IPv6 valide ) !'
-                        },
-                    };
-                });
-            }
-        }
-
-
-        // Check Port
-        if ((entity.port + '').length !== 0 && entity.port !== null) {
-            if (!InputUtil.isValidPort(entity.port)) {
-                setErrors((errors) => {
-                    return {
-                        ...errors,
-                        error: true,
-                        port: {
-                            error: true,
-                            msg: 'Entrer un port valide entre 1 et 65535 !'
-                        },
-                    };
-                });
-            }
-        }
-
-
-
-        // check driver
-        if (!entity.driver) {
-            setErrors((errors) => {
-                return {
-                    ...errors,
-                    error: true,
-                    driver: {
-                        error: true,
-                        msg: 'Un driver est requis !'
-                    },
-                };
-            });
-        }
-
-        // Check Rack
-        if (!InputUtil.isInRange(entity.rack, 0, 32)) {
-            setErrors((errors) => {
-                return {
-                    ...errors,
-                    error: true,
-                    rack: {
-                        error: true,
-                        msg: 'Numéro de rack invalide permet 0 - 32 !'
-                    },
-                };
-            });
-        }
-
-        // Check Slot
-        if (!InputUtil.isInRange(entity.slot, 0, 32)) {
-            setErrors((errors) => {
-                return {
-                    ...errors,
-                    error: true,
-                    slot: {
-                        error: true,
-                        msg: 'Numéro de slot invalide, permis 0 - 32 !'
-                    },
-                };
-            });
-        }
-
-
-
-
-
-        // Check MQTT PATH
-        if (entity.mqtt !== null) {
-            if (entity.mqtt === true) {
-                if (!entity.mqtt_user) {
-                    setErrors((errors) => {
-                        return {
-                            ...errors,
-                            error: true,
-                            mqtt_user: {
-                                error: true,
-                                msg: 'L\'utilisateur mqtt est requis !'
-                            },
-                        };
-                    });
-                }
-
-                if (!entity.mqtt_password) {
-                    setErrors((errors) => {
-                        return {
-                            ...errors,
-                            error: true,
-                            mqtt_password: {
-                                error: true,
-                                msg: 'Le mot de passe mqtt est requis !'
-                            },
-                        };
-                    });
-                }
-            }
-
-        }
-
-
-        // Check Webhook
-        if (entity.webhook !== null) {
-            if (entity.webhook === true) {
-                if (!entity.webhook_secret) {
-                    setErrors((errors) => {
-                        return {
-                            ...errors,
-                            error: true,
-                            webhook_secret: {
-                                error: true,
-                                msg: 'webhook secret est requis !'
-                            },
-                        };
-                    });
-                }
-            }
-        }
-
-
-        // Check Bus
-        // if (!InputUtil.isInRange(entity.bus, 0, 128)) {
-        //     setErrors((errors) => {
-        //         return {
-        //             ...errors,
-        //             error: true,
-        //             bus: {
-        //                 error: true,
-        //                 msg: 'Numéro de bus invalide permet 0 - 128 !'
-        //             },
-        //         };
-        //     });
+        // if (!data.email) {
+        //     errors.email = 'Email is required.';
+        // }
+        // else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(data.email)) {
+        //     errors.email = 'Invalid email address. E.g. example@email.com';
         // }
 
+        // if (!data.password) {
+        //     errors.password = 'Password is required.';
+        // }
 
+        // if (!data.accept) {
+        //     errors.accept = 'You need to agree to the terms and conditions.';
+        // }
 
-        // console.log(errors.error, errors)
-        return !errors.error;
+        return errors;
     };
 
-    useEffect(() => {
-        onSubmit();
-    }, [entity]);
 
-    const onSubmit =  (e: any) => {
-        if (e)
-            e.preventDefault();
-        setShowMessage(false);
-        clearMessages();
-        setLazyLoading(true);
-
-
-        if (validate(e)) {
-            console.log("On validation no error !", errors);
-            const creator = creatorServiceHelper(entity);
-
-            setLazyLoading(true);
-
-            if (loadLazyTimeout) {
-                clearTimeout(loadLazyTimeout);
-            }
-
-
-            loadLazyTimeout = setTimeout(() => {
-
-                MachinesService.add(creator).then((data: any) => {
-                    console.log('data', data);
-                    if (data) {
-                        toast.current.show({
-                            severity: 'info',
-                            summary: 'Machine creation',
-                            detail: data, life: 5000
-                        });
-                    }
-                    setLazyLoading(false);
-                });
-
-            }, Math.random() * 2000 + 250);
-
+    const onSubmit = (data: any) => {
+        console.log('on submit', data);
+        if (validate(data)) {
 
         } else {
-            console.log("On validation error(s) !", errors);
-            scrollIntoViewHelper(errors);
-            console.log('error', errors.error)
-            if (errors.error) {
-                let counter = 0;
-                for (const x in errors) {
-                    if (errors[x]?.error)
-                        counter++;
-                }
-                toast.current.show({ severity: 'error', summary: 'Machine creation', detail: counter + ' error(s) à corriger', life: 5000 });
-                msgSubmitted.current.show({ severity: 'error', summary: 'Machine creation', detail: counter + ' error(s) à corriger', sticky: true });
-            }
-            setShowMessage(false);
+            setFormData(data);
+            setShowMessage(true);
+            // form.restart();
         }
+
+        // form.restart();
     };
 
 
-    const getFormErrorMessage = (val: any) => {
-        if (errors[val].error) {
-            return (
-                <Message className={'text-left pt-2 pb-2'} severity="error" text={errors[val].msg} />
-            )
-        }
+    const isFormFieldValid = (meta: any) => !!(meta.touched && meta.error);
+    const getFormErrorMessage = (name: any) => {
+
+        //return <Message className='text-left pt-2 pb-2' severity="error" text="Please specify a company" />
+        return errors[name] && <small className="p-error">{errors[name].message}</small>
     };
 
     const dialogFooter = <div className="flex justify-content-center"><Button label="OK" className="p-button-text" autoFocus onClick={() => setShowMessage(false)} /></div>;
@@ -602,28 +270,9 @@ const MachinesCreate = () => {
 
 
 
-
-
-    const msgSubmitted = useRef(null);
-    const addMessages = () => {
-        msgSubmitted.current.show([
-            { severity: 'success', summary: 'Success', detail: 'Message Content', sticky: true },
-            { severity: 'info', summary: 'Info', detail: 'Message Content', sticky: true },
-            { severity: 'warn', summary: 'Warning', detail: 'Message Content', sticky: true },
-            { severity: 'error', summary: 'Error', detail: 'Message Content', sticky: true }
-        ]);
-    }
-
-    const clearMessages = () => {
-        msgSubmitted.current.clear();
-    }
-
     return (
 
         <div className="card">
-
-            {/** Message toaster display */}
-            <Toast ref={toast} />
 
             {/** Display Dialog box  */}
             <Dialog visible={showMessage}
@@ -639,13 +288,13 @@ const MachinesCreate = () => {
 
                     <p className='mt-3'>
                         Machine  &quot;<b>{entity.name}</b>&quot; créée avec succès : <br />
+                        <ul>
+                            <li>IP      : <b>{entity.address}</b></li>
+                            <li>Rack    : <b>{entity.rack}</b></li>
+                            <li>Slot    : <b>{entity.slot}</b></li>
+                            <li>Driver    : <b>{entity.driver}</b></li>
+                        </ul>
                     </p>
-                    <ul>
-                        <li>IP      &emsp;&emsp;: <b>{entity.address}</b></li>
-                        <li>Rack    &emsp;&emsp;: <b>{entity.rack}</b></li>
-                        <li>Slot    &emsp;&emsp;: <b>{entity.slot}</b></li>
-                        <li>Driver  &emsp;&emsp;: <b>{entity.driver}</b></li>
-                    </ul>
                 </div>
             </Dialog>
 
@@ -660,19 +309,7 @@ const MachinesCreate = () => {
 
 
 
-            {/* <h5>Dynamic</h5>
-            <Button type="button" onClick={addMessages} label="Show" className="mr-2" />
-            <Button type="button" onClick={clearMessages} icon="pi pi-times" label="Clear" className="p-button-secondary" /> */}
-
-            <Messages ref={msgSubmitted} />
-            <hr className={errors.error ? '' : 'hidden'} />
-
-
-
-            <form
-                // onSubmit={onSubmit}
-                className="p-fluid"
-            >
+            <form onSubmit={handleSubmit(onSubmit)} className="p-fluid">
                 <div className="col-12">
 
 
@@ -686,15 +323,13 @@ const MachinesCreate = () => {
                         </div>
 
 
-                        <Dropdown value={dropdown.company}
+                        <Dropdown value={entity.company}
                             id='company'
                             options={lazyItemsCompanies}
                             name='company'
-                            className={'col-12 md:col-5  pl-2 mb-2 input-value ' + (errors.company.error ? 'p-invalid' : '')}
-                            onChange={onChangedDropDown} virtualScrollerOptions={{
-                                lazy: true, onLazyLoad: onLazyLoadCompanies,
-                                itemSize: 28, showLoader: true, loading: lazyLoading,
-                                delay: 250, loadingTemplate: (options) => {
+                            className='col-12 md:col-5  mb-2 input-value {fieldState.invalid ? "p-invalid":""}'
+                            onChange={onChangedInput} virtualScrollerOptions={{
+                                lazy: true, onLazyLoad: onLazyLoadCompanies, itemSize: 28, showLoader: true, loading: lazyLoading, delay: 250, loadingTemplate: (options) => {
                                     return (
                                         <div className="flex align-items-center p-2" >
                                             <Skeleton width={options.even ? '60%' : '50%'} height="2rem" />
@@ -705,10 +340,10 @@ const MachinesCreate = () => {
                             placeholder="Sélectionner"
                             required
                             tooltip='Définir la société ou est installé la machine'
-                            tooltipOptions={{ position: 'right' }}
+                            tooltipOptions={{ position: 'top' }}
                         />
 
-                        <div className={'col-12 md:col-4 p-0 m-0 text-left'}>
+                        <div className='col-12 md:col-4 p-0 m-0 hidden'>
                             {getFormErrorMessage('company')}
                         </div>
                     </div>
@@ -727,7 +362,7 @@ const MachinesCreate = () => {
                             name='name'
                             value={entity.name}
                             onChange={onChangedInput}
-                            className={'col-12 md:col-5  pl-2 mb-2 input-value ' + (errors.name.error ? 'p-invalid' : '')}
+                            className='col-12 md:col-5  pl-2 mb-2 input-value'
 
                             placeholder="Machine ABCD"
                             required
@@ -735,8 +370,8 @@ const MachinesCreate = () => {
                             tooltipOptions={{ position: 'top' }}
                         />
 
-                        <div className={'col-12 md:col-4 p-0 m-0 text-left'}>
-                            {getFormErrorMessage('name')}
+                        <div className={'col-12 md:col-4 p-0 m-0 '}>
+                            <Message className={'text-left pt-2 pb-2' + (errors?.name ? '' : 'hidden')} severity="error" text={errors.name} />
                         </div>
                     </div>
 
@@ -750,7 +385,7 @@ const MachinesCreate = () => {
                             </label>
                         </div>
 
-                        <InputText id="address"
+                        <InputText id="adresse"
                             name='address'
                             value={entity.address}
                             onChange={onChangedInput}
@@ -761,9 +396,10 @@ const MachinesCreate = () => {
                             tooltip='Dans le cas ou la machine est identifier par son adresse IP sinon laisser vide'
                             tooltipOptions={{ position: 'top' }}
                         />
+                        {/* className="p-invalid" */}
 
-                        <div className={'col-12 md:col-4 p-0 m-0 text-left'}>
-                            {getFormErrorMessage('address')}
+                        <div className='col-12 md:col-4 p-0 m-0 hidden'>
+                            <Message className='text-left pt-2 pb-2' severity="error" text="Please specify mask" />
                         </div>
                     </div>
 
@@ -787,8 +423,8 @@ const MachinesCreate = () => {
                             tooltipOptions={{ position: 'top' }}
                         />
 
-                        <div className={'col-12 md:col-4 p-0 m-0 text-left'}>
-                            {getFormErrorMessage('mask')}
+                        <div className='col-12 md:col-4 p-0 m-0 hidden'>
+                            <Message className='text-left pt-2 pb-2' severity="error" text="Please specify mask" />
                         </div>
                     </div>
 
@@ -812,8 +448,8 @@ const MachinesCreate = () => {
                             tooltipOptions={{ position: 'top' }}
                         />
 
-                        <div className={'col-12 md:col-4 p-0 m-0 text-left'}>
-                            {getFormErrorMessage('dns')}
+                        <div className='col-12 md:col-4 p-0 m-0 hidden'>
+                            <Message className='text-left pt-2 pb-2' severity="error" text="Please specify dns" />
                         </div>
                     </div>
 
@@ -837,8 +473,8 @@ const MachinesCreate = () => {
                             tooltipOptions={{ position: 'top' }}
                         />
 
-                        <div className={'col-12 md:col-4 p-0 m-0 text-left'}>
-                            {getFormErrorMessage('ipv6')}
+                        <div className='col-12 md:col-4 p-0 m-0 hidden'>
+                            <Message className='text-left pt-2 pb-2' severity="error" text="Please specify ipv6" />
                         </div>
                     </div>
 
@@ -862,50 +498,13 @@ const MachinesCreate = () => {
                             tooltipOptions={{ position: 'top' }}
                         />
 
-                        <div className={'col-12 md:col-4 p-0 m-0 text-left'}>
-                            {getFormErrorMessage('port')}
+                        <div className='col-12 md:col-4 p-0 m-0 hidden'>
+                            <Message className='text-left pt-2 pb-2' severity="error" text="Please specify port" />
                         </div>
                     </div>
 
                     <hr />
 
-
-                    {/** Driver */}
-                    <div className="grid mb-2">
-                        <div className='col-12 md:col-2'>
-                            <label htmlFor="driver" className="input-field">
-                                Driver
-                            </label>
-                        </div>
-
-                        <Dropdown id='driver'
-                            name='driver'
-                            value={dropdown.driver}
-                            options={lazyItemsDrivers}
-                            className='col-12 md:col-5  mb-2 input-value'
-
-                            onChange={onChangedDropDown} virtualScrollerOptions={{
-                                lazy: true, onLazyLoad: onLazyLoadDrivers,
-                                itemSize: 28, showLoader: true,
-                                loading: lazyLoading, delay: 250,
-                                loadingTemplate: (options) => {
-                                    return (
-                                        <div className="flex align-items-center p-2" >
-                                            <Skeleton width={options.even ? '60%' : '50%'} height="1rem" />
-                                        </div>
-                                    )
-                                }
-                            }}
-                            placeholder="Sélectionner"
-                            // required
-                            tooltip='Specifier le driver de la machine'
-                            tooltipOptions={{ position: 'top' }}
-                        />
-
-                        <div className={'col-12 md:col-4 p-0 m-0 text-left'}>
-                            {getFormErrorMessage('driver')}
-                        </div>
-                    </div>
 
                     {/** RACK */}
                     <div className="grid mb-2">
@@ -918,7 +517,6 @@ const MachinesCreate = () => {
                         <InputNumber id="rack"
                             name='rack'
                             value={entity.rack}
-                            onValueChange={onChangedInput}
                             onChange={onChangedInput}
                             className='col-12 md:col-5   ml-0 mb-2 input-value'
 
@@ -928,8 +526,8 @@ const MachinesCreate = () => {
                             tooltipOptions={{ position: 'top' }}
                         />
 
-                        <div className={'col-12 md:col-4 p-0 m-0 text-left'}>
-                            {getFormErrorMessage('rack')}
+                        <div className='col-12 md:col-4 p-0 m-0 hidden'>
+                            <Message className='text-left pt-2 pb-2' severity="error" text="Spécifier le rack" />
                         </div>
                     </div>
 
@@ -944,7 +542,6 @@ const MachinesCreate = () => {
                         <InputNumber id="slot"
                             name='slot'
                             value={entity.slot}
-                            onValueChange={onChangedInput}
                             onChange={onChangedInput}
                             className='col-12 md:col-5   ml-0 mb-2 input-value'
 
@@ -954,8 +551,43 @@ const MachinesCreate = () => {
                             tooltipOptions={{ position: 'top' }}
                         />
 
-                        <div className={'col-12 md:col-4 p-0 m-0 text-left'}>
-                            {getFormErrorMessage('slot')}
+                        <div className='col-12 md:col-4 p-0 m-0 hidden'>
+                            <Message className='text-left pt-2 pb-2' severity="error" text="Spécifier le slot" />
+                        </div>
+                    </div>
+
+                    {/** Driver */}
+                    <div className="grid mb-2">
+                        <div className='col-12 md:col-2'>
+                            <label htmlFor="driver" className="input-field">
+                                Driver
+                            </label>
+                        </div>
+
+                        <Dropdown id='driver'
+                            name='driver'
+                            value={entity.driver}
+                            options={lazyItemsDrivers}
+                            className='col-12 md:col-5  mb-2 input-value'
+
+                            onChange={onChangedInput} virtualScrollerOptions={{
+                                lazy: true, onLazyLoad: onLazyLoadDrivers, itemSize: 28, showLoader: true, loading: lazyLoading, delay: 250,
+                                loadingTemplate: (options) => {
+                                    return (
+                                        <div className="flex align-items-center p-2" >
+                                            <Skeleton width={options.even ? '60%' : '50%'} height="1rem" />
+                                        </div>
+                                    )
+                                }
+                            }}
+                            placeholder="Sélectionner"
+                            // required
+                            tooltip='Specifier le driver de la machine'
+                            tooltipOptions={{ position: 'top' }}
+                        />
+
+                        <div className='col-12 md:col-4 p-0 m-0 hidden'>
+                            <Message className='text-left pt-2 pb-2' severity="error" text="Please specify a company" />
                         </div>
                     </div>
 
@@ -980,8 +612,8 @@ const MachinesCreate = () => {
                             tooltipOptions={{ position: 'right' }}
                         />
 
-                        <div className={'col-12 md:col-4 p-0 m-0 text-left'}>
-                            {getFormErrorMessage('mqtt')}
+                        <div className='col-12 md:col-4 p-0 m-0 hidden'>
+                            <Message className='text-left pt-2 pb-2' severity="error" text="Spécifier MQTT" />
                         </div>
                     </div>
 
@@ -1006,8 +638,8 @@ const MachinesCreate = () => {
                             tooltipOptions={{ position: 'top' }}
                         />
 
-                        <div className={'col-12 md:col-4 p-0 m-0 text-left'}>
-                            {getFormErrorMessage('mqtt_user')}
+                        <div className='col-12 md:col-4 p-0 m-0 hidden'>
+                            <Message className='text-left pt-2 pb-2' severity="error" text="Spécifier un utilisateur mqtt" />
                         </div>
                     </div>
 
@@ -1026,15 +658,14 @@ const MachinesCreate = () => {
                             onChange={onChangedInput}
                             className='col-12 md:col-5   mb-2 input-value'
 
-                            autoComplete='off'
                             placeholder="Un mot de passe"
                             required={entity.mqtt}
                             tooltip="Spécifier un mot de passe d'accès MQTT"
                             tooltipOptions={{ position: 'top' }}
                         />
 
-                        <div className={'col-12 md:col-4 p-0 m-0 text-left'}>
-                            {getFormErrorMessage('mqtt_password')}
+                        <div className='col-12 md:col-4 p-0 m-0 hidden'>
+                            <Message className='text-left pt-2 pb-2' severity="error" text="Spécifier un mot de passe mqtt" />
                         </div>
                     </div>
 
@@ -1060,8 +691,8 @@ const MachinesCreate = () => {
                             tooltipOptions={{ position: 'top' }}
                         />
 
-                        <div className={'col-12 md:col-4 p-0 m-0 text-left'}>
-                            {getFormErrorMessage('webhook')}
+                        <div className='col-12 md:col-4 p-0 m-0 hidden'>
+                            <Message className='text-left pt-2 pb-2' severity="error" text="Spécifier Webhook" />
                         </div>
                     </div>
 
@@ -1083,15 +714,14 @@ const MachinesCreate = () => {
                             onChange={onChangedInput}
                             className='col-12 md:col-5   mb-2 input-value'
 
-                            autoComplete='off'
                             placeholder="secret access token"
                             required={entity.webhook}
                             tooltip="Information d'accès de communication webhook"
                             tooltipOptions={{ position: 'top' }}
                         />
 
-                        <div className={'col-12 md:col-4 p-0 m-0 text-left'}>
-                            {getFormErrorMessage('webhook_secret')}
+                        <div className='col-12 md:col-4 p-0 m-0 hidden'>
+                            <Message className='text-left pt-2 pb-2' severity="error" text="Spécifier un mot de passe webhook" />
                         </div>
                     </div>
 
@@ -1120,8 +750,8 @@ const MachinesCreate = () => {
                             tooltipOptions={{ position: 'top' }}
                         />
 
-                        <div className={'col-12 md:col-4 p-0 m-0 text-left'}>
-                            {getFormErrorMessage('bus')}
+                        <div className='col-12 md:col-4 p-0 m-0 hidden'>
+                            <Message className='text-left pt-2 pb-2' severity="error" text="Spécifier le Bus" />
                         </div>
                     </div>
 
@@ -1135,10 +765,9 @@ const MachinesCreate = () => {
                             </label>
                         </div>
 
-                        <div className={'col-12 md:col-4 p-0 m-0 text-left'}>
-                            {getFormErrorMessage('description')}
+                        <div className='col-12 md:col-4 p-0 m-0 hidden'>
+                            <Message className='text-left pt-2 pb-2' severity="error" text="Spécifier le Bus" />
                         </div>
-
 
                         <div className='col-12 md:col-12   ml-0 mb-2 input-value'>
                             <Editor
@@ -1147,33 +776,33 @@ const MachinesCreate = () => {
                                 value={entity.description}
                                 className=''
 
-                                onTextChange={(e) => { onChangedHtmlInput(e, 'description') }}
+                                onTextChange={(e) => { onChangedHtmlInput(e, 'descriptions') }}
 
                             // placeholder="Description html ici"
                             // required={entity.}
                             />
                         </div>
+
+
                     </div>
 
                     <hr />
 
 
 
-                    {/** Command options */}
+                    {/** Command optiosn */}
                     <div className='grid'>
-                        <Link href="#"
-                            className='col-12 md:col-3 mt-0 '>
-                            <Button label="Enregistrer" icon="pi pi-check"
-                                type='submit'
-                                severity="success"
-                                // className='col-12 md:col-3 mt-0 '
-                                tooltip='Enregistrer les informations'
-                                tooltipOptions={{ position: 'bottom' }}
-                                onClick={(e) => onSubmit(e)}
-                            />
-                        </Link>
-
-
+                        {/* <Link href="#" 
+                            className='col-12 md:col-3 mt-0 '>*/}
+                        <Button label="Enregistrer" icon="pi pi-check"
+                            type='submit'
+                            severity="success"
+                            className='col-12 md:col-3 mt-0 '
+                            tooltip='Enregistrer les informations'
+                            tooltipOptions={{ position: 'bottom' }}
+                            onClick={onSubmit}
+                        />
+                        {/* </Link> */}
                         <Link href="#"
                             className='col-12 md:col-3 mt-0 '>
                             <Button label="Annuler" icon="pi pi-undo"
@@ -1197,10 +826,11 @@ const MachinesCreate = () => {
                     </div>
 
                 </div >
-            </form >
+
+            </form>
 
 
-        </div >
+        </div>
     );
 };
 

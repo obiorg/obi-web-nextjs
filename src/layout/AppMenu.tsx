@@ -21,9 +21,9 @@ const AppMenu = () => {
                 {
                     label: 'Businesses', icon: 'pi pi-fw pi-briefcase',
                     items: [
-                        { label: 'Entitées', icon: 'pi pi-fw pi-building', to: '/business/entities' },
-                        { label: 'Businesses', icon: 'pi pi-fw pi-briefcase', to: '/business/business' },
-                        { label: 'Sociétées', icon: 'pi pi-fw pi-building-columns', to: '/business/companies' },
+                        { label: 'Entitées', icon: 'pi pi-fw pi-building', to: '/obi/sys/business/entities' },
+                        { label: 'Businesses', icon: 'pi pi-fw pi-briefcase', to: '/obi/sys/business/businesses' },
+                        { label: 'Sociétées', icon: 'pi pi-fw pi-building-columns', to: '/obi/sys/business/entitiescompanies' },
                     ]
                 },
                 {
@@ -53,8 +53,8 @@ const AppMenu = () => {
 
                     label: 'Analyses', icon: 'pi pi-fw pi-sitemap',
                     items: [
-                        { label: 'Drivers', icon: 'pi pi-fw pi-arrows-h', to: '/connexion/drivers' },
-                        { label: 'Machines', icon: 'pi pi-fw pi-sitemap', to: '/connexion/machines' },
+                        { label: 'Drivers', icon: 'pi pi-fw pi-arrows-h', to: '/obi/sys/connexions/drivers' },
+                        { label: 'Machines', icon: 'pi pi-fw pi-sitemap', to: '/obi/sys/connexions/machines/' },
 
                     ]
                 },
@@ -62,8 +62,8 @@ const AppMenu = () => {
 
                     label: 'Mesures', icon: 'pi pi-fw pi-server',
                     items: [
-                        { label: 'Persistences', icon: 'pi pi-fw pi-database', to: '/persistence' },
-                        { label: 'Standard', icon: 'pi pi-fw pi-star', to: '/persistence/pers_standard' },
+                        { label: 'Persistences', icon: 'pi pi-fw pi-database', to: '/obi/sys/persistences' },
+                        { label: 'Standard', icon: 'pi pi-fw pi-star', to: '/obi/sys/persistences/pers_standard' },
 
                     ]
                 },
@@ -94,10 +94,10 @@ const AppMenu = () => {
             items: [
                 {
 
-                    label: 'Connexion', icon: 'pi pi-fw pi-sitemap',
+                    label: 'Connexions', icon: 'pi pi-fw pi-sitemap',
                     items: [
-                        { label: 'Drivers', icon: 'pi pi-fw pi-arrows-h', to: '/obi/sys/connexions/drivers/' },
-                        { label: 'Machines', icon: 'pi pi-fw pi-sitemap', to: '/obi/sys/connexions/machines/' },
+                        { label: 'Drivers', icon: 'pi pi-fw pi-arrows-h', to: '/obi/sys/connexions/drivers' },
+                        { label: 'Machines', icon: 'pi pi-fw pi-sitemap', to: '/obi/sys/connexions/machines' },
 
                     ]
                 },
@@ -105,8 +105,8 @@ const AppMenu = () => {
 
                     label: 'Tags (Variables)', icon: 'pi pi-fw pi-server',
                     items: [
-                        { label: 'Persistences', icon: 'pi pi-fw pi-database', to: '/obi/sys/persistences/' },
-                        { label: 'Standard', icon: 'pi pi-fw pi-star', to: '/obi/sys/persistences/standards/' },
+                        { label: 'Tags', icon: 'pi pi-fw pi-hashtag', to: '/obi/sys/tags' },
+                        { label: 'Standard', icon: 'pi pi-fw pi-star', to: '/obi/sys/persistences/standards' },
 
                     ]
                 },
@@ -114,8 +114,8 @@ const AppMenu = () => {
 
                     label: 'Archivage', icon: 'pi pi-fw pi-database',
                     items: [
-                        { label: 'Persistences', icon: 'pi pi-fw pi-database', to: '/obi/sys/persistences/' },
-                        { label: 'Standardss', icon: 'pi pi-fw pi-star', to: '/obi/sys/persistences/standards/' },
+                        { label: 'Persistences', icon: 'pi pi-fw pi-database', to: '/obi/sys/persistences' },
+                        { label: 'Standards', icon: 'pi pi-fw pi-star', to: '/obi/sys/persistences/standards' },
 
                     ]
                 }

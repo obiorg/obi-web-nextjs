@@ -21,7 +21,7 @@ export class MachinesModel extends Model {
     get defaults() {
         return {
             id: 0,
-            deleted:0,
+            deleted: false,
             created: 0,
             changed: 0,
             company: null,
@@ -73,6 +73,34 @@ export class MachinesModel extends Model {
         this.map.set('description', 'text');
     }
 
+    get errorsEmpty() {
+        return {
+            id: {   error: false, msg: ''},
+            deleted: {   error: false, msg: ''},
+            created: {   error: false, msg: ''},
+            changed: {   error: false, msg: ''},
+            company: {   error: false, msg: ''},
+            address: {   error: false, msg: ''},
+            mask: {   error: false, msg: ''},
+            dns: {   error: false, msg: ''},
+            ipv6: {   error: false, msg: ''},
+            port: {   error: false, msg: ''},
+            name: {   error: false, msg: ''},
+            rack: {   error: false, msg: ''},
+            slot: {   error: false, msg: ''},
+            driver: {   error: false, msg: ''},
+            mqtt: {   error: false, msg: ''},
+            mqtt_user:  {   error: false, msg: ''},
+            mqtt_password:  {   error: false, msg: ''},
+            webhook:  {   error: false, msg: ''},
+            webhook_secret:  {   error: false, msg: ''},
+            bus:  {   error: false, msg: ''},
+            description:  {   error: false, msg: ''},
+
+            companies:  {   error: false, msg: ''},
+            drivers:  {   error: false, msg: ''},
+        };
+    }
 }
 
 

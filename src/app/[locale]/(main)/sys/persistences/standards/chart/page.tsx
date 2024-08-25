@@ -12,7 +12,6 @@ import { Calendar } from 'primereact/calendar';
 import { MultiSelect } from 'primereact/multiselect';
 import { Slider } from 'primereact/slider';
 
-import { PersStandardService } from '@/obi/service/persistence/PersStandard';
 import { OBI } from '@/src/types/obi';
 
 
@@ -21,24 +20,30 @@ import { ChartData, ChartOptions } from 'chart.js';
 import { Chart } from 'primereact/chart';
 import type { ChartDataState, ChartOptionsState } from '@/src/types';
 import { LayoutContext } from '@/src/layout/context/layoutcontext';
-import { PersistenceService } from '@/src/obi/service/persistences/PersistencesService';
+import { PersistenceStandardService } from '@/src/obi/service/persistences/PersistenceStandardService';
+import { PersistencesService } from '@/src/obi/service/persistences/PersistencesService';
+import { Skeleton } from 'primereact/skeleton';
+import { TagsModel } from '@/src/obi/models/tags/TagsModel';
+import { TagsService } from '@/src/obi/service/tags/TagsService';
+import { Model } from '@/src/obi/models/model';
 
 
-const PersStandard = () => {
+const PersistanceStandard = () => {
 
     /**
      * Design input
      */
     const [totalRecords, setTotalRecords] = useState(0);
     const [tag, setTag] = useState(0);
+    const [activePersistence, setActivePersistence] = useState(null);
     const [tagTotalRecords, setTagTotalRecords] = useState(0);
 
 
     /**
      * Persistence
      */
-    const [persistence, setPersistence] = useState<OBI.persistence[]>([]);
-    // const getPersistence = (data: OBI.persistence[]) => {
+    const [persistences, setPersistences] = useState<OBI.persistences[]>([]);
+    // const getPersistence = (data: OBI.persistences[]) => {
     //     return [...(data || [])].map((d) => {
     //         return d;
     //     });
@@ -72,25 +77,35 @@ const PersStandard = () => {
 
 
 
+    /**
+     * Count total amount of persistences with method standard
+     */
     useEffect(() => {
-        // Count total amount of persistence with method standard
-        PersStandardService.count().then((data) => {
+        // Count total amount of persistences with method standard
+        PersistenceStandardService.count().then((data) => {
             setTotalRecords(data);
         });
+
     }, [])
 
+    /**
+     * Get list of available persistences
+     */
     useEffect(() => {
         // Get list of available persistence
-        PersistenceService.findAll().then((data) => {
-            setPersistence(data);
+        PersistencesService.findAll().then((data: OBI.persistences[]) => {
+            // console.log(data)
+
+            setPersistences(data);
         });
     }, []);
 
+
     useEffect(() => {
         // console.log(tag);
-        if (tag !== null) {
+        if (tag !== undefined && tag !== null) {
             // console.log("Now call persistence service")
-            PersStandardService.findByTags(tag, 0, pointCollect, 'desc').then((data) => {
+            PersistenceStandardService.findByTags(tag, 0, pointCollect, 'desc').then((data) => {
                 setPersStandard(data);
             });
         } else {
@@ -108,11 +123,11 @@ const PersStandard = () => {
         const surfaceBorder = documentStyle.getPropertyValue('--surface-border') || '#dfe7ef';
 
         const lineData: ChartData = {
-            labels: pers_standard.map(p => p.created),
+            labels: pers_standard.map((p) => p?.created),
             datasets: [
                 {
                     label: 'Tag (' + tag + ')',
-                    data: pers_standard.map(p => p.vFloat),
+                    data: pers_standard.map((p) => p.vFloat),
                     fill: false,
                     backgroundColor: documentStyle.getPropertyValue('--primary-500') || '#6366f1',
                     borderColor: documentStyle.getPropertyValue('--primary-500') || '#6366f1',
@@ -179,9 +194,8 @@ const PersStandard = () => {
 
 
     const handleChangedTag = (e: { value: any }) => {
-        console.log(e.value);
         setSelectedTag(e.value);
-        setTag(e.value.id);
+        setTag(e.value);
     };
 
     const handleChangePointCollect = (e: any) => {
@@ -189,97 +203,261 @@ const PersStandard = () => {
     };
 
 
+    const globalModel = new Model();
+    const modelTag = new TagsModel();
+    const [tagEntity, setTagEntity] = useState(modelTag.defaults);
+    const [lazyItemsTags, setLazyItemsTags] = useState<any>([]);
+    const [lazyItemsPersistences, setLazyItemsPersistences] = useState<OBI.persistences[]>([]);
+    const [lazyLoading, setLazyLoading] = useState<any>(false);
 
- 
+    let loadLazyTimeout = 0;
+    const [loading, setLoading] = useState(false);
+    const [lazyParamsTags, setLazyParamsTags] = useState(globalModel.getStandardParam());
+    const [lazyParamsPersistences, setLazyParamsPersistences] = useState(globalModel.getStandardParam());
+
+    /**
+     * Handle changes on drowpdown, input and number
+     */
+    const onChangedInputTags = (e: any) => {
+        const { label, value, entity } = lazyItemsPersistences[e.target.value];
+
+        setSelectedTag(entity.tag);
+        setTag(entity.tag);
+        setActivePersistence(value);
+    }
+
+
+
+
+
+
+    const loadLazyDataTags = () => {
+        setLazyLoading(true);
+
+        if (loadLazyTimeout) {
+            clearTimeout(loadLazyTimeout);
+        }
+
+        //imitate delay of a backend call
+        loadLazyTimeout = setTimeout(() => {
+
+            // Create lazy event object with stringify lazy parameter
+            const lazyEventSet = { lazyEvent: JSON.stringify(lazyParamsTags) };
+
+            // Get Lazy Data
+            TagsService.getLazy(lazyEventSet).then((data: any) => {
+
+                if (data?.length > 0) {
+                    let _lazyItems = [data];
+                    for (let i = lazyParamsTags.first; i < data.length; i++) {
+                        _lazyItems[i] = {
+                            label: data[i].name + ' - ' + data[i].comment + ' -  [' + data[i].id + ']',
+                            value: i,
+                            entity: data[i]
+                        };
+                    }
+
+                    setLazyItemsTags(_lazyItems);
+                }
+                setLazyLoading(false);
+            });
+        }, Math.random() * 1000 + 250);
+    };
+
+    const onLazyLoadTags = (event: any) => {
+        lazyParamsTags.first = event.first;
+        lazyParamsTags.rows = event.last === 0 ? 10 : event.last;
+        loadLazyDataTags();
+        // setLazyLoading(false);
+    };
+
+    useEffect(() => {
+        loadLazyDataTags();
+        // setLazyLoading(false);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+
+
+
+
+
+    const loadLazyDataPersistences = () => {
+        setLazyLoading(true);
+
+        if (loadLazyTimeout) {
+            clearTimeout(loadLazyTimeout);
+        }
+
+        //imitate delay of a backend call
+        loadLazyTimeout = setTimeout(() => {
+
+            // Create lazy event object with stringify lazy parameter
+            const lazyEventSet = { lazyEvent: JSON.stringify(lazyParamsPersistences) };
+
+            // Get Lazy Data
+            PersistencesService.getLazyInc(lazyEventSet).then((data: any) => {
+                // console.log('persistences inc', data);
+                if (data?.length > 0) {
+                    let _lazyItems = [data];
+                    // console.log(_lazyItems)
+                    for (let i = lazyParamsPersistences.first; i < data.length; i++) {
+                        _lazyItems[i] = {
+                            label: data[i].tags?.name + ' - ' + data[i].tags?.comment + '(' + data[i].tags?.id + ') -  [' + data[i].id + ']',
+                            value: i,
+                            entity: data[i]
+                        };
+                    }
+
+                    setLazyItemsPersistences(_lazyItems);
+                }
+                setLazyLoading(false);
+            });
+        }, Math.random() * 1000 + 250);
+    };
+
+    const onLazyLoadPersistences = (event: any) => {
+        // console.log('onLazyLoadPersistences', event);
+        lazyParamsTags.first = event.first;
+        lazyParamsTags.rows = event.last === 0 ? 10 : event.last;
+        loadLazyDataPersistences();
+        // setLazyLoading(false);
+    };
+
+    useEffect(() => {
+        loadLazyDataPersistences();
+        // setLazyLoading(false);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
 
 
 
     return (
-        <div className="grid">
+        <div className="grid col-12">
+            <div className="card col-12">
+                <h3>Persistence Standard - Analyse Graphique</h3>
 
-            <p>Nombre total d enregistrement : {totalRecords}</p>
+                <p>Nombre total d enregistrement : {totalRecords}</p>
 
+                {/** Référence Tag Id */}
+                <div className='col-12 grid'>
 
-            <div className="col-12">
-                <div className="card">
-                    <h5>Persistence Standard</h5>
+                    <label className='md:col-2' htmlFor="inputTag">
+                        Id Tag :
+                    </label>
 
-                    <label htmlFor="inputTag">Id Tag : </label>
-
-                    <InputNumber inputId="inputTag" value={tag}
+                    <InputNumber
+                        inputId="inputTag"
+                        className='md:col-6'
+                        value={tag}
                         onValueChange={(e) => handleTagChanged(e)}
                         mode="decimal"
                         min={0} max={100}
                         showButtons
                     />
 
-                    = {tagTotalRecords}  enregistrement(s)
-                    <br />
-                    <label htmlFor="selectedTag">Tag : </label>
-                    <Dropdown inputId='selectedTag'
+                    <label className='col-2'>
+                        = {tagTotalRecords}  enregistrement(s)
+                    </label>
+
+                </div>
+
+                {/** Référence Tag Id - List */}
+                <div className='col-12 grid'>
+
+                    <label className='md:col-2' htmlFor="selectedTag">
+                        Tag :
+                    </label>
+
+                    <Dropdown
+                        inputId='selectedTag'
+                        className='md:col-6'
                         value={selectedTag}
-                        optionLabel="name"
-                        options={persistence.map(p => p.tags)}
+                        options={persistences.map(persistence => persistence.tag)}
                         placeholder='Sélectionner un tag'
                         onChange={handleChangedTag}
                     />
 
-                    <label htmlFor="inputPointCollect">Nombre de point: </label>
 
-                    <InputNumber inputId="inputPointCollect" value={pointCollect}
-                        onValueChange={(e) => handleChangePointCollect(e)}
-                        mode="decimal"
-                        min={1} 
-                        showButtons
+                    <label className='col-2'>
+                        actual selection id : {selectedTag}
+                    </label>
+                </div>
+
+                {/** Référence Tag Id - lazy List */}
+                <div className='col-12 grid'>
+
+                    <label className='md:col-2' htmlFor="tags">
+                        Tag :
+                    </label>
+
+                    <Dropdown id='tags'
+                        name='tags'
+                        value={activePersistence}
+                        options={lazyItemsPersistences}
+
+                        className='col-12 md:col-6  mb-2 input-value'
+
+                        onChange={onChangedInputTags}
+                        virtualScrollerOptions={{
+                            lazy: true,
+                            onLazyLoad: onLazyLoadPersistences,
+                            itemSize: 28,
+                            showLoader: true,
+                            loading: lazyLoading, delay: 250,
+                            loadingTemplate: (options) => {
+                                return (
+                                    <div className="flex align-items-center p-2" >
+                                        <Skeleton width={options.even ? '60%' : '50%'} height="1rem" />
+                                    </div>
+                                )
+                            }
+                        }}
+                        placeholder="Sélectionner"
+                        // required
+                        tooltip='Specifier le driver de la machine'
+                        tooltipOptions={{ position: 'top' }}
                     />
 
 
-                    <div className="col-12">
-                        <div className="card">
-                            <h5>Linear Chart</h5>
-                            <Chart type="line"
-                                data={data.lineData}
-                                options={options.lineOptions}
-                            ></Chart>
-                        </div>
-                    </div>
+                    <label className='col-2'>
+                        entity.id : {tagEntity.id}
+                    </label>
+                </div>
 
+                {/** Point - to collect */}
+                <div className='col-12 grid'>
 
+                    <label className='md:col-2' htmlFor="inputPointCollect">
+                        Nombre de point:
+                    </label>
 
-                    {/* <DataTable value={pers_standard}>
-                        <Column field="id" header="N°"></Column>
-                        <Column field="deleted" header="Suppression"></Column>
-                        <Column field="created" header="Créée le"></Column>
-                        <Column field="changed" header="Changée le"></Column>
-                        <Column field="company" header="Société"></Column>
-                        <Column field="tag" header="Tag"></Column>
-                        <Column field="vFloat" header="Float"></Column>
-                        <Column field="vInt" header="Integer"></Column>
-                        <Column field="vBool" header="Boolean"></Column>
-                        <Column field="vStr" header="String"></Column>
-                        <Column field="vDateTime" header="Date Heure"></Column>
-                        <Column field="vStamp" header="Stamp"></Column>
-                        <Column field="stampStart" header="Stamp Début"></Column>
-                        <Column field="stampEnd" header="Stamp Fin"></Column>
-                        <Column field="tbf" header="TBF"></Column>
-                        <Column field="ttr" header="TTR"></Column>
-                        <Column field="error" header="Erreur"></Column>
-                        <Column field="errorMsg" header="Message"></Column>
-
-                    </DataTable> */}
+                    <InputNumber
+                        inputId="inputPointCollect"
+                        className='col-12 md:col-6  mb-2 input-value'
+                        value={pointCollect}
+                        onValueChange={(e) => handleChangePointCollect(e)}
+                        mode="decimal"
+                        min={1}
+                        showButtons
+                    />
 
                 </div>
+
+                {/** Graphique */}
+                <div className="card col-12">
+                    <h4>Linear Chart</h4>
+                    <Chart type="line"
+                        data={data.lineData}
+                        options={options.lineOptions}
+                    ></Chart>
+                </div>
+
+
+
+
             </div>
-
-
-
-
-
-
-
         </div>
     );
 };
 
-export default PersStandard;
+export default PersistanceStandard;

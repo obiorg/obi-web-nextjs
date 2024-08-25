@@ -6,36 +6,39 @@ import { Column, ColumnFilterClearTemplateOptions } from 'primereact/column';
 import { InputNumber } from 'primereact/inputnumber';
 import { Button } from 'primereact/button';
 
-import { OBI } from '@/src/types/obi';
-import { Admin } from '@/types/demos/admin';
+import { Admin, OBI } from '@/src/types/index';
+// import { Admin } from '@/src/types/index';
+
 
 
 import { Checkbox } from 'primereact/checkbox';
 import { SelectButton, SelectButtonChangeEvent } from 'primereact/selectbutton';
 import { InputSwitch, InputSwitchChangeEvent } from 'primereact/inputswitch';
-import { PersistenceStandardService } from '@/src/obi/service/persistences/PersistenceStandardService';
 
 
-import { useSession, signIn, signOut } from 'next-auth/react'
+
 import { InputText } from 'primereact/inputtext';
+import { EntitiesService } from '@/src/obi/service/businesses/EntitiesService';
+import { Password } from 'primereact/password';
 import Link from 'next/link';
 
-const PersStandard = () => {
+
+const Entities = () => {
 
 
 
-    const bodyTemplateId = (rowData: OBI.pers_standard) => {
+    const bodyTemplateId = (rowData: OBI.entities) => {
         return <InputNumber
             value={rowData.id} disabled readOnly />
     }
 
-    const bodyTemplateDeleted = (rowData: OBI.pers_standard) => {
+    const bodyTemplateDeleted = (rowData: OBI.entities) => {
         return (
             <Checkbox inputId={rowData.id + '_deleted'} checked={(rowData.deleted ? true : false)} />
         );
     }
 
-    const bodyTemplateCreated = (rowData: OBI.pers_standard) => {
+    const bodyTemplateCreated = (rowData: OBI.entities) => {
         if (rowData === undefined) {
             return '';
         }
@@ -57,7 +60,7 @@ const PersStandard = () => {
         )
     }
 
-    const bodyTemplateChanged = (rowData: OBI.pers_standard) => {
+    const bodyTemplateChanged = (rowData: OBI.entities) => {
         if (rowData.length === 1) {
             return '';
         }
@@ -79,112 +82,26 @@ const PersStandard = () => {
         )
     }
 
-    const bodyTemplateVFloat = (rowData: OBI.pers_standard) => {
-        return <InputNumber
-            value={rowData.vFloat} disabled readOnly />
+    const bodyTemplateBuilded = (rowData: OBI.entities) => {
+        return <InputNumber value={rowData.builded} disabled readOnly />
     }
 
-    const bodyTemplateVInt = (rowData: OBI.pers_standard) => {
-        return <InputNumber
-            value={rowData.vInt} disabled readOnly />
-    }
-
-    const bodyTemplateVBool = (rowData: OBI.pers_standard) => {
-        return <Checkbox checked={rowData.vBool} />
-    }
-
-    const bodyTemplateVDateTime = (rowData: OBI.pers_standard) => {
-        if (rowData.length === 1) {
-            return '';
-        }
-        var dateParts = rowData.vDateTime.split('-')
-        var jsDate = new Date(
-            dateParts[0],
-            dateParts[1] - 1,
-            dateParts[2].substr(0, 2),
-            dateParts[2].substr(3, 2),
-            dateParts[2].substr(6, 2),
-            dateParts[2].substr(9, 2)
-        )
+    const bodyTemplateMain = (rowData: OBI.entities) => {
         return (
-            <span>
-                {jsDate.toLocaleDateString('fr') +
-                    ' ' +
-                    jsDate.toLocaleTimeString('fr')}
-            </span>
-        )
+            <Checkbox inputId={rowData.id + '_main'} checked={(rowData?.main ? true : false)} />
+        );
     }
 
-    const bodyTemplateVStamp = (rowData: OBI.pers_standard) => {
-        if (rowData.length === 1) {
-            return '';
-        }
-        var dateParts = rowData.vStamp.split('-')
-        var jsDate = new Date(
-            dateParts[0],
-            dateParts[1] - 1,
-            dateParts[2].substr(0, 2),
-            dateParts[2].substr(3, 2),
-            dateParts[2].substr(6, 2),
-            dateParts[2].substr(9, 2)
-        )
+    const bodyTemplateActivate = (rowData: OBI.entities) => {
         return (
-            <span>
-                {jsDate.toLocaleDateString('fr') +
-                    ' ' +
-                    jsDate.toLocaleTimeString('fr')}
-            </span>
-        )
-    }
-
-    const bodyTemplateStampStart = (rowData: OBI.pers_standard) => {
-        if (rowData.length === 1) {
-            return '';
-        }
-        var dateParts = rowData.stampStart.split('-')
-        var jsDate = new Date(
-            dateParts[0],
-            dateParts[1] - 1,
-            dateParts[2].substr(0, 2),
-            dateParts[2].substr(3, 2),
-            dateParts[2].substr(6, 2),
-            dateParts[2].substr(9, 2)
-        )
-        return (
-            <span>
-                {jsDate.toLocaleDateString('fr') +
-                    ' ' +
-                    jsDate.toLocaleTimeString('fr')}
-            </span>
-        )
-    }
-
-    const bodyTemplateStampEnd = (rowData: OBI.pers_standard) => {
-        if (rowData.length === 1) {
-            return '';
-        }
-        var dateParts = rowData.stampEnd.split('-')
-        var jsDate = new Date(
-            dateParts[0],
-            dateParts[1] - 1,
-            dateParts[2].substr(0, 2),
-            dateParts[2].substr(3, 2),
-            dateParts[2].substr(6, 2),
-            dateParts[2].substr(9, 2)
-        )
-        return (
-            <span>
-                {jsDate.toLocaleDateString('fr') +
-                    ' ' +
-                    jsDate.toLocaleTimeString('fr')}
-            </span>
-        )
+            <Checkbox inputId={rowData.id + '_activated'} checked={(rowData?.activated ? true : false)} />
+        );
     }
 
 
-    const bodyTemplateError = (rowData: OBI.pers_standard) => {
-        return <Checkbox checked={rowData.error} />
-    }
+
+
+
 
 
 
@@ -192,8 +109,6 @@ const PersStandard = () => {
     const [totalRecords, setTotalRecords] = useState(0);
     const [selectAll, setSelectAll] = useState(false);
     const [selectedEntity, setSelectedEntity] = useState(null);
-    //    const { data: session } = useSession()
-
 
     const [selectionMode, setSelectionMode] = useState('multiple')
     const [selectedEntities, setSelectedEntities] = useState(null)
@@ -212,32 +127,22 @@ const PersStandard = () => {
 
 
 
-    const [persistenceStandard, setPersistenceStandard] = useState<OBI.pers_standard[]>([]);
+    const [entities, setEntities] = useState<OBI.entities[]>([]);
 
     const columns: OBI.ColumnMeta[] = [
         { field: 'id', header: 'ID', dataType: 'numeric', sortable: true, filter: true },
         { field: 'deleted', header: 'Supp.', dataType: 'numeric', bodyTemplate: bodyTemplateDeleted, sortable: true, filter: true },
         { field: 'created', header: 'Créé', dataType: 'date', bodyTemplate: bodyTemplateCreated, sortable: true, filter: true },
         { field: 'changed', header: 'Changé', dataType: 'date', bodyTemplate: bodyTemplateChanged, sortable: true, filter: true },
+        
+        { field: 'entity', header: 'Entité', dataType: 'text', sortable: true, filter: true },
+        { field: 'designation', header: 'Désignation', dataType: 'text', sortable: true, filter: true },
 
-        { field: 'company', header: 'Société', dataType: 'numeric', sortable: true, filter: true },
-        { field: 'tag', header: 'Tag', dataType: 'numeric', sortable: true, filter: true },
-        { field: 'vFloat', header: 'Float', dataType: 'numeric', sortable: true, filter: true },
-        { field: 'vInt', header: 'Int', dataType: 'numeric', sortable: true, filter: true },
-        { field: 'vBool', header: 'Bool', dataType: 'numeric', sortable: true, filter: true },
-
-        { field: 'vStr', header: 'Texte', dataType: 'text', sortable: true, filter: true },
-        { field: 'vDateTime', header: 'Timing', dataType: 'date', sortable: true, filter: true },
-        { field: 'vStamp', header: 'Instant', dataType: 'date', sortable: true, filter: true },
-        { field: 'stampStart', header: 'Début', dataType: 'date', sortable: true, filter: true },
-        { field: 'stampEnd', header: 'Fin', dataType: 'date', sortable: true, filter: true },
-        { field: 'tbf', header: 'TBF', dataType: 'numeric', sortable: true, filter: true },
-        { field: 'ttr', header: 'TTR', dataType: 'numeric', sortable: true, filter: true },
-        { field: 'error', header: 'Erreur', dataType: 'numeric', sortable: true, filter: true },
-
-        { field: 'errorMsg', header: 'Message Err.', dataType: 'text', sortable: true, filter: true },
-
-
+        { field: 'builded', header: 'Année', dataType: 'numeric', sortable: true, filter: true },
+        { field: 'main', header: 'Princip.', dataType: 'numeric', bodyTemplate: bodyTemplateMain, sortable: true, filter: true },
+        { field: 'activated', header: 'Activé', dataType: 'numeric', bodyTemplate: bodyTemplateActivate, sortable: true, filter: true },
+        { field: 'logoPath', header: 'Logo', dataType: 'text', sortable: true, filter: true },
+        { field: 'localisation', header: 'Localisation', dataType: 'text', sortable: true, filter: true },
     ];
 
 
@@ -246,8 +151,8 @@ const PersStandard = () => {
 
 
 
-    const defaultMultiSortMeta: Array<DataTableSortMeta> = PersistenceStandardService.defaultMultiSortMeta();
-    const defaultFilters: Array<DataTableFilterMeta> = PersistenceStandardService.defaultFilters();
+    const defaultMultiSortMeta: Array<DataTableSortMeta> = EntitiesService.defaultMultiSortMeta();
+    const defaultFilters: Array<DataTableFilterMeta> = EntitiesService.defaultFilters();
 
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [lazyParams, setLazyParams] = useState({
@@ -265,7 +170,6 @@ const PersStandard = () => {
         //multiSortMeta: defaultMultiSortMeta,
         multiSortMeta: [
             { field: 'id', order: -1 },
-            { field: 'tag', order: 1 },
         ],
 
         filters: defaultFilters as unknown as DataTableFilterMeta,
@@ -296,14 +200,14 @@ const PersStandard = () => {
             //console.log('Lazy Event Set ', lazyEventSet.lazyEvent);
 
             // Get Lazy Data
-            PersistenceStandardService.getLazy(lazyEventSet).then((data) => {
+            EntitiesService.getLazy(lazyEventSet).then((data: any) => {
                 // On Good request process data count
-                PersistenceStandardService.getLazyCount(lazyEventSet).then((dataCount) => {
+                EntitiesService.getLazyCount(lazyEventSet).then((dataCount: any) => {
                     // console.log(dataCount, dataCount)
                     setTotalRecords(dataCount);
                 });
 
-                setPersistenceStandard(data);
+                setEntities(data);
                 setLoading(false);
             });
         }, Math.random() * 1000 + 500) as unknown as number;
@@ -513,7 +417,7 @@ const PersStandard = () => {
             <div className="container">
                 <div className='row mb-3'>
                     <div className='flex flex-wrap align-items-center justify-content-between gap-2'>
-                        <span className="text-xl text-900 font-bold">Liste des machines (connexions)</span>
+                        <span className="text-xl text-900 font-bold">Liste des entities (connexions)</span>
 
                         <div className='flex justify-content-center mb-0'>
 
@@ -593,10 +497,10 @@ const PersStandard = () => {
 
     const renderFooter = () => {
 
-        if (!persistenceStandard) {
+        if (!entities) {
             return (
                 <div className=''>
-                    Il y a {persistenceStandard ? "" + persistenceStandard.length + "/" + totalRecords : 0} résultat(s).
+                    Il y a {entities ? "" + entities.length + "/" + totalRecords : 0} résultat(s).
                 </div>
 
             );
@@ -608,16 +512,7 @@ const PersStandard = () => {
         //const paginatorLeft = <Button type="button" icon="pi pi-refresh" text />;
         return (
             <div className="flex justify-content-between align-items-center">
-
-                <div className='row mb-3'>
-                    <div className='flex flex-wrap align-items-center justify-content-between gap-2'>
-                        <div className='flex justify-content-center mb-0'>
-                            <Link href="./chart" className='mr-2'>
-                                <Button label="Graph" icon="pi pi-chart-line" severity="secondary" className=" mr-1" />
-                            </Link>
-                        </div>
-                    </div>
-                </div>
+                <h5 className="m-0">Do action refresh</h5>
             </div>
         )
     }
@@ -654,7 +549,7 @@ const PersStandard = () => {
 
             <DataTable
                 id="dataTable"
-                value={persistenceStandard}
+                value={entities}
                 lazy
 
                 emptyMessage="Aucun enregistrement trouvé !"
@@ -711,4 +606,4 @@ const PersStandard = () => {
     );
 };
 
-export default PersStandard;
+export default Entities;

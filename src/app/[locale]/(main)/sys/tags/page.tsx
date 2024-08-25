@@ -6,58 +6,26 @@ import { Column, ColumnFilterClearTemplateOptions } from 'primereact/column';
 import { InputNumber } from 'primereact/inputnumber';
 import { Button } from 'primereact/button';
 
-import { OBI } from '@/src/types/obi';
-import { Admin } from '@/types/demos/admin';
+import { Admin, OBI } from '@/src/types/index';
+// import { Admin } from '@/src/types/index';
+
 
 
 import { Checkbox } from 'primereact/checkbox';
 import { SelectButton, SelectButtonChangeEvent } from 'primereact/selectbutton';
 import { InputSwitch, InputSwitchChangeEvent } from 'primereact/inputswitch';
-import { PersistenceStandardService } from '@/src/obi/service/persistences/PersistenceStandardService';
 
 
-import { useSession, signIn, signOut } from 'next-auth/react'
+
 import { InputText } from 'primereact/inputtext';
+import { Password } from 'primereact/password';
 import Link from 'next/link';
-
-const PersStandard = () => {
-
+import { TagsService } from '@/src/obi/service/tags/TagsService';
 
 
-    const bodyTemplateId = (rowData: OBI.pers_standard) => {
-        return <InputNumber
-            value={rowData.id} disabled readOnly />
-    }
+const Tags = () => {
 
-    const bodyTemplateDeleted = (rowData: OBI.pers_standard) => {
-        return (
-            <Checkbox inputId={rowData.id + '_deleted'} checked={(rowData.deleted ? true : false)} />
-        );
-    }
-
-    const bodyTemplateCreated = (rowData: OBI.pers_standard) => {
-        if (rowData === undefined) {
-            return '';
-        }
-        var dateParts = rowData.created.split('-')
-        var jsDate = new Date(
-            dateParts[0],
-            dateParts[1] - 1,
-            dateParts[2].substr(0, 2),
-            dateParts[2].substr(3, 2),
-            dateParts[2].substr(6, 2),
-            dateParts[2].substr(9, 2)
-        )
-        return (
-            <span>
-                {jsDate.toLocaleDateString('fr') +
-                    ' ' +
-                    jsDate.toLocaleTimeString('fr')}
-            </span>
-        )
-    }
-
-    const bodyTemplateChanged = (rowData: OBI.pers_standard) => {
+    const bodyTemplateDateTime = (rowData: any) => {
         if (rowData.length === 1) {
             return '';
         }
@@ -79,25 +47,23 @@ const PersStandard = () => {
         )
     }
 
-    const bodyTemplateVFloat = (rowData: OBI.pers_standard) => {
+
+    const bodyTemplateId = (rowData: OBI.tags) => {
         return <InputNumber
-            value={rowData.vFloat} disabled readOnly />
+            value={rowData.id} disabled readOnly />
     }
 
-    const bodyTemplateVInt = (rowData: OBI.pers_standard) => {
-        return <InputNumber
-            value={rowData.vInt} disabled readOnly />
+    const bodyTemplateDeleted = (rowData: OBI.tags) => {
+        return (
+            <Checkbox inputId={rowData.id + '_deleted'} checked={(rowData.deleted ? true : false)} />
+        );
     }
 
-    const bodyTemplateVBool = (rowData: OBI.pers_standard) => {
-        return <Checkbox checked={rowData.vBool} />
-    }
-
-    const bodyTemplateVDateTime = (rowData: OBI.pers_standard) => {
-        if (rowData.length === 1) {
+    const bodyTemplateCreated = (rowData: OBI.tags) => {
+        if (rowData === undefined) {
             return '';
         }
-        var dateParts = rowData.vDateTime.split('-')
+        var dateParts = rowData.created.split('-')
         var jsDate = new Date(
             dateParts[0],
             dateParts[1] - 1,
@@ -115,11 +81,11 @@ const PersStandard = () => {
         )
     }
 
-    const bodyTemplateVStamp = (rowData: OBI.pers_standard) => {
+    const bodyTemplateChanged = (rowData: OBI.tags) => {
         if (rowData.length === 1) {
             return '';
         }
-        var dateParts = rowData.vStamp.split('-')
+        var dateParts = rowData.changed.split('-')
         var jsDate = new Date(
             dateParts[0],
             dateParts[1] - 1,
@@ -137,54 +103,119 @@ const PersStandard = () => {
         )
     }
 
-    const bodyTemplateStampStart = (rowData: OBI.pers_standard) => {
-        if (rowData.length === 1) {
-            return '';
-        }
-        var dateParts = rowData.stampStart.split('-')
-        var jsDate = new Date(
-            dateParts[0],
-            dateParts[1] - 1,
-            dateParts[2].substr(0, 2),
-            dateParts[2].substr(3, 2),
-            dateParts[2].substr(6, 2),
-            dateParts[2].substr(9, 2)
-        )
+    const bodyTemplateActive = (rowData: OBI.tags) => {
         return (
-            <span>
-                {jsDate.toLocaleDateString('fr') +
-                    ' ' +
-                    jsDate.toLocaleTimeString('fr')}
-            </span>
-        )
+            <Checkbox inputId={rowData.id + '_active'} checked={(rowData.active ? true : false)} />
+        );
     }
 
-    const bodyTemplateStampEnd = (rowData: OBI.pers_standard) => {
-        if (rowData.length === 1) {
-            return '';
-        }
-        var dateParts = rowData.stampEnd.split('-')
-        var jsDate = new Date(
-            dateParts[0],
-            dateParts[1] - 1,
-            dateParts[2].substr(0, 2),
-            dateParts[2].substr(3, 2),
-            dateParts[2].substr(6, 2),
-            dateParts[2].substr(9, 2)
-        )
+    const bodyTemplateDelta = (rowData: OBI.tags) => {
         return (
-            <span>
-                {jsDate.toLocaleDateString('fr') +
-                    ' ' +
-                    jsDate.toLocaleTimeString('fr')}
-            </span>
-        )
+            <Checkbox inputId={rowData.id + '_delta'} checked={(rowData.delta ? true : false)} />
+        );
+    }
+
+    const bodyTemplateDeltaDateTime = (rowData: OBI.tags) => {
+        return bodyTemplateDateTime(rowData);
+    }
+
+    const bodyTemplateVBool = (rowData: OBI.tags) => {
+        return (
+            <Checkbox inputId={rowData.id + '_vBool'} checked={(rowData.vBool ? true : false)} />
+        );
+    }
+
+    const bodyTemplateVDateTime = (rowData: OBI.tags) => {
+        return bodyTemplateDateTime(rowData);
+    }
+
+    const bodyTemplateVStamp = (rowData: OBI.tags) => {
+        return bodyTemplateDateTime(rowData);
     }
 
 
-    const bodyTemplateError = (rowData: OBI.pers_standard) => {
-        return <Checkbox checked={rowData.error} />
+    const bodyTemplateVDefault = (rowData: OBI.tags) => {
+        return (
+            <Checkbox inputId={rowData.id + '_vDefault'} checked={(rowData.vDefault ? true : false)} />
+        );
     }
+
+    const bodyTemplateVBoolDefault = (rowData: OBI.tags) => {
+        return (
+            <Checkbox inputId={rowData.id + '_vBoolDefault'} checked={(rowData.vBoolDefault ? true : false)} />
+        );
+    }
+
+    const bodyTemplateVDateTimeDefault = (rowData: OBI.tags) => {
+        return bodyTemplateDateTime(rowData);
+    }
+
+    const bodyTemplateVStampDefault = (rowData: OBI.tags) => {
+        return bodyTemplateDateTime(rowData);
+    }
+
+    const bodyTemplateCounter = (rowData: OBI.tags) => {
+        return (
+            <Checkbox inputId={rowData.id + '_counter'} checked={(rowData.counter ? true : false)} />
+        );
+    }
+
+    const bodyTemplateMeasure = (rowData: OBI.tags) => {
+        return (
+            <Checkbox inputId={rowData.id + '_measure'} checked={(rowData.measure ? true : false)} />
+        );
+    }
+
+    const bodyTemplateLaboratory = (rowData: OBI.tags) => {
+        return (
+            <Checkbox inputId={rowData.id + '_laboratory'} checked={(rowData.laboratory ? true : false)} />
+        );
+    }
+
+    const bodyTemplateFormula = (rowData: OBI.tags) => {
+        return (
+            <Checkbox inputId={rowData.id + '_formula'} checked={(rowData.formula ? true : false)} />
+        );
+    }
+
+    const bodyTemplateError = (rowData: OBI.tags) => {
+        return (
+            <Checkbox inputId={rowData.id + '_error'} checked={(rowData.error ? true : false)} />
+        );
+    }
+
+    const bodyTemplateErrorStamp = (rowData: OBI.tags) => {
+        return bodyTemplateDateTime(rowData);
+    }
+
+    const bodyTemplateAlarmEnable = (rowData: OBI.tags) => {
+        return (
+            <Checkbox inputId={rowData.id + '_alarmEnable'} checked={(rowData.alarmEnable ? true : false)} />
+        );
+    }
+
+    const bodyTemplatePersistenceEnabled = (rowData: OBI.tags) => {
+        return (
+            <Checkbox inputId={rowData.id + '_persistenceEnabled'} checked={(rowData.persistenceEnabled ? true : false)} />
+        );
+    }
+
+    const bodyTemplatePersOffsetEnable = (rowData: OBI.tags) => {
+        return (
+            <Checkbox inputId={rowData.id + '_persOffsetEnable'} checked={(rowData.persOffsetEnable ? true : false)} />
+        );
+    }
+
+    const bodyTemplatePersOffsetBool = (rowData: OBI.tags) => {
+        return (
+            <Checkbox inputId={rowData.id + '_persOffsetBool'} checked={(rowData.persOffsetBool ? true : false)} />
+        );
+    }
+
+    const bodyTemplatePersOffsetDateTime = (rowData: OBI.tags) => {
+        return bodyTemplateDateTime(rowData);
+    }
+
 
 
 
@@ -192,8 +223,6 @@ const PersStandard = () => {
     const [totalRecords, setTotalRecords] = useState(0);
     const [selectAll, setSelectAll] = useState(false);
     const [selectedEntity, setSelectedEntity] = useState(null);
-    //    const { data: session } = useSession()
-
 
     const [selectionMode, setSelectionMode] = useState('multiple')
     const [selectedEntities, setSelectedEntities] = useState(null)
@@ -210,9 +239,7 @@ const PersStandard = () => {
 
 
 
-
-
-    const [persistenceStandard, setPersistenceStandard] = useState<OBI.pers_standard[]>([]);
+    const [entities, setEntities] = useState<OBI.tags[]>([]);
 
     const columns: OBI.ColumnMeta[] = [
         { field: 'id', header: 'ID', dataType: 'numeric', sortable: true, filter: true },
@@ -221,23 +248,59 @@ const PersStandard = () => {
         { field: 'changed', header: 'Changé', dataType: 'date', bodyTemplate: bodyTemplateChanged, sortable: true, filter: true },
 
         { field: 'company', header: 'Société', dataType: 'numeric', sortable: true, filter: true },
-        { field: 'tag', header: 'Tag', dataType: 'numeric', sortable: true, filter: true },
-        { field: 'vFloat', header: 'Float', dataType: 'numeric', sortable: true, filter: true },
-        { field: 'vInt', header: 'Int', dataType: 'numeric', sortable: true, filter: true },
-        { field: 'vBool', header: 'Bool', dataType: 'numeric', sortable: true, filter: true },
-
-        { field: 'vStr', header: 'Texte', dataType: 'text', sortable: true, filter: true },
-        { field: 'vDateTime', header: 'Timing', dataType: 'date', sortable: true, filter: true },
-        { field: 'vStamp', header: 'Instant', dataType: 'date', sortable: true, filter: true },
-        { field: 'stampStart', header: 'Début', dataType: 'date', sortable: true, filter: true },
-        { field: 'stampEnd', header: 'Fin', dataType: 'date', sortable: true, filter: true },
-        { field: 'tbf', header: 'TBF', dataType: 'numeric', sortable: true, filter: true },
-        { field: 'ttr', header: 'TTR', dataType: 'numeric', sortable: true, filter: true },
-        { field: 'error', header: 'Erreur', dataType: 'numeric', sortable: true, filter: true },
-
-        { field: 'errorMsg', header: 'Message Err.', dataType: 'text', sortable: true, filter: true },
-
-
+        { field: 'table', header: 'Table', dataType: 'numeric', sortable: true, filter: true },
+        { field: 'name', header: 'Nom', dataType: 'text', sortable: true, filter: true },
+        { field: 'machine', header: 'Machines', dataType: 'numeric', sortable: true, filter: true },
+        { field: 'type', header: 'Types', dataType: 'numeric', sortable: true, filter: true },
+        { field: 'memory', header: 'Mémoire', dataType: 'numeric', sortable: true, filter: true },
+        { field: 'db', header: 'DB', dataType: 'numeric', sortable: true, filter: true },
+        { field: 'byte', header: 'Byte', dataType: 'numeric', sortable: true, filter: true },
+        { field: 'bit', header: 'Bit', dataType: 'numeric', sortable: true, filter: true },
+        { field: 'active', header: 'Activé', dataType: 'numeric', bodyTemplate: bodyTemplateActive, sortable: true, filter: true },
+        { field: 'cycle', header: 'Cycle', dataType: 'numeric', sortable: true, filter: true },
+        { field: 'delta', header: 'Delta ON', dataType: 'numeric', bodyTemplate: bodyTemplateDelta, sortable: true, filter: true },
+        { field: 'deltaFloat', header: 'Delta float', dataType: 'numeric', sortable: true, filter: true },
+        { field: 'deltaInt', header: 'Delta Int', dataType: 'numeric', sortable: true, filter: true },
+        { field: 'deltaBool', header: 'Delta Bool', dataType: 'numeric', sortable: true, filter: true },
+        { field: 'deltaDateTime', header: 'Delta Date Heure', dataType: 'date', bodyTemplate: bodyTemplateDeltaDateTime, sortable: true, filter: true },
+        { field: 'vFloat', header: 'Val. Float', dataType: 'numeric', sortable: true, filter: true },
+        { field: 'vInt', header: 'Val. Int', dataType: 'numeric', sortable: true, filter: true },
+        { field: 'vBool', header: 'Val. Bool', dataType: 'numeric', bodyTemplate: bodyTemplateVBool, sortable: true, filter: true },
+        { field: 'vStr', header: 'Val. Texte', dataType: 'text', sortable: true, filter: true },
+        { field: 'vDateTime', header: 'Val. Date Heure', dataType: 'date', bodyTemplate: bodyTemplateVDateTime, sortable: true, filter: true },
+        { field: 'vStamp', header: 'Val. Stamp', dataType: 'date', bodyTemplate: bodyTemplateVStamp, sortable: true, filter: true },
+        { field: 'vDefault', header: 'Val. Default On', dataType: 'numeric', bodyTemplate: bodyTemplateVDefault, sortable: true, filter: true },
+        { field: 'vFloatDefault', header: 'Val. Def. Float', dataType: 'numeric', sortable: true, filter: true },
+        { field: 'vIntDefault', header: 'Val. Def. Int', dataType: 'numeric', sortable: true, filter: true },
+        { field: 'vBoolDefault', header: 'Val. Def. Bool', dataType: 'numeric', bodyTemplate: bodyTemplateVBoolDefault, sortable: true, filter: true },
+        { field: 'vStrDefault', header: 'Val. Def. Texte', dataType: 'text', sortable: true, filter: true },
+        { field: 'vDateTimeDefault', header: 'Val. Def. D.H.', dataType: 'date', bodyTemplate: bodyTemplateVDateTime, sortable: true, filter: true },
+        { field: 'vStampDefault', header: 'Val. Def. Stamp', dataType: 'date', bodyTemplate: bodyTemplateVStampDefault, sortable: true, filter: true },
+        { field: 'counter', header: 'Compteur ON', dataType: 'numeric', bodyTemplate: bodyTemplateCounter, sortable: true, filter: true },
+        { field: 'counterType', header: 'Type Compteur', dataType: 'numeric', sortable: true, filter: true },
+        { field: 'mesure', header: 'Mesure On', dataType: 'numeric', bodyTemplate: bodyTemplateMeasure, sortable: true, filter: true },
+        { field: 'mesureMin', header: 'Mesure Min.', dataType: 'numeric', sortable: true, filter: true },
+        { field: 'mesureMax', header: 'Mesure Max.', dataType: 'numeric', sortable: true, filter: true },
+        { field: 'mesureUnit', header: 'Mesure Unit', dataType: 'numeric', sortable: true, filter: true },
+        { field: 'mqtt_topic', header: 'MQTT TOPIC', dataType: 'text', sortable: true, filter: true },
+        { field: 'webhook', header: 'WEBHOOK', dataType: 'text', sortable: true, filter: true },
+        { field: 'laboratory', header: 'Laboratory ON', dataType: 'numeric', bodyTemplate: bodyTemplateLaboratory, sortable: true, filter: true },
+        { field: 'formula', header: 'Formule ON', dataType: 'numeric', bodyTemplate: bodyTemplateFormula, sortable: true, filter: true },
+        { field: 'formCalculus', header: 'Formule Calc.', dataType: 'text', sortable: true, filter: true },
+        { field: 'formProcessing', header: 'Formule Processing', dataType: 'numeric', sortable: true, filter: true },
+        { field: 'error', header: 'Error ON', dataType: 'numeric', bodyTemplate: bodyTemplateError, sortable: true, filter: true },
+        { field: 'errorMsg', header: 'Error Msg', dataType: 'text', sortable: true, filter: true },
+        { field: 'errorStamp', header: 'Error Stamp', dataType: 'date', bodyTemplate: bodyTemplateErrorStamp, sortable: true, filter: true },
+        { field: 'alarmEnable', header: 'Alarme ON', dataType: 'numeric', bodyTemplate: bodyTemplateAlarmEnable, sortable: true, filter: true },
+        { field: 'alarm', header: 'Alarme', dataType: 'numeric', sortable: true, filter: true },
+        { field: 'persistenceEnabled', header: 'Persistence ON', dataType: 'numeric', bodyTemplate: bodyTemplatePersistenceEnabled, sortable: true, filter: true },
+        { field: 'persOffsetEnable', header: 'Pers. Offset ON', dataType: 'numeric', bodyTemplate: bodyTemplatePersOffsetEnable, sortable: true, filter: true },
+        { field: 'persOffsetFloat', header: 'Pers. Offset Fl.', dataType: 'numeric', sortable: true, filter: true },
+        { field: 'persOffsetInt', header: 'Pers. Offset Int', dataType: 'numeric', sortable: true, filter: true },
+        { field: 'persOffsetBool', header: 'Pers. Offset Bool', dataType: 'numeric', bodyTemplate: bodyTemplatePersOffsetBool, sortable: true, filter: true },
+        { field: 'persOffsetDateTime', header: 'Pers. Offset D.H.', dataType: 'date', bodyTemplate: bodyTemplatePersOffsetDateTime, sortable: true, filter: true },
+        { field: 'comment', header: 'Commentaire', dataType: 'text', sortable: true, filter: true },
+        { field: 'list', header: 'Liste', dataType: 'numeric', sortable: true, filter: true },
     ];
 
 
@@ -246,8 +309,8 @@ const PersStandard = () => {
 
 
 
-    const defaultMultiSortMeta: Array<DataTableSortMeta> = PersistenceStandardService.defaultMultiSortMeta();
-    const defaultFilters: Array<DataTableFilterMeta> = PersistenceStandardService.defaultFilters();
+    const defaultMultiSortMeta: Array<DataTableSortMeta> = TagsService.defaultMultiSortMeta();
+    const defaultFilters: Array<DataTableFilterMeta> = TagsService.defaultFilters();
 
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [lazyParams, setLazyParams] = useState({
@@ -265,7 +328,6 @@ const PersStandard = () => {
         //multiSortMeta: defaultMultiSortMeta,
         multiSortMeta: [
             { field: 'id', order: -1 },
-            { field: 'tag', order: 1 },
         ],
 
         filters: defaultFilters as unknown as DataTableFilterMeta,
@@ -296,14 +358,21 @@ const PersStandard = () => {
             //console.log('Lazy Event Set ', lazyEventSet.lazyEvent);
 
             // Get Lazy Data
-            PersistenceStandardService.getLazy(lazyEventSet).then((data) => {
+            TagsService.getLazy(lazyEventSet).then((data: any) => {
                 // On Good request process data count
-                PersistenceStandardService.getLazyCount(lazyEventSet).then((dataCount) => {
+                TagsService.getLazyCount(lazyEventSet).then((dataCount: any) => {
                     // console.log(dataCount, dataCount)
                     setTotalRecords(dataCount);
                 });
 
-                setPersistenceStandard(data);
+                // console.log('data', data);
+                // console.log('error', data[0].error);
+                // console.log('message', data.message);
+                if (!data[0]?.error) {
+                    setEntities(data);
+                }else{
+                    setEntities([]);
+                }
                 setLoading(false);
             });
         }, Math.random() * 1000 + 500) as unknown as number;
@@ -513,7 +582,7 @@ const PersStandard = () => {
             <div className="container">
                 <div className='row mb-3'>
                     <div className='flex flex-wrap align-items-center justify-content-between gap-2'>
-                        <span className="text-xl text-900 font-bold">Liste des machines (connexions)</span>
+                        <span className="text-xl text-900 font-bold">Liste des tags (connexions)</span>
 
                         <div className='flex justify-content-center mb-0'>
 
@@ -593,10 +662,10 @@ const PersStandard = () => {
 
     const renderFooter = () => {
 
-        if (!persistenceStandard) {
+        if (!entities) {
             return (
                 <div className=''>
-                    Il y a {persistenceStandard ? "" + persistenceStandard.length + "/" + totalRecords : 0} résultat(s).
+                    Il y a {entities ? "" + entities.length + "/" + totalRecords : 0} résultat(s).
                 </div>
 
             );
@@ -608,16 +677,7 @@ const PersStandard = () => {
         //const paginatorLeft = <Button type="button" icon="pi pi-refresh" text />;
         return (
             <div className="flex justify-content-between align-items-center">
-
-                <div className='row mb-3'>
-                    <div className='flex flex-wrap align-items-center justify-content-between gap-2'>
-                        <div className='flex justify-content-center mb-0'>
-                            <Link href="./chart" className='mr-2'>
-                                <Button label="Graph" icon="pi pi-chart-line" severity="secondary" className=" mr-1" />
-                            </Link>
-                        </div>
-                    </div>
-                </div>
+                <h5 className="m-0">Do action refresh</h5>
             </div>
         )
     }
@@ -654,7 +714,7 @@ const PersStandard = () => {
 
             <DataTable
                 id="dataTable"
-                value={persistenceStandard}
+                value={entities}
                 lazy
 
                 emptyMessage="Aucun enregistrement trouvé !"
@@ -711,4 +771,4 @@ const PersStandard = () => {
     );
 };
 
-export default PersStandard;
+export default Tags;

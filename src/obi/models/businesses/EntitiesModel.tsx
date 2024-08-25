@@ -49,6 +49,22 @@ export class EntitiesModel extends Model {
         this.map.set('location', 'numeric');
     }
 
+    get type() {
+        return {
+            id: Number,
+            deleted: Number,
+            created: Date,
+            changed: Date,
+
+            entity: String,
+            designation: String,
+            builded: Number,
+            main: Boolean,
+            activated: Boolean,
+            logoPath: String,
+            location: String,
+        };
+    }
 }
 
 

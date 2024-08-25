@@ -151,6 +151,30 @@ export class Model {
     return filters;
   }
 
+
+
+  getStandardParam(): any {
+    return {
+      first: 0,
+      rows: 10,
+      page: 0,
+      pageCount: 0,
+      pk: 'id',
+      dataKey: 'id', // Create for datakey purpose
+      selectionMode: 'multiple',
+      sortMode: 'multiple' as string,
+      sortField: '',
+      sortOrder: -1,
+
+      //multiSortMeta: defaultMultiSortMeta,
+      multiSortMeta: [
+        { field: 'id', order: -1 },
+      ],
+
+    }
+  }
+
+
 }
 
 

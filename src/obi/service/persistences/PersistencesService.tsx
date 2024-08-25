@@ -38,6 +38,20 @@ export const PersistencesService = {
         return dataset;
     },
 
+    
+    async getLazyInc(lazy: any) {
+        // console.log('PersistenceStandardService : getLazy >> lazyEvent : ', lazy.lazyEvent);
+        const url = process.env.httpPath + '/persistences/lazyInc/' + lazy.lazyEvent;
+        //console.log('PersistenceStandardService : getLay >> url : ', url);
+        const res = await fetch(
+            url,
+            { headers: { 'Cache-Control': 'no-cache' } }
+        )
+        const dataset: OBI.persistences[] = await res.json();
+        // console.log('PersistenceStandardService >> result from api persistences ', dataset);
+        return dataset;
+    },
+
 
     /**
      * Get Count using Lazy filter
@@ -59,6 +73,7 @@ export const PersistencesService = {
 
 
     async findAll() {
+        // console.log('try findAll')
         const res = await fetch(
             process.env.httpPath + '/persistences',
             { headers: { 'Cache-Control': 'no-cache' } }

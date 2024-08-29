@@ -6,61 +6,39 @@ import path from 'path';
 import fs from 'fs';
 import https from 'https';
 import { OBI } from "@/src/types/obi";
-import { EntitiesModel } from "../../models/businesses/EntitiesModel";
+import { LocationsModel } from "../../models/locations/LocationsModel";
 
 
 
-// Import the Zod library for validation
-import { z } from "zod";
 
-// Define a schema for the post using Zod
-const postSchema = z.object({
-    // id: z.number(),
-    //deleted: z.boolean(),
-    // created: z.date(),
-    // changed: z.date(),
-    entity: z.string().min(3),
-    designation: z.string().min(3),
-    builded: z.number().int().min(4),
-    main: z.boolean(),
-    activated: z.boolean(),
-    logoPath: z.string().url(),
-    location: z.string(),
+export const LocationsService = {
 
-});
-
-export const EntitiesService = {
-
-
-    async getLazy(lazy: any) {
-        // console.log('MachinesService : getLazy >> lazyEvent : ', lazy.lazyEvent);
-        const url = process.env.httpPath + '/businesses/entities/lazy/' + lazy.lazyEvent;
-        //console.log('MachinesService : getLay >> url : ', url);
-        const res = await fetch(
-            url,
-            { headers: { 'Cache-Control': 'no-cache' } }
-        )
-        const dataset: OBI.entities[] = await res.json();
-        // console.log('MachinesService >> result from api mach_drivers ', dataset);
+    /**
+     * Find locations specified by lazy parameters
+     * Recover all location based on lazy parameter structured as fitler model 
+     * primeract
+     * @param lazy is configured parameter defined as primereact
+     * @returns locations table.
+     */
+    async getLazy(lazy: any): Promise<OBI.locations[]> {
+        const url = process.env.httpPath + '/localisations/Locations/lazy/' + lazy.lazyEvent;
+        const res = await fetch(url, { headers: { 'Cache-Control': 'no-cache' } })
+        const dataset: OBI.locations[] = await res.json();
+        console.log("Locations dataset", dataset);
         return dataset;
     },
 
 
     /**
-     * Get Count using Lazy filter
+     * Count the number of locations in lazy way
+     * @param lazy is configured parameter defined as primereact
+     * @returns number of locations
      */
     async getLazyCount(lazy: any) {
-        // console.log('EntitiesService : getLazyCount >> lazyEvent : ', lazy.lazyEvent);
-        const url = process.env.httpPath + '/businesses/entities/lazy/count/' + lazy.lazyEvent;
-        // console.log('EntitiesService : getLay >> url : ', url);
-        const res = await fetch(
-            url,
-            { headers: { 'Cache-Control': 'no-cache' } }
-        )
+        const url = process.env.httpPath + '/localisations/locations/lazy/count/' + lazy.lazyEvent;
+        const res = await fetch(url, { headers: { 'Cache-Control': 'no-cache' } })
         const val = await res.json();
-        // console.log('EntitiesService : get', val);
-        const dataset: OBI.entities = val; //await res.json();
-        // console.log('EntitiesService >>> result from api persistenceStandard ', dataset[0]);
+        const dataset: OBI.entities = val;
         return val;
     },
 
@@ -68,21 +46,26 @@ export const EntitiesService = {
 
 
     defaultMultiSortMeta(): any {
-        const model = new EntitiesModel();
+        const model = new LocationsModel();
         return model.toMultiSortMeta();
     },
 
     defaultFilters(): any {
-        const model = new EntitiesModel();
+        const model = new LocationsModel();
         return model.toDefaultFilters();
     },
 
 
 
-
+    /**
+     * 
+     * @param formState 
+     * @param formData 
+     * @returns 
+     */
     async createPost(
-        formState: OBI.EntitiesPostFormState,
-        formData: FormData): Promise<OBI.EntitiesPostFormState> {
+        formState: OBI.LocationsPostFormState,
+        formData: FormData): Promise<OBI.LocationsPostFormState> {
 
 
         // Validate the form data against the post schema
@@ -97,8 +80,8 @@ export const EntitiesService = {
 
 
         // console.log("result", result.error);
-        // console.log('EntitiesService : createPost >> formData : ', formData);
-        // console.log('EntitiesService : createPost >> formState : ', formState);
+        // console.log('LocationsService : createPost >> formData : ', formData);
+        // console.log('LocationsService : createPost >> formState : ', formState);
 
 
         // // If validation fails, return the errors
@@ -110,20 +93,30 @@ export const EntitiesService = {
         //     };
         // }
 
-        
+
         let data = {
-            entity: formData.get("entity"),
-            designation: formData.get("designation"),
-            builded: (((formData.get("builded") === null) | (formData.get("builded") === '')) ? undefined : Number(formData.get("builded"))),
-            main: formData.get("main") === "true",
-            activated: formData.get("activated") === "true",
-            logoPath: formData.get("logoPath"),
+            id: (formData.get("id") === '') ? undefined : Number(formData.get("id")),
+            deleted: formData.get("deleted") === "true",
+            created: formData.get("created"),
+            changed: formData.get("changed"),
+
             location: formData.get("location"),
+            designation: formData.get("designation"),
+            group: formData.get("group"),
+            country: formData.get("country"),
+            state: formData.get("state"),
+            city: formData.get("city"),
+            address: formData.get("address"),
+            address1: formData.get("address1"),
+            address3: formData.get("address3"),
+            bloc: formData.get("bloc"),
+            floor: (formData.get("floor") === '') ? undefined : Number(formData.get("floor")),
+            number: formData.get("number"),
         };
 
 
 
-        const url = process.env.httpPath + '/businesses/entities';
+        const url = process.env.httpPath + '/localisations/locations';
         //console.log('MachinesService : getLay >> url : ', url);
         const res = await fetch(
             url,
@@ -139,9 +132,9 @@ export const EntitiesService = {
                 body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
             }
         )
-        console.log("EntitiesService response", res);
-        const dataset: OBI.EntitiesPostFormState = await res.json();
-        console.log('EntitiesService >> result from api entities ', dataset);
+        console.log("LocationsService response", res);
+        const dataset: OBI.LocationsPostFormState = await res.json();
+        console.log('LocationsService >> result from api entities ', dataset);
         return dataset;
 
 

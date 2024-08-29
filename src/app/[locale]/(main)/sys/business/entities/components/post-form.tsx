@@ -14,6 +14,10 @@ import { InputText } from "primereact/inputtext"
 
 import { OBI } from "@/src/types"
 import { Checkbox } from "primereact/checkbox"
+import { InputNumber } from "primereact/inputnumber"
+import { Dropdown } from "primereact/dropdown"
+import { Skeleton } from "primereact/skeleton"
+import DropDownLocations from "../../../connexions/drivers/components/dropdown"
 
 const model = new EntitiesModel();
 
@@ -37,6 +41,7 @@ export default function PostForm({ formAction, type, initialData }: OBI.Entities
     const dialogFooter = <div className="flex justify-content-center"><Button label="OK" className="p-button-text" autoFocus onClick={() => setShowMessage(false)} /></div>;
 
 
+    
 
 
     return <>
@@ -156,6 +161,36 @@ export default function PostForm({ formAction, type, initialData }: OBI.Entities
 
 
 
+                    {/** Builded */}
+                    <div className="grid mb-2">
+                        <div className='col-12 md:col-2'>
+                            <label htmlFor="builded" className="input-field">
+                                Année
+                            </label>
+                        </div>
+
+                        <InputNumber id="builded"
+                            name='builded'
+                            value={initialData.builded}
+                            // onChange={onChangedInput}
+                            className='col-12 md:col-5   ml-0 mb-2 input-value'
+
+                            placeholder={'ex: ' + new Date().getFullYear()}
+                            // required={entity.}
+                            tooltip="Information de communication modbus"
+                            tooltipOptions={{ position: 'top' }}
+                        />
+
+                        <div className={'col-12 md:col-4 p-0 m-0 text-left'}>
+                            {
+                                formState.errors.builded
+                                && <div className="text-red-500">
+                                    {formState.errors.builded?.join(', ')} {/* // Display form errors related to the title field*/}
+                                </div >
+                            }
+                        </div>
+                    </div>
+
 
                     {/** Main */}
                     <div className="grid mb-2">
@@ -166,11 +201,11 @@ export default function PostForm({ formAction, type, initialData }: OBI.Entities
                         </div>
                         <Checkbox id="main"
                             name='main'
-                            checked={initialData.main == true ? true : false}
+                            checked={initialData.main}
                             // onChange={onChangedInput}
                             className='col-12 md:col-5   ml-0 mb-2 input-value'
 
-                            placeholder="check"
+                            // placeholder="check"
                             // required={entity.webhook}
                             tooltip="Indique si constitue l'entité principale..."
                             tooltipOptions={{ position: 'top' }}
@@ -185,6 +220,78 @@ export default function PostForm({ formAction, type, initialData }: OBI.Entities
                             }
                         </div>
                     </div>
+
+
+                    {/** Activated */}
+                    <div className="grid mb-2">
+                        <div className='col-12 md:col-2'>
+                            <label htmlFor="activated" className="input-field">
+                                Activé
+                            </label>
+                        </div>
+                        <Checkbox id="activated"
+                            name='activated'
+                            checked={initialData.activated}
+                            // onChange={onChangedInput}
+                            className='col-12 md:col-5   ml-0 mb-2 input-value'
+
+                            // placeholder="check"
+                            // required={entity.webhook}
+                            tooltip="active l'entité pour utilisation..."
+                            tooltipOptions={{ position: 'top' }}
+                        />
+
+                        <div className={'col-12 md:col-4 p-0 m-0 text-left'}>
+                            {
+                                formState.errors.activated
+                                && <div className="text-red-500">
+                                    {formState.errors.activated?.join(', ')} {/* // Display form errors related to the title field*/}
+                                </div >
+                            }
+                        </div>
+                    </div>
+
+
+
+
+
+                    {/** logoPath */}
+                    <div className="grid mb-2">
+                        <div className='col-12 md:col-2'>
+                            <label htmlFor="logoPath" className="input-field">
+                                Chemin Logo
+                            </label>
+                        </div>
+
+                        <InputText id="logoPath"
+                            name='logoPath'
+                            value={initialData.logoPath}
+                            // onChange={onChangedInput}
+                            className={'col-12 md:col-5  pl-2 mb-2 input-value ' + (formState.errors.logoPath ? 'p-invalid' : '')}
+
+                            placeholder="Logo entité..."
+                            // required
+                            tooltip="Définir un logo par son chemin..."
+                            tooltipOptions={{ position: 'top' }}
+                        />
+
+                        <div className={'col-12 md:col-4 p-0 m-0 text-left'}>
+                            {
+                                formState.errors.logoPath
+                                && <div className="text-red-500">
+                                    {formState.errors.logoPath?.join(', ')} {/* // Display form errors related to the title field*/}
+                                </div >
+                            }
+                        </div>
+
+
+                    </div>
+
+
+                    {/** Locations */}
+                    <DropDownLocations formAction={formAction} type={type} initialData={initialData} />
+
+
 
 
 

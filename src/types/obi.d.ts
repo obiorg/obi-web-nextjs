@@ -54,18 +54,18 @@ declare namespace OBI {
         type: number; // 0: create, 1: update, 2: destroy (delete), 3: read
         initialData: {
             // The initial data for the form fields
-            id: number,
-            deleted: boolean,
-            created: date,
-            changed: date,
+            id: number;
+            deleted: boolean;
+            created: date;
+            changed: date;
 
-            entity: string,
-            designation: string,
-            builded: boolean,
-            main: number,
-            activated: boolean,
-            logoPath: string,
-            location: number,
+            entity: string;
+            designation: string;
+            builded: boolean;
+            main: number;
+            activated: boolean;
+            logoPath: string;
+            location: number;
         };
     }
 
@@ -87,9 +87,83 @@ declare namespace OBI {
         };
     }
 
+    // Define the shape of the form errors locations
+    interface LocationsFormErrors {
+        id?: string[];
+        deleted?: string[];
+        created?: string[];
+        changed?: string[];
 
+        location?: string[];
+        designation?: string[];
+        group?: string[];
 
-    
+        country?: string[];
+        state?: string[];
+        city?: string[];
+        address?: string[];
+        address1?: string[];
+        address3?: string[];
+        bloc?: string[];
+        floor?: string[];
+        number?: string[];
+    }
+
+    // Define the shape of the form state
+    interface LocationsFormState {
+        errors: LocationsFormErrors;
+    }
+
+    // Define the props that the PostForm component expects
+    interface LocationsPostFormProps {
+        formAction: any; // The action to perform when the form is submitted
+        type: number; // 0: create, 1: update, 2: destroy (delete), 3: read
+        initialData: {
+            // The initial data for the form fields
+            id: number;
+            deleted: boolean;
+            created: date;
+            changed: date;
+
+            location: string;
+            designation: string;
+            group: string;
+            country: number;
+            state: number;
+            city: number;
+            address: string;
+            address1: string;
+            address3: string;
+            bloc: string;
+            floor: number;
+            number: string;
+        };
+    }
+
+    // Define an interface for the form state
+    interface LocationsPostFormState {
+        errors: {
+            id?: string[];
+            deleted?: string[];
+            created?: string[];
+            changed?: string[];
+
+            location?: string[];
+            designation?: string[];
+            group?: string[];
+
+            country?: string[];
+            state?: string[];
+            city?: string[];
+            address?: string[];
+            address1?: string[];
+            address3?: string[];
+            bloc?: string[];
+            floor?: string[];
+            number?: string[];
+            _form?: string[];
+        };
+    }
 
     type businesses = {
         id?: number;

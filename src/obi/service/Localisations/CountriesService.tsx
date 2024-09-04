@@ -6,39 +6,73 @@ import path from 'path';
 import fs from 'fs';
 import https from 'https';
 import { OBI } from "@/src/types/obi";
-import { LocationsModel } from "../../models/localisations/LocationsModel";
+import { LocationsCountriesModel } from "../../models/localisations/LocationsCountriesModel";
 
 
 
 
-export const LocationsService = {
+export const CountriesService = {
+
+    async count(): Promise<number> {
+        const url = process.env.httpPath + '/localisations/countries/count';
+        const res = await fetch(url, { headers: { 'Cache-Control': 'no-cache' } })
+        const dataset: number = await res.json();
+        return dataset;
+    },
+
+    async list(): Promise<any> {
+        const url = process.env.httpPath + '/localisations/countries';
+
+        try {
+            const res = await fetch(url, { headers: { 'Cache-Control': 'no-cache' } })
+            if (res.ok) {
+                const dataset: OBI.loc_countries[] = await res.json();
+                return dataset;
+            } else {
+                let err = { status: res.status, message: res.statusText };
+                if (res.status === 404) err['message'] = err.message + '<br />' + '404, api endpoint not found !';
+                if (res.status === 500) err['message'] = err.message + '\r\n' + '500, check api access or server access, then refresh !';
+                // // Custom message for failed HTTP codes
+                // if (res.status === 404) throw new Error('404, Not found');
+                // if (res.status === 500) throw new Error('500, internal server error');
+                // // For any other server error
+                // throw new Error(res.status);
+                return err;
+            }
+        } catch {
+            console.error('Promise rejected');
+        }
+
+    },
+
 
     /**
-     * Find locations specified by lazy parameters
+     * Find countries specified by lazy parameters
      * Recover all location based on lazy parameter structured as fitler model 
      * primeract
      * @param lazy is configured parameter defined as primereact
-     * @returns locations table.
+     * @returns countries table.
      */
-    async getLazy(lazy: any): Promise<OBI.locations[]> {
-        const url = process.env.httpPath + '/localisations/locations/lazy/' + lazy.lazyEvent;
+    async getLazy(lazy: any): Promise<OBI.loc_countries[]> {
+        // console.log(lazy);
+        const url = process.env.httpPath + '/localisations/countries/lazy/' + lazy.lazyEvent;
         const res = await fetch(url, { headers: { 'Cache-Control': 'no-cache' } })
-        const dataset: OBI.locations[] = await res.json();
-        console.log("Locations dataset", dataset);
+        const dataset: OBI.loc_countries[] = await res.json();
+        // console.log("Countries dataset", dataset);
         return dataset;
     },
 
 
     /**
-     * Count the number of locations in lazy way
+     * Count the number of countries in lazy way
      * @param lazy is configured parameter defined as primereact
-     * @returns number of locations
+     * @returns number of countries
      */
     async getLazyCount(lazy: any) {
-        const url = process.env.httpPath + '/localisations/locations/lazy/count/' + lazy.lazyEvent;
+        const url = process.env.httpPath + '/localisations/countries/lazy/count/' + lazy.lazyEvent;
         const res = await fetch(url, { headers: { 'Cache-Control': 'no-cache' } })
         const val = await res.json();
-        const dataset: OBI.locations = val;
+        const dataset: OBI.loc_countries = val;
         return val;
     },
 
@@ -46,12 +80,12 @@ export const LocationsService = {
 
 
     defaultMultiSortMeta(): any {
-        const model = new LocationsModel();
+        const model = new LocationsCountriesModel();
         return model.toMultiSortMeta();
     },
 
     defaultFilters(): any {
-        const model = new LocationsModel();
+        const model = new LocationsCountriesModel();
         return model.toDefaultFilters();
     },
 
@@ -64,8 +98,8 @@ export const LocationsService = {
      * @returns 
      */
     async createPost(
-        formState: OBI.LocationsPostFormState,
-        formData: FormData): Promise<OBI.LocationsPostFormState> {
+        formState: OBI.CountriesPostFormState,
+        formData: FormData): Promise<OBI.CountriesPostFormState> {
 
 
         // Validate the form data against the post schema
@@ -80,8 +114,8 @@ export const LocationsService = {
 
 
         // console.log("result", result.error);
-        // console.log('LocationsService : createPost >> formData : ', formData);
-        // console.log('LocationsService : createPost >> formState : ', formState);
+        // console.log('CountriesService : createPost >> formData : ', formData);
+        // console.log('CountriesService : createPost >> formState : ', formState);
 
 
         // // If validation fails, return the errors
@@ -103,9 +137,9 @@ export const LocationsService = {
             location: formData.get("location"),
             designation: formData.get("designation"),
             group: formData.get("group"),
-            country: (formData.get("country") === '') ? undefined : Number(formData.get("country")),
-            state: (formData.get("state") === '') ? undefined : Number(formData.get("state")),
-            city: (formData.get("city") === '') ? undefined : Number(formData.get("city")),
+            country: formData.get("country"),
+            state: formData.get("state"),
+            city: formData.get("city"),
             address: formData.get("address"),
             address1: formData.get("address1"),
             address3: formData.get("address3"),
@@ -113,10 +147,10 @@ export const LocationsService = {
             floor: (formData.get("floor") === '') ? undefined : Number(formData.get("floor")),
             number: formData.get("number"),
         };
-        console.log(data);
 
 
-        const url = process.env.httpPath + '/localisations/locations';
+
+        const url = process.env.httpPath + '/localisations/countries';
         //console.log('MachinesService : getLay >> url : ', url);
         const res = await fetch(
             url,
@@ -132,9 +166,9 @@ export const LocationsService = {
                 body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
             }
         )
-        console.log("LocationsService response", res);
-        const dataset: OBI.LocationsPostFormState = await res.json();
-        console.log('LocationsService >> result from api locations ', dataset);
+        console.log("CountriesService response", res);
+        const dataset: OBI.CountriesPostFormState = await res.json();
+        console.log('CountriesService >> result from api entities ', dataset);
         return dataset;
 
 

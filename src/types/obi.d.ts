@@ -165,6 +165,7 @@ declare namespace OBI {
         };
     }
 
+
     type businesses = {
         id?: number;
         deleted?: boolean;

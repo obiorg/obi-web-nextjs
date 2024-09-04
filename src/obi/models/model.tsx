@@ -153,11 +153,15 @@ export class Model {
 
 
 
-  getStandardParam(): any {
+  getStandardParam(sorted:any): any {
+    let sort = sorted;
+    if(sorted === undefined || sorted === null)
+      sort = { field: 'id', order: -1 }
+
     return {
       first: 0,
       rows: 10,
-      page: 0,
+      page: 1,
       pageCount: 0,
       pk: 'id',
       dataKey: 'id', // Create for datakey purpose
@@ -168,7 +172,7 @@ export class Model {
 
       //multiSortMeta: defaultMultiSortMeta,
       multiSortMeta: [
-        { field: 'id', order: -1 },
+        sort
       ],
 
     }

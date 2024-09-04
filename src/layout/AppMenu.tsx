@@ -30,6 +30,7 @@ const AppMenu = () => {
                     label: 'Localisations', icon: 'pi pi-fw pi-map',
                     items: [
                         { label: 'Pays', icon: 'pi pi-fw pi-globe', to: '/business/entities' },
+                        { label: 'Locations', icon: 'pi pi-fw pi-briefcase', to: '/obi/sys/localisations/locations' },
                         { label: 'Businesses', icon: 'pi pi-fw pi-briefcase', to: '/business/business' },
                         { label: 'Sociétées', icon: 'pi pi-fw pi-building-columns', to: '/business/companies' },
                     ]

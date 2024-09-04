@@ -6,39 +6,39 @@ import path from 'path';
 import fs from 'fs';
 import https from 'https';
 import { OBI } from "@/src/types/obi";
-import { LocationsModel } from "../../models/localisations/LocationsModel";
+import { LocationsStatesModel } from "../../models/localisations/LocationsStatesModel";
 
 
 
 
-export const LocationsService = {
+export const StatesService = {
 
     /**
-     * Find locations specified by lazy parameters
-     * Recover all location based on lazy parameter structured as fitler model 
+     * Find states specified by lazy parameters
+     * Recover all states based on lazy parameter structured as fitler model 
      * primeract
      * @param lazy is configured parameter defined as primereact
-     * @returns locations table.
+     * @returns states table.
      */
-    async getLazy(lazy: any): Promise<OBI.locations[]> {
-        const url = process.env.httpPath + '/localisations/locations/lazy/' + lazy.lazyEvent;
+    async getLazy(lazy: any): Promise<OBI.loc_states[]> {
+        const url = process.env.httpPath + '/localisations/states/lazy/' + lazy.lazyEvent;
         const res = await fetch(url, { headers: { 'Cache-Control': 'no-cache' } })
-        const dataset: OBI.locations[] = await res.json();
-        console.log("Locations dataset", dataset);
+        const dataset: OBI.loc_states[] = await res.json();
+        console.log("State dataset", dataset);
         return dataset;
     },
 
 
     /**
-     * Count the number of locations in lazy way
+     * Count the number of states in lazy way
      * @param lazy is configured parameter defined as primereact
-     * @returns number of locations
+     * @returns number of states
      */
     async getLazyCount(lazy: any) {
-        const url = process.env.httpPath + '/localisations/locations/lazy/count/' + lazy.lazyEvent;
+        const url = process.env.httpPath + '/localisations/states/lazy/count/' + lazy.lazyEvent;
         const res = await fetch(url, { headers: { 'Cache-Control': 'no-cache' } })
         const val = await res.json();
-        const dataset: OBI.locations = val;
+        const dataset: OBI.loc_states = val;
         return val;
     },
 
@@ -46,12 +46,12 @@ export const LocationsService = {
 
 
     defaultMultiSortMeta(): any {
-        const model = new LocationsModel();
+        const model = new LocationsStatesModel();
         return model.toMultiSortMeta();
     },
 
     defaultFilters(): any {
-        const model = new LocationsModel();
+        const model = new LocationsStatesModel();
         return model.toDefaultFilters();
     },
 
@@ -64,8 +64,8 @@ export const LocationsService = {
      * @returns 
      */
     async createPost(
-        formState: OBI.LocationsPostFormState,
-        formData: FormData): Promise<OBI.LocationsPostFormState> {
+        formState: OBI.StatesPostFormState,
+        formData: FormData): Promise<OBI.StatesPostFormState> {
 
 
         // Validate the form data against the post schema
@@ -80,8 +80,8 @@ export const LocationsService = {
 
 
         // console.log("result", result.error);
-        // console.log('LocationsService : createPost >> formData : ', formData);
-        // console.log('LocationsService : createPost >> formState : ', formState);
+        // console.log('StatesService : createPost >> formData : ', formData);
+        // console.log('StatesService : createPost >> formState : ', formState);
 
 
         // // If validation fails, return the errors
@@ -103,9 +103,9 @@ export const LocationsService = {
             location: formData.get("location"),
             designation: formData.get("designation"),
             group: formData.get("group"),
-            country: (formData.get("country") === '') ? undefined : Number(formData.get("country")),
-            state: (formData.get("state") === '') ? undefined : Number(formData.get("state")),
-            city: (formData.get("city") === '') ? undefined : Number(formData.get("city")),
+            country: formData.get("country"),
+            state: formData.get("state"),
+            city: formData.get("city"),
             address: formData.get("address"),
             address1: formData.get("address1"),
             address3: formData.get("address3"),
@@ -113,10 +113,10 @@ export const LocationsService = {
             floor: (formData.get("floor") === '') ? undefined : Number(formData.get("floor")),
             number: formData.get("number"),
         };
-        console.log(data);
 
 
-        const url = process.env.httpPath + '/localisations/locations';
+
+        const url = process.env.httpPath + '/localisations/states';
         //console.log('MachinesService : getLay >> url : ', url);
         const res = await fetch(
             url,
@@ -132,9 +132,9 @@ export const LocationsService = {
                 body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
             }
         )
-        console.log("LocationsService response", res);
-        const dataset: OBI.LocationsPostFormState = await res.json();
-        console.log('LocationsService >> result from api locations ', dataset);
+        console.log("StatesService response", res);
+        const dataset: OBI.StatesPostFormState = await res.json();
+        console.log('StatesService >> result from api entities ', dataset);
         return dataset;
 
 

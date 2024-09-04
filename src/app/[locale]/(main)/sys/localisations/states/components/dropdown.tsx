@@ -5,7 +5,7 @@
 
 import Link from "next/link"
 import { useFormState } from "react-dom"
-import { EntitiesModel } from "@/src/obi/models/businesses/EntitiesModel"
+import { LocationsStatesModel } from "@/src/obi/models/localisations/LocationsStatesModel"
 import { Toast } from "primereact/toast"
 import { useEffect, useRef, useState } from "react"
 import { Dialog } from "primereact/dialog"
@@ -18,9 +18,9 @@ import { InputNumber } from "primereact/inputnumber"
 import { Dropdown } from "primereact/dropdown"
 import { Skeleton } from "primereact/skeleton"
 import { Model } from "@/src/obi/models/model"
-import { LocationsService } from "@/src/obi/service/localisations/LocationsService"
+import { StatesService } from "@/src/obi/service/Localisations/StatesService"
 
-const model = new EntitiesModel();
+const model = new LocationsStatesModel();
 
 
 
@@ -28,9 +28,9 @@ const model = new EntitiesModel();
 // The formAction is the action to perform when the form is submitted. We use it as a props because
 // we will use this for create and edit page which both page doesn't have the same action
 // The initialData is the initial data for the form fields. 
-export default function DropDownLocations({ formAction, type, initialData }: OBI.EntitiesPostFormProps) {
+export default function DropDownStates({ formAction, type, initialData }: OBI.StatesPostFormProps) {
     // Initialize the form state and action
-    const [formState, action] = useFormState<OBI.EntitiesFormState>(formAction, {
+    const [formState, action] = useFormState<OBI.StatesFormState>(formAction, {
         errors: {},
     })
 
@@ -41,11 +41,11 @@ export default function DropDownLocations({ formAction, type, initialData }: OBI
     const [showMessage, setShowMessage] = useState(false);
     const dialogFooter = <div className="flex justify-content-center"><Button label="OK" className="p-button-text" autoFocus onClick={() => setShowMessage(false)} /></div>;
 
-    // Used for dropdown list countries
+    // Used for dropdown list states
     
     let loadLazyTimeout: number | undefined = 0;
     const [loading, setLoading] = useState(false);
-    const [lazyItemsLocations, setLazyItemsLocations] = useState<any>([]);
+    const [lazyItemsCatalogs, setLazyItemsCatalogs] = useState<any>([]);
     const [lazyLoading, setLazyLoading] = useState<any>(false);
     const [entity, setEntity] = useState(model.defaults);
     const [dropdown, setDropDown] = useState({
@@ -61,12 +61,12 @@ export default function DropDownLocations({ formAction, type, initialData }: OBI
         if (e.target) {
             const { name, value, checked } = e.target;
             let obj = { entity: { id: null } };
-            if (name === 'country') {
-                obj = lazyItemsLocations[value];
+            if (name === 'state') {
+                obj = lazyItemsCatalogs[value];
                 // console.log('company', lazyItemsCompanies[value])
             } else {
-                // obj = lazyItemsLocations[value];
-                // console.log('driver', lazyItemsLocations[value]);
+                // obj = lazyItemsCatalogs[value];
+                // console.log('driver', lazyItemsCatalogs[value]);
             }
 
             // console.log('entityValue', obj.entity.id);
@@ -90,7 +90,7 @@ export default function DropDownLocations({ formAction, type, initialData }: OBI
     };
 
     
-    const loadLazyDataLocations = () => {
+    const loadLazyDataCatalogs = () => {
         setLazyLoading(true);
 
         if (loadLazyTimeout) {
@@ -104,34 +104,34 @@ export default function DropDownLocations({ formAction, type, initialData }: OBI
             const lazyEventSet = { lazyEvent: JSON.stringify(lazyParams) };
 
             // Get Lazy Data
-            LocationsService.getLazy(lazyEventSet).then((data: any) => {
+            StatesService.getLazy(lazyEventSet).then((data: any) => {
 
                 if (data?.length > 0) {
                     let _lazyItems = [data];
                     for (let i = lazyParams.first; i < data.length; i++) {
                         _lazyItems[i] = {
-                            label: data[i].driver + ' - ' + data[i].designation + ' -  [' + data[i].id + ']',
+                            label: data[i].name + ' (' + data[i].iso2 +')' + ' - ' + data[i].country_code + ' -  [' + data[i].id + ']',
                             value: i,
                             entity: data[i]
                         };
                     }
 
-                    setLazyItemsLocations(_lazyItems);
+                    setLazyItemsCatalogs(_lazyItems);
                 }
                 setLazyLoading(false);
             });
         }, Math.random() * 1000 + 250);
     };
 
-    const onLazyLoadLocations = (event: any) => {
+    const onLazyLoadCatalogs = (event: any) => {
         lazyParams.first = event.first;
         lazyParams.rows = event.last === 0 ? 10 : event.last - event.first;
-        loadLazyDataLocations();
+        loadLazyDataCatalogs();
         // setLazyLoading(false);
     };
 
     // useEffect(() => {
-    //     loadLazyDataLocations();
+    //     loadLazyDataCatalogs();
     //     // setLazyLoading(false);
     // }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -142,22 +142,22 @@ export default function DropDownLocations({ formAction, type, initialData }: OBI
 
 
 
-        {/** Locations */}
+        {/** Catalogs */}
         <div className="grid mb-2">
             <div className='col-12 md:col-2'>
-                <label htmlFor="country" className="input-field">
-                    Localisation
+                <label htmlFor="state" className="input-field">
+                    Province
                 </label>
             </div>
 
-            <Dropdown id='country'
-                name='country'
-                value={initialData.country}
-                options={lazyItemsLocations}
+            <Dropdown id='state'
+                name='state'
+                value={initialData.state}
+                options={lazyItemsCatalogs}
                 className='col-12 md:col-5  mb-2 input-value'
 
                 onChange={onChangedDropDown} virtualScrollerOptions={{
-                    lazy: true, onLazyLoad: onLazyLoadLocations,
+                    lazy: true, onLazyLoad: onLazyLoadCatalogs,
                     itemSize: 28, showLoader: true,
                     loading: lazyLoading, delay: 250,
                     loadingTemplate: (options) => {
@@ -176,9 +176,9 @@ export default function DropDownLocations({ formAction, type, initialData }: OBI
 
             <div className={'col-12 md:col-4 p-0 m-0 text-left'}>
                 {
-                    formState.errors.country
+                    formState.errors.state
                     && <div className="text-red-500">
-                        {formState.errors.country?.join(', ')} {/* // Display form errors related to the title field*/}
+                        {formState.errors.state?.join(', ')} {/* // Display form errors related to the title field*/}
                     </div >
                 }
             </div>

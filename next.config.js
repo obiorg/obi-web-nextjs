@@ -2,8 +2,8 @@
 
 const nextConfig = {
     env: {
-        httpPath: 'http://[::1]:7022/api/v1',
-        httpsPath: 'https://[::1]:7023/api/v1',
+        httpPath: 'http://[::1]:7022/obi/api/v1',
+        httpsPath: 'https://[::1]:7023/obi/api/v1',
         
         // Use at home
         // httpPath: 'http://192.168.1.76:7022/api/v1',

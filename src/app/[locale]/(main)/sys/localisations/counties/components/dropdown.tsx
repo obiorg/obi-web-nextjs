@@ -21,11 +21,15 @@ interface LocationsCountriesDropDownProps {
     value: any;
     handleOnchange: (e: any) => void; // The callback function to be called when the value changes
     formState: OBI.LocationsCountriesFormState; // The form state
+
+    placeholder?: string; // placeholder
+    tooltip?: string; // tooltip text
+    tooltipOptions?: any; // options for tooltip
 }
 
 
 
-export default function DropDownCountries({ id, name, title, value, handleOnchange, formState }: LocationsCountriesDropDownProps) {
+export default function DropDownCountries({ id, name, title, value, handleOnchange, formState , placeholder, tooltip, tooltipOptions}: LocationsCountriesDropDownProps) {
 
     // Used for toast
     const toast = useRef<Toast>(null);

@@ -12,7 +12,7 @@ import { useFormStatus } from "react-dom";
 
 
 // Define the props that the PostForm component expects
-interface FieldInputTextProps {
+interface FieldDropDownProps {
     id?: string;                         // ID of the component
     name?: string;                       // Name of the component
     title?: string;                      // preceding title of dropdown
@@ -26,17 +26,23 @@ interface FieldInputTextProps {
     tooltipOptions?: any; // options for tooltip
 
     options?: any; // options
-    
+
     emptyFilterMessage?: string; //
     emptyMessage?: string; // Message to display when no items are found
 
+    render?: boolean; //
 }
 
+FieldDropDown.defaultProps = {
+    emptyFilterMessage: "Recherche sans résultat...",
+    emptyMessage: "Vide !",
+    render: true,
+}
 
 export default function FieldDropDown(
     { id, name, title, value, options, onChange, error,
         placeholder, tooltip, tooltipOptions,
-        emptyFilterMessage,  emptyMessage}: FieldInputTextProps) {
+        emptyFilterMessage, emptyMessage, render }: FieldDropDownProps) {
 
     // Used for dropdown list catalog
     const [selectedCatalog, setSelectedCatalog] = useState<any>(null);
@@ -78,45 +84,46 @@ export default function FieldDropDown(
 
     return (
         <>
-            <div className="grid mb-2">
-                <div className='col-12 md:col-2'>
-                    <label htmlFor={id} className="input-field">
-                        {title}
-                    </label>
+            {render !== true ? <></> :
+                <div className="grid mb-2">
+                    <div className='col-12 md:col-2'>
+                        <label htmlFor={id} className="input-field">
+                            {title}
+                        </label>
+                    </div>
+
+                    <Dropdown
+                        id={id}
+                        name={name}
+                        value={selectedCatalog}
+                        options={catalogs}
+                        onChange={onChangeCatalog}
+                        className={'col-12 md:col-5  pl-2 mb-2 input-value ' + (error ? 'p-invalid' : '')}
+                        placeholder={placeholder}
+                        // required
+                        tooltip={tooltip}
+                        tooltipOptions={tooltipOptions ? tooltipOptions : { position: 'right' }}
+
+                        showClear
+                        filter
+                        showFilterClear
+                        emptyFilterMessage={emptyFilterMessage ? emptyFilterMessage : "Recherche sans résultat..."}
+                        emptyMessage={emptyMessage ? emptyMessage : "Vide !"}
+                    />
+
+                    <div className={'col-12 md:col-4 p-0 m-0 text-left align-content-center'}>
+                        {
+                            error
+                            &&
+                            <div className="text-red-500">
+                                <FontAwesomeIcon icon={faCircleXmark} /> &nbsp;
+                                {error?.join(', ')} {/* // Display form errors related to the title field*/}
+                            </div >
+                        }
+                    </div>
+
                 </div>
-
-                <Dropdown
-                    id={id}
-                    name={name}
-                    value={selectedCatalog}
-                    options={catalogs}
-                    onChange={onChangeCatalog}
-                    className={'col-12 md:col-5  pl-2 mb-2 input-value ' + (error ? 'p-invalid' : '')}
-                    placeholder={placeholder}
-                    // required
-                    tooltip={tooltip}
-                    tooltipOptions={tooltipOptions ? tooltipOptions : { position: 'right' }}
-
-                    showClear
-                    filter
-                    showFilterClear
-                    emptyFilterMessage={emptyFilterMessage?emptyFilterMessage:"Recherche sans résultat..."}
-                    emptyMessage={emptyMessage?emptyMessage:"Vide !"}
-                />
-
-                <div className={'col-12 md:col-4 p-0 m-0 text-left align-content-center'}>
-                    {
-                        error
-                        &&
-                        <div className="text-red-500">
-                            <FontAwesomeIcon icon={faCircleXmark} /> &nbsp;
-                            {error?.join(', ')} {/* // Display form errors related to the title field*/}
-                        </div >
-                    }
-                </div>
-
-            </div>
-
+            }
         </>
     );
 }

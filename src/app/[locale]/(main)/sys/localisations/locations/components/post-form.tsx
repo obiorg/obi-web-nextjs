@@ -44,6 +44,10 @@ import FieldInputText from "@/src/obi/components/Inputs/FieldInputText"
 import FieldDropDown from "@/src/obi/components/Inputs/FieldDropDown"
 import { CountryService } from "@/src/demo/service/CountryService"
 import { CountriesService } from "@/src/obi/service/Localisations/CountriesService"
+import { StatesService } from "@/src/obi/service/localisations/StatesService"
+import { LocationsStatesModel } from "@/src/obi/models/localisations/LocationsStatesModel"
+import { LocationsCitiesModel } from "@/src/obi/models/localisations/LocationsCitiesModel"
+import { CitiesService } from "@/src/obi/service/localisations/CitiesService"
 
 
 // Define the shape of the form errors locations
@@ -172,6 +176,20 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
         initialData.country = e.value
         if (initialData.country !== undefined) {
             setCountryOn(true);
+            StatesService.count().then((count: any) => {
+                setLazyParamsStates(
+                    () => {
+                        return {
+                            ...lazyParamsStates,
+                            filters: {
+                                "global": { value: null, matchMode: 'contains' },
+                                "country_id": { operator: 'and', constraints: [{ value: e.value, matchMode: 'equals' }] }
+                            },
+                            rows: count,
+                        }
+                    }
+                );
+            });
         } else {
             setCountryOn(false);
         }
@@ -181,6 +199,21 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
         initialData.state = e.value
         if (initialData.state !== undefined) {
             setStateOn(true);
+            CitiesService.count().then((count: any) => {
+                setLazyParamsCities(
+                    () => {
+                        return {
+                            ...lazyParamsCities,
+                            filters: {
+                                "global": { value: null, matchMode: 'contains' },
+                                "country_id": { operator: 'and', constraints: [{ value: initialData.country, matchMode: 'equals' }] },
+                                "state_id": { operator: 'and', constraints: [{ value: e.value, matchMode: 'equals' }] }
+                            },
+                            rows: count,
+                        }
+                    }
+                );
+            });
         } else {
             setStateOn(false);
         }
@@ -326,6 +359,69 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
 
 
     /**
+     * States catalog update list
+     */
+    const [states, setStates] = useState<any>([]);
+    const stateModel = new LocationsStatesModel();
+    const [lazyParamsStates, setLazyParamsStates] = useState(stateModel.getStandardParam({ field: 'name', order: 1 },
+        { "global": { value: null, matchMode: 'contains' }, "country_id": { operator: 'and', constraints: [{ value: initialData.country, matchMode: 'equals' }] } }
+    ));
+    useEffect(() => {
+        const lazyEventSet = { lazyEvent: JSON.stringify(lazyParamsStates) };
+
+        // Get full data list
+        StatesService.getLazy(lazyEventSet).then((data: any) => {
+            if (data.status) {
+                showError(data.status, data.message);
+            } else {
+                setStates(() => {
+                    return data.map((item: OBI.loc_states) => ({
+                        label: item.name + ' (' + item.iso2 + ') - ' + item.country_code + ' -  [' + item.id + ']',
+                        value: item.id,
+                        catalog: item
+                    }));
+                });
+            }
+        });
+    }, [lazyParamsStates]);
+
+
+    /**
+     * States catalog update list
+     */
+    const [cities, setCities] = useState<any>([]);
+    const cityModel = new LocationsCitiesModel();
+    const [lazyParamsCities, setLazyParamsCities] = useState(cityModel.getStandardParam({ field: 'name', order: 1 },
+        {
+            "global": { value: null, matchMode: 'contains' },
+            "country_id": { operator: 'and', constraints: [{ value: initialData.country, matchMode: 'equals' }] },
+            "state_id": { operator: 'and', constraints: [{ value: initialData.state, matchMode: 'equals' }] }
+        }
+    ));
+    useEffect(() => {
+        const lazyEventSet = { lazyEvent: JSON.stringify(lazyParamsCities) };
+
+        // Get full data list
+        CitiesService.getLazy(lazyEventSet).then((data: any) => {
+            if (data.status) {
+                showError(data.status, data.message);
+            } else {
+                setCities(() => {
+                    return data.map((item: OBI.loc_cities) => ({
+                        label: item.name + ' (' + item.state_code + ') - ' + item.country_code + ' -  [' + item.id + ']',
+                        value: item.id,
+                        catalog: item
+                    }));
+                });
+            }
+        });
+    }, [lazyParamsCities]);
+
+
+
+
+
+    /**
      * Display the catalog
      */
     return <>
@@ -398,48 +494,39 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
                             tooltip="Sélectionner un pays..."
                         />
 
-
-
-
-                        {/** Country */}
-                        {/* <DropDownCountries
-                            id='country'
-                            name="country"
-                            title='Pays'
-                            handleOnchange={(e: any) => { onChangedCountry(e) }}
-                            value={initialData.country}
-                            formState={formState}
-                        /> */}
-
-
-
                         {/** State */}
-                        {countryOn ?
-                            <DropDownStates
-                                id='state'
-                                name="state"
-                                title='Etat/Province'
-                                country={initialData.country}
-                                handleOnchange={(e: any) => { onChangedState(e) }}
-                                value={initialData.state}
-                                formState={formState}
-                            />
-                            : ''}
-
+                        <FieldDropDown
+                            id='state'
+                            name="state"
+                            title='Etat/Province'
+                            value={initialData.state}
+                            options={states}
+                            onChange={(e: any) => { onChangedState(e) }}
+                            error={formState.errors?.state}
+                            placeholder="Etat\Province ..."
+                            tooltip="Sélectionner un\une état\province..."
+                            render={countryOn}
+                        />
 
                         {/** City */}
-                        {(stateOn && countryOn) ?
-                            <DropDownCities
-                                id='city'
-                                name="city"
-                                title='Ville'
-                                country={initialData.country}
-                                state={initialData.state}
-                                handleOnchange={(e: any) => { onChangedCity(e) }}
-                                value={initialData.city}
-                                formState={formState}
-                            />
-                            : ''}
+                        <FieldDropDown
+                            id='city'
+                            name="city"
+                            title='Ville'
+                            value={initialData.state}
+                            options={cities}
+                            onChange={(e: any) => { onChangedCity(e) }}
+                            error={formState.errors?.city}
+                            placeholder="Ville ..."
+                            tooltip="Sélectionner une ville..."
+                            render={stateOn}
+                        />
+
+
+
+
+
+
 
 
 

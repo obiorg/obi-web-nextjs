@@ -48,6 +48,7 @@ import { StatesService } from "@/src/obi/service/localisations/StatesService"
 import { LocationsStatesModel } from "@/src/obi/models/localisations/LocationsStatesModel"
 import { LocationsCitiesModel } from "@/src/obi/models/localisations/LocationsCitiesModel"
 import { CitiesService } from "@/src/obi/service/localisations/CitiesService"
+import FieldInputNumber from "@/src/obi/components/Inputs/FieldInputNumber"
 
 
 // Define the shape of the form errors locations
@@ -305,6 +306,11 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
      */
     const onCancel = (e: any) => {
         e.preventDefault();
+        initialData.city = undefined;
+        initialData.state = undefined;
+        initialData.country = undefined;
+        setStateOn(false);
+        setCountryOn(false);
         formRef.current.reset();
     }
 
@@ -527,209 +533,81 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
 
 
 
+                        {/** Address */}
+                        <FieldInputText
+                            id="address"
+                            name='address'
+                            title='Adresse'
+                            value={initialData.address}
+                            error={formState.errors?.address}
+                            placeholder="Adresse..."
+                            tooltip="adresse associée..."
+                        />
 
+                        {/** Address 1 */}
+                        <FieldInputText
+                            id="address1"
+                            name='address1'
 
+                            value={initialData.address1}
+                            error={formState.errors?.address1}
+                            placeholder="adresse 1 ..."
+                            tooltip="adresse complémentaire 1 associée..."
+                        />
 
+                        {/** Address 3 */}
+                        <FieldInputText
+                            id="address3"
+                            name='address3'
 
-
-                        {/** address */}
-                        <div className="grid mb-2">
-                            <div className='col-12 md:col-2'>
-                                <label htmlFor="address" className="input-field">
-                                    Adresse
-                                </label>
-                            </div>
-
-                            <InputText id="address"
-                                name='address'
-                                value={initialData.address}
-                                // onChange={onChangedInput}
-                                className={'col-12 md:col-5  pl-2 mb-2 input-value ' + (formState.errors?.address ? 'p-invalid' : '')}
-
-                                placeholder="ex: rue de la devanture..."
-                                // required
-                                tooltip="Correspond à la totalité ou partie de la rue, avenue..."
-                                tooltipOptions={{ position: 'top' }}
-                            />
-
-                            <div className={'col-12 md:col-4 p-0 m-0 text-left align-content-center'}>
-                                {
-                                    formState.errors?.address
-                                    && <div className="text-red-500">
-                                        <FontAwesomeIcon icon={faCircleXmark} /> &nbsp;
-                                        {formState.errors?.address?.join(', ')} {/* // Display form errors related to the title field*/}
-                                    </div >
-                                }
-                            </div>
-                        </div>
-
-
-                        {/** address1 */}
-                        <div className="grid mb-2">
-                            <div className='col-12 md:col-2'>
-                                <label htmlFor="address1" className="input-field">
-                                    Adresse suite 1
-                                </label>
-                            </div>
-
-                            <InputText id="address1"
-                                name='address1'
-                                value={initialData.address1}
-                                // onChange={onChangedInput}
-                                className={'col-12 md:col-5  pl-2 mb-2 input-value ' + (formState.errors?.address1 ? 'p-invalid' : '')}
-
-                                placeholder="ex: derrière la rue du chêne..."
-                                // required
-                                tooltip="Complément d'infos sur l'adresse..."
-                                tooltipOptions={{ position: 'top' }}
-                            />
-
-                            <div className={'col-12 md:col-4 p-0 m-0 text-left align-content-center'}>
-                                {
-                                    formState.errors?.address1
-                                    && <div className="text-red-500">
-                                        <FontAwesomeIcon icon={faCircleXmark} /> &nbsp;
-                                        {formState.errors?.address1?.join(', ')} {/* // Display form errors related to the title field*/}
-                                    </div >
-                                }
-                            </div>
-                        </div>
-
-
-                        {/** address3 */}
-                        <div className="grid mb-2">
-                            <div className='col-12 md:col-2'>
-                                <label htmlFor="address3" className="input-field">
-                                    Adresse suite 2
-                                </label>
-                            </div>
-
-                            <InputText id="address3"
-                                name='address3'
-                                value={initialData.address3}
-                                // onChange={onChangedInput}
-                                className={'col-12 md:col-5  pl-2 mb-2 input-value ' + (formState.errors?.address3 ? 'p-invalid' : '')}
-
-                                placeholder="ex: entre les palmiers..."
-                                // required
-                                tooltip="Complément d'informations sur l'adresse..."
-                                tooltipOptions={{ position: 'top' }}
-                            />
-
-                            <div className={'col-12 md:col-4 p-0 m-0 text-left align-content-center'}>
-                                {
-                                    formState.errors?.address3
-                                    && <div className="text-red-500">
-                                        <FontAwesomeIcon icon={faCircleXmark} /> &nbsp;
-                                        {formState.errors?.address3?.join(', ')} {/* // Display form errors related to the title field*/}
-                                    </div >
-                                }
-                            </div>
-                        </div>
+                            value={initialData.address3}
+                            error={formState.errors?.address3}
+                            placeholder="adresse 2 ..."
+                            tooltip="adresse complémentaire 2 associée..."
+                        />
 
 
 
                         {/** bloc */}
-                        <div className="grid mb-2">
-                            <div className='col-12 md:col-2'>
-                                <label htmlFor="bloc" className="input-field">
-                                    Bloc
-                                </label>
-                            </div>
+                        <FieldInputText
+                            id="bloc"
+                            name='bloc'
+                            title='Bloc'
+                            value={initialData.bloc}
+                            error={formState.errors?.bloc}
+                            placeholder="bloc... : ex: 3 ou 3B"
+                            tooltip="Bloc ou bâtiment dans un lotissement ou parc industriel..."
+                        />
 
-                            <InputText id="bloc"
-                                name='bloc'
-                                value={initialData.bloc}
-                                // onChange={onChangedInput}
-                                className={'col-12 md:col-5  pl-2 mb-2 input-value ' + (formState.errors?.bloc ? 'p-invalid' : '')}
 
-                                placeholder="Bloc ex: 3 ou 3B ..."
-                                // required
-                                tooltip="Bloc ou bâtiment dans un lotissement ou parc industriel..."
-                                tooltipOptions={{ position: 'top' }}
-                            />
 
-                            <div className={'col-12 md:col-4 p-0 m-0 text-left align-content-center'}>
-                                {
-                                    formState.errors?.bloc
-                                    && <div className="text-red-500">
-                                        <FontAwesomeIcon icon={faCircleXmark} /> &nbsp;
-                                        {formState.errors?.bloc?.join(', ')} {/* // Display form errors related to the title field*/}
-                                    </div >
-                                }
-                            </div>
-                        </div>
 
 
                         {/** floor */}
-                        <div className="grid mb-2">
-                            <div className='col-12 md:col-2'>
-                                <label htmlFor="floor" className="input-field">
-                                    Étage
-                                </label>
-                            </div>
+                        <FieldInputNumber
+                            id="floor"
+                            name='floor'
+                            title='Étage'
+                            value={initialData.floor}
+                            error={formState.errors?.floor}
+                            placeholder="étage... : ex: 3"
+                            tooltip="numéro d'étage, du plateau..."
+                        />
 
-                            <InputNumber id="floor"
-                                name='floor'
-                                value={initialData.floor}
-                                // onChange={onChangedInput}
-                                className='col-12 md:col-5   ml-0 mb-2 input-value'
 
-                                placeholder="ex: 3"
-                                // required={entity.}
-                                tooltip="Numéro d'étage ou de plateau"
-                                tooltipOptions={{ position: 'top' }}
-                            />
 
-                            <div className={'col-12 md:col-4 p-0 m-0 text-left align-content-center'}>
-                                {
-                                    formState.errors?.floor
-                                    && <div className="text-red-500">
-                                        <FontAwesomeIcon icon={faCircleXmark} /> &nbsp;
-                                        {formState.errors?.floor?.join(', ')} {/* // Display form errors related to the title field*/}
-                                    </div >
-                                }
-                            </div>
-                        </div>
 
 
                         {/** number */}
-                        <div className="grid mb-2">
-                            <div className='col-12 md:col-2'>
-                                <label htmlFor="number" className="input-field">
-                                    Numéro
-                                </label>
-                            </div>
-
-                            <InputText id="number"
-                                name='number'
-                                value={initialData.number}
-                                // onChange={onChangedInput}
-                                className={'col-12 md:col-5  pl-2 mb-2 input-value ' + (formState.errors?.number ? 'p-invalid' : '')}
-
-                                placeholder="ex: 6B ou 3, 3A..."
-                                // required
-                                tooltip="Numéro de porte"
-                                tooltipOptions={{ position: 'top' }}
-                            />
-
-                            <div className={'col-12 md:col-4 p-0 m-0 text-left align-content-center'}>
-                                {
-                                    formState.errors?.number
-                                    && <div className="text-red-500">
-                                        <FontAwesomeIcon icon={faCircleXmark} /> &nbsp;
-                                        {formState.errors?.number?.join(', ')} {/* // Display form errors related to the title field*/}
-                                    </div >
-                                }
-                            </div>
-
-
-                        </div>
-
-
-
-
-
+                        <FieldInputText
+                            id="number"
+                            name='number'
+                            title='Numéro'
+                            value={initialData.floor}
+                            error={formState.errors?.floor}
+                            placeholder="numéro... : ex: 6B ou 3, 3A"
+                            tooltip="numéro de porte de destination..."
+                        />
 
 
 

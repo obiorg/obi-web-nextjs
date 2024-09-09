@@ -13,6 +13,39 @@ import { LocationsCitiesModel } from "../../models/localisations/LocationsCities
 
 export const CitiesService = {
 
+    
+    async count(): Promise<number> {
+        const url = process.env.httpPath + '/localisations/cities/count';
+        const res = await fetch(url, { headers: { 'Cache-Control': 'no-cache' } })
+        const dataset: number = await res.json();
+        return dataset;
+    },
+
+    async list(): Promise<any> {
+        const url = process.env.httpPath + '/localisations/cities';
+
+        try {
+            const res = await fetch(url, { headers: { 'Cache-Control': 'no-cache' } })
+            if (res.ok) {
+                const dataset: OBI.loc_cities[] = await res.json();
+                return dataset;
+            } else {
+                let err = { status: res.status, message: res.statusText };
+                if (res.status === 404) err['message'] = err.message + '<br />' + '404, api endpoint not found !';
+                if (res.status === 500) err['message'] = err.message + '\r\n' + '500, check api access or server access, then refresh !';
+                // // Custom message for failed HTTP codes
+                // if (res.status === 404) throw new Error('404, Not found');
+                // if (res.status === 500) throw new Error('500, internal server error');
+                // // For any other server error
+                // throw new Error(res.status);
+                return err;
+            }
+        } catch {
+            console.error('Promise rejected');
+        }
+    },
+
+
     /**
      * Find cities specified by lazy parameters
      * Recover all location based on lazy parameter structured as fitler model 
@@ -24,7 +57,7 @@ export const CitiesService = {
         const url = process.env.httpPath + '/localisations/cities/lazy/' + lazy.lazyEvent;
         const res = await fetch(url, { headers: { 'Cache-Control': 'no-cache' } })
         const dataset: OBI.loc_cities[] = await res.json();
-        console.log("Cities dataset", dataset);
+        // console.log("Cities dataset", dataset);
         return dataset;
     },
 

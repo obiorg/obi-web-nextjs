@@ -46,16 +46,14 @@ import { LocationsModel } from '@/src/obi/models/localisations/LocationsModel';
 
 
 const PostCreate = () => {
-
-
-
     return (
         <div className="card">
             {/* // Renders a PostForm component, passing the createPost action as the form action 
                 // and an initial data object with empty title and content. */}
             <PostForm formAction={LocationsService.createPost} 
                         type={0}
-                        initialData={new LocationsModel()} />
+                        initialData={new LocationsModel()} 
+                        />
 
         </div>
     );

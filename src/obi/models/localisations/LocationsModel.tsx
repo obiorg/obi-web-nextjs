@@ -34,8 +34,12 @@ export class LocationsModel extends Model {
             bloc: '',
             floor: 0,
             number: '',
+            businesses: {},
+            companies: {},
+            entities: {},
         };
     }
+
 
     init() {
         this.map = new Map();

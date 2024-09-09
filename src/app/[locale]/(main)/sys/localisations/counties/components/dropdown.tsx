@@ -9,6 +9,8 @@ import { useEffect, useRef, useState } from "react"
 import { OBI } from "@/src/types"
 import { Dropdown } from "primereact/dropdown"
 import { CountriesService } from "@/src/obi/service/Localisations/CountriesService"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faCircleXmark } from "@fortawesome/free-regular-svg-icons"
 
 
 // Define the props that the PostForm component expects
@@ -25,8 +27,6 @@ interface LocationsCountriesDropDownProps {
 
 export default function DropDownCountries({ id, name, title, value, handleOnchange, formState }: LocationsCountriesDropDownProps) {
 
-
-
     // Used for toast
     const toast = useRef<Toast>(null);
 
@@ -34,10 +34,12 @@ export default function DropDownCountries({ id, name, title, value, handleOnchan
     const [selectedCatalog, setSelectedCatalog] = useState<any>(null);
     const [catalogs, setCatalogs] = useState<any>([]);
 
+    // Use to refresh the dropdown list
+    const [refresh, setRefresh] = useState(false);
 
-
-
-
+    /**
+     * Collect the catalogs and prepare the display
+     */
     useEffect(() => {
         // Get full data list
         CountriesService.list().then((data: any) => {
@@ -54,7 +56,7 @@ export default function DropDownCountries({ id, name, title, value, handleOnchan
         });
         // Initialize once default selected catalog
         setSelectedCatalog(value);
-    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [value, refresh]); // eslint-disable-line react-hooks/exhaustive-deps
 
 
 
@@ -86,7 +88,7 @@ export default function DropDownCountries({ id, name, title, value, handleOnchan
                 options={catalogs}
                 onChange={onChangeCatalog}
                 placeholder="Sélectionner un pays..."
-                className='col-12 md:col-5  mb-2 input-value'
+                className={'col-12 md:col-5  pl-2 mb-2 input-value ' + (formState.errors?.country ? 'p-invalid' : '')}
                 showClear
                 filter
                 showFilterClear
@@ -94,12 +96,13 @@ export default function DropDownCountries({ id, name, title, value, handleOnchan
                 emptyMessage="Vide !"
             />
 
-            <div className={'col-12 md:col-4 p-0 m-0 text-left'}>
+            <div className={'col-12 md:col-4 p-0 m-0 text-left align-content-center'}>
                 {
-                    formState.errors.country
+                    formState.errors?.country
                     &&
                     <div className="text-red-500">
-                        {formState.errors.country?.join(', ')} {/* // Display form errors related to the title field*/}
+                        <FontAwesomeIcon icon={faCircleXmark} /> &nbsp;
+                        {formState.errors?.country?.join(', ')} {/* // Display form errors related to the title field*/}
                     </div >
                 }
 

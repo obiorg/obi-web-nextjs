@@ -1,193 +1,142 @@
-// src/components/post-form.tsx
-
 // this is a client component
 'use client'
 
-import Link from "next/link"
-import { useFormState } from "react-dom"
-import { LocationsStatesModel } from "@/src/obi/models/localisations/LocationsStatesModel"
+
 import { Toast } from "primereact/toast"
-import { useEffect, useRef, useState } from "react"
-import { Dialog } from "primereact/dialog"
-import { Button } from "primereact/button"
-import { InputText } from "primereact/inputtext"
+import { lazy, useEffect, useRef, useState } from "react"
+
 
 import { OBI } from "@/src/types"
-import { Checkbox } from "primereact/checkbox"
-import { InputNumber } from "primereact/inputnumber"
 import { Dropdown } from "primereact/dropdown"
-import { Skeleton } from "primereact/skeleton"
+import { StatesService } from "@/src/obi/service/localisations/StatesService"
+import { LocationsStatesModel } from "@/src/obi/models/localisations/LocationsStatesModel"
+
 import { Model } from "@/src/obi/models/model"
-import { StatesService } from "@/src/obi/service/Localisations/StatesService"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faCircleXmark } from "@fortawesome/free-regular-svg-icons"
+
+
+
+
+// Define the props that the PostForm component expects
+interface LocationsStatesDropDownProps {
+    id: string;                         // ID of the component
+    name: string;                       // Name of the component
+    title: string;                      // preceding title of dropdown
+    country: number;                    // Number of countries
+    value: any;
+    handleOnchange: (e: any) => void; // The callback function to be called when the value changes
+    formState: OBI.LocationsFormState; // The form state
+}
 
 const model = new LocationsStatesModel();
 
+export default function DropDownStates({ id, name, title, country, value, handleOnchange, formState }: LocationsStatesDropDownProps) {
 
 
-
-// The formAction is the action to perform when the form is submitted. We use it as a props because
-// we will use this for create and edit page which both page doesn't have the same action
-// The initialData is the initial data for the form fields. 
-export default function DropDownStates({ formAction, type, initialData }: OBI.StatesPostFormProps) {
-    // Initialize the form state and action
-    const [formState, action] = useFormState<OBI.StatesFormState>(formAction, {
-        errors: {},
-    })
 
     // Used for toast
     const toast = useRef<Toast>(null);
 
-    // Used for dialog
-    const [showMessage, setShowMessage] = useState(false);
-    const dialogFooter = <div className="flex justify-content-center"><Button label="OK" className="p-button-text" autoFocus onClick={() => setShowMessage(false)} /></div>;
+    // Used for dropdown list catalog
+    const [selectedCatalog, setSelectedCatalog] = useState<any>(null);
+    const [catalogs, setCatalogs] = useState<any>([]);
 
-    // Used for dropdown list states
-    
-    let loadLazyTimeout: number | undefined = 0;
-    const [loading, setLoading] = useState(false);
-    const [lazyItemsCatalogs, setLazyItemsCatalogs] = useState<any>([]);
-    const [lazyLoading, setLazyLoading] = useState<any>(false);
-    const [entity, setEntity] = useState(model.defaults);
-    const [dropdown, setDropDown] = useState({
-        company: null,
-        driver: null,
-    });
     const globalModel = new Model();
-    const [lazyParams, setLazyParams] = useState(globalModel.getStandardParam());
+    const [lazyParams, setLazyParams] = useState(globalModel.getStandardParam({ field: 'name', order: 1 },
+        { "global": { value: null, matchMode: 'contains' }, "country_id": { operator: 'and', constraints: [{ value: country, matchMode: 'equals' }] } }
+    ));
 
 
-    const onChangedDropDown = (e: any) => {
-        // Case of input text
-        if (e.target) {
-            const { name, value, checked } = e.target;
-            let obj = { entity: { id: null } };
-            if (name === 'state') {
-                obj = lazyItemsCatalogs[value];
-                // console.log('company', lazyItemsCompanies[value])
-            } else {
-                // obj = lazyItemsCatalogs[value];
-                // console.log('driver', lazyItemsCatalogs[value]);
-            }
 
-            // console.log('entityValue', obj.entity.id);
-            const entityValue = obj.entity.id;
 
-            if (value !== null && value !== undefined) {
-                setDropDown((prevState) => {
+    useEffect(() => {
+
+        StatesService.count().then((count: any) => {
+            setLazyParams(
+                () => {
                     return {
-                        ...prevState,
-                        [name]: value,
-                    };
-                });
-                setEntity((prevState) => {
-                    return {
-                        ...prevState,
-                        [name]: entityValue,
-                    };
-                });
-            }
-        }
-    };
-
-    
-    const loadLazyDataCatalogs = () => {
-        setLazyLoading(true);
-
-        if (loadLazyTimeout) {
-            clearTimeout(loadLazyTimeout);
-        }
-
-        //imitate delay of a backend call
-        loadLazyTimeout = setTimeout(() => {
-
-            // Create lazy event object with stringify lazy parameter
-            const lazyEventSet = { lazyEvent: JSON.stringify(lazyParams) };
-
-            // Get Lazy Data
-            StatesService.getLazy(lazyEventSet).then((data: any) => {
-
-                if (data?.length > 0) {
-                    let _lazyItems = [data];
-                    for (let i = lazyParams.first; i < data.length; i++) {
-                        _lazyItems[i] = {
-                            label: data[i].name + ' (' + data[i].iso2 +')' + ' - ' + data[i].country_code + ' -  [' + data[i].id + ']',
-                            value: i,
-                            entity: data[i]
-                        };
+                        ...lazyParams,
+                        filters: {
+                            "global": { value: null, matchMode: 'contains' },
+                            "country_id": { operator: 'and', constraints: [{ value: country, matchMode: 'equals' }] }
+                        },
+                        rows: count,
                     }
-
-                    setLazyItemsCatalogs(_lazyItems);
                 }
-                setLazyLoading(false);
-            });
-        }, Math.random() * 1000 + 250);
-    };
+            );
+        });
+        // Initialize once default selected catalog
+        setSelectedCatalog(value);
+    }, [country]); // eslint-disable-line react-hooks/exhaustive-deps
 
-    const onLazyLoadCatalogs = (event: any) => {
-        lazyParams.first = event.first;
-        lazyParams.rows = event.last === 0 ? 10 : event.last - event.first;
-        loadLazyDataCatalogs();
-        // setLazyLoading(false);
-    };
+    useEffect(() => {
+        const lazyEventSet = { lazyEvent: JSON.stringify(lazyParams) };
 
-    // useEffect(() => {
-    //     loadLazyDataCatalogs();
-    //     // setLazyLoading(false);
-    // }, []); // eslint-disable-line react-hooks/exhaustive-deps
+        // Get full data list
+        StatesService.getLazy(lazyEventSet).then((data: any) => {
+            if (data.status) {
+                showError(data.status, data.message);
+            } else {
+                setCatalogs(() => {
+                    return data.map((item: OBI.loc_states) => ({
+                        label: item.name + ' (' + item.iso2 + ') - ' + item.country_code + ' -  [' + item.id + ']',
+                        value: item.id,
+                        catalog: item
+                    }));
+                });
+            }
+        });
+    }, [lazyParams]); // eslint-disable-line react-hooks/exhaustive-deps
 
 
+    const onChangeCatalog = (e: any) => {
+        handleOnchange(e);
+        setSelectedCatalog(e.value);
+    }
+
+
+    const showError = (title: string, message: string) => {
+        toast.current.show({ severity: 'error', summary: title, detail: message, sticky: true, closable: false });
+    }
 
     return <>
-
-
-
+        <Toast ref={toast} />
 
         {/** Catalogs */}
         <div className="grid mb-2">
             <div className='col-12 md:col-2'>
-                <label htmlFor="state" className="input-field">
-                    Province
+                <label htmlFor={name} className="input-field">
+                    {title}
                 </label>
             </div>
 
-            <Dropdown id='state'
-                name='state'
-                value={initialData.state}
-                options={lazyItemsCatalogs}
-                className='col-12 md:col-5  mb-2 input-value'
-
-                onChange={onChangedDropDown} virtualScrollerOptions={{
-                    lazy: true, onLazyLoad: onLazyLoadCatalogs,
-                    itemSize: 28, showLoader: true,
-                    loading: lazyLoading, delay: 250,
-                    loadingTemplate: (options) => {
-                        return (
-                            <div className="flex align-items-center p-2" >
-                                <Skeleton width={options.even ? '60%' : '50%'} height="1rem" />
-                            </div>
-                        )
-                    }
-                }}
-                placeholder="Sélectionner"
-                // required
-                tooltip='Specifier la localisation'
-                tooltipOptions={{ position: 'top' }}
+            <Dropdown
+                id={id}
+                name={name}
+                value={selectedCatalog}
+                options={catalogs}
+                onChange={onChangeCatalog}
+                placeholder="Sélectionner une/état province/état..."
+                className={'col-12 md:col-5  pl-2 mb-2 input-value ' + (formState.errors?.state ? 'p-invalid' : '')}
+                showClear
+                filter
+                showFilterClear
+                emptyFilterMessage="Recherche sans résultat..."
+                emptyMessage="Vide !"
             />
 
-            <div className={'col-12 md:col-4 p-0 m-0 text-left'}>
+            <div className={'col-12 md:col-4 p-0 m-0 text-left align-content-center'}>
                 {
-                    formState.errors.state
-                    && <div className="text-red-500">
-                        {formState.errors.state?.join(', ')} {/* // Display form errors related to the title field*/}
+                    formState.errors?.state
+                    &&
+                    <div className="text-red-500">
+                        <FontAwesomeIcon icon={faCircleXmark} /> &nbsp;
+                        {formState.errors?.state?.join(', ')} {/* // Display form errors related to the title field*/}
                     </div >
                 }
+
             </div>
         </div>
-
-
-
-
-
-
     </>
 }

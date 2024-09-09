@@ -12,6 +12,7 @@ export const MachinesService = {
 
     async getLazy(lazy: any) {
          console.log('MachinesService : getLazy >> lazyEvent : ', lazy.lazyEvent);
+         console.log('lazyEvent : ', lazy.lazyEvent);
         const url = process.env.httpPath + '/connexions/machines/lazy/' + lazy.lazyEvent;
         //console.log('MachinesService : getLay >> url : ', url);
         const res = await fetch(

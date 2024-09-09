@@ -153,11 +153,12 @@ export class Model {
 
 
 
-  getStandardParam(sorted:any): any {
+  getStandardParam(sorted:any, filtered: any): any {
     let sort = sorted;
     if(sorted === undefined || sorted === null)
       sort = { field: 'id', order: -1 }
-
+    
+    let filter = (filtered === undefined ) ? '{}' : filtered;
     return {
       first: 0,
       rows: 10,
@@ -169,6 +170,8 @@ export class Model {
       sortMode: 'multiple' as string,
       sortField: '',
       sortOrder: -1,
+      filters: filter,
+      
 
       //multiSortMeta: defaultMultiSortMeta,
       multiSortMeta: [

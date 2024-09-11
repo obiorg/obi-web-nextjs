@@ -33,16 +33,15 @@ interface FieldDropDownProps {
     render?: boolean; //
 }
 
-FieldDropDown.defaultProps = {
-    emptyFilterMessage: "Recherche sans résultat...",
-    emptyMessage: "Vide !",
-    render: true,
-}
+
 
 export default function FieldDropDown(
     { id, name, title, value, options, onChange, error,
-        placeholder, tooltip, tooltipOptions,
-        emptyFilterMessage, emptyMessage, render }: FieldDropDownProps) {
+        placeholder = "Rechercher ...'",
+        tooltip, tooltipOptions,
+        emptyFilterMessage = "Recherche sans résultat...",
+        emptyMessage = 'vide !',
+        render = true }: FieldDropDownProps) {
 
     // Used for dropdown list catalog
     const [selectedCatalog, setSelectedCatalog] = useState<any>(null);

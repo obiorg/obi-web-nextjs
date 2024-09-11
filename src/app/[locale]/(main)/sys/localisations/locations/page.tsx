@@ -21,9 +21,11 @@ import { InputText } from 'primereact/inputtext';
 import { LocationsService } from '@/src/obi/service/localisations/LocationsService';
 import { Password } from 'primereact/password';
 import Link from 'next/link';
+import { LocationsModel } from '@/src/obi/models/localisations/LocationsModel';
+import TableHeader from '@/src/obi/components/Tables/TableHeader';
 
 
-const Entities = () => {
+const Locations = () => {
 
 
 
@@ -85,20 +87,24 @@ const Entities = () => {
 
 
     const bodyTemplateCountry = (rowData: OBI.locations) => {
-        return <InputNumber
-            value={rowData.country} disabled readOnly />
+        return <label>
+            {rowData.loc_countries?.name + ' - '
+                + rowData.loc_countries?.iso3
+                + ' [' + rowData.loc_countries?.id + ']'} </label>
     }
 
 
     const bodyTemplateState = (rowData: OBI.locations) => {
-        return <InputNumber
-            value={rowData.state} disabled readOnly />
+        return <label>
+            {rowData.loc_states?.name + ' - '
+                + rowData.loc_states?.iso2
+                + ' [' + rowData.loc_states?.id + ']'} </label>
     }
 
 
     const bodyTemplateCity = (rowData: OBI.locations) => {
-        return <InputNumber
-            value={rowData.city} disabled readOnly />
+        return <label>
+            {rowData.loc_cities?.name + ' [' + rowData.loc_cities?.id + ']'} </label>
     }
 
 
@@ -116,26 +122,22 @@ const Entities = () => {
     const [loading, setLoading] = useState(false);
     const [totalRecords, setTotalRecords] = useState(0);
     const [selectAll, setSelectAll] = useState(false);
-    const [selectedCatalog, setSelectedCatalog] = useState(null);
+    const [selectedCatalog, setSelectedCatalog] = useState<OBI.locations>(null);
 
     const [selectionMode, setSelectionMode] = useState('multiple')
     const [selectedCatalogs, setSelectedCatalogs] = useState(null)
     const [selectedRepresentative, setSelectedRepresentative] = useState(null)
     const [metaKey, setMetaKey] = useState<boolean>(true);
     const [rowClick, setRowClick] = useState(true)
-    const [sizeOptions] = useState<OBI.SizeOption[]>([
-        { label: 'Petit', value: 'small' },
-        { label: 'Normale', value: 'normal' },
-        { label: 'Large', value: 'large' }
-    ]);
-    const [size, setSize] = useState<string>(sizeOptions[0].value);
+
+    const [size, setSize] = useState<string>('small');
     const [filterDisplay, setFilterDisplay] = useState('menu')
 
 
 
 
 
-    const [catalogs, setCatalogs] = useState<OBI.locations[]>([]);
+    const [catalogs, setCatalogs] = useState<any>([]);
 
     const columns: OBI.ColumnMeta[] = [
         { field: 'id', header: 'ID', dataType: 'numeric', sortable: true, filter: true },
@@ -147,9 +149,9 @@ const Entities = () => {
         { field: 'designation', header: 'Désignation', dataType: 'text', sortable: true, filter: true },
 
         { field: 'group', header: 'Groupe', dataType: 'text', sortable: true, filter: true },
-        { field: 'country', header: 'Pays', dataType: 'numeric', sortable: true, filter: true },
-        { field: 'state', header: 'Province', dataType: 'numeric', sortable: true, filter: true },
-        { field: 'city', header: 'Ville', dataType: 'numeric', sortable: true, filter: true },
+        { field: 'country', header: 'Pays', dataType: 'numeric', bodyTemplate: bodyTemplateCountry, sortable: true, filter: true },
+        { field: 'state', header: 'Province', dataType: 'numeric', bodyTemplate: bodyTemplateState, sortable: true, filter: true },
+        { field: 'city', header: 'Ville', dataType: 'numeric', bodyTemplate: bodyTemplateCity, sortable: true, filter: true },
 
         { field: 'address', header: 'Adresse', dataType: 'text', sortable: true, filter: true },
         { field: 'address1', header: 'Adresse 1', dataType: 'text', sortable: true, filter: true },
@@ -169,25 +171,11 @@ const Entities = () => {
     const defaultFilters: Array<DataTableFilterMeta> = LocationsService.defaultFilters();
 
     const [globalFilterValue, setGlobalFilterValue] = useState('');
-    const [lazyParams, setLazyParams] = useState({
-        first: 0,
-        rows: 10,
-        page: 0,
-        pageCount: 0,
-        pk: 'id',
-        dataKey: 'id', // Create for datakey purpose
-        selectionMode: 'multiple',
-        sortMode: 'multiple' as string,
-        sortField: '',
-        sortOrder: -1,
+    const locationModel = new LocationsModel();
+    const [lazyParams, setLazyParams] = useState(
+        locationModel.
+            getStandardParam({ field: 'location', order: 1 }, defaultFilters));
 
-        //multiSortMeta: defaultMultiSortMeta,
-        multiSortMeta: [
-            { field: 'id', order: -1 },
-        ],
-
-        filters: defaultFilters as unknown as DataTableFilterMeta,
-    });
 
 
 
@@ -358,7 +346,7 @@ const Entities = () => {
 
     const onRowSelect = (event: any) => {
         const value = event.data
-        //console.log('onRowSelect : ', value)
+        console.log('onRowSelect : ', value)
     }
 
     const onRowUnselect = (event: any) => {
@@ -368,9 +356,10 @@ const Entities = () => {
 
     const onSelectionChange = (e: any) => {
         const value = e.value
-        //console.log('onSelectionChange', value)
-        setSelectedEntreprises(value)
-        setSelectAll(value.length === totalRecords)
+        console.log('onSelectionChange', value)
+        // setSelectedEntreprises(value)
+        // setSelectAll(value.length === totalRecords)
+        setSelectedCatalog(e.value);
     }
 
     const onSelectAllChange = (event: any) => {
@@ -388,23 +377,7 @@ const Entities = () => {
         }
     }
 
-    // const representativeBodyTemplate = (rowData) => {
-    //     return (
-    //         <React.Fragment>
-    //             <img alt={rowData.representative.name} src={`images/avatar/${rowData.representative.image}`} onError={(e) => e.target.src = 'https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png'} width={32} style={{ verticalAlign: 'middle' }} />
-    //             <span className="image-text">{rowData.representative.name}</span>
-    //         </React.Fragment>
-    //     );
-    // }
 
-    // const countryBodyTemplate = (rowData) => {
-    //     return (
-    //         <React.Fragment>
-    //             <img alt="flag" src="/images/flag/flag_placeholder.png" onError={(e) => e.target.src = 'https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png'} className={`flag flag-${rowData.country.code}`} width={30} />
-    //             <span className="image-text">{rowData.country.name}</span>
-    //         </React.Fragment>
-    //     );
-    // }
 
     const onGlobalFilterChange = (e: any) => {
         const value = e.target.value;
@@ -426,88 +399,7 @@ const Entities = () => {
 
 
 
-    const renderHeader = () => {
-        return (
-            <div className="container">
-                <div className='row mb-3'>
-                    <div className='flex flex-wrap align-items-center justify-content-between gap-2'>
-                        <span className="text-xl text-900 font-bold">Liste des localisations</span>
 
-                        <div className='flex justify-content-center mb-0'>
-
-
-                            <Link href="./create" className='mr-2'>
-                                <Button label="Ajouter" icon="pi pi-plus" severity="success" className=" mr-1" />
-                            </Link>
-                            <Button label="Delete" icon="pi pi-trash" severity="danger" disabled={!selectedCatalogs || !(selectedCatalogs as any).length}
-                                className=" mr-3" />
-
-                            <Button type="button" icon="pi pi-filter-slash" label="Effacer" outlined onClick={clearFilter} />
-                        </div>
-                    </div>
-                </div>
-
-
-
-
-
-                <div className="flex justify-content-between align-items-center">
-                    <div className="flex justify-content-between align-items-center">
-
-                        <SelectButton value={size} onChange={(e) => setSize(e.value)} options={sizeOptions} />
-                        <Button icon="pi pi-refresh" raised rounded className='ml-2' />
-
-                    </div>
-
-                    <div className="flex justify-content-center align-items-center mb-0 gap-2">
-                        <div className="col-md-2">
-                            <span>
-                                <label>Metakey</label>
-                                <InputSwitch
-                                    checked={metaKey}
-                                    onChange={onMetakeyChange}
-                                />
-                            </span>
-                            <span>
-                                {metaKey === true ? 'Oui' : 'Non'}
-                            </span>
-                        </div>
-
-                        <div className="col-md-2">
-                            <label>Row Click</label>{' '}
-                            <InputSwitch
-                                checked={rowClick}
-                                onChange={(e) => setRowClick(e.value)}
-                            />
-                            <span>{rowClick === true ? 'Oui' : 'Non'}</span>
-                        </div>
-
-                        <div className="col-md-2">
-                            <label>Filter Row</label>{' '}
-                            <InputSwitch
-                                checked={filterDisplay === 'row'}
-                                onChange={onFilterDisplayChange}
-                            />
-                            <span>{filterDisplay === 'menu' ? 'Menu' : 'Ligne'}</span>
-                        </div>
-                    </div>
-
-
-                    <span className="p-input-icon-left">
-                        <i className="pi pi-search" />
-                        <InputText
-                            value={globalFilterValue}
-                            onChange={onGlobalFilterChange}
-                            placeholder="Valeur recherché..."
-                        />
-                    </span>
-
-                </div>
-            </div>
-
-
-        )
-    }
 
     const renderFooter = () => {
 
@@ -544,7 +436,17 @@ const Entities = () => {
 
 
 
-    const header = renderHeader()
+    const header = () => {
+        return (
+            <TableHeader
+                title='Localisations'
+                catalogSelected={selectedCatalog}
+                onClear={clearFilter}
+                onSizeChanged={(e) => setSize(e.value)}
+                onGlobalFilterChanged={(e) => setGlobalFilterValue(e.value)}
+            />
+        )
+    }
     const footer = renderFooter()
     const paginatorLeft = renderPaginatorLeft();
     const paginatorRight = renderPaginatorRight();
@@ -564,6 +466,9 @@ const Entities = () => {
             <DataTable
                 id="dataTable"
                 value={catalogs}
+                selection={selectedCatalog}
+                selectionMode="single"
+                onSelectionChange={onSelectionChange}
                 lazy
 
                 emptyMessage="Aucun enregistrement trouvé !"
@@ -620,4 +525,4 @@ const Entities = () => {
     );
 };
 
-export default Entities;
+export default Locations;

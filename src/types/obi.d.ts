@@ -88,7 +88,7 @@ declare namespace OBI {
     }
 
     // Define an interface for the form state
-    interface LocationsPostFormState {
+    interface LocationsFormState {
         errors: {
             id?: string[];
             deleted?: string[];

@@ -24,7 +24,7 @@ export const LocationsService = {
         const url = process.env.httpPath + '/localisations/locations/lazy/' + lazy.lazyEvent;
         const res = await fetch(url, { headers: { 'Cache-Control': 'no-cache' } })
         const dataset: OBI.locations[] = await res.json();
-        console.log("Locations dataset", dataset);
+        // console.log("Locations dataset", dataset);
         return dataset;
     },
 
@@ -42,7 +42,13 @@ export const LocationsService = {
         return val;
     },
 
-
+    async getById(id: any) {
+        const url = process.env.httpPath + '/localisations/locations/' + id;
+        const res = await fetch(url, { headers: { 'Cache-Control': 'no-cache' } })
+        const val = await res.json();
+        const dataset: OBI.locations = val;
+        return val;
+    },
 
 
     defaultMultiSortMeta(): any {
@@ -63,9 +69,9 @@ export const LocationsService = {
      * @param formData 
      * @returns 
      */
-    async createPost(
-        formState: OBI.LocationsPostFormState,
-        formData: FormData): Promise<OBI.LocationsPostFormState> {
+    async create(
+        formState: OBI.LocationsFormState,
+        formData: FormData): Promise<OBI.LocationsFormState> {
 
 
         let data = {
@@ -92,8 +98,8 @@ export const LocationsService = {
 
 
         const url = process.env.httpPath + '/localisations/locations';
- 
- 
+
+
         const res = await fetch(
             url,
             {
@@ -109,12 +115,64 @@ export const LocationsService = {
             }
         )
         // console.log("LocationsService response", res);
-        const dataset: OBI.LocationsPostFormState = await res.json();
+        const dataset: OBI.LocationsFormState = await res.json();
         // console.log('LocationsService >> result from api locations ', dataset);
         return dataset;
 
     },
 
 
+    async update(
+        formState: OBI.LocationsFormState,
+        formData: FormData): Promise<OBI.LocationsFormState> {
+
+
+        let data = {
+            id: (formData.get("id") === '') ? undefined : Number(formData.get("id")),
+            deleted: formData.get("deleted") === "true",
+            created: formData.get("created"),
+            changed: formData.get("changed"),
+
+            location: formData.get("location"),
+            designation: formData.get("designation"),
+            group: formData.get("group"),
+            country: (formData.get("country") === '') ? undefined : Number(formData.get("country")),
+            state: (formData.get("state") === '') ? undefined : Number(formData.get("state")),
+            city: (formData.get("city") === '') ? undefined : Number(formData.get("city")),
+            address: formData.get("address"),
+            address1: formData.get("address1"),
+            address3: formData.get("address3"),
+            bloc: formData.get("bloc"),
+            floor: (formData.get("floor") === '') ? undefined : Number(formData.get("floor")),
+            number: formData.get("number"),
+        };
+        console.log(data);
+        console.log(formState);
+
+
+        const url = process.env.httpPath + '/localisations/locations/' + data.id ;
+
+
+        const res = await fetch(
+            url,
+            {
+                method: "PUT",
+                mode: "cors", // no-cors, *cors, same-origin
+                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: "same-origin", // include, *same-origin, omit
+                headers: {
+                    "Content-Type": "application/json",
+                    'Cache-Control': 'no-cache'
+                },
+                body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
+            }
+        )
+        // console.log("LocationsService response", res);
+        const dataset: OBI.LocationsFormState = await res.json();
+        // console.log('LocationsService >> result from api locations ', dataset);
+        return dataset;
+
+
+    },
 
 };

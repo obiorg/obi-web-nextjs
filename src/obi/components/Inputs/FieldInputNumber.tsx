@@ -27,7 +27,10 @@ interface FieldInputNumberProps {
 }
 
 
-export default function FieldInputNumber({ id, name, title, value, onChange, error, placeholder, tooltip, tooltipOptions}: FieldInputNumberProps) {
+export default function FieldInputNumber(
+    { id, name, title,
+        value = undefined,
+        onChange, error, placeholder, tooltip, tooltipOptions}: FieldInputNumberProps) {
 
 
 
@@ -44,7 +47,7 @@ export default function FieldInputNumber({ id, name, title, value, onChange, err
                 <InputNumber
                     id={id}
                     name={name}
-                    value={value}
+                    value={value??''}
                     onChange={onChange}
                     className={'col-12 md:col-5   mb-2 input-value ' + (error ? 'p-invalid' : '')}
 

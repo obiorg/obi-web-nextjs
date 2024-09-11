@@ -49,6 +49,7 @@ import { LocationsStatesModel } from "@/src/obi/models/localisations/LocationsSt
 import { LocationsCitiesModel } from "@/src/obi/models/localisations/LocationsCitiesModel"
 import { CitiesService } from "@/src/obi/service/localisations/CitiesService"
 import FieldInputNumber from "@/src/obi/components/Inputs/FieldInputNumber"
+import FieldInputCheckbox from "@/src/obi/components/Inputs/FieldInputCheckbox"
 
 
 // Define the shape of the form errors locations
@@ -138,8 +139,9 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
     const dialogFooter = <div className="flex justify-content-center"><Button label="OK" className="p-button-text" autoFocus onClick={() => setShowMessage(false)} /></div>;
 
     // Sub state dropdown selection
-    const [countryOn, setCountryOn] = useState(false);
-    const [stateOn, setStateOn] = useState(false);
+    const [countryOn, setCountryOn] = useState(initialData.country !== undefined ? true : false);
+    const [stateOn, setStateOn] = useState(initialData.state ? true : false);
+    const [cityOn, setCityOn] = useState(initialData.city ? true : false);
 
     // state management
     const [onMessage, setOnMessage] = useState(false);
@@ -166,7 +168,11 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
      */
     const saveModeProcess = () => {
         if (saveMode === 0) {
-            formRef.current.reset();
+            if(type === 0){
+                formRef.current.reset();
+            }else{
+
+            }
         } else {
             // nothing yet
         }
@@ -261,6 +267,17 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
     }, [catalog]);
 
 
+    useEffect(() => {
+        // console.log(initialData)
+        if (initialData.country) {
+            setCountryOn(true);
+        }
+        if (initialData.state) {
+            setStateOn(true);
+        }
+
+    }, [initialData]);
+
 
     /**
      * 
@@ -281,20 +298,43 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
         //imitate delay of a backend call
         loadLazyTimeout = setTimeout(() => {
 
-            LocationsService.createPost(formState, formData).then((data: any) => {
-                if (data.errors) {
-                    formState.errors = { errors: {} };
-                    formState.errors = data.errors;
-                    doMsgPrompt('error', 'Erreur de création : ', 'Veuillez corriger les erreurs')
-                } else {
-                    formState.errors = { errors: {} };
-                    setCatalog(data);
-                    showSuccess('Création réussie !', data.location + ' - ' + data.designation + ' [' + data.id + ']');
-                    saveModeProcess()
-                }
-            }).catch((err) => {
-                console.error('Error : ', err);
-            });
+            if (type === 0) {
+                LocationsService.create(formState, formData).then((data: any) => {
+                    if (data.errors) {
+                        formState.errors = { errors: {} };
+                        formState.errors = data.errors;
+                        doMsgPrompt('error', 'Erreur de création : ', 'Veuillez corriger les erreurs')
+                    } else {
+                        formState.errors = { errors: {} };
+                        setCatalog(data);
+                        showSuccess('Création réussie !', data.location + ' - ' + data.designation + ' [' + data.id + ']');
+                        saveModeProcess()
+                    }
+                }).catch((err) => {
+                    console.error('Error : ', err);
+                });
+            }else{
+                 console.log('formRef +', formRef.current.id.value)
+                console.log('formRef', formRef)
+                console.log('e.target', e.target)
+                LocationsService.update(formState, e.target).then((data: any) => {
+                    if (data.errors) {
+                        formState.errors = { errors: {} };
+                        formState.errors = data.errors;
+                        doMsgPrompt('error', 'Erreur de modification : ', 'Veuillez corriger les erreurs')
+                    } else {
+                        formState.errors = { errors: {} };
+                        setCatalog(data);
+                        showSuccess('Modification réussie!', data.location +'-'+ data.designation +'[' + data.id + ']');
+                        saveModeProcess()
+                    }
+                }).catch((err) => {
+                    console.error('Error : ', err);
+                });
+            }
+
+
+
             setLazyLoading(false);
             unBlockForm();
         }, Math.random() * 1000 + 250);
@@ -369,6 +409,7 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
      */
     const [states, setStates] = useState<any>([]);
     const stateModel = new LocationsStatesModel();
+
     const [lazyParamsStates, setLazyParamsStates] = useState(stateModel.getStandardParam({ field: 'name', order: 1 },
         { "global": { value: null, matchMode: 'contains' }, "country_id": { operator: 'and', constraints: [{ value: initialData.country, matchMode: 'equals' }] } }
     ));
@@ -453,6 +494,59 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
                 >
                     <div className="col-12">
 
+                        { type === 1 ?<>
+                                    {/** id */}
+                                    <FieldInputText
+                                        id="id"
+                                        name='id'
+                                        title='ID'
+                                        value={initialData.id}
+                                        error={formState.errors?.id}
+                                        placeholder="ID Code..."
+                                        tooltip="reference code d'identification ..."
+                                        disabled
+                                    />
+
+
+                                    {/** Created */}
+                                    <FieldInputText
+                                        id="created"
+                                        name='created'
+                                        title='Créé le '
+                                        value={initialData.created}
+                                        error={formState.errors?.created}
+                                        placeholder="Créé le ..."
+                                        tooltip="date de création ..."
+                                        disabled
+                                    />
+
+
+
+                                    {/** Changed */}
+                                    <FieldInputText
+                                        id="changed"
+                                        name='changed'
+                                        title='Changé le'
+                                        value={initialData.changed}
+                                        error={formState.errors?.changed}
+                                        placeholder="Changé le ..."
+                                        tooltip="date de changement ..."
+                                        disabled
+                                    />
+
+
+                                    {/** Delete */}
+                                    <FieldInputCheckbox
+                                        id="delete"
+                                        name='delete'
+                                        title='Supprimer'
+                                        value={initialData.delete}
+                                        onChange={(e) => { initialData['delete'] = e.value }}
+                                        error={formState.errors?.delete}
+                                        tooltip="suppression logique ..."
+                                    />
+                                </>:null
+                        }
 
                         {/** Location */}
                         <FieldInputText
@@ -463,6 +557,7 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
                             error={formState.errors?.location}
                             placeholder="Code..."
                             tooltip="code d'identification ..."
+                            disabled={type===1}
                         />
 
                         {/** Designation */}
@@ -519,7 +614,7 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
                             id='city'
                             name="city"
                             title='Ville'
-                            value={initialData.state}
+                            value={initialData.city}
                             options={cities}
                             onChange={(e: any) => { onChangedCity(e) }}
                             error={formState.errors?.city}
@@ -603,8 +698,8 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
                             id="number"
                             name='number'
                             title='Numéro'
-                            value={initialData.floor}
-                            error={formState.errors?.floor}
+                            value={initialData.number}
+                            error={formState.errors?.number}
                             placeholder="numéro... : ex: 6B ou 3, 3A"
                             tooltip="numéro de porte de destination..."
                         />
@@ -620,6 +715,7 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
                             // onSaveClick={onSubmit}
                             onCancelClick={onCancel}
                             onModeChanged={e => handleModeChanged(e)}
+                            type={type}
                         />
 
                     </div>

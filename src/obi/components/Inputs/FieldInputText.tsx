@@ -23,10 +23,17 @@ interface FieldInputTextProps {
     placeholder?: string; // placeholder
     tooltip?: string; // tooltip text
     tooltipOptions?: any; // options for tooltip
+    disabled?: any; // disable edition
 }
 
 
-export default function FieldInputText({ id, name, title, value, onChange, error, placeholder, tooltip, tooltipOptions}: FieldInputTextProps) {
+export default function FieldInputText(
+    { id, name, title,
+        value = undefined,
+        onChange,
+        error, placeholder, tooltip, tooltipOptions,
+        disabled 
+    }: FieldInputTextProps) {
 
 
 
@@ -43,14 +50,15 @@ export default function FieldInputText({ id, name, title, value, onChange, error
                 <InputText
                     id={id}
                     name={name}
-                    value={value}
+                    value={value ?? ''}
                     onChange={onChange}
                     className={'col-12 md:col-5  pl-2 mb-2 input-value ' + (error ? 'p-invalid' : '')}
 
                     placeholder={placeholder}
                     // required
                     tooltip={tooltip}
-                    tooltipOptions={tooltipOptions?tooltipOptions:{ position: 'right' }}
+                    tooltipOptions={tooltipOptions ? tooltipOptions : { position: 'right' }}
+                    disabled={disabled}
                 />
 
                 <div className={'col-12 md:col-4 p-0 m-0 text-left align-content-center'}>

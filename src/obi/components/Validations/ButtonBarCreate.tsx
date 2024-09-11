@@ -25,11 +25,18 @@ interface ButtonSaveProps {
     onCancelClick?: (e: any) => void; // The callback function to
     onModeChanged?: (e: any) => void; // when change occur in mode
 
-    formaAction?:any; //
+    formAction?:any; //
+    type?: number; // The type of button 0 : create 1: update
 }
 
 
-export default function ButtonBarCreate({ id, name, label, createLabel, cancelLabel, listLabel, updateLabel, onSaveClick, onCancelClick, onModeChanged, formAction }: ButtonSaveProps) {
+export default function ButtonBarCreate({ 
+    id, name, label, 
+    createLabel, cancelLabel, 
+    listLabel, updateLabel, 
+    onSaveClick, onCancelClick, onModeChanged,
+    type = 0,
+    formAction }: ButtonSaveProps) {
     // To bloc during status
     const { pending } = useFormStatus();
 
@@ -46,7 +53,7 @@ export default function ButtonBarCreate({ id, name, label, createLabel, cancelLa
 
     const doCancel = (e:any) => {
         e.preventDefault();
-        console.log('ButtonBarCreate > doCancel', e)
+        // console.log('ButtonBarCreate > doCancel', e)
         inputCancelElement.current.click();
         onCancelClick(e);
     }

@@ -1,6 +1,7 @@
 'use client';
 
 
+import LocationDelete from "@/src/app/[locale]/(main)/sys/localisations/locations/components/post-delete";
 import { OBI } from "@/src/types/obi";
 import { Url } from "next/dist/shared/lib/router/router";
 import Link from "next/link";
@@ -25,7 +26,7 @@ interface TableHeaderProps {
     updateIcon?: string;
     updateClassName?: string;
 
-    // deletePath?: Url;   
+    deleteId?: (id: number) => any;
     deleteLabel?: string;
     deleteIcon?: string;
     deleteClassName?: string;
@@ -52,12 +53,12 @@ export default function TableHeader({ id, name,
     title,
     createPath = './create', createLabel = 'Créer', createIcon = 'pi pi-plus', createClassName = 'mr-1 p-2',
     updateLabel = 'Éditer', updateIcon = 'pi pi-file-edit', updateClassName = 'mr-1 p-2',
-    deleteLabel = 'Supprimer', deleteIcon = 'pi pi pi-trash', deleteClassName = 'mr-1 p-1',
+    deleteLabel = 'Supprimer', deleteIcon = 'pi pi pi-trash', deleteClassName = 'mr-1 p-2', deleteId,
     filterLabel = 'Reset', filterIcon = 'pi pi-filter-slash', filterClassName = 'mr-1 p-2',
     onClear,
     catalogSelected,
     size = 'small', onSizeChanged,
-    globalFilter =  '', globalFilterPlaceholder = 'Rechercher...', onGlobalFilterChanged
+    globalFilter = '', globalFilterPlaceholder = 'Rechercher...', onGlobalFilterChanged
 }: TableHeaderProps) {
 
 
@@ -67,6 +68,11 @@ export default function TableHeader({ id, name,
         { label: 'Normale', value: 'normal' },
         { label: 'Large', value: 'large' }
     ]);
+
+    const deleteAction = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault(); // Prevent the form from being submitted in the traditional way.
+        deleteId ? deleteId(catalogSelected.id) : null;
+    };
 
 
     return (
@@ -88,7 +94,13 @@ export default function TableHeader({ id, name,
                                     >
                                         <Button label={updateLabel} icon={updateIcon} severity="warning" className={updateClassName} />
                                     </Link>
-                                    <Button label={deleteLabel} icon={deleteIcon} severity="danger" className={deleteClassName} />
+                                    {/* <LocationDelete id={catalogSelected.id} /> */}
+
+                                    <form onSubmit={deleteAction}>
+                                        {/* <button type="submit" className="text-sm opacity-30 text-red-500">Delete</button> */}
+                                        <Button type='submit' label={deleteLabel} icon={deleteIcon} severity="danger" className={deleteClassName} />
+                                    </form>
+
 
                                 </>
                                 : null}

@@ -41,6 +41,8 @@ export class LocationsModel extends Model {
     }
 
 
+
+
     init() {
         this.map = new Map();
         this.map.set('pk', 'id');

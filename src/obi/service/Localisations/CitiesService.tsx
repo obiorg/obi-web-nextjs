@@ -54,6 +54,7 @@ export const CitiesService = {
      * @returns cities table.
      */
     async getLazy(lazy: any): Promise<OBI.loc_cities[]> {
+        // console.log('lazy city', JSON.stringify(lazy));
         const url = process.env.httpPath + '/localisations/cities/lazy/' + lazy.lazyEvent;
         const res = await fetch(url, { headers: { 'Cache-Control': 'no-cache' } })
         const dataset: OBI.loc_cities[] = await res.json();

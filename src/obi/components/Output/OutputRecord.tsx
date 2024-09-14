@@ -39,13 +39,26 @@ export default function OutputRecord({ id, title, catalog, loading }: OutputReco
                         {catalog ?
                             <>
                                 <h5>{title ? title : 'Dernier enregistrement'}</h5>
-                                <div key={'a'} className="col-12 ">
+                                <div  className="col-12 ">
                                     {Object.keys(catalog).map((key, index) => (
-                                        <div className="grid mb-2">
+                                        <div key={key} className="grid mb-2">
                                             <label className='col-12 md:col-2 p-0 m-0 text-primary'
-                                                key={key}
-                                            >{key}</label>
-                                            <label key={'b_' + key}>{catalog[key] === null || catalog[key] === '' || catalog[key] === 0 || catalog[key] === undefined ? '-' : catalog[key]}</label>
+                                                key={'a_' + key}>{key}</label>
+                                            <label
+                                                key={'b_' + key}>
+                                                {
+                                                    catalog[key] === null
+                                                        || catalog[key] === ''
+                                                        || catalog[key] === 0
+                                                        || catalog[key] === undefined
+                                                        ? '-' :
+                                                        (
+                                                            typeof (catalog[key]) === "boolean"
+                                                                ?
+                                                                (catalog[key] ? 'true' : 'false')
+                                                                :
+                                                                catalog[key])
+                                                }</label>
                                         </div>
                                     ))}
                                 </div>

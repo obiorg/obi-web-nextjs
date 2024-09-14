@@ -11,7 +11,7 @@ import { useFormStatus } from "react-dom";
 
 
 // Define the props that the PostForm component expects
-interface FieldInputTextProps {
+interface FieldOutputLabelProps {
     id?: string;                         // ID of the component
     name?: string;                       // Name of the component
     title?: string;                      // preceding title of dropdown
@@ -27,13 +27,13 @@ interface FieldInputTextProps {
 }
 
 
-export default function FieldInputText(
+export default function FieldOutputLabel(
     { id, name, title,
         value,
         onChange,
         error, placeholder, tooltip, tooltipOptions,
-        disabled 
-    }: FieldInputTextProps) {
+        disabled
+    }: FieldOutputLabelProps) {
 
 
 
@@ -47,7 +47,7 @@ export default function FieldInputText(
                     </label>
                 </div>
 
-                <InputText
+                {/* <Output
                     id={id}
                     name={name}
                     defaultValue={value}
@@ -59,7 +59,16 @@ export default function FieldInputText(
                     tooltip={tooltip}
                     tooltipOptions={tooltipOptions ? tooltipOptions : { position: 'right' }}
                     disabled={disabled}
-                />
+                /> */}
+                <div
+                    className={'col-12 md:col-5  pl-2 mb-1 input-value  text-left align-content-center p-0' + (error ? 'p-invalid' : '')}
+                >
+                    <label>
+                        {value}
+                    </label>
+                    <input type="text" id={id} name={name} defaultValue={value} hidden className="rounded p-2 w-full" />
+                </div>
+
 
                 <div className={'col-12 md:col-4 p-0 m-0 text-left align-content-center'}>
                     {

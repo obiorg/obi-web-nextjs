@@ -434,6 +434,12 @@ const Locations = () => {
     }
 
 
+    const onDelete = (id: number) => {
+        LocationsService.delete(id).then(() => {
+            console.log('Deleted successfully');
+            loadLazyData();
+        });
+    };
 
 
     const header = () => {
@@ -444,6 +450,7 @@ const Locations = () => {
                 onClear={clearFilter}
                 onSizeChanged={(e) => setSize(e.value)}
                 onGlobalFilterChanged={(e) => setGlobalFilterValue(e.value)}
+                deleteId={onDelete}
             />
         )
     }

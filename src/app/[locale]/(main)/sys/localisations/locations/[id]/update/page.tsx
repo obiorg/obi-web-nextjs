@@ -26,7 +26,7 @@ const LocationUpdate = ({ params }: LocationUpdateProps) => {
     const { id } = params;
 
     const [location, setLocation] = useState();
-
+    let m = new LocationsModel();
     useEffect(() => {
         // Fetch the post from the database
         LocationsService.getById(id).then((data) => {
@@ -36,14 +36,14 @@ const LocationUpdate = ({ params }: LocationUpdateProps) => {
             } else {
                 // If the post was successfully fetched, set it as the current location
                 setLocation(data);
+
             }
         })
     }, [id]);
 
 
-    // binds the id to the updatePost action to create an updateAction, 
-    // const updateAction = updatePost.bind(null, id)
-    // console.log('Update location: ', params, id, location);
+
+
     return (
         <main className="flex min-h-screen flex-col items-start p-24">
             <div className="mb-32 text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
@@ -52,7 +52,8 @@ const LocationUpdate = ({ params }: LocationUpdateProps) => {
                 {location ?
                     <PostForm formAction={LocationsService.update}
                         type={1}
-                        initialData={location} />
+                        initialData={location}
+                    />
                     : null}
             </div>
         </main>

@@ -8,14 +8,15 @@ import { InferGetStaticPropsType } from 'next';
 import { DataTableSortMeta, DataTableOperatorFilterMetaData, DataTableFilterMetaData } from 'primereact/datatable';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 // import * as _ from 'lodash';
-
+import * as _ from 'lodash';
 
 export class Model {
 
   map = {} as Map<string, string>;
+  // defaults = {} as any;
 
   constructor(attributes = {}) {
-    //_.defaultsDeep(this, attributes, this.defaults);
+    // _.defaultsDeep(this, attributes, this.defaults);
   }
 
 
@@ -103,66 +104,25 @@ export class Model {
 
       }
     });
-
-
-    // for (let i = 0; i < this.map.size; i++) {
-
-
-
-    //   // if (this.map.get(key) !== undefined && key !== 'pk') {
-    //   //   // Manage type value
-    //   //   switch (this.map.get(key)) {
-    //   //     case 'numeric':
-    //   //       operatorValue = FilterOperator.AND;
-    //   //       matchModeValue = FilterMatchMode.EQUALS;
-    //   //       break;
-    //   //     case 'text':
-    //   //       // Nothing to do like operator and match mode existing
-    //   //       break;
-    //   //     case 'datetime':
-    //   //       operatorValue = FilterOperator.AND;
-    //   //       matchModeValue = FilterMatchMode.DATE_IS;
-    //   //       break;
-    //   //     case 'date':
-    //   //       operatorValue = FilterOperator.AND;
-    //   //       matchModeValue = FilterMatchMode.DATE_IS;
-    //   //       break;
-
-    //   //     default:
-    //   //       console.log('model >> toDefaultFilters >> type variable "' + this.map.get(key) + '" is not defined and defined has text !!');
-    //   //       // nothing to do like operator and match mode eixsting
-    //   //       break;
-    //   //   }
-
-    //   //   // Create the filter
-    //   //   filters[key] = {
-    //   //     operator: operatorValue,
-    //   //     constraints: [{
-    //   //       value: null,
-    //   //       matchMode: matchModeValue
-    //   //     }]
-    //   //   };
-    //   // } else {
-    //   //   console.log('model >> toDefaultFilters >> you cannot use key pk or undefined key : ' + key);
-    //   // }
-
-
-    // }
     return filters;
   }
 
 
 
-  getStandardParam(sorted:any, filtered: any): any {
+  getStandardParam(sorted: any, filtered: any, page: any): any {
+    let pg = page;
+    if (pg === undefined || pg === null)  pg = 0;
+
+
     let sort = sorted;
-    if(sorted === undefined || sorted === null)
+    if (sorted === undefined || sorted === null)
       sort = { field: 'id', order: -1 }
-    
-    let filter = (filtered === undefined ) ? '{}' : filtered;
+
+    let filter = (filtered === undefined) ? '{}' : filtered;
     return {
       first: 0,
       rows: 10,
-      page: 1,
+      page: pg,
       pageCount: 0,
       pk: 'id',
       dataKey: 'id', // Create for datakey purpose
@@ -171,7 +131,7 @@ export class Model {
       sortField: '',
       sortOrder: -1,
       filters: filter,
-      
+
 
       //multiSortMeta: defaultMultiSortMeta,
       multiSortMeta: [

@@ -8,6 +8,7 @@ import { useFormStatus } from "react-dom";
 import ButtonSave from "./ButtonSave";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/router";
 
 
 // Define the props that the PostForm component expects
@@ -21,19 +22,19 @@ interface ButtonSaveProps {
     listLabel?: string;
     updateLabel?: string;
 
-    onSaveClick?: (e: any) => void; // The callback function to be called when the button is clicked
-    onCancelClick?: (e: any) => void; // The callback function to
-    onModeChanged?: (e: any) => void; // when change occur in mode
+    onSaveClick?: (e: any) => void;     // The callback function to be called when the button is clicked
+    onCancelClick?: (e: any) => void;   // The callback function to
+    onModeChanged?: (e: any) => void;   // when change occur in mode
 
-    formAction?:any; //
-    type?: number; // The type of button 0 : create 1: update
+    formAction?: any;                   //
+    type?: number;                      // The type of button 0 : create 1: update
 }
 
 
-export default function ButtonBarCreate({ 
-    id, name, label, 
-    createLabel, cancelLabel, 
-    listLabel, updateLabel, 
+export default function ButtonBarCreate({
+    id, name, label,
+    createLabel, cancelLabel,
+    listLabel, updateLabel,
     onSaveClick, onCancelClick, onModeChanged,
     type = 0,
     formAction }: ButtonSaveProps) {
@@ -49,29 +50,38 @@ export default function ButtonBarCreate({
     // Simulate click event
     const inputCancelElement = React.useRef()
 
+ 
 
-
-    const doCancel = (e:any) => {
+    /**
+     * Preprocess cancel event
+     * @param e event
+     */
+    const doCancel = (e: any) => {
         e.preventDefault();
         // console.log('ButtonBarCreate > doCancel', e)
         inputCancelElement.current.click();
         onCancelClick(e);
+        window.location.reload();
     }
-    
+
     const { reset } = useForm();
 
     return (
         <>
             <div className='grid'>
+
+                {/* Create / Update  */}
                 <div className='col-12 md:col-3 mt-0 '>
                     <ButtonSave
                         label={createLabel}
                         // onClick={onSaveClick}
                         onModeChanged={onModeChanged}
+                        type={type}
                     />
                 </div>
 
 
+                {/* Cancel */}
                 <Link href="./"
                     className='col-12 md:col-3 mt-0 '>
                     <Button label={cancelLabel ? cancelLabel : "Annuler"}
@@ -83,12 +93,14 @@ export default function ButtonBarCreate({
                         // tooltip='Annuler en effaçant les informations enregistré'
                         // tooltipOptions={{ position: 'bottom' }}
                         onClick={doCancel}
-                        // onClick={reset}
+                    // onClick={reset}
                     />
 
-                    <button type='submit'  ref={inputCancelElement} onClick={reset} className="hidden" ></button>
+                    <button type='submit' ref={inputCancelElement} onClick={reset} className="hidden" ></button>
                 </Link>
-                <Link href="./../"
+
+                {/* List  */}
+                <Link href={type === 0 ? "./../" : "./../../"}
                     className='col-12 md:col-3 mt-0 '>
                     <Button label="Lister" icon="pi pi-list"
                         severity="info"

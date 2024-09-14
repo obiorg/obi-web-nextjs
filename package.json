@@ -19,6 +19,7 @@
     "@types/react": "18.3.5",
     "@types/react-dom": "^18.3.0",
     "chart.js": "4.4.4",
+    "lodash": "^4.17.21",
     "negotiator": "^0.6.3",
     "next": "14.2.9",
     "primeflex": "^3.3.1",

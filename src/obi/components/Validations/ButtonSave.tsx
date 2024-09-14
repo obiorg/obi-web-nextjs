@@ -9,15 +9,22 @@ import { useFormStatus } from "react-dom";
 
 // Define the props that the PostForm component expects
 interface ButtonSaveProps {
-    id?: string;                         // ID of the component
-    name?: string;                       // Name of the component
-    label?: string;                      // preceding title of dropdown
-    onClick?: (e: any) => void; // The callback function to be called when the button is clicked
-    onModeChanged?: (e: any) => void; // when change occur in mode
+    id?: string;                        // ID of the component
+    name?: string;                      // Name of the component
+    label?: string;                     // preceding title of dropdown
+    onClick?: (e: any) => void;         // The callback function to be called when the button is clicked
+    onModeChanged?: (e: any) => void;   // when change occur in mode
+
+    type?: number;                      // The type of button 0 : create 1: update
 }
 
 
-export default function ButtonSave({ id, name, label, onClick, onModeChanged }: ButtonSaveProps) {
+export default function ButtonSave(
+    { id, name, label, onClick, onModeChanged,
+        type = 0
+    }
+
+        : ButtonSaveProps) {
     // To bloc during status
     const { pending } = useFormStatus();
 
@@ -32,7 +39,7 @@ export default function ButtonSave({ id, name, label, onClick, onModeChanged }: 
 
     const modes = [
         {
-            label: 'Sauver & Reset',
+            label: type === 0 ? 'Créer & Reset' : 'Enreg. & Voir',
             icon: 'pi pi-save',
             command: (e) => {
                 toast.current.show({ severity: 'success', summary: 'Mode Sauvegarde', detail: 'Mode sauvegarde et reset activé' });
@@ -41,7 +48,7 @@ export default function ButtonSave({ id, name, label, onClick, onModeChanged }: 
             }
         },
         {
-            label: 'Sauver',
+            label: type === 0 ? 'Créer' : 'Enreg. partiel',
             icon: 'pi pi-spin pi-save',
             command: (e) => {
                 toast.current.show({ severity: 'success', summary: 'Delete', detail: 'Mode sauvegarde seul activé' });
@@ -51,11 +58,12 @@ export default function ButtonSave({ id, name, label, onClick, onModeChanged }: 
         },
     ]
 
+
     /**
      * Allows to process main button click events
      * @param e 
      */
-    const doSubmit = (e:any) => {
+    const doSubmit = (e: any) => {
         e.preventDefault();
         inputElement.current.click();
     }

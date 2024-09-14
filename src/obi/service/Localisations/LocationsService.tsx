@@ -129,7 +129,7 @@ export const LocationsService = {
 
         let data = {
             id: (formData.get("id") === '') ? undefined : Number(formData.get("id")),
-            deleted: formData.get("deleted") === "true",
+            deleted: formData.get("deleted") === "on",
             created: formData.get("created"),
             changed: formData.get("changed"),
 
@@ -146,11 +146,11 @@ export const LocationsService = {
             floor: (formData.get("floor") === '') ? undefined : Number(formData.get("floor")),
             number: formData.get("number"),
         };
-        console.log(data);
-        console.log(formState);
+        // console.log(data);
+        // console.log(formState);
 
 
-        const url = process.env.httpPath + '/localisations/locations/' + data.id ;
+        const url = process.env.httpPath + '/localisations/locations/' + data.id;
 
 
         const res = await fetch(
@@ -170,6 +170,33 @@ export const LocationsService = {
         // console.log("LocationsService response", res);
         const dataset: OBI.LocationsFormState = await res.json();
         // console.log('LocationsService >> result from api locations ', dataset);
+        return dataset;
+
+
+    },
+
+
+    async delete(id: any): Promise<OBI.LocationsFormState> {
+
+
+        const url = process.env.httpPath + '/localisations/locations/' + id;
+
+        const res = await fetch(
+            url,
+            {
+                method: "DELETE",
+                mode: "cors", // no-cors, *cors, same-origin
+                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: "same-origin", // include, *same-origin, omit
+                headers: {
+                    "Content-Type": "application/json",
+                    'Cache-Control': 'no-cache'
+                },
+            }
+        )
+        // console.log("LocationsService response", res);
+        const dataset: OBI.LocationsFormState = await res.json();
+        console.log('LocationsService >> result from api locations ', dataset);
         return dataset;
 
 

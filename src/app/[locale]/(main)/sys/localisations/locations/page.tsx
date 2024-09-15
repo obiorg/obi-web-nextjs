@@ -27,6 +27,7 @@ import { MultiSelect } from 'primereact/multiselect';
 import { usePapaParse } from 'react-papaparse';
 import { ExportsService } from '@/src/obi/utilities/export/ExportsService';
 import jsPDF from 'jspdf';
+import { Toolbar } from 'primereact/toolbar';
 
 
 const Locations = () => {
@@ -423,7 +424,7 @@ const Locations = () => {
         //const paginatorLeft = <Button type="button" icon="pi pi-refresh" text />;
         return (
             <div className="flex justify-content-between align-items-center">
-                <h5 className="m-0">Do action refresh</h5>
+                <Button icon='pi pi-refresh' className="p-button-raised p-button-rounded" onClick={(e) => setLazyParams((lazyParams) => { return { ...lazyParams } })} />
             </div>
         )
     }
@@ -432,9 +433,9 @@ const Locations = () => {
         //const paginatorRight = <Button type="button" icon="pi pi-download" text />;
         return (
             <div className="flex justify-content-between align-items-center">
-                <Button type="button" icon="pi pi-file" rounded onClick={() => exportCSV(false)} data-pr-tooltip="CSV" />
-                <Button type="button" icon="pi pi-file-excel" severity="success" rounded onClick={exportExcel} data-pr-tooltip="XLS" />
-                <Button type="button" icon="pi pi-file-pdf" severity="warning" rounded onClick={exportPdf} data-pr-tooltip="PDF" />
+                <Button type="button" label='CSV' icon="pi pi-file" onClick={() => exportCSV(false)} className="mr-2" data-pr-tooltip="CSV" />
+                <Button type="button" label='XLSX' icon="pi pi-file-excel" onClick={exportExcel} className="p-button-success mr-2" data-pr-tooltip="XLS" />
+                <Button type="button" label='PDF' icon="pi pi-file-pdf" onClick={exportPdf} className="p-button-warning mr-2" data-pr-tooltip="PDF" />
             </div>
         )
     }
@@ -556,7 +557,22 @@ const Locations = () => {
 
 
 
+    const leftContents = (
+        <React.Fragment>
+            <Button label="New" icon="pi pi-plus" className="mr-2" />
+            <Button label="Upload" icon="pi pi-upload" className="p-button-success" />
+            <i className="pi pi-bars p-toolbar-separator mr-2" />
+            {/* <SplitButton label="Save" icon="pi pi-check" model={items} className="p-button-warning"></SplitButton> */}
+        </React.Fragment>
+    );
 
+    const rightContents = (
+        <React.Fragment>
+            <Button icon="pi pi-search" className="mr-2" />
+            <Button icon="pi pi-calendar" className="p-button-success mr-2" />
+            <Button icon="pi pi-times" className="p-button-danger" />
+        </React.Fragment>
+    );
 
 
 
@@ -564,7 +580,8 @@ const Locations = () => {
     return (
         <div className='container-fluid'>
 
-
+            {/* <Toolbar className="mb-4" left={leftToolbarTemplate} right={rightToolbarTemplate}></Toolbar> */}
+            <Toolbar left={leftContents} right={rightContents} />
 
             <DataTable
                 id="dataTable"

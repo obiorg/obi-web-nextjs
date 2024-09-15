@@ -85,7 +85,7 @@ export default function TableHeader({ id, name,
     // Managing Columns
     const [selectedColumns, setSelectedColumns] = useState(columns);
     const onColumnToggle = (e: any) => {
-        
+
         let selectedColumns = e.value;
         let orderedSelectedColumns = columns.filter((col: any) => selectedColumns.some((sCol: any) => sCol.field === col.field));
         setSelectedColumns(orderedSelectedColumns);
@@ -98,7 +98,7 @@ export default function TableHeader({ id, name,
 
     return (
         <>
-            <div className="container">
+            <div className="container-fluid">
                 <div className='row mb-3'>
                     <div className='flex flex-wrap align-items-center justify-content-between gap-2'>
                         <h2><span className="text-900">{title}</span></h2>
@@ -134,66 +134,37 @@ export default function TableHeader({ id, name,
 
 
 
+                <div className="row">
+                    <div className="flex flex-wrap justify-content-between align-items-center">
 
-                <div className="flex justify-content-between align-items-center">
-
-                    <div className="flex justify-content-between align-items-center" style={{ textAlign: 'left' }}>
-                        <MultiSelect 
-                            value={selectedColumns}
-                            options={columns}
-                            optionLabel='header'
-                            onChange={onColumnToggle} style={{ width: '20em' }} />
-                    </div>
-
-                    <div className="flex justify-content-center align-items-center mb-0 gap-2">
-                        <SelectButton value={size} onChange={onSizeChanged} options={sizeOptions} />
-                        {/* <Button icon="pi pi-refresh" raised rounded className='ml-2' /> */}
-                    </div>
-                    {/* 
-                    <div className="flex justify-content-center align-items-center mb-0 gap-2">
-                        <div className="col-md-2">
-                            <span>
-                                <label>Metakey</label>
-                                <InputSwitch
-                                    checked={metaKey}
-                                    onChange={onMetakeyChange}
-                                />
-                            </span>
-                            <span>
-                                {metaKey === true ? 'Oui' : 'Non'}
-                            </span>
+                        <div className="flex justify-content-between align-items-center" style={{ textAlign: 'left' }}>
+                            <MultiSelect
+                                value={selectedColumns}
+                                options={columns}
+                                optionLabel='header'
+                                onChange={onColumnToggle} style={{ width: '20em' }} />
                         </div>
 
-                        <div className="col-md-2">
-                            <label>Row Click</label>{' '}
-                            <InputSwitch
-                                checked={rowClick}
-                                onChange={(e) => setRowClick(e.value)}
+                        <div className="flex justify-content-center align-items-center mb-0 gap-2">
+                            <SelectButton value={size} onChange={onSizeChanged} options={sizeOptions} hidden />
+                            {/* <Button icon="pi pi-refresh" raised rounded className='ml-2' /> */}
+                        </div>
+
+
+                        <div className="p-input-icon-left">
+                            <i className="pi pi-search ml-3" />
+                            <InputText
+                                value={globalFilter}
+                                onChange={onGlobalFilterChanged}
+                                placeholder={globalFilterPlaceholder}
+                                className="pl-6"
                             />
-                            <span>{rowClick === true ? 'Oui' : 'Non'}</span>
                         </div>
 
-                        <div className="col-md-2">
-                            <label>Filter Row</label>{' '}
-                            <InputSwitch
-                                checked={filterDisplay === 'row'}
-                                onChange={onFilterDisplayChange}
-                            />
-                            <span>{filterDisplay === 'menu' ? 'Menu' : 'Ligne'}</span>
-                        </div>
-                    </div> */}
-
-
-                    <span className="p-input-icon-left">
-                        <i className="pi pi-search" />
-                        <InputText
-                            value={globalFilter}
-                            onChange={onGlobalFilterChanged}
-                            placeholder={globalFilterPlaceholder}
-                        />
-                    </span>
+                    </div>
 
                 </div>
+
             </div>
 
         </>

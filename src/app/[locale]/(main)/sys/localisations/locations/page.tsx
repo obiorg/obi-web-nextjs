@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { DataTable, DataTableFilterMeta, DataTableSortMeta } from 'primereact/datatable';
 import { Column, ColumnFilterClearTemplateOptions } from 'primereact/column';
@@ -23,6 +23,10 @@ import { Password } from 'primereact/password';
 import Link from 'next/link';
 import { LocationsModel } from '@/src/obi/models/localisations/LocationsModel';
 import TableHeader from '@/src/obi/components/Tables/TableHeader';
+import { MultiSelect } from 'primereact/multiselect';
+import { usePapaParse } from 'react-papaparse';
+import { ExportsService } from '@/src/obi/utilities/export/ExportsService';
+import jsPDF from 'jspdf';
 
 
 const Locations = () => {
@@ -139,29 +143,6 @@ const Locations = () => {
 
     const [catalogs, setCatalogs] = useState<any>([]);
 
-    const columns: OBI.ColumnMeta[] = [
-        { field: 'id', header: 'ID', dataType: 'numeric', sortable: true, filter: true },
-        { field: 'deleted', header: 'Supp.', dataType: 'numeric', bodyTemplate: bodyTemplateDeleted, sortable: true, filter: true },
-        { field: 'created', header: 'Créé', dataType: 'date', bodyTemplate: bodyTemplateCreated, sortable: true, filter: true },
-        { field: 'changed', header: 'Changé', dataType: 'date', bodyTemplate: bodyTemplateChanged, sortable: true, filter: true },
-
-        { field: 'location', header: 'Localisation', dataType: 'text', sortable: true, filter: true },
-        { field: 'designation', header: 'Désignation', dataType: 'text', sortable: true, filter: true },
-
-        { field: 'group', header: 'Groupe', dataType: 'text', sortable: true, filter: true },
-        { field: 'country', header: 'Pays', dataType: 'numeric', bodyTemplate: bodyTemplateCountry, sortable: true, filter: true },
-        { field: 'state', header: 'Province', dataType: 'numeric', bodyTemplate: bodyTemplateState, sortable: true, filter: true },
-        { field: 'city', header: 'Ville', dataType: 'numeric', bodyTemplate: bodyTemplateCity, sortable: true, filter: true },
-
-        { field: 'address', header: 'Adresse', dataType: 'text', sortable: true, filter: true },
-        { field: 'address1', header: 'Adresse 1', dataType: 'text', sortable: true, filter: true },
-        { field: 'address3', header: 'Adresse 2', dataType: 'text', sortable: true, filter: true },
-        { field: 'bloc', header: 'Bloc', dataType: 'text', sortable: true, filter: true },
-        { field: 'floor', header: 'Etage', dataType: 'numeric', sortable: true, filter: true },
-        { field: 'number', header: 'Numéro', dataType: 'text', sortable: true, filter: true },
-    ];
-
-
 
 
 
@@ -217,7 +198,7 @@ const Locations = () => {
 
 
     /**
-     * 
+     *
      * @param event for page changed
      */
     const onPage = (event: Admin.lazy) => {
@@ -233,7 +214,7 @@ const Locations = () => {
 
 
     /**
-     * 
+     *
      * @param event on sorting changed
      */
     const onSort = (event: Admin.Lazy) => {
@@ -244,7 +225,7 @@ const Locations = () => {
     }
 
     /**
-     * 
+     *
      * @param event on filter applied
      */
     const onFilter = (event: Admin.Lazy) => {
@@ -289,7 +270,7 @@ const Locations = () => {
     };
 
     /**
-     * 
+     *
      */
     const initFilters = () => {
         console.log('init', defaultFilters)
@@ -321,7 +302,7 @@ const Locations = () => {
 
     /**
      * OnSortEvent is called when onSort event is called on the dataTable element.
-     * @param {*} event 
+     * @param {*} event
      */
     const onSortEvent = (event: any) => {
         event.sortMode = lazyParams.sortMode;
@@ -397,7 +378,30 @@ const Locations = () => {
 
 
 
+    // Manage columns
+    const columns: OBI.ColumnMeta[] = [
+        { field: 'id', header: 'ID', dataType: 'numeric', sortable: true, filter: true },
+        { field: 'deleted', header: 'Supp.', dataType: 'numeric', bodyTemplate: bodyTemplateDeleted, sortable: true, filter: true },
+        { field: 'created', header: 'Créé', dataType: 'date', bodyTemplate: bodyTemplateCreated, sortable: true, filter: true },
+        { field: 'changed', header: 'Changé', dataType: 'date', bodyTemplate: bodyTemplateChanged, sortable: true, filter: true },
 
+        { field: 'location', header: 'Localisation', dataType: 'text', sortable: true, filter: true },
+        { field: 'designation', header: 'Désignation', dataType: 'text', sortable: true, filter: true },
+
+        { field: 'group', header: 'Groupe', dataType: 'text', sortable: true, filter: true },
+        { field: 'country', header: 'Pays', dataType: 'numeric', bodyTemplate: bodyTemplateCountry, sortable: true, filter: true },
+        { field: 'state', header: 'Province', dataType: 'numeric', bodyTemplate: bodyTemplateState, sortable: true, filter: true },
+        { field: 'city', header: 'Ville', dataType: 'numeric', bodyTemplate: bodyTemplateCity, sortable: true, filter: true },
+
+        { field: 'address', header: 'Adresse', dataType: 'text', sortable: true, filter: true },
+        { field: 'address1', header: 'Adresse 1', dataType: 'text', sortable: true, filter: true },
+        { field: 'address3', header: 'Adresse 2', dataType: 'text', sortable: true, filter: true },
+        { field: 'bloc', header: 'Bloc', dataType: 'text', sortable: true, filter: true },
+        { field: 'floor', header: 'Etage', dataType: 'numeric', sortable: true, filter: true },
+        { field: 'number', header: 'Numéro', dataType: 'text', sortable: true, filter: true },
+    ];
+    // DataTable columns toggle
+    const [selectedColumns, setSelectedColumns] = useState(columns);
 
 
 
@@ -407,6 +411,7 @@ const Locations = () => {
             return (
                 <div className=''>
                     Il y a {catalogs ? "" + catalogs.length + "/" + totalRecords : 0} résultat(s).
+
                 </div>
 
             );
@@ -427,10 +432,96 @@ const Locations = () => {
         //const paginatorRight = <Button type="button" icon="pi pi-download" text />;
         return (
             <div className="flex justify-content-between align-items-center">
-                <h5 className="m-0">Do action download</h5>
-
+                <Button type="button" icon="pi pi-file" rounded onClick={() => exportCSV(false)} data-pr-tooltip="CSV" />
+                <Button type="button" icon="pi pi-file-excel" severity="success" rounded onClick={exportExcel} data-pr-tooltip="XLS" />
+                <Button type="button" icon="pi pi-file-pdf" severity="warning" rounded onClick={exportPdf} data-pr-tooltip="PDF" />
             </div>
         )
+    }
+
+
+    // Export
+    const dt = useRef(null);
+    const exportCSV = (vale: boolean) => {
+        setLoading(true);
+
+        if (loadLazyTimeout) {
+            clearTimeout(loadLazyTimeout);
+        }
+
+        //initiate delay of a backend call
+        loadLazyTimeout = setTimeout(() => {
+            // Create lazy event object with stringify lazy parameter
+            const lazyEventSet = { lazyEvent: JSON.stringify(lazyParams) };
+
+            // Get Lazy Data
+            LocationsService.download(lazyEventSet).then((data: any) => {
+                // dt.current.exportCSV(data);
+                ExportsService.downloadAsCSV(data, "locations_" + Math.floor(Date.now() / 1000))
+                setLoading(false);
+            });
+        }, Math.random() * 1000 + 500) as unknown as number;
+
+    }
+    const exportExcel = () => {
+        setLoading(true);
+
+        if (loadLazyTimeout) {
+            clearTimeout(loadLazyTimeout);
+        }
+
+        //initiate delay of a backend call
+        loadLazyTimeout = setTimeout(() => {
+            // Create lazy event object with stringify lazy parameter
+            const lazyEventSet = { lazyEvent: JSON.stringify(lazyParams) };
+
+            // Get Lazy Data
+            LocationsService.download(lazyEventSet).then((data: any) => {
+                ExportsService.downloadAsXLSX(data, "locations_" + Math.floor(Date.now() / 1000))
+                setLoading(false);
+            });
+        }, Math.random() * 1000 + 500) as unknown as number;
+
+    }
+    const exportPdf = () => {
+        setLoading(true);
+
+        if (loadLazyTimeout) {
+            clearTimeout(loadLazyTimeout);
+        }
+
+        //initiate delay of a backend call
+        loadLazyTimeout = setTimeout(() => {
+            // Create lazy event object with stringify lazy parameter
+            const lazyEventSet = { lazyEvent: JSON.stringify(lazyParams) };
+
+            // Get Lazy Data
+            LocationsService.download(lazyEventSet).then((data: any) => {
+                const exportColumns = columns.map(col => ({ title: col.header, dataKey: col.field }));
+                const columnsStyle = {
+                    0: { halign: 'right', valign: 'middle', fontSize: 8, cellPadding: 1, minCellWidth: 20, cellWidth: 'wrap' }, // id //fillColor: [0, 255, 0]
+                    1: { halign: 'center', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
+                    2: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'wrap' },
+                    3: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'wrap' },
+                    4: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' }, // localisation
+                    5: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
+                    6: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
+                    7: { halign: 'right', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },   // country
+                    8: { halign: 'right', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
+                    9: { halign: 'right', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'wrap' }, // ville
+                    10: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
+                    11: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
+                    12: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
+                    13: { halign: 'center', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
+                    14: { halign: 'center', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
+                    15: { halign: 'center', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' }
+                }
+                ExportsService.downloadAsPdf(exportColumns, data, "locations_" + Math.floor(Date.now() / 1000) + '.pdf', columnsStyle);
+
+                setLoading(false);
+            });
+        }, Math.random() * 1000 + 500) as unknown as number;
+
     }
 
 
@@ -444,14 +535,19 @@ const Locations = () => {
 
     const header = () => {
         return (
-            <TableHeader
-                title='Localisations'
-                catalogSelected={selectedCatalog}
-                onClear={clearFilter}
-                onSizeChanged={(e) => setSize(e.value)}
-                onGlobalFilterChanged={(e) => setGlobalFilterValue(e.value)}
-                deleteId={onDelete}
-            />
+            <>
+                <TableHeader
+                    title='Localisations'
+                    catalogSelected={selectedCatalog}
+                    onClear={clearFilter}
+                    onSizeChanged={(e) => setSize(e.value)}
+                    onGlobalFilterChanged={(e) => setGlobalFilterValue(e.value)}
+                    deleteId={onDelete}
+
+                    columns={columns}
+                    onColumnChanged={(e) => { setSelectedColumns(e); }}
+                />
+            </>
         )
     }
     const footer = renderFooter()
@@ -472,6 +568,7 @@ const Locations = () => {
 
             <DataTable
                 id="dataTable"
+                ref={dt}
                 value={catalogs}
                 selection={selectedCatalog}
                 selectionMode="single"
@@ -487,8 +584,9 @@ const Locations = () => {
                 // Chargement en cours
                 loading={loading}
 
-                // Taille 
+                // Taille
                 size={size}
+                resizableColumns
 
                 // Affichage de grille
                 showGridlines
@@ -496,7 +594,7 @@ const Locations = () => {
                 // Affichage striée des lignes
                 stripedRows
 
-                // Filter 
+                // Filter
                 filterDisplay={filterDisplay}
                 filters={lazyParams.filters}
                 onFilter={onFilter}
@@ -522,11 +620,21 @@ const Locations = () => {
                 onPage={onPage}
 
                 tableStyle={{ minWidth: '50rem' }}>
-                {columns.map((col, i) => (
+                {/* {columns.map((col, i) => (
                     <Column key={col.field} field={col.field} header={col.header} dataType={col.dataType}
                         filter={col.filter} filterField={col.field} filterPlaceholder={col.filterPlaceholder}
                         body={col.bodyTemplate} sortable={col.sortable} />
-                ))}
+
+
+                ))} */}
+
+                {
+                    selectedColumns.map(col => {
+                        return <Column key={col.field} field={col.field} header={col.header} dataType={col.dataType}
+                            filter={col.filter} filterField={col.field} filterPlaceholder={col.filterPlaceholder}
+                            body={col.bodyTemplate} sortable={col.sortable} />;
+                    })
+                }
             </DataTable>
         </div >
     );

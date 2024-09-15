@@ -194,12 +194,20 @@ export const LocationsService = {
                 },
             }
         )
-        // console.log("LocationsService response", res);
+        console.log("LocationsService response", res);
         const dataset: OBI.LocationsFormState = await res.json();
-        console.log('LocationsService >> result from api locations ', dataset);
+        // console.log('LocationsService >> result from api locations ', dataset);
         return dataset;
 
 
+    },
+
+    async download(lazy: any): Promise<OBI.locations[]> {
+        const url = process.env.httpPath + '/localisations/locations/download/' + lazy.lazyEvent;
+        const res = await fetch(url, { headers: { 'Cache-Control': 'no-cache' } })
+        const dataset: OBI.locations[] = await res.json();
+        // console.log("Locations dataset", dataset);
+        return dataset;
     },
 
 };

@@ -7,8 +7,9 @@ import { Url } from "next/dist/shared/lib/router/router";
 import Link from "next/link";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
+import { MultiSelect } from "primereact/multiselect";
 import { SelectButton } from "primereact/selectbutton";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 
 // Define the props that the PostForm component expects
@@ -45,6 +46,10 @@ interface TableHeaderProps {
     globalFilter?: string; // should contain
     globalFilterPlaceholder?: string;
     onGlobalFilterChanged?: (e: any) => void;
+
+    // Managing columns
+    columns?: any; // ...
+    onColumnChanged?: (e: any) => void;
 }
 
 
@@ -58,7 +63,10 @@ export default function TableHeader({ id, name,
     onClear,
     catalogSelected,
     size = 'small', onSizeChanged,
-    globalFilter = '', globalFilterPlaceholder = 'Rechercher...', onGlobalFilterChanged
+    globalFilter = '', globalFilterPlaceholder = 'Rechercher...', onGlobalFilterChanged,
+
+    columns,
+    onColumnChanged
 }: TableHeaderProps) {
 
 
@@ -74,6 +82,19 @@ export default function TableHeader({ id, name,
         deleteId ? deleteId(catalogSelected.id) : null;
     };
 
+    // Managing Columns
+    const [selectedColumns, setSelectedColumns] = useState(columns);
+    const onColumnToggle = (e: any) => {
+        
+        let selectedColumns = e.value;
+        let orderedSelectedColumns = columns.filter((col: any) => selectedColumns.some((sCol: any) => sCol.field === col.field));
+        setSelectedColumns(orderedSelectedColumns);
+        onColumnChanged && onColumnChanged(orderedSelectedColumns);
+    }
+    useEffect(() => {
+        console.log('useEffect Columns', columns)
+        setSelectedColumns(columns);
+    }, [columns]);
 
     return (
         <>
@@ -116,7 +137,15 @@ export default function TableHeader({ id, name,
 
                 <div className="flex justify-content-between align-items-center">
 
-                    <div className="flex justify-content-between align-items-center">
+                    <div className="flex justify-content-between align-items-center" style={{ textAlign: 'left' }}>
+                        <MultiSelect 
+                            value={selectedColumns}
+                            options={columns}
+                            optionLabel='header'
+                            onChange={onColumnToggle} style={{ width: '20em' }} />
+                    </div>
+
+                    <div className="flex justify-content-center align-items-center mb-0 gap-2">
                         <SelectButton value={size} onChange={onSizeChanged} options={sizeOptions} />
                         {/* <Button icon="pi pi-refresh" raised rounded className='ml-2' /> */}
                     </div>

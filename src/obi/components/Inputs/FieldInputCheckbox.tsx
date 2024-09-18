@@ -60,7 +60,7 @@ export default function FieldInputCheckbox(
 
 
                     tooltip={tooltip}
-                    tooltipOptions={tooltipOptions ? tooltipOptions : { position: 'right' }}
+                    tooltipOptions={tooltipOptions ? tooltipOptions : { position: 'bottom' }}
                     disabled={disabled}
                 />
 

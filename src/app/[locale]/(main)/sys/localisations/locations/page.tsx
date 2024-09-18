@@ -28,11 +28,15 @@ import { usePapaParse } from 'react-papaparse';
 import { ExportsService } from '@/src/obi/utilities/export/ExportsService';
 import jsPDF from 'jspdf';
 import { Toolbar } from 'primereact/toolbar';
+import TableToolbar from '@/src/obi/components/Tables/TableToolbar';
+import { Calendar } from 'primereact/calendar';
 
 
 const Locations = () => {
 
-
+    const dateFilterTemplate = (options:any) => {
+        return <Calendar value={options.value} onChange={(e) => options.filterCallback(e.value, options.index)} dateFormat="dd/mm/yy" placeholder="dd/mm/yy" mask="99/99/9999" />
+    }
 
     const bodyTemplateId = (rowData: OBI.locations) => {
         return <InputNumber
@@ -41,7 +45,7 @@ const Locations = () => {
 
     const bodyTemplateDeleted = (rowData: OBI.locations) => {
         return (
-            <Checkbox inputId={rowData.id + '_deleted'} checked={(rowData.deleted ? true : false)} />
+            rowData.deleted ? <i className='pi pi-check' /> : <i className="pi pi-times" />
         );
     }
 
@@ -138,6 +142,38 @@ const Locations = () => {
     const [size, setSize] = useState<string>('small');
     const [filterDisplay, setFilterDisplay] = useState('menu')
 
+    // Manage columns
+    const [columns, setColumns]: OBI.ColumnMeta[] = useState([
+        { field: 'id', header: 'ID', dataType: 'numeric', sortable: true, filter: true, style: { textAlign: 'right' } },
+        { field: 'deleted', header: 'Supp.', dataType: 'numeric', bodyTemplate: bodyTemplateDeleted, sortable: true, filter: true, style: { textAlign: 'center' } },
+        { field: 'created', header: 'Créé', dataType: 'date', bodyTemplate: bodyTemplateCreated, sortable: true, filter: true, filterField: "date", filterPlaceholder: 'Insérer une date', filterElement: dateFilterTemplate, style: { textAlign: 'center' } },
+        { field: 'changed', header: 'Changé', dataType: 'date', bodyTemplate: bodyTemplateChanged, sortable: true, filter: true, filterField: "date", filterPlaceholder: 'Insérer une date', filterElement: dateFilterTemplate, style: { textAlign: 'center' } },
+
+        { field: 'location', header: 'Localisation', dataType: 'text', sortable: true, filter: true },
+        { field: 'designation', header: 'Désignation', dataType: 'text', sortable: true, filter: true },
+
+        { field: 'group', header: 'Groupe', dataType: 'text', sortable: true, filter: true },
+        { field: 'country', header: 'Pays', dataType: 'numeric', bodyTemplate: bodyTemplateCountry, sortable: true, filter: true },
+        { field: 'state', header: 'Province', dataType: 'numeric', bodyTemplate: bodyTemplateState, sortable: true, filter: true },
+        { field: 'city', header: 'Ville', dataType: 'numeric', bodyTemplate: bodyTemplateCity, sortable: true, filter: true },
+
+        { field: 'address', header: 'Adresse', dataType: 'text', sortable: true, filter: true },
+        { field: 'address1', header: 'Adresse 1', dataType: 'text', sortable: true, filter: true },
+        { field: 'address3', header: 'Adresse 2', dataType: 'text', sortable: true, filter: true },
+        { field: 'bloc', header: 'Bloc', dataType: 'text', sortable: true, filter: true },
+        { field: 'floor', header: 'Etage', dataType: 'numeric', sortable: true, filter: true, style: { textAlign: 'center' } },
+        { field: 'number', header: 'Numéro', dataType: 'text', sortable: true, filter: true, style: { textAlign: 'center' } },
+    ]);
+
+    // DataTable columns toggle
+    const [selectedColumns, setSelectedColumns] = useState<any>(columns);
+    const columnsRender = selectedColumns.map((col: any, i: number) => {
+        return <Column key={col.field} field={col.field} header={col.header} dataType={col.dataType}
+
+            body={col.bodyTemplate} sortable={col.sortable} style={col.style ? col.style : { width: '10%' }}
+            filter={col.filter} filterField={col.field} filterPlaceholder={col.filterPlaceholder} filterElement={col.filterElement}
+        />;
+    });
 
 
 
@@ -230,7 +266,7 @@ const Locations = () => {
      * @param event on filter applied
      */
     const onFilter = (event: Admin.Lazy) => {
-        //  console.log('onFilter >> event.filters >> ', event.filters);
+        //console.log('onFilter >> event.filters >> ', event.filters);
         //  console.log('onFilter >> First event.filters  key >> ', Object.keys(event.filters)[0]);
 
         // event['first'] = 0
@@ -257,7 +293,7 @@ const Locations = () => {
 
         // console.log('filters :', filters);
         // Update Lazy parameters filters
-        lazyParams.filters = filters;
+        lazyParams.filters = event.filters;
 
         // Update data
         loadLazyData();
@@ -274,43 +310,11 @@ const Locations = () => {
      *
      */
     const initFilters = () => {
-        console.log('init', defaultFilters)
+        // console.log('init', defaultFilters)
         lazyParams.filters = defaultFilters;
         setGlobalFilterValue('');
         loadLazyData();
     };
-
-
-    const filterClearTemplate = (options: ColumnFilterClearTemplateOptions) => {
-        return <Button type="button" icon="pi pi-times" onClick={options.filterClearCallback} severity="secondary"></Button>;
-    };
-
-
-    const booleanItemTemplate = (option: any) => {
-        return <Checkbox checked={option} disabled></Checkbox>;
-        //return <Tag value={option} severity={getSeverity(option)} />;
-    };
-
-
-
-
-
-
-
-
-
-
-
-    /**
-     * OnSortEvent is called when onSort event is called on the dataTable element.
-     * @param {*} event
-     */
-    const onSortEvent = (event: any) => {
-        event.sortMode = lazyParams.sortMode;
-        //console.log("lazyParams before event apply: ", lazyParams);
-        setLazyParams(event);
-        //console.log("lazyParams after event apply: ", lazyParams);
-    }
 
 
 
@@ -320,46 +324,6 @@ const Locations = () => {
         setFilterDisplay(value ? 'row' : 'menu');
         setLazyParams(lazyParams);
     }
-
-    const onMetakeyChange = (e: any) => {
-        const value = e.value
-        setMetaKey(value)
-    }
-
-    const onRowSelect = (event: any) => {
-        const value = event.data
-        console.log('onRowSelect : ', value)
-    }
-
-    const onRowUnselect = (event: any) => {
-        const value = event.data
-        //console.log('onRowUnselect  : ', value)
-    }
-
-    const onSelectionChange = (e: any) => {
-        const value = e.value
-        console.log('onSelectionChange', value)
-        // setSelectedEntreprises(value)
-        // setSelectAll(value.length === totalRecords)
-        setSelectedCatalog(e.value);
-    }
-
-    const onSelectAllChange = (event: any) => {
-        const selectAll = event.checked
-        //console.log('onSelectAllChange', event)
-        if (selectAll) {
-            entrepriseService.getEntreprises().then((data) => {
-                //console.log('onSelectionChange Data', data)
-                setSelectAll(true)
-                setSelectedEntreprises(data)
-            })
-        } else {
-            setSelectAll(false)
-            setSelectedEntreprises([])
-        }
-    }
-
-
 
     const onGlobalFilterChange = (e: any) => {
         const value = e.target.value;
@@ -379,57 +343,52 @@ const Locations = () => {
 
 
 
-    // Manage columns
-    const columns: OBI.ColumnMeta[] = [
-        { field: 'id', header: 'ID', dataType: 'numeric', sortable: true, filter: true },
-        { field: 'deleted', header: 'Supp.', dataType: 'numeric', bodyTemplate: bodyTemplateDeleted, sortable: true, filter: true },
-        { field: 'created', header: 'Créé', dataType: 'date', bodyTemplate: bodyTemplateCreated, sortable: true, filter: true },
-        { field: 'changed', header: 'Changé', dataType: 'date', bodyTemplate: bodyTemplateChanged, sortable: true, filter: true },
-
-        { field: 'location', header: 'Localisation', dataType: 'text', sortable: true, filter: true },
-        { field: 'designation', header: 'Désignation', dataType: 'text', sortable: true, filter: true },
-
-        { field: 'group', header: 'Groupe', dataType: 'text', sortable: true, filter: true },
-        { field: 'country', header: 'Pays', dataType: 'numeric', bodyTemplate: bodyTemplateCountry, sortable: true, filter: true },
-        { field: 'state', header: 'Province', dataType: 'numeric', bodyTemplate: bodyTemplateState, sortable: true, filter: true },
-        { field: 'city', header: 'Ville', dataType: 'numeric', bodyTemplate: bodyTemplateCity, sortable: true, filter: true },
-
-        { field: 'address', header: 'Adresse', dataType: 'text', sortable: true, filter: true },
-        { field: 'address1', header: 'Adresse 1', dataType: 'text', sortable: true, filter: true },
-        { field: 'address3', header: 'Adresse 2', dataType: 'text', sortable: true, filter: true },
-        { field: 'bloc', header: 'Bloc', dataType: 'text', sortable: true, filter: true },
-        { field: 'floor', header: 'Etage', dataType: 'numeric', sortable: true, filter: true },
-        { field: 'number', header: 'Numéro', dataType: 'text', sortable: true, filter: true },
-    ];
-    // DataTable columns toggle
-    const [selectedColumns, setSelectedColumns] = useState(columns);
 
 
 
-    const renderFooter = () => {
+
+    const header = () => {
+        return (
+            <>
+                <TableHeader
+                    title='Localisations'
+                    catalogSelected={selectedCatalog}
+                    onClear={clearFilter}
+                    onSizeChanged={(e) => setSize(e.value)}
+                    onGlobalFilterChanged={(e) => setGlobalFilterValue(e.value)}
+                    deleteId={onDelete}
+
+                    columns={columns}
+                    onColumnChanged={(cols) => { setSelectedColumns(cols); }}
+                />
+            </>
+        )
+    }
+    const footer = () => {
 
         if (!catalogs) {
             return (
                 <div className=''>
                     Il y a {catalogs ? "" + catalogs.length + "/" + totalRecords : 0} résultat(s).
-
                 </div>
-
+            );
+        } else {
+            return (
+                <div className=''>
+                    Il y a {catalogs ? "" + catalogs.length + "/" + totalRecords : 0} résultat(s).
+                </div>
             );
         }
         // return renderGlobalFilter();
     }
-
-    const renderPaginatorLeft = () => {
+    const paginatorLeft = () => {
         //const paginatorLeft = <Button type="button" icon="pi pi-refresh" text />;
         return (
             <div className="flex justify-content-between align-items-center">
-                <Button icon='pi pi-refresh' className="p-button-raised p-button-rounded" onClick={(e) => setLazyParams((lazyParams) => { return { ...lazyParams } })} />
             </div>
         )
     }
-
-    const renderPaginatorRight = () => {
+    const paginatorRight = () => {
         //const paginatorRight = <Button type="button" icon="pi pi-download" text />;
         return (
             <div className="flex justify-content-between align-items-center">
@@ -441,7 +400,7 @@ const Locations = () => {
     }
 
 
-    // Export
+    // Export / Import
     const dt = useRef(null);
     const exportCSV = (vale: boolean) => {
         setLoading(true);
@@ -524,7 +483,14 @@ const Locations = () => {
         }, Math.random() * 1000 + 500) as unknown as number;
 
     }
-
+    const onImportCSV = (e: any) => {
+        // handle file upload and import logic here
+        ExportsService.importCSV(e);
+    };
+    const onImportExcel = (e: any) => {
+        // handle file upload and import logic here
+        ExportsService.importExcel(e);
+    };
 
     const onDelete = (id: number) => {
         LocationsService.delete(id).then(() => {
@@ -534,54 +500,26 @@ const Locations = () => {
     };
 
 
-    const header = () => {
-        return (
-            <>
-                <TableHeader
-                    title='Localisations'
-                    catalogSelected={selectedCatalog}
-                    onClear={clearFilter}
-                    onSizeChanged={(e) => setSize(e.value)}
-                    onGlobalFilterChanged={(e) => setGlobalFilterValue(e.value)}
-                    deleteId={onDelete}
-
-                    columns={columns}
-                    onColumnChanged={(e) => { setSelectedColumns(e); }}
-                />
-            </>
-        )
-    }
-    const footer = renderFooter()
-    const paginatorLeft = renderPaginatorLeft();
-    const paginatorRight = renderPaginatorRight();
 
 
 
-    const leftContents = (
-        <React.Fragment>
-            <Button label="New" icon="pi pi-plus" className="mr-2" />
-            <Button label="Upload" icon="pi pi-upload" className="p-button-success" />
-            <i className="pi pi-bars p-toolbar-separator mr-2" />
-            {/* <SplitButton label="Save" icon="pi pi-check" model={items} className="p-button-warning"></SplitButton> */}
-        </React.Fragment>
-    );
 
-    const rightContents = (
-        <React.Fragment>
-            <Button icon="pi pi-search" className="mr-2" />
-            <Button icon="pi pi-calendar" className="p-button-success mr-2" />
-            <Button icon="pi pi-times" className="p-button-danger" />
-        </React.Fragment>
-    );
+
+
 
 
 
 
     return (
-        <div className='container-fluid'>
+        <div className='container-fluid p-0 m-0'>
 
-            {/* <Toolbar className="mb-4" left={leftToolbarTemplate} right={rightToolbarTemplate}></Toolbar> */}
-            <Toolbar left={leftContents} right={rightContents} />
+            <TableToolbar
+                catalogSelected={selectedCatalog}
+                onClear={clearFilter}
+                deleteId={onDelete}
+                onReload={(e) => setLazyParams((lazyParams) => { return { ...lazyParams } })}
+            />
+
 
             <DataTable
                 id="dataTable"
@@ -589,14 +527,17 @@ const Locations = () => {
                 value={catalogs}
                 selection={selectedCatalog}
                 selectionMode="single"
-                onSelectionChange={onSelectionChange}
+                onSelectionChange={(e) => { setSelectedCatalog(e.value) }}
+
                 lazy
+
+                reorderableColumns
 
                 emptyMessage="Aucun enregistrement trouvé !"
 
                 // header and footer
                 header={header}
-                footer={footer}
+                // footer={footer}
 
                 // Chargement en cours
                 loading={loading}
@@ -637,20 +578,10 @@ const Locations = () => {
                 onPage={onPage}
 
                 tableStyle={{ minWidth: '50rem' }}>
-                {/* {columns.map((col, i) => (
-                    <Column key={col.field} field={col.field} header={col.header} dataType={col.dataType}
-                        filter={col.filter} filterField={col.field} filterPlaceholder={col.filterPlaceholder}
-                        body={col.bodyTemplate} sortable={col.sortable} />
 
-
-                ))} */}
 
                 {
-                    selectedColumns.map(col => {
-                        return <Column key={col.field} field={col.field} header={col.header} dataType={col.dataType}
-                            filter={col.filter} filterField={col.field} filterPlaceholder={col.filterPlaceholder}
-                            body={col.bodyTemplate} sortable={col.sortable} />;
-                    })
+                    columnsRender
                 }
             </DataTable>
         </div >

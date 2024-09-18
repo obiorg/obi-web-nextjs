@@ -54,7 +54,7 @@ export default function FieldInputNumber(
                     placeholder={placeholder}
                     // required
                     tooltip={tooltip}
-                    tooltipOptions={tooltipOptions?tooltipOptions:{ position: 'right' }}
+                    tooltipOptions={tooltipOptions?tooltipOptions:{ position: 'bottom' }}
                 />
 
                 <div className={'col-12 md:col-4 p-0 m-0 text-left align-content-center'}>

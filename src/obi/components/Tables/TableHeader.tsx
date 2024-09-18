@@ -22,7 +22,7 @@ interface TableHeaderProps {
     createIcon?: string;
     createClassName?: string;
 
-    // updatePath?: Url;   
+    // updatePath?: Url;
     updateLabel?: string;
     updateIcon?: string;
     updateClassName?: string;
@@ -77,24 +77,24 @@ export default function TableHeader({ id, name,
         { label: 'Large', value: 'large' }
     ]);
 
-    const deleteAction = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault(); // Prevent the form from being submitted in the traditional way.
-        deleteId ? deleteId(catalogSelected.id) : null;
-    };
+    // /**
+    //  * 
+    //  * @param event 
+    //  */
+    // const deleteAction = (event: React.FormEvent<HTMLFormElement>) => {
+    //     event.preventDefault(); // Prevent the form from being submitted in the traditional way.
+    //     deleteId ? deleteId(catalogSelected.id) : null;
+    // };
 
     // Managing Columns
     const [selectedColumns, setSelectedColumns] = useState(columns);
-    const onColumnToggle = (e: any) => {
 
-        let selectedColumns = e.value;
-        let orderedSelectedColumns = columns.filter((col: any) => selectedColumns.some((sCol: any) => sCol.field === col.field));
+    const onColumnToggle = (e: any) => {
+        let selectedCols = e.value;
+        let orderedSelectedColumns = columns.filter((col: any) => selectedCols.some((sCol: any) => sCol.field === col.field));
         setSelectedColumns(orderedSelectedColumns);
         onColumnChanged && onColumnChanged(orderedSelectedColumns);
     }
-    useEffect(() => {
-        console.log('useEffect Columns', columns)
-        setSelectedColumns(columns);
-    }, [columns]);
 
     return (
         <>
@@ -105,28 +105,6 @@ export default function TableHeader({ id, name,
 
 
                         <div className='flex justify-content-center mb-0'>
-                            <Link href={createPath ? createPath : './create'} className='mr-1'>
-                                <Button label={createLabel} icon={createIcon} severity="success" className={createClassName} />
-                            </Link>
-
-                            {catalogSelected ?
-                                <>
-                                    <Link href={`./${catalogSelected.id}/update`}
-                                    >
-                                        <Button label={updateLabel} icon={updateIcon} severity="warning" className={updateClassName} />
-                                    </Link>
-                                    {/* <LocationDelete id={catalogSelected.id} /> */}
-
-                                    <form onSubmit={deleteAction}>
-                                        {/* <button type="submit" className="text-sm opacity-30 text-red-500">Delete</button> */}
-                                        <Button type='submit' label={deleteLabel} icon={deleteIcon} severity="danger" className={deleteClassName} />
-                                    </form>
-
-
-                                </>
-                                : null}
-
-                            <Button type="button" icon={filterIcon} label={filterLabel} outlined onClick={onClear} className={filterClassName} />
                         </div>
                     </div>
                 </div>

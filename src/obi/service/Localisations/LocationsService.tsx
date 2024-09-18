@@ -22,6 +22,8 @@ export const LocationsService = {
      */
     async getLazy(lazy: any): Promise<OBI.locations[]> {
         const url = process.env.httpPath + '/localisations/locations/lazy/' + lazy.lazyEvent;
+        console.log(JSON.parse(lazy.lazyEvent))
+        console.log(url)
         const res = await fetch(url, { headers: { 'Cache-Control': 'no-cache' } })
         const dataset: OBI.locations[] = await res.json();
         // console.log("Locations dataset", dataset);

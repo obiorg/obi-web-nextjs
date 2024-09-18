@@ -57,7 +57,7 @@ export default function FieldInputText(
                     placeholder={placeholder}
                     // required
                     tooltip={tooltip}
-                    tooltipOptions={tooltipOptions ? tooltipOptions : { position: 'right' }}
+                    tooltipOptions={tooltipOptions ? tooltipOptions : { position: 'bottom' }}
                     disabled={disabled}
                 />
 

@@ -144,8 +144,71 @@ export const ExportsService = {
         XLSX.writeFile(workbook, fileName + ".xlsx");
     },
 
+    toCapitalize(s: string): any {
+        return s.charAt(0).toUpperCase() + s.slice(1);
+    },
 
+    importCSVOld(e: any) {
+        const csv = e.target?.result;
+        const data = csv?.split('\n');
 
+        // Prepare DataTable
+        const cols = data[0].replace(/['"]+/g, '').split(',');
+        data.shift();
+
+        let _importedCols = cols.map((col: any) => ({ field: col, header: this.toCapitalize(col.replace(/['"]+/g, '')) }));
+        let _importedData = data.map((d: any) => {
+            d = d.split(',');
+            return cols.reduce((obj: any, c: any, i: any) => {
+                obj[c] = d[i].replace(/['"]+/g, '');
+                return obj;
+            }, {});
+        });
+
+        return { importedCols: _importedCols, importedData: _importedData };
+    },
+
+    importCSV(e: any): any {
+        const file = e.files[0];
+        const reader = new FileReader();
+        let imported: any;
+        reader.onload = (e) => {
+            imported = this.importCSVOld(e);
+        };
+        reader.readAsText(file, 'UTF-8');
+        return imported;
+    },
+
+    importExcel(e: any): any {
+        const file = e.files[0];
+        let table;
+        import('xlsx').then(xlsx => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const wb = xlsx.read(e.target?.result, { type: 'array' });
+                const wsname = wb.SheetNames[0];
+                const ws = wb.Sheets[wsname];
+                const data = xlsx.utils.sheet_to_json(ws, { header: 1 });
+
+                // Prepare DataTable
+                const cols: any = data[0];
+                data.shift();
+
+                let _importedCols = cols.map((col: any) => ({ field: col, header: this.toCapitalize(col) }));
+                let _importedData = data.map((d: any) => {
+                    return cols.reduce((obj: any, c: any, i: any) => {
+                        obj[c] = d[i];
+                        return obj;
+                    }, {});
+                });
+
+                table = { importedCols: _importedCols, importedData: _importedData };
+            };
+
+            reader.readAsArrayBuffer(file);
+        });
+        return table;
+    },
 
 
 };

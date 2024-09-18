@@ -101,7 +101,7 @@ export default function FieldDropDown(
                         placeholder={placeholder}
                         // required
                         tooltip={tooltip}
-                        tooltipOptions={tooltipOptions ? tooltipOptions : { position: 'right' }}
+                        tooltipOptions={tooltipOptions ? tooltipOptions : { position: 'bottom' }}
 
                         showClear
                         filter

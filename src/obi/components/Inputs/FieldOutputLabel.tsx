@@ -47,19 +47,6 @@ export default function FieldOutputLabel(
                     </label>
                 </div>
 
-                {/* <Output
-                    id={id}
-                    name={name}
-                    defaultValue={value}
-                    onChange={onChange}
-                    className={'col-12 md:col-5  pl-2 mb-2 input-value ' + (error ? 'p-invalid' : '')}
-
-                    placeholder={placeholder}
-                    // required
-                    tooltip={tooltip}
-                    tooltipOptions={tooltipOptions ? tooltipOptions : { position: 'right' }}
-                    disabled={disabled}
-                /> */}
                 <div
                     className={'col-12 md:col-5  pl-2 mb-1 input-value  text-left align-content-center p-0' + (error ? 'p-invalid' : '')}
                 >

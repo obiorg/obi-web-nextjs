@@ -11,7 +11,10 @@ import { useFormStatus } from "react-dom";
 interface ButtonSaveProps {
     id?: string;                        // ID of the component
     name?: string;                      // Name of the component
-    label?: string;                     // preceding title of dropdown
+    labelsType0?: string[];                     // preceding title 
+    labelsType1?: string[];                     // preceding title 
+    icons?: string[];                     // preceding title 
+    className?: string; //
     onClick?: (e: any) => void;         // The callback function to be called when the button is clicked
     onModeChanged?: (e: any) => void;   // when change occur in mode
 
@@ -20,7 +23,12 @@ interface ButtonSaveProps {
 
 
 export default function ButtonSave(
-    { id, name, label, onClick, onModeChanged,
+    { id, name,
+        labelsType0 = ['Créer & Reset', 'Enreg. & Voir'],
+        labelsType1 = ['Créer', 'Enreg. partiel'],
+        icons = ['pi pi-save', 'pi pi-spin pi-save'],
+        className = '',
+        onClick, onModeChanged,
         type = 0
     }
 
@@ -39,8 +47,8 @@ export default function ButtonSave(
 
     const modes = [
         {
-            label: type === 0 ? 'Créer & Reset' : 'Enreg. & Voir',
-            icon: 'pi pi-save',
+            label: type === 0 ? labelsType0[0] : labelsType1[0],
+            icon: icons[0],
             command: (e) => {
                 toast.current.show({ severity: 'success', summary: 'Mode Sauvegarde', detail: 'Mode sauvegarde et reset activé' });
                 setMode(0);
@@ -48,8 +56,8 @@ export default function ButtonSave(
             }
         },
         {
-            label: type === 0 ? 'Créer' : 'Enreg. partiel',
-            icon: 'pi pi-spin pi-save',
+            label: type === 0 ? labelsType0[1] : labelsType1[1],
+            icon: icons[1],
             command: (e) => {
                 toast.current.show({ severity: 'success', summary: 'Delete', detail: 'Mode sauvegarde seul activé' });
                 setMode(1);
@@ -81,6 +89,8 @@ export default function ButtonSave(
                 disabled={pending}
                 onClick={doSubmit}
                 model={modes}
+                
+                className={className}
             />
 
             <button type='submit' ref={inputElement} className="hidden" ></button>

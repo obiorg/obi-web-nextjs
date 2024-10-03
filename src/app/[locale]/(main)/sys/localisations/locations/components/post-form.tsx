@@ -18,7 +18,7 @@ import { InputNumber } from "primereact/inputnumber"
 import { Dropdown } from "primereact/dropdown"
 import { Skeleton } from "primereact/skeleton"
 import DropDownLocations from "../../../connexions/drivers/components/dropdown"
-import DropDownCountries from "../../counties/components/dropdown"
+import DropDownCountries from "../../countries/components/dropdown"
 import DropDownStates from "../../states/components/dropdown"
 import DropDownCities from "../../cities/components/dropdown"
 import { Message } from "primereact/message"
@@ -522,6 +522,7 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
                                 placeholder="Créé le ..."
                                 tooltip="date de création ..."
                                 disabled
+                                type="datetime"
                             />
 
 
@@ -536,6 +537,7 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
                                 placeholder="Changé le ..."
                                 tooltip="date de changement ..."
                                 disabled
+                                type="datetime"
                             />
 
 

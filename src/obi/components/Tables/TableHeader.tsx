@@ -43,7 +43,7 @@ interface TableHeaderProps {
     size?: string; // should contain
     onSizeChanged?: (e: any) => void; // when change occur in mode
 
-    globalFilter?: string; // should contain
+    globalFilter?: any; // should contain
     globalFilterPlaceholder?: string;
     onGlobalFilterChanged?: (e: any) => void;
 
@@ -63,7 +63,9 @@ export default function TableHeader({ id, name,
     onClear,
     catalogSelected,
     size = 'small', onSizeChanged,
-    globalFilter = '', globalFilterPlaceholder = 'Rechercher...', onGlobalFilterChanged,
+    globalFilter , 
+    globalFilterPlaceholder = 'Rechercher...', 
+    onGlobalFilterChanged,
 
     columns,
     onColumnChanged
@@ -88,12 +90,29 @@ export default function TableHeader({ id, name,
 
     // Managing Columns
     const [selectedColumns, setSelectedColumns] = useState(columns);
-
     const onColumnToggle = (e: any) => {
         let selectedCols = e.value;
         let orderedSelectedColumns = columns.filter((col: any) => selectedCols.some((sCol: any) => sCol.field === col.field));
         setSelectedColumns(orderedSelectedColumns);
         onColumnChanged && onColumnChanged(orderedSelectedColumns);
+    }
+
+    const [value, setValue] = useState(globalFilter);
+
+    useEffect(() => {
+        setValue(globalFilter);
+    }, [globalFilter]);
+
+    const onGlobalFilterChange = (e: any) => {
+        console.log('onGlobalFilterChange', e.target.value);
+
+        let filter = null;
+        if (e.target.value !== '') {
+            filter = e.target.value;
+        } 
+        setValue(filter);
+        
+        onGlobalFilterChanged && onGlobalFilterChanged(filter===''?null:filter);
     }
 
     return (
@@ -132,8 +151,8 @@ export default function TableHeader({ id, name,
                         <div className="p-input-icon-left">
                             <i className="pi pi-search ml-3" />
                             <InputText
-                                value={globalFilter}
-                                onChange={onGlobalFilterChanged}
+                                value={value}
+                                onChange={onGlobalFilterChange}
                                 placeholder={globalFilterPlaceholder}
                                 className="pl-6"
                             />

@@ -16,9 +16,10 @@ import { usePathname, useSearchParams } from 'next/navigation';
 
 
 import { locale, addLocale, updateLocaleOption, updateLocaleOptions, localeOption, localeOptions } from 'primereact/api';
- 
+
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
+import { Button } from 'primereact/button';
 config.autoAddCss = false;
 
 const Layout = ({ children }: ChildContainerProps) => {
@@ -45,6 +46,7 @@ const Layout = ({ children }: ChildContainerProps) => {
     const pathname = usePathname();
     const searchParams = useSearchParams();
     useEffect(() => {
+
         hideMenu();
         hideProfileMenu();
         addLocale('fr', {
@@ -53,13 +55,13 @@ const Layout = ({ children }: ChildContainerProps) => {
             dayNamesShort: ['Di', 'Lu', 'Ma', 'Me', 'Je', 'Ve', 'Sa'],
             dayNamesMin: ['D', 'L', 'M', 'Me', 'J', 'V', 'S'],
             monthNames: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre',
-             'Octobre', 'Novembre', 'Decembre'],
+                'Octobre', 'Novembre', 'Decembre'],
             monthNamesShort: ['Jan', 'Feb', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Aoû', 'Sep', 'Oct', 'Nov', 'Dec'],
             today: 'Aujourd\'hui',
             clear: 'Effacer',
             emptyMessage: 'Vide',
         });
-        
+
         locale('fr')
     }, [pathname, searchParams]);
 
@@ -70,7 +72,7 @@ const Layout = ({ children }: ChildContainerProps) => {
                 topbarRef.current?.topbarmenu?.isSameNode(event.target as Node) ||
                 topbarRef.current?.topbarmenu?.contains(event.target as Node) ||
                 topbarRef.current?.topbarmenubutton?.isSameNode(event.target as Node) ||
-                topbarRef.current?.topbarmenubutton?.contains(event.target as Node)  
+                topbarRef.current?.topbarmenubutton?.contains(event.target as Node)
             );
 
             if (isOutsideClicked) {
@@ -146,10 +148,13 @@ const Layout = ({ children }: ChildContainerProps) => {
     return (
         <React.Fragment>
             <div className={containerClass}>
-                
+
                 <AppTopbar ref={topbarRef} />
                 <div ref={sidebarRef} className="layout-sidebar">
                     <AppSidebar />
+
+                    <Button label="Fr" onClick={() => { console.log('set lang Fr'); locale('fr')}} />
+                    <Button label="En" onClick={() => { console.log('set lang En'); locale('en')}} />
                 </div>
                 <div className="layout-main-container">
                     <div className="layout-main">{children}</div>

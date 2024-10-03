@@ -1,7 +1,7 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
-import { DataTable } from 'primereact/datatable';
+import { DataTable, DataTableFilterMeta } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
@@ -26,204 +26,275 @@ import { Skeleton } from 'primereact/skeleton';
 import { TagsModel } from '@/src/obi/models/tags/TagsModel';
 import { TagsService } from '@/src/obi/service/tags/TagsService';
 import { Model } from '@/src/obi/models/model';
+import HighchartsReact from 'highcharts-react-official';
+import OutputRecord from '@/src/obi/components/Output/OutputRecord';
+import { BlockUI } from 'primereact/blockui';
+import { Toast } from 'primereact/toast';
+import { Messages } from 'primereact/messages';
+import PersistencesDropDown from '../../components/PersistencesDropDown';
+import FieldInputNumber from '@/src/obi/components/Inputs/FieldInputNumber';
+import { FloatLabel } from 'primereact/floatlabel';
+import ButtonSave from '@/src/obi/components/Validations/ButtonSave';
+import { useFormState } from 'react-dom';
+import { PersistenceStandardModel } from '@/src/obi/models/persistences/PersistenceStandardModel';
 
+
+// Define an interface for the form state
+interface PersistenceStandardChartFormState {
+    errors: {
+
+        id?: string[];
+        deleted?: string[];
+        created?: string[];
+        changed?: string[];
+
+        company?: string[];
+        tag?: string[];
+        method?: string[];
+
+        activate?: string[];
+        comment?: string[];
+
+        rowAmount?: string[];
+        dateFrom?: string[];
+        dateTo?: string[];
+
+        _form?: string[];
+    };
+}
 
 const PersistanceStandard = () => {
 
     /**
-     * Design input
+     * Messages system
      */
-    const [totalRecords, setTotalRecords] = useState(0);
-    const [tag, setTag] = useState(0);
-    const [activePersistence, setActivePersistence] = useState(null);
-    const [tagTotalRecords, setTagTotalRecords] = useState(0);
+    // Used for toast
+    const toast = useRef<Toast>(null);
+    const msg = useRef(null);
 
+    // state management
+    const [onMessage, setOnMessage] = useState(false);
+    const [msgSeverity, setMsgSeverity] = useState('info'); // success, info, warn, error
+    const [msgSummary, setMsgSummary] = useState('Info'); // info as default
+    const [msgDetail, setMsgDetail] = useState('Default detail'); // Message Content as default
+    const [msgSticky, setMsgSticky] = useState(false); //
 
-    /**
-     * Persistence
-     */
-    const [persistences, setPersistences] = useState<OBI.persistences[]>([]);
-    // const getPersistence = (data: OBI.persistences[]) => {
-    //     return [...(data || [])].map((d) => {
-    //         return d;
-    //     });
-    // };
-    const [selectedTag, setSelectedTag] = useState<any>(null);
-    // const getSelectedTag = (data: OBI.tags[]) => {
-    //     console.log("Data: " + data);
-    //     return [...(data || [])].map((d) => {
-    //         return d;
-    //     });
-    // };
-    /**
-     * Persistence Method element
-     */
-    const [pointCollect, setPointCollect] = useState(60);
-    const [pers_standard, setPersStandard] = useState<OBI.pers_standard[]>([]);
-    // const getPersStandard = (data: OBI.pers_standard[]) => {
-    //     return [...(data || [])].map((d) => {
-    //         // d.created = new Date(d.created);
-    //         return d;
-    //     });
-    // };
+    const doMsgPrompt = (severity: string, summary: string, message: string, sticky?: boolean) => {
+        setMsgSeverity(severity);
+        setMsgSummary(summary);
+        setMsgDetail(message);
+        setOnMessage(true);
+    }
 
-
-    /**
-     * Chart élément
-     * 
-     */
-    const [options, setOptions] = useState<ChartOptionsState>({});
-    const [data, setChartData] = useState<ChartDataState>({});
-
-
-
-    /**
-     * Count total amount of persistences with method standard
-     */
-    useEffect(() => {
-        // Count total amount of persistences with method standard
-        PersistenceStandardService.count().then((data) => {
-            setTotalRecords(data);
-        });
-
-    }, [])
-
-    /**
-     * Get list of available persistences
-     */
-    useEffect(() => {
-        // Get list of available persistence
-        PersistencesService.findAll().then((data: OBI.persistences[]) => {
-            // console.log(data)
-
-            setPersistences(data);
-        });
-    }, []);
-
+    const doMsgRemove = (e: any) => {
+        setOnMessage(false);
+    }
 
     useEffect(() => {
-        // console.log(tag);
-        if (tag !== undefined && tag !== null) {
-            // console.log("Now call persistence service")
-            PersistenceStandardService.findByTags(tag, 0, pointCollect, 'desc').then((data) => {
-                setPersStandard(data);
-            });
-        } else {
-            console.log("Tag is not defined", tag);
+        {
+            onMessage ?
+                msg?.current?.show([
+                    { sticky: msgSticky, life: 5000, severity: msgSeverity, summary: msgSummary, detail: msgDetail },
+                ])
+                : ''
         }
-    }, [tag, pointCollect]);
+    }, [onMessage]);
 
-
-    useEffect(() => {
-
-        // PART CONCERN CHART
-        const documentStyle = getComputedStyle(document.documentElement);
-        const textColor = documentStyle.getPropertyValue('--text-color') || '#495057';
-        const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary') || '#6c757d';
-        const surfaceBorder = documentStyle.getPropertyValue('--surface-border') || '#dfe7ef';
-
-        const lineData: ChartData = {
-            labels: pers_standard.map((p) => p?.created),
-            datasets: [
-                {
-                    label: 'Tag (' + tag + ')',
-                    data: pers_standard.map((p) => p.vFloat),
-                    fill: false,
-                    backgroundColor: documentStyle.getPropertyValue('--primary-500') || '#6366f1',
-                    borderColor: documentStyle.getPropertyValue('--primary-500') || '#6366f1',
-                    tension: 0.1
-                },
-            ]
-        };
-        const lineOptions: ChartOptions = {
-            plugins: {
-                legend: {
-                    labels: {
-                        color: textColor
-                    }
-                }
-            },
-            scales: {
-                x: {
-                    ticks: {
-                        color: textColorSecondary
-                    },
-                    grid: {
-                        color: surfaceBorder
-                    },
-                    border: {
-                        display: false
-                    }
-                },
-                y: {
-                    ticks: {
-                        color: textColorSecondary
-                    },
-                    grid: {
-                        color: surfaceBorder
-                    },
-                    border: {
-                        display: false
-                    }
-                }
-            }
-        };
-
-
-        setOptions({
-            lineOptions,
-        });
-        setChartData({
-            lineData,
-        });
-
-    }, [tag, pers_standard]);
-
-
-
-
-
-    // }, []);
-
-    const handleTagChanged = (e: any) => {
-        setTag(e.value);
-        setSelectedTag('{id:' + e.value + ', name: "-"}');
-
-    };
-
-
-
-    const handleChangedTag = (e: { value: any }) => {
-        setSelectedTag(e.value);
-        setTag(e.value);
-    };
-
-    const handleChangePointCollect = (e: any) => {
-        setPointCollect(e.value);
-    };
-
-
-    const globalModel = new Model();
-    const modelTag = new TagsModel();
-    const [tagEntity, setTagEntity] = useState(modelTag.defaults);
-    const [lazyItemsTags, setLazyItemsTags] = useState<any>([]);
-    const [lazyItemsPersistences, setLazyItemsPersistences] = useState<OBI.persistences[]>([]);
-    const [lazyLoading, setLazyLoading] = useState<any>(false);
-
-    let loadLazyTimeout = 0;
-    const [loading, setLoading] = useState(false);
-    const [lazyParamsTags, setLazyParamsTags] = useState(globalModel.getStandardParam());
-    const [lazyParamsPersistences, setLazyParamsPersistences] = useState(globalModel.getStandardParam());
+    const showError = (title: string, message: string) => {
+        toast.current.show({ severity: 'error', summary: title, detail: message, sticky: true, closable: false });
+    }
+    const showSuccess = (title: string, message: string) => {
+        toast.current.show({ severity: 'success', summary: title, detail: message, life: 5000, closable: true });
+    }
 
     /**
-     * Handle changes on drowpdown, input and number
+     * Block form mecanism
      */
-    const onChangedInputTags = (e: any) => {
-        const { label, value, entity } = lazyItemsPersistences[e.target.value];
+    const [blockedFrom, setBlockedForm] = useState(false);
+    const blockForm = () => {
+        setBlockedForm(true);
+    }
 
-        setSelectedTag(entity.tag);
-        setTag(entity.tag);
-        setActivePersistence(value);
+    const unBlockForm = () => {
+        setBlockedForm(false);
+    }
+
+
+    /**
+     * List of available tags in persistence save
+     */
+    const [selectedPersistence, setSelectedPersistence] = useState<any>();
+    const [rowAmount, setRowAmount] = useState<number>(500000);
+    const [dateFrom, setDateFrom] = useState(new Date());
+    const [dateTo, setDateTo] = useState(new Date());
+
+    const [saveMode, setSaveMode] = useState(0); // 0: save and reset; 1: save
+    const formRef = React.useRef();
+
+
+
+    /**
+     * Chart construction
+     */
+    var Highcharts = require('highcharts');
+    const [data, setData] = useState();
+    const [options, setOptions] = useState({
+        chart: {
+            zooming: {
+                type: 'x'
+            }
+        },
+
+        title: {
+            text: selectedPersistence !== 0 ? "Persistence for " + selectedPersistence + " charts" : 'Selectionner une donnée persistente',
+            align: 'left'
+        },
+
+        subtitle: {
+            text: 'Evolution de .... avec un volume de ' + rowAmount,
+            align: 'left'
+        },
+
+        accessibility: {
+            screenReaderSection: {
+                beforeChartFormat: '<{headingTagName}>' +
+                    '{chartTitle}</{headingTagName}><div>{chartSubtitle}</div>' +
+                    '<div>{chartLongdesc}</div><div>{xAxisDescription}</div><div>' +
+                    '{yAxisDescription}</div>'
+            }
+        },
+
+        tooltip: {
+            valueDecimals: 2
+        },
+
+        xAxis: {
+            type: 'datetime'
+        },
+
+        yAxis: [{ // Primary axis
+            className: 'highcharts-color-0',
+            title: {
+                text: 'pH'
+            }
+        }],
+
+        series: [{
+            data: data,
+            lineWidth: 0.5,
+            name: 'pH'
+        }],
+    });
+
+
+
+    // Managing long request wating
+    const [lazyLoading, setLazyLoading] = useState<any>(false);
+    let loadLazyTimeout = useRef(null);
+    const persistencesStandardModel = new PersistenceStandardModel();
+    const defaultFilters: Array<DataTableFilterMeta> = PersistenceStandardService.defaultFilters();
+    const [lazyParams, setLazyParams] = useState(
+        persistencesStandardModel.
+            getStandardParam([{ field: 'company', order: 1 }, { field: 'tag', order: 1 }, { field: 'created', order: -1 }], defaultFilters));
+
+    /**
+     * Event on selected persistence
+     */
+    useEffect(() => {
+        let _options = options;
+        _options.title.text = selectedPersistence !== 0 ?
+            "Persistence for " + selectedPersistence?.tags.comment + " charts" : 'Selectionner une donnée persistente';
+        setOptions(() => { return { ..._options } });
+    }, [selectedPersistence]);
+    useEffect(() => {
+        let _options = options;
+        _options.subtitle.text = 'Evolution de ' + dateFrom + ' à ' + dateTo + ' avec un volume de ' + rowAmount;
+        setOptions(() => { return { ..._options } });
+    }, [rowAmount]);
+
+
+    const loadChart = () => {
+        console.log('Loading chart');
+    }
+
+    const [formState] = useFormState<PersistenceStandardChartFormState>(loadChart, { errors: {} })
+
+    const controlForm = (): number => {
+        let errCnt = 0;
+        formState.errors = {};
+
+        if (selectedPersistence === undefined || selectedPersistence === 0) {
+            formState.errors.tag = ['Choisir un tag !'];
+            errCnt++;
+        }
+
+        if (rowAmount === undefined || rowAmount === 0) {
+            formState.errors.rowAmount = ['Choisir au moins 2 valeurs !'];
+            errCnt++;
+        }
+        if (dateFrom === undefined || dateFrom === null) {
+
+            errCnt++;
+        }
+        if (dateTo === undefined || dateTo === null) {
+
+            errCnt++;
+        }
+        return errCnt;
+    }
+
+    const onSubmit = (e: any) => {
+        console.log('onSubmit', e)
+        e.preventDefault();
+
+
+        if (controlForm() > 0) {
+            doMsgPrompt('error', 'Erreur d\'application : ', 'Veuillez corriger les paramètres');
+            return;
+        }
+
+        // Update lazy params
+        let _lazyParams = lazyParams;
+        _lazyParams.filters.tag.constraints[0].value = selectedPersistence ? selectedPersistence.tag : null;
+        _lazyParams.filters.tag.constraints[0].matchMode = 'equals';
+        _lazyParams.rows = rowAmount;
+        _lazyParams.filters.created.constraints[0].value = dateFrom;
+        _lazyParams.filters.created.constraints[0].matchMode = FilterMatchMode.DATE_AFTER;
+        if(!_lazyParams.filters.created.constraints[1]){
+            _lazyParams.filters.created.constraints.push({ value: null, matchMode: FilterMatchMode.DATE_BEFORE });
+        }
+        _lazyParams.filters.created.constraints[1].value = dateTo;
+        _lazyParams.filters.created.constraints[1].matchMode = FilterMatchMode.DATE_BEFORE;
+        setLazyParams(() => { return { ..._lazyParams } });
+
+        setLazyLoading(true);
+        blockForm();
+
+        if (loadLazyTimeout) {
+            clearTimeout(loadLazyTimeout);
+        }
+
+        //imitate delay of a backend call
+        loadLazyTimeout = setTimeout(() => {
+            const lazyEventSet = { lazyEvent: JSON.stringify(lazyParams) };
+
+            // Get Lazy Data
+            PersistenceStandardService.getLazy(lazyEventSet).then((pers_standard: any) => {
+                console.log(pers_standard);
+                let _options = options;
+                _options.series[0].data = pers_standard.map((p: OBI.pers_standard) => { return [Date.parse(p.created), p.vFloat]; });
+                setOptions(() => { return { ..._options } });
+                console.log('options', options);
+                setLazyLoading(false);
+                unBlockForm();
+            }).catch((err) => {
+                console.error('Error : ', err);
+                setLazyLoading(false);
+                unBlockForm();
+            });
+
+
+        }, Math.random() * 1000 + 250);
     }
 
 
@@ -231,232 +302,155 @@ const PersistanceStandard = () => {
 
 
 
-    const loadLazyDataTags = () => {
-        setLazyLoading(true);
-
-        if (loadLazyTimeout) {
-            clearTimeout(loadLazyTimeout);
-        }
-
-        //imitate delay of a backend call
-        loadLazyTimeout = setTimeout(() => {
-
-            // Create lazy event object with stringify lazy parameter
-            const lazyEventSet = { lazyEvent: JSON.stringify(lazyParamsTags) };
-
-            // Get Lazy Data
-            TagsService.getLazy(lazyEventSet).then((data: any) => {
-
-                if (data?.length > 0) {
-                    let _lazyItems = [data];
-                    for (let i = lazyParamsTags.first; i < data.length; i++) {
-                        _lazyItems[i] = {
-                            label: data[i].name + ' - ' + data[i].comment + ' -  [' + data[i].id + ']',
-                            value: i,
-                            entity: data[i]
-                        };
-                    }
-
-                    setLazyItemsTags(_lazyItems);
-                }
-                setLazyLoading(false);
-            });
-        }, Math.random() * 1000 + 250);
-    };
-
-    const onLazyLoadTags = (event: any) => {
-        lazyParamsTags.first = event.first;
-        lazyParamsTags.rows = event.last === 0 ? 10 : event.last;
-        loadLazyDataTags();
-        // setLazyLoading(false);
-    };
-
-    useEffect(() => {
-        loadLazyDataTags();
-        // setLazyLoading(false);
-    }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-
-
-
-
-
-    const loadLazyDataPersistences = () => {
-        setLazyLoading(true);
-
-        if (loadLazyTimeout) {
-            clearTimeout(loadLazyTimeout);
-        }
-
-        //imitate delay of a backend call
-        loadLazyTimeout = setTimeout(() => {
-
-            // Create lazy event object with stringify lazy parameter
-            const lazyEventSet = { lazyEvent: JSON.stringify(lazyParamsPersistences) };
-
-            // Get Lazy Data
-            PersistencesService.getLazyInc(lazyEventSet).then((data: any) => {
-                // console.log('persistences inc', data);
-                if (data?.length > 0) {
-                    let _lazyItems = [data];
-                    // console.log(_lazyItems)
-                    for (let i = lazyParamsPersistences.first; i < data.length; i++) {
-                        _lazyItems[i] = {
-                            label: data[i].tags?.name + ' - ' + data[i].tags?.comment + '(' + data[i].tags?.id + ') -  [' + data[i].id + ']',
-                            value: i,
-                            entity: data[i]
-                        };
-                    }
-
-                    setLazyItemsPersistences(_lazyItems);
-                }
-                setLazyLoading(false);
-            });
-        }, Math.random() * 1000 + 250);
-    };
-
-    const onLazyLoadPersistences = (event: any) => {
-        // console.log('onLazyLoadPersistences', event);
-        lazyParamsTags.first = event.first;
-        lazyParamsTags.rows = event.last === 0 ? 10 : event.last;
-        loadLazyDataPersistences();
-        // setLazyLoading(false);
-    };
-
-    useEffect(() => {
-        loadLazyDataPersistences();
-        // setLazyLoading(false);
-    }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-
 
 
     return (
-        <div className="grid col-12">
-            <div className="card col-12">
+        <>
+            <div className="card">
+
+                {/** Message toaster display */}
+                <Toast ref={toast} />
+
+                <Messages ref={msg} onRemove={doMsgRemove} />
+
+
+
                 <h3>Persistence Standard - Analyse Graphique</h3>
+                <hr />
 
-                <p>Nombre total d enregistrement : {totalRecords}</p>
-
-                {/** Référence Tag Id */}
-                <div className='col-12 grid'>
-
-                    <label className='md:col-2' htmlFor="inputTag">
-                        Id Tag :
-                    </label>
-
-                    <InputNumber
-                        inputId="inputTag"
-                        className='md:col-6'
-                        value={tag}
-                        onValueChange={(e) => handleTagChanged(e)}
-                        mode="decimal"
-                        min={0} max={100}
-                        showButtons
-                    />
-
-                    <label className='col-2'>
-                        = {tagTotalRecords}  enregistrement(s)
-                    </label>
-
-                </div>
-
-                {/** Référence Tag Id - List */}
-                <div className='col-12 grid'>
-
-                    <label className='md:col-2' htmlFor="selectedTag">
-                        Tag :
-                    </label>
-
-                    <Dropdown
-                        inputId='selectedTag'
-                        className='md:col-6'
-                        value={selectedTag}
-                        options={persistences.map(persistence => persistence.tag)}
-                        placeholder='Sélectionner un tag'
-                        onChange={handleChangedTag}
-                    />
+                <BlockUI blocked={blockedFrom}>
+                    <form
+                        id="formId"
+                        ref={formRef}
+                        onSubmit={onSubmit}
+                        className="p-fluid"
+                    >
+                        <div className="col-12 m-0 p-0">
 
 
-                    <label className='col-2'>
-                        actual selection id : {selectedTag}
-                    </label>
-                </div>
+                            {/** Persistence dropdown */}
+                            <PersistencesDropDown
+                                id='tag'
+                                name='tag'
+                                title='Persistence - Tag'
+                                value={selectedPersistence?.id}
+                                onChanged={(e: any) => {
+                                    setSelectedPersistence(e.value);
+                                }}
+                                error={formState.errors?.tag}
+                            />
 
-                {/** Référence Tag Id - lazy List */}
-                <div className='col-12 grid'>
+                            {/** Row Amount */}
+                            <FieldInputNumber
+                                id="rowAmount"
+                                name='rowAmount'
+                                title='Volume de données'
+                                value={rowAmount}
+                                onChange={(e: any) => { setRowAmount(e.value); }}
+                                placeholder="quantité valeur... : ex: 500"
+                                tooltip="Nombre de donnée à collecter..."
 
-                    <label className='md:col-2' htmlFor="tags">
-                        Tag :
-                    </label>
-
-                    <Dropdown id='tags'
-                        name='tags'
-                        value={activePersistence}
-                        options={lazyItemsPersistences}
-
-                        className='col-12 md:col-6  mb-2 input-value'
-
-                        onChange={onChangedInputTags}
-                        virtualScrollerOptions={{
-                            lazy: true,
-                            onLazyLoad: onLazyLoadPersistences,
-                            itemSize: 28,
-                            showLoader: true,
-                            loading: lazyLoading, delay: 250,
-                            loadingTemplate: (options) => {
-                                return (
-                                    <div className="flex align-items-center p-2" >
-                                        <Skeleton width={options.even ? '60%' : '50%'} height="1rem" />
-                                    </div>
-                                )
-                            }
-                        }}
-                        placeholder="Sélectionner"
-                        // required
-                        tooltip='Specifier le driver de la machine'
-                        tooltipOptions={{ position: 'top' }}
-                    />
+                                error={formState.errors?.rowAmount}
+                            />
 
 
-                    <label className='col-2'>
-                        entity.id : {tagEntity.id}
-                    </label>
-                </div>
 
-                {/** Point - to collect */}
-                <div className='col-12 grid'>
 
-                    <label className='md:col-2' htmlFor="inputPointCollect">
-                        Nombre de point:
-                    </label>
 
-                    <InputNumber
-                        inputId="inputPointCollect"
-                        className='col-12 md:col-6  mb-2 input-value'
-                        value={pointCollect}
-                        onValueChange={(e) => handleChangePointCollect(e)}
-                        mode="decimal"
-                        min={1}
-                        showButtons
-                    />
+                            {/** Date From */}
+                            <div className="grid m-0 p-0 mb-2">
+                                <div className='col-12 md:col-2 line-height-3'>
+                                    <label htmlFor='dateRange' className="input-field">
+                                        Du...
+                                    </label>
+                                </div>
 
-                </div>
 
-                {/** Graphique */}
-                <div className="card col-12">
-                    <h4>Linear Chart</h4>
-                    <Chart type="line"
-                        data={data.lineData}
-                        options={options.lineOptions}
-                    ></Chart>
-                </div>
+                                <Calendar
+                                    inputId='dateFrom'
+                                    id='dateFrom'
+                                    name='dateTo'
+                                    value={dateFrom}
+                                    onChange={(e) => { console.log(e.value); setDateFrom(e.value) }}
 
+                                    locale='fr'
+                                    dateFormat="dd/mm/yy"
+                                    maxDate={dateFrom}
+                                    className={'col-12 md:col-5  p-0 mb-0 input-value '}
+                                    showTime
+                                    showButtonBar
+                                    showIcon
+                                    hourFormat="24"
+                                />
+                            </div>
+
+
+
+                            {/** Date To */}
+                            <div className="grid m-0 p-0 mb-1">
+                                <div className='col-12 md:col-2 line-height-3'>
+                                    <label htmlFor='dateRange' className="input-field">
+                                        Au...
+                                    </label>
+                                </div>
+
+                                <Calendar
+                                    inputId='dateTo'
+                                    id='dateTo'
+                                    name='dateTo'
+                                    value={dateTo}
+                                    onChange={(e) => { console.log(e.value); setDateTo(e.value) }}
+
+                                    locale='fr'
+                                    dateFormat="dd/mm/yy"
+                                    minDate={dateFrom}
+                                    className={'col-12 md:col-5  p-0 mb-0 input-value '}
+                                    showTime
+                                    showButtonBar
+                                    showIcon
+                                    hourFormat="24"
+                                />
+
+
+                            </div>
+
+
+
+                            <div className="grid m-0 p-0 mb-1">
+                                <div className='col-12 md:col-2 line-height-3'>
+                                    <label htmlFor='dateRange' className="input-field">
+
+                                    </label>
+                                </div>
+
+
+
+
+                                <ButtonSave
+                                    labelsType0={['Appliquer', 'Appliquer']}
+                                    labelsType1={['Appliquer', 'Appliquer']}
+                                    icons={["pi pi-chart-line", "pi pi-chart-line"]}
+                                    className={'col-12 md:col-5 p-2 mt-2 mb-2  mb-0 input-value '}
+                                    type={1}
+                                />
+
+                            </div>
+
+
+
+
+                        </div>
+                    </form>
+                </BlockUI>
 
 
 
             </div>
-        </div>
+
+            <div className="card p-2">
+                <HighchartsReact highcharts={Highcharts} options={options} />
+            </div>
+        </>
     );
 };
 

@@ -17,10 +17,10 @@ interface ButtonSaveProps {
     name?: string;                       // Name of the component
     label?: string;                      // preceding title of dropdown
 
-    createLabel?: string;
+    createLabel?: string[];
     cancelLabel?: string;
     listLabel?: string;
-    updateLabel?: string;
+    updateLabel?: string[];
 
     onSaveClick?: (e: any) => void;     // The callback function to be called when the button is clicked
     onCancelClick?: (e: any) => void;   // The callback function to
@@ -73,7 +73,8 @@ export default function ButtonBarCreate({
                 {/* Create / Update  */}
                 <div className='col-12 md:col-3 mt-0 '>
                     <ButtonSave
-                        label={createLabel}
+                        labelsType0={createLabel}
+                        labelsType1={updateLabel}
                         // onClick={onSaveClick}
                         onModeChanged={onModeChanged}
                         type={type}

@@ -47,7 +47,7 @@ export class LocationsModel extends Model {
         this.map = new Map();
         this.map.set('pk', 'id');
         this.map.set('id', 'numeric');
-        this.map.set('deleted', 'numeric');
+        this.map.set('deleted', 'boolean');
         this.map.set('created', 'datetime');
         this.map.set('changed', 'datetime');
 
@@ -67,7 +67,7 @@ export class LocationsModel extends Model {
     get type() {
         return {
             id: Number,
-            deleted: Number,
+            deleted: Boolean,
             created: Date,
             changed: Date,
 

@@ -47,8 +47,7 @@ export default function FieldDropDown(
     const [selectedCatalog, setSelectedCatalog] = useState<any>(null);
     const [catalogs, setCatalogs] = useState<any>([]);
 
-    // Use to refresh the dropdown list
-    const [refresh, setRefresh] = useState(false);
+
 
     // Used for toast
     const toast = useRef<Toast>(null);

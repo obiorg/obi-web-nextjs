@@ -20,14 +20,39 @@ export const LocationsService = {
      * @param lazy is configured parameter defined as primereact
      * @returns locations table.
      */
-    async getLazy(lazy: any): Promise<OBI.locations[]> {
+    async getLazy(lazy: any): Promise<any> {
         const url = process.env.httpPath + '/localisations/locations/lazy/' + lazy.lazyEvent;
-        console.log(JSON.parse(lazy.lazyEvent))
-        console.log(url)
-        const res = await fetch(url, { headers: { 'Cache-Control': 'no-cache' } })
-        const dataset: OBI.locations[] = await res.json();
-        // console.log("Locations dataset", dataset);
-        return dataset;
+        // console.log(JSON.parse(lazy.lazyEvent))
+        // console.log(url)
+        try {
+            const res = await fetch(url, { headers: { 'Cache-Control': 'no-cache' } })
+            if (res.ok) {
+                console.log('Promise resolved and HTTP status is successful');
+                const dataset: OBI.locations[] = await res.json();
+                return dataset;
+            } else {
+                // console.error('Promise resolved but HTTP status failed');
+                Promise.reject({ status: res.status, message: res.status });
+                if (res.status === 404) throw new Error('404, Not found');
+                if (res.status === 500) throw new Error('500, internal server error');
+                // For any other server error
+                throw new Error(res.status);
+            }
+        } catch (error) {
+            if (error instanceof SyntaxError) {
+                // Unexpected token < in JSON
+                // console.log('There was a SyntaxError', error);
+
+            } else {
+                // console.log('There was an error', error);
+                // Promise.reject(error);
+                return ({
+                    name: 'Fetching',
+                    message: 'Check OAP API is running or database is reachable',
+                    status: 500,
+                });
+            }
+        }
     },
 
 
@@ -38,18 +63,53 @@ export const LocationsService = {
      */
     async getLazyCount(lazy: any) {
         const url = process.env.httpPath + '/localisations/locations/lazy/count/' + lazy.lazyEvent;
-        const res = await fetch(url, { headers: { 'Cache-Control': 'no-cache' } })
-        const val = await res.json();
-        const dataset: OBI.locations = val;
-        return val;
+        try {
+            const res = await fetch(url, { headers: { 'Cache-Control': 'no-cache' } })
+            if (res.ok) {
+                const val = await res.json();
+                const dataset: OBI.locations = val;
+                return val;
+            } else {
+                if (res.status === 404) throw new Error('404, Not found');
+                if (res.status === 500) throw new Error('500, internal server error');
+                // For any other server error
+                throw new Error(res.status);
+            }
+        } catch (error) {
+            if (error instanceof SyntaxError) {
+                console.log('There was a SyntaxError', error);
+            } else {
+                // console.log('There was an error', error);
+                // Promise.reject(error);
+                return JSON.stringify({ error: error });
+            }
+        }
     },
 
     async getById(id: any) {
         const url = process.env.httpPath + '/localisations/locations/' + id;
-        const res = await fetch(url, { headers: { 'Cache-Control': 'no-cache' } })
-        const val = await res.json();
-        const dataset: OBI.locations = val;
-        return val;
+        try {
+            const res = await fetch(url, { headers: { 'Cache-Control': 'no-cache' } })
+            if (res.ok) {
+                const val = await res.json();
+                const dataset: OBI.locations = val;
+                return val;
+            } else {
+                if (res.status === 404) throw new Error('404, Not found');
+                if (res.status === 500) throw new Error('500, internal server error');
+                // For any other server error
+                throw new Error(res.status);
+            }
+        } catch (error) {
+            if (error instanceof SyntaxError) {
+                console.log('There was a SyntaxError', error);
+            } else {
+                // console.log('There was an error', error);
+                // Promise.reject(error);
+
+                return JSON.stringify({ error: error });
+            }
+        }
     },
 
 

@@ -9,6 +9,10 @@ import { DataTableSortMeta, DataTableOperatorFilterMetaData, DataTableFilterMeta
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 // import * as _ from 'lodash';
 import * as _ from 'lodash';
+import { Calendar } from 'primereact/calendar';
+import { TriStateCheckbox } from 'primereact/tristatecheckbox';
+import { InputNumber } from 'primereact/inputnumber';
+
 
 export class Model {
 
@@ -18,6 +22,31 @@ export class Model {
   constructor(attributes = {}) {
     // _.defaultsDeep(this, attributes, this.defaults);
   }
+
+
+  intergerFilterTemplate = (options: any) => {
+    return <InputNumber value={options.value} onValueChange={(e) => { options.filterApplyCallback(e.value); }} />
+  }
+
+  booleanFilterTemplate = (options: any) => {
+    return <TriStateCheckbox value={options.value} onChange={(e) => { options.filterApplyCallback(e.value); }} />
+  }
+
+  dateFilterTemplate = (options: any) => {
+    return <Calendar value={options.value}
+      onChange={(e) => { console.log(e); options.filterCallback(e.value, options.index); options.value = e.value; }}
+      // showTime 
+      showIcon
+      hourFormat="24"
+      showButtonBar
+      dateFormat="dd/mm/yy" placeholder="dd/mm/yy" mask="99/99/9999"
+      locale='fr'
+
+    // headerTemplate={() => <Button label="Custom Button" />} footerTemplate={() => <div>Footer Content</div>}
+    // dateTemplate={dateTemplater}
+    />
+  }
+
 
 
   toMultiSortMeta(): any {
@@ -33,6 +62,7 @@ export class Model {
     }
     return sortMeta;
   }
+
 
 
 
@@ -64,25 +94,58 @@ export class Model {
         // Manage type value
         switch (this.map.get(key)) {
           case 'numeric':
-            operatorValue = FilterOperator.AND;
-            matchModeValue = FilterMatchMode.EQUALS;
+            filters[key] = {
+              operator: FilterOperator.AND,
+              constraints: [{
+                value: null,
+                matchMode: FilterMatchMode.EQUALS,
+                type: 'numeric'
+              }]
+            };
             // console.log("key: " + key + " is a numeric value")
             break;
 
           case 'text':
-            // Nothing to do like operator and match mode existing
-            // console.log("key: " + key + " is a text value")
+            filters[key] = {
+              operator: FilterOperator.AND,
+              constraints: [{
+                value: null,
+                matchMode: FilterMatchMode.CONTAINS,
+                type: 'text'
+              }]
+            };
             break;
 
           case 'datetime':
-            operatorValue = FilterOperator.AND;
-            matchModeValue = FilterMatchMode.DATE_IS;
+            filters[key] = {
+              operator: FilterOperator.AND,
+              constraints: [{
+                value: null,
+                matchMode: FilterMatchMode.DATE_IS,
+                type: 'datetime'
+              }]
+            };
             // console.log("key: " + key + " is a datetime value")
             break;
 
           case 'date':
-            operatorValue = FilterOperator.AND;
-            matchModeValue = FilterMatchMode.DATE_IS;
+            filters[key] = {
+              operator: FilterOperator.AND,
+              constraints: [{
+                value: null,
+                matchMode: FilterMatchMode.DATE_IS,
+                type: 'date'
+              }]
+            };
+            // console.log("key: " + key + " is a date value")
+            break;
+
+          case 'boolean':
+            filters[key] = {
+              value: null,
+              matchMode: FilterMatchMode.EQUALS,
+                type: 'boolean'
+            };
             // console.log("key: " + key + " is a date value")
             break;
 
@@ -91,15 +154,6 @@ export class Model {
             // nothing to do like operator and match mode eixsting
             break;
         }
-
-        // Create the filter
-        filters[key] = {
-          operator: operatorValue,
-          constraints: [{
-            value: null,
-            matchMode: matchModeValue
-          }]
-        };
       } else {
 
       }
@@ -109,9 +163,9 @@ export class Model {
 
 
 
-  getStandardParam(sorted: any, filtered: any, page: any): any {
+  getStandardParam(sorted: any, filtered: any, page?: any): any {
     let pg = page;
-    if (pg === undefined || pg === null)  pg = 0;
+    if (pg === undefined || pg === null) pg = 0;
 
 
     let sort = sorted;
@@ -134,7 +188,7 @@ export class Model {
 
 
       //multiSortMeta: defaultMultiSortMeta,
-      multiSortMeta: [
+      multiSortMeta: Array.isArray(sort) ? sort : [
         sort
       ],
 

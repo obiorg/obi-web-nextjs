@@ -1,52 +1,33 @@
 'use client';
 import React, { useState, useEffect, useRef } from 'react';
-import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { DataTable, DataTableFilterMeta, DataTableSortMeta } from 'primereact/datatable';
 import { Column, ColumnFilterClearTemplateOptions } from 'primereact/column';
 import { InputNumber } from 'primereact/inputnumber';
 import { Button } from 'primereact/button';
 
 import { Admin, OBI } from '@/src/types/index';
-// import { Admin } from '@/src/types/index';
 
-
-
-import { Checkbox } from 'primereact/checkbox';
-import { SelectButton, SelectButtonChangeEvent } from 'primereact/selectbutton';
-import { InputSwitch, InputSwitchChangeEvent } from 'primereact/inputswitch';
-
-
-
-import { InputText } from 'primereact/inputtext';
 import { LocationsService } from '@/src/obi/service/localisations/LocationsService';
-import { Password } from 'primereact/password';
-import Link from 'next/link';
 import { LocationsModel } from '@/src/obi/models/localisations/LocationsModel';
 import TableHeader from '@/src/obi/components/Tables/TableHeader';
-import { MultiSelect } from 'primereact/multiselect';
-import { usePapaParse } from 'react-papaparse';
 import { ExportsService } from '@/src/obi/utilities/export/ExportsService';
-import jsPDF from 'jspdf';
-import { Toolbar } from 'primereact/toolbar';
 import TableToolbar from '@/src/obi/components/Tables/TableToolbar';
-import { Calendar } from 'primereact/calendar';
+import { classNames } from 'primereact/utils';
+import { MultiSelect } from 'primereact/multiselect';
+import DropDownCountries from '../countries/components/dropdown';
+import CountriesDropDown from '../countries/components/CountriesDropDown';
 
+
+import { useRouter } from 'next/navigation';
+
+
+const templateHelper = require('@/src/obi/components/Tables/TemplateHelper');
 
 const Locations = () => {
 
-    const dateFilterTemplate = (options:any) => {
-        return <Calendar value={options.value} onChange={(e) => options.filterCallback(e.value, options.index)} dateFormat="dd/mm/yy" placeholder="dd/mm/yy" mask="99/99/9999" />
-    }
-
-    const bodyTemplateId = (rowData: OBI.locations) => {
-        return <InputNumber
-            value={rowData.id} disabled readOnly />
-    }
 
     const bodyTemplateDeleted = (rowData: OBI.locations) => {
-        return (
-            rowData.deleted ? <i className='pi pi-check' /> : <i className="pi pi-times" />
-        );
+        return <i className={classNames('pi', { 'true-icon pi-check text-red-600': rowData.deleted, 'false-icon pi-times text-green-600': !rowData.deleted })} />;
     }
 
     const bodyTemplateCreated = (rowData: OBI.locations) => {
@@ -93,15 +74,12 @@ const Locations = () => {
         )
     }
 
-
-
     const bodyTemplateCountry = (rowData: OBI.locations) => {
         return <label>
             {rowData.loc_countries?.name + ' - '
                 + rowData.loc_countries?.iso3
                 + ' [' + rowData.loc_countries?.id + ']'} </label>
     }
-
 
     const bodyTemplateState = (rowData: OBI.locations) => {
         return <label>
@@ -110,24 +88,24 @@ const Locations = () => {
                 + ' [' + rowData.loc_states?.id + ']'} </label>
     }
 
-
     const bodyTemplateCity = (rowData: OBI.locations) => {
         return <label>
             {rowData.loc_cities?.name + ' [' + rowData.loc_cities?.id + ']'} </label>
     }
 
 
-    const bodyTemplateFloor = (rowData: OBI.locations) => {
-        return <InputNumber
-            value={rowData.floor} disabled readOnly />
+    const representativeFilterCountry = (options: OBI.loc_countries) => {
+        console.log('Options', options);
+        return <CountriesDropDown
+            value={options.value}
+            onChanged={(e: any) => {
+                options.filterCallback(e.value);
+            }}
+        />;
     }
 
 
-
-
-
-
-
+    const locationModel = new LocationsModel();
     const [loading, setLoading] = useState(false);
     const [totalRecords, setTotalRecords] = useState(0);
     const [selectAll, setSelectAll] = useState(false);
@@ -144,16 +122,16 @@ const Locations = () => {
 
     // Manage columns
     const [columns, setColumns]: OBI.ColumnMeta[] = useState([
-        { field: 'id', header: 'ID', dataType: 'numeric', sortable: true, filter: true, style: { textAlign: 'right' } },
-        { field: 'deleted', header: 'Supp.', dataType: 'numeric', bodyTemplate: bodyTemplateDeleted, sortable: true, filter: true, style: { textAlign: 'center' } },
-        { field: 'created', header: 'Créé', dataType: 'date', bodyTemplate: bodyTemplateCreated, sortable: true, filter: true, filterField: "date", filterPlaceholder: 'Insérer une date', filterElement: dateFilterTemplate, style: { textAlign: 'center' } },
-        { field: 'changed', header: 'Changé', dataType: 'date', bodyTemplate: bodyTemplateChanged, sortable: true, filter: true, filterField: "date", filterPlaceholder: 'Insérer une date', filterElement: dateFilterTemplate, style: { textAlign: 'center' } },
+        { field: 'id', header: 'ID', dataType: 'numeric', sortable: true, filter: true, filterElement: locationModel.intergerFilterTemplate, style: { textAlign: 'right' } },
+        { field: 'deleted', header: 'Supp.', dataType: "boolean", body: templateHelper.state, sortable: true, filter: true, filterElement: locationModel.booleanFilterTemplate, style: { textAlign: 'center', minWidth: '6rem' } },
+        { field: 'created', header: 'Créé', dataType: 'date', bodyTemplate: templateHelper.date, sortable: true, filter: true, filterField: "date", filterPlaceholder: 'Insérer une date', filterElement: locationModel.dateFilterTemplate, style: { textAlign: 'center' } },
+        { field: 'changed', header: 'Changé', dataType: 'date', bodyTemplate: templateHelper.date, sortable: true, filter: true, filterField: "date", filterPlaceholder: 'Insérer une date', filterElement: locationModel.dateFilterTemplate, style: { textAlign: 'center' } },
 
         { field: 'location', header: 'Localisation', dataType: 'text', sortable: true, filter: true },
         { field: 'designation', header: 'Désignation', dataType: 'text', sortable: true, filter: true },
 
         { field: 'group', header: 'Groupe', dataType: 'text', sortable: true, filter: true },
-        { field: 'country', header: 'Pays', dataType: 'numeric', bodyTemplate: bodyTemplateCountry, sortable: true, filter: true },
+        { field: 'country', header: 'Pays', dataType: 'text', bodyTemplate: bodyTemplateCountry, sortable: true, filter: true, filterField: "country", showFilterMatchModes: false, filterPlaceholder: 'Chercher par pays', filterElement: representativeFilterCountry, },
         { field: 'state', header: 'Province', dataType: 'numeric', bodyTemplate: bodyTemplateState, sortable: true, filter: true },
         { field: 'city', header: 'Ville', dataType: 'numeric', bodyTemplate: bodyTemplateCity, sortable: true, filter: true },
 
@@ -167,11 +145,12 @@ const Locations = () => {
 
     // DataTable columns toggle
     const [selectedColumns, setSelectedColumns] = useState<any>(columns);
-    const columnsRender = selectedColumns.map((col: any, i: number) => {
+    const columnsRender = selectedColumns?.map((col: any, i: number) => {
         return <Column key={col.field} field={col.field} header={col.header} dataType={col.dataType}
 
-            body={col.bodyTemplate} sortable={col.sortable} style={col.style ? col.style : { width: '10%' }}
+            body={col.bodyTemplate ? col.bodyTemplate : col.body} sortable={col.sortable} style={col.style ? col.style : { width: '10%' }}
             filter={col.filter} filterField={col.field} filterPlaceholder={col.filterPlaceholder} filterElement={col.filterElement}
+            showFilterMatchModes={col.showFilterMatchModes}
         />;
     });
 
@@ -188,8 +167,8 @@ const Locations = () => {
     const defaultMultiSortMeta: Array<DataTableSortMeta> = LocationsService.defaultMultiSortMeta();
     const defaultFilters: Array<DataTableFilterMeta> = LocationsService.defaultFilters();
 
-    const [globalFilterValue, setGlobalFilterValue] = useState('');
-    const locationModel = new LocationsModel();
+    const [globalFilterValue, setGlobalFilterValue] = useState(null);
+
     const [lazyParams, setLazyParams] = useState(
         locationModel.
             getStandardParam({ field: 'location', order: 1 }, defaultFilters));
@@ -197,15 +176,11 @@ const Locations = () => {
 
 
 
+    const router = useRouter();
     let loadLazyTimeout = 0;
-
-    useEffect(() => {
-        loadLazyData();
-    }, [lazyParams]);
-
     /**
-     * Loading data with lazy loading
-     */
+    * Loading data with lazy loading
+    */
     const loadLazyData = () => {
         setLoading(true);
 
@@ -213,25 +188,45 @@ const Locations = () => {
             clearTimeout(loadLazyTimeout);
         }
 
+        console.log('lazyParams', lazyParams);
+
         //initiate delay of a backend call
         loadLazyTimeout = setTimeout(() => {
             // Create lazy event object with stringify lazy parameter
             const lazyEventSet = { lazyEvent: JSON.stringify(lazyParams) };
-            //console.log('Lazy Event Set ', lazyEventSet.lazyEvent);
+            console.log('Lazy Event Set ', lazyEventSet.lazyEvent);
 
             // Get Lazy Data
             LocationsService.getLazy(lazyEventSet).then((data: any) => {
-                // On Good request process data count
-                LocationsService.getLazyCount(lazyEventSet).then((dataCount: any) => {
-                    // console.log(dataCount, dataCount)
-                    setTotalRecords(dataCount);
-                });
+                console.log('Lazy Data', data);
+                if (data.status && data.status !== 200) {
+                    console.error('Error:', data.error);
+                    // window.location.replace("./../../../../(full-page)/pages/connection/");
+                    router.push('/(full-page)/pages/connection/')
+                    setLoading(false);
+                    return;
+                } else {
+                    console.log('lazyData no error', data);
+                    // On Good request process data count
+                    LocationsService.getLazyCount(lazyEventSet).then((dataCount: any) => {
+                        // console.log(dataCount, dataCount)
+                        setTotalRecords(dataCount);
+                    });
 
-                setCatalogs(data);
-                setLoading(false);
+                    setCatalogs(data);
+                    setLoading(false);
+                }
             });
         }, Math.random() * 1000 + 500) as unknown as number;
     };
+
+
+
+    useEffect(() => {
+        loadLazyData();
+    }, [lazyParams]);
+
+
 
 
     /**
@@ -266,37 +261,11 @@ const Locations = () => {
      * @param event on filter applied
      */
     const onFilter = (event: Admin.Lazy) => {
-        //console.log('onFilter >> event.filters >> ', event.filters);
-        //  console.log('onFilter >> First event.filters  key >> ', Object.keys(event.filters)[0]);
-
-        // event['first'] = 0
-        // console.log('onFilter event', event)
-        // setLazyParams(event)
-
         // Create new filter and restore global filter
-        let filters = {} as any;
-        filters['global'] = lazyParams.filters["global"];
-
-        // Loop overs all filters and keep only defined ones
-        for (let j = 1; j < Object.keys(event.filters).length; j++) {
-            // console.log('onFilter >> First event.filters  key['+ j + '] >> ', Object.keys(event.filters)[j] + ' >> ' + event.filters [Object.keys(event.filters)[j]].constraints[0].value);
-            // Get corresponding field filter
-            let filter = event.filters[Object.keys(event.filters)[j]];
-            // Loop over contains existing filters
-            for (let i = 0; i < filter.constraints.length; i++) {
-                if (filter.constraints[i].value !== null) {
-                    // console.log(filter);
-                    filters[Object.keys(event.filters)[j]] = filter;
-                }
-            }
-        }
-
-        // console.log('filters :', filters);
-        // Update Lazy parameters filters
-        lazyParams.filters = event.filters;
-
-        // Update data
-        loadLazyData();
+        let params = {} as any;
+        params = lazyParams;
+        params.filters = event.filters;
+        setLazyParams(() => { return { ...params } });
     }
 
     /**
@@ -306,15 +275,7 @@ const Locations = () => {
         initFilters();
     };
 
-    /**
-     *
-     */
-    const initFilters = () => {
-        // console.log('init', defaultFilters)
-        lazyParams.filters = defaultFilters;
-        setGlobalFilterValue('');
-        loadLazyData();
-    };
+
 
 
 
@@ -325,18 +286,29 @@ const Locations = () => {
         setLazyParams(lazyParams);
     }
 
-    const onGlobalFilterChange = (e: any) => {
-        const value = e.target.value;
-        let _filters = { ...lazyParams.filters };
 
-        _filters['global'].value = value;
 
-        lazyParams.filters = _filters;
-        setGlobalFilterValue(value);
-        setLazyParams(lazyParams);
-
-        loadLazyData()
+    /**
+ *
+ */
+    const initFilters = () => {
+        // console.log('init', defaultFilters)
+        let params = {} as any;
+        params = lazyParams;
+        // params.filters = defaultFilters;
+        // params.filters.global.matchMode = 'contains';
+        setLazyParams(() => { return { ...params } });
     };
+    /**
+     * Global filter reaction
+     */
+    useEffect(() => {
+        let params = {} as any;
+        params = lazyParams;
+        params.filters.global.value = globalFilterValue;
+        params.filters.global.matchMode = 'contains';
+        setLazyParams(() => { return { ...params } });
+    }, [globalFilterValue]);
 
 
 
@@ -355,7 +327,8 @@ const Locations = () => {
                     catalogSelected={selectedCatalog}
                     onClear={clearFilter}
                     onSizeChanged={(e) => setSize(e.value)}
-                    onGlobalFilterChanged={(e) => setGlobalFilterValue(e.value)}
+                    globalFilter={globalFilterValue}
+                    // onGlobalFilterChanged={(valueFilter) => setGlobalFilterValue(valueFilter === '' ? null : valueFilter)}
                     deleteId={onDelete}
 
                     columns={columns}
@@ -457,7 +430,7 @@ const Locations = () => {
 
             // Get Lazy Data
             LocationsService.download(lazyEventSet).then((data: any) => {
-                const exportColumns = columns.map(col => ({ title: col.header, dataKey: col.field }));
+                const exportColumns = columns.map((col: any) => ({ title: col.header, dataKey: col.field }));
                 const columnsStyle = {
                     0: { halign: 'right', valign: 'middle', fontSize: 8, cellPadding: 1, minCellWidth: 20, cellWidth: 'wrap' }, // id //fillColor: [0, 255, 0]
                     1: { halign: 'center', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
@@ -517,7 +490,7 @@ const Locations = () => {
                 catalogSelected={selectedCatalog}
                 onClear={clearFilter}
                 deleteId={onDelete}
-                onReload={(e) => setLazyParams((lazyParams) => { return { ...lazyParams } })}
+                onReload={(e) => setLazyParams((lazyParams: any) => { return { ...lazyParams } })}
             />
 
 

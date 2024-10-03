@@ -19,7 +19,7 @@ interface LocationsCountriesDropDownProps {
     name: string;                       // Name of the component
     title: string;                      // preceding title of dropdown
     value: any;
-    handleOnchange: (e: any) => void; // The callback function to be called when the value changes
+    handleOnchange?: (e: any) => void; // The callback function to be called when the value changes
     formState: OBI.LocationsCountriesFormState; // The form state
 
     placeholder?: string; // placeholder
@@ -29,7 +29,10 @@ interface LocationsCountriesDropDownProps {
 
 
 
-export default function DropDownCountries({ id, name, title, value, handleOnchange, formState , placeholder, tooltip, tooltipOptions}: LocationsCountriesDropDownProps) {
+export default function DropDownCountries({ 
+    id, name, title, value, 
+    handleOnchange, formState , 
+    placeholder, tooltip, tooltipOptions}: LocationsCountriesDropDownProps) {
 
     // Used for toast
     const toast = useRef<Toast>(null);

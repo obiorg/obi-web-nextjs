@@ -49,6 +49,7 @@ export const LocationsService = {
                 return ({
                     name: 'Fetching',
                     message: 'Check OAP API is running or database is reachable',
+                    error: error,
                     status: 500,
                 });
             }

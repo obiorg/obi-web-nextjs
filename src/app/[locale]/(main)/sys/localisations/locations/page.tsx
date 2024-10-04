@@ -19,121 +19,39 @@ import CountriesDropDown from '../countries/components/CountriesDropDown';
 
 
 import { useRouter } from 'next/navigation';
+import { Dialog } from 'primereact/dialog';
+import { Panel } from 'primereact/panel';
+import DialogError from '@/src/obi/components/Dialog/DialogError';
 
 
 const templateHelper = require('@/src/obi/components/Tables/TemplateHelper');
+const countryHelper = require('./components/helper')
+
 
 const Locations = () => {
-
-
-    const bodyTemplateDeleted = (rowData: OBI.locations) => {
-        return <i className={classNames('pi', { 'true-icon pi-check text-red-600': rowData.deleted, 'false-icon pi-times text-green-600': !rowData.deleted })} />;
-    }
-
-    const bodyTemplateCreated = (rowData: OBI.locations) => {
-        if (rowData === undefined) {
-            return '';
-        }
-        var dateParts = rowData.created.split('-')
-        var jsDate = new Date(
-            dateParts[0],
-            dateParts[1] - 1,
-            dateParts[2].substr(0, 2),
-            dateParts[2].substr(3, 2),
-            dateParts[2].substr(6, 2),
-            dateParts[2].substr(9, 2)
-        )
-        return (
-            <span>
-                {jsDate.toLocaleDateString('fr') +
-                    ' ' +
-                    jsDate.toLocaleTimeString('fr')}
-            </span>
-        )
-    }
-
-    const bodyTemplateChanged = (rowData: OBI.locations) => {
-        if (rowData.length === 1) {
-            return '';
-        }
-        var dateParts = rowData.changed.split('-')
-        var jsDate = new Date(
-            dateParts[0],
-            dateParts[1] - 1,
-            dateParts[2].substr(0, 2),
-            dateParts[2].substr(3, 2),
-            dateParts[2].substr(6, 2),
-            dateParts[2].substr(9, 2)
-        )
-        return (
-            <span>
-                {jsDate.toLocaleDateString('fr') +
-                    ' ' +
-                    jsDate.toLocaleTimeString('fr')}
-            </span>
-        )
-    }
-
-    const bodyTemplateCountry = (rowData: OBI.locations) => {
-        return <label>
-            {rowData.loc_countries?.name + ' - '
-                + rowData.loc_countries?.iso3
-                + ' [' + rowData.loc_countries?.id + ']'} </label>
-    }
-
-    const bodyTemplateState = (rowData: OBI.locations) => {
-        return <label>
-            {rowData.loc_states?.name + ' - '
-                + rowData.loc_states?.iso2
-                + ' [' + rowData.loc_states?.id + ']'} </label>
-    }
-
-    const bodyTemplateCity = (rowData: OBI.locations) => {
-        return <label>
-            {rowData.loc_cities?.name + ' [' + rowData.loc_cities?.id + ']'} </label>
-    }
-
-
-    const representativeFilterCountry = (options: OBI.loc_countries) => {
-        console.log('Options', options);
-        return <CountriesDropDown
-            value={options.value}
-            onChanged={(e: any) => {
-                options.filterCallback(e.value);
-            }}
-        />;
-    }
 
 
     const locationModel = new LocationsModel();
     const [loading, setLoading] = useState(false);
     const [totalRecords, setTotalRecords] = useState(0);
-    const [selectAll, setSelectAll] = useState(false);
-    const [selectedCatalog, setSelectedCatalog] = useState<OBI.locations>(null);
-
-    const [selectionMode, setSelectionMode] = useState('multiple')
-    const [selectedCatalogs, setSelectedCatalogs] = useState(null)
-    const [selectedRepresentative, setSelectedRepresentative] = useState(null)
-    const [metaKey, setMetaKey] = useState<boolean>(true);
-    const [rowClick, setRowClick] = useState(true)
-
+    const [selectedCatalog, setSelectedCatalog] = useState(null);
     const [size, setSize] = useState<string>('small');
     const [filterDisplay, setFilterDisplay] = useState('menu')
-
+    const [dlgError, setDlgError] = useState();
     // Manage columns
     const [columns, setColumns]: OBI.ColumnMeta[] = useState([
         { field: 'id', header: 'ID', dataType: 'numeric', sortable: true, filter: true, filterElement: locationModel.intergerFilterTemplate, style: { textAlign: 'right' } },
-        { field: 'deleted', header: 'Supp.', dataType: "boolean", body: templateHelper.state, sortable: true, filter: true, filterElement: locationModel.booleanFilterTemplate, style: { textAlign: 'center', minWidth: '6rem' } },
-        { field: 'created', header: 'Créé', dataType: 'date', bodyTemplate: templateHelper.date, sortable: true, filter: true, filterField: "date", filterPlaceholder: 'Insérer une date', filterElement: locationModel.dateFilterTemplate, style: { textAlign: 'center' } },
-        { field: 'changed', header: 'Changé', dataType: 'date', bodyTemplate: templateHelper.date, sortable: true, filter: true, filterField: "date", filterPlaceholder: 'Insérer une date', filterElement: locationModel.dateFilterTemplate, style: { textAlign: 'center' } },
+        { field: 'deleted', header: 'Supp.', dataType: "boolean", body: templateHelper.bool, sortable: true, filter: true, filterElement: locationModel.booleanFilterTemplate, style: { textAlign: 'center', minWidth: '6rem' } },
+        { field: 'created', header: 'Créé', dataType: 'date', bodyTemplate: templateHelper.datetime, sortable: true, filter: true, filterField: "date", filterPlaceholder: 'Insérer une date', filterElement: locationModel.dateFilterTemplate, style: { textAlign: 'center' } },
+        { field: 'changed', header: 'Changé', dataType: 'date', bodyTemplate: templateHelper.datetime, sortable: true, filter: true, filterField: "date", filterPlaceholder: 'Insérer une date', filterElement: locationModel.dateFilterTemplate, style: { textAlign: 'center' } },
 
         { field: 'location', header: 'Localisation', dataType: 'text', sortable: true, filter: true },
         { field: 'designation', header: 'Désignation', dataType: 'text', sortable: true, filter: true },
 
         { field: 'group', header: 'Groupe', dataType: 'text', sortable: true, filter: true },
-        { field: 'country', header: 'Pays', dataType: 'text', bodyTemplate: bodyTemplateCountry, sortable: true, filter: true, filterField: "country", showFilterMatchModes: false, filterPlaceholder: 'Chercher par pays', filterElement: representativeFilterCountry, },
-        { field: 'state', header: 'Province', dataType: 'numeric', bodyTemplate: bodyTemplateState, sortable: true, filter: true },
-        { field: 'city', header: 'Ville', dataType: 'numeric', bodyTemplate: bodyTemplateCity, sortable: true, filter: true },
+        { field: 'country', header: 'Pays', dataType: 'text', bodyTemplate: templateHelper.country, sortable: true, filter: true, filterField: "country", showFilterMatchModes: false, filterPlaceholder: 'Chercher par pays', filterElement: countryHelper.lazyFilter, },
+        { field: 'state', header: 'Province', dataType: 'numeric', bodyTemplate: templateHelper.state, sortable: true, filter: true },
+        { field: 'city', header: 'Ville', dataType: 'numeric', bodyTemplate: templateHelper.city, sortable: true, filter: true },
 
         { field: 'address', header: 'Adresse', dataType: 'text', sortable: true, filter: true },
         { field: 'address1', header: 'Adresse 1', dataType: 'text', sortable: true, filter: true },
@@ -153,14 +71,7 @@ const Locations = () => {
             showFilterMatchModes={col.showFilterMatchModes}
         />;
     });
-
-
-
-
     const [catalogs, setCatalogs] = useState<any>([]);
-
-
-
 
 
 
@@ -200,16 +111,14 @@ const Locations = () => {
             LocationsService.getLazy(lazyEventSet).then((data: any) => {
                 console.log('Lazy Data', data);
                 if (data.status && data.status !== 200) {
-                    console.error('Error:', data.error);
-                    // window.location.replace("./../../../../(full-page)/pages/connection/");
-                    router.push('/(full-page)/pages/connection/')
+                    console.error(data.error);
+                    setDlgError(data);
+                    // router.push('/obi/pages/connection/')
                     setLoading(false);
                     return;
                 } else {
-                    console.log('lazyData no error', data);
                     // On Good request process data count
                     LocationsService.getLazyCount(lazyEventSet).then((dataCount: any) => {
-                        // console.log(dataCount, dataCount)
                         setTotalRecords(dataCount);
                     });
 
@@ -234,12 +143,10 @@ const Locations = () => {
      * @param event for page changed
      */
     const onPage = (event: Admin.lazy) => {
-        // console.log('onPage', event);
         lazyParams.first = event.first;
         lazyParams.rows = event.rows;
         lazyParams.page = event.page;
         lazyParams.pageCount = event.pageCount;
-        // console.log('onPage LazyParams', lazyParams);
         setLazyParams(lazyParams);
         loadLazyData(); //
     }
@@ -250,7 +157,6 @@ const Locations = () => {
      * @param event on sorting changed
      */
     const onSort = (event: Admin.Lazy) => {
-        // console.log('onSort', event);
         lazyParams.multiSortMeta = event.multiSortMeta;
         setLazyParams(lazyParams);
         loadLazyData(); //
@@ -276,38 +182,26 @@ const Locations = () => {
     };
 
 
-
-
-
-    const onFilterDisplayChange = (e: any) => {
-        console.log('onFilterDisplayChange ', e.value);
-        const value = e.value;
-        setFilterDisplay(value ? 'row' : 'menu');
-        setLazyParams(lazyParams);
-    }
-
-
-
     /**
- *
- */
+     *
+     */
     const initFilters = () => {
-        // console.log('init', defaultFilters)
         let params = {} as any;
         params = lazyParams;
-        // params.filters = defaultFilters;
-        // params.filters.global.matchMode = 'contains';
         setLazyParams(() => { return { ...params } });
     };
+
     /**
      * Global filter reaction
      */
     useEffect(() => {
-        let params = {} as any;
-        params = lazyParams;
-        params.filters.global.value = globalFilterValue;
-        params.filters.global.matchMode = 'contains';
-        setLazyParams(() => { return { ...params } });
+        if (globalFilterValue?.length >= 2) {
+            let params = lazyParams;
+            params.filters.global.value = globalFilterValue;
+            params.filters.global.matchMode = 'contains';
+            console.log(params);
+            setLazyParams(() => { return { ...params } });
+        }
     }, [globalFilterValue]);
 
 
@@ -326,9 +220,8 @@ const Locations = () => {
                     title='Localisations'
                     catalogSelected={selectedCatalog}
                     onClear={clearFilter}
-                    onSizeChanged={(e) => setSize(e.value)}
                     globalFilter={globalFilterValue}
-                    // onGlobalFilterChanged={(valueFilter) => setGlobalFilterValue(valueFilter === '' ? null : valueFilter)}
+                    onGlobalFilterChanged={(valueFilter) => setGlobalFilterValue(valueFilter === '' ? null : valueFilter)}
                     deleteId={onDelete}
 
                     columns={columns}
@@ -473,6 +366,9 @@ const Locations = () => {
     };
 
 
+    
+    
+
 
 
 
@@ -491,7 +387,14 @@ const Locations = () => {
                 onClear={clearFilter}
                 deleteId={onDelete}
                 onReload={(e) => setLazyParams((lazyParams: any) => { return { ...lazyParams } })}
+                onSizeChanged={(e) => setSize(e.size)}
+                onFilterModeChanged={(e: any) => setFilterDisplay(e.filterMode)}
             />
+
+            <DialogError
+                error={dlgError}
+                onYes={(e:any) => {setLazyParams((lazyParams: any) => { return { ...lazyParams } })}}
+                />
 
 
             <DataTable
@@ -534,7 +437,7 @@ const Locations = () => {
                 // SortMode
                 sortMode={lazyParams.sortMode}  //"multiple" // / !\ require metakey
                 dataKey={lazyParams.dataKey}    //"ad_id"
-                metaKeySelection={metaKey}
+                // metaKeySelection={metaKey}
                 multiSortMeta={lazyParams.multiSortMeta}    // Default
                 removableSort
                 onSort={onSort}

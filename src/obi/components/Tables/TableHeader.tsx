@@ -40,9 +40,6 @@ interface TableHeaderProps {
 
     catalogSelected?: any;              // should contain id key
 
-    size?: string; // should contain
-    onSizeChanged?: (e: any) => void; // when change occur in mode
-
     globalFilter?: any; // should contain
     globalFilterPlaceholder?: string;
     onGlobalFilterChanged?: (e: any) => void;
@@ -62,7 +59,6 @@ export default function TableHeader({ id, name,
     filterLabel = 'Reset', filterIcon = 'pi pi-filter-slash', filterClassName = 'mr-1 p-2',
     onClear,
     catalogSelected,
-    size = 'small', onSizeChanged,
     globalFilter , 
     globalFilterPlaceholder = 'Rechercher...', 
     onGlobalFilterChanged,
@@ -73,20 +69,7 @@ export default function TableHeader({ id, name,
 
 
 
-    const [sizeOptions] = useState<OBI.SizeOption[]>([
-        { label: 'Petit', value: 'small' },
-        { label: 'Normale', value: 'normal' },
-        { label: 'Large', value: 'large' }
-    ]);
 
-    // /**
-    //  * 
-    //  * @param event 
-    //  */
-    // const deleteAction = (event: React.FormEvent<HTMLFormElement>) => {
-    //     event.preventDefault(); // Prevent the form from being submitted in the traditional way.
-    //     deleteId ? deleteId(catalogSelected.id) : null;
-    // };
 
     // Managing Columns
     const [selectedColumns, setSelectedColumns] = useState(columns);
@@ -142,11 +125,7 @@ export default function TableHeader({ id, name,
                                 onChange={onColumnToggle} style={{ width: '20em' }} />
                         </div>
 
-                        <div className="flex justify-content-center align-items-center mb-0 gap-2">
-                            <SelectButton value={size} onChange={onSizeChanged} options={sizeOptions} hidden />
-                            {/* <Button icon="pi pi-refresh" raised rounded className='ml-2' /> */}
-                        </div>
-
+ 
 
                         <div className="p-input-icon-left">
                             <i className="pi pi-search ml-3" />

@@ -4,12 +4,7 @@ import { classNames } from "primereact/utils";
 
 
 
-
-
-
-
-
-exports.state = (rowData: any) => {
+exports.bool = (rowData: any) => {
     return <i className={
         classNames('pi', {
             'true-icon pi-check text-red-600':
@@ -17,7 +12,7 @@ exports.state = (rowData: any) => {
         })} />;
 }
 
-exports.date = (rowData: any) => {
+exports.datetime = (rowData: any) => {
     if (rowData === undefined) {
         return '';
     }
@@ -38,3 +33,31 @@ exports.date = (rowData: any) => {
         </span>
     )
 }
+
+
+
+
+
+exports.country = (rowData: any) => {
+    return <label>
+        {rowData.loc_countries?.name + ' - '
+            + rowData.loc_countries?.iso3
+            + ' [' + rowData.loc_countries?.id + ']'} </label>
+}
+
+
+
+
+exports.state = (rowData: any) => {
+    return <label>
+        {rowData.loc_states?.name + ' - '
+            + rowData.loc_states?.iso2
+            + ' [' + rowData.loc_states?.id + ']'} </label>
+}
+
+exports.city = (rowData: any) => {
+    return <label>
+        {rowData.loc_cities?.name + ' [' + rowData.loc_cities?.id + ']'} </label>
+}
+
+

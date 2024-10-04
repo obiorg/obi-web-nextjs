@@ -87,8 +87,8 @@ const Locations = () => {
 
 
 
-    const router = useRouter();
-    let loadLazyTimeout = 0;
+
+    let loadLazyTimeout = useRef(null);
     /**
     * Loading data with lazy loading
     */
@@ -99,22 +99,19 @@ const Locations = () => {
             clearTimeout(loadLazyTimeout);
         }
 
-        console.log('lazyParams', lazyParams);
+        // console.log('lazyParams', lazyParams);
 
         //initiate delay of a backend call
         loadLazyTimeout = setTimeout(() => {
             // Create lazy event object with stringify lazy parameter
             const lazyEventSet = { lazyEvent: JSON.stringify(lazyParams) };
-            console.log('Lazy Event Set ', lazyEventSet.lazyEvent);
+            // console.log('Lazy Event Set ', lazyEventSet.lazyEvent);
 
             // Get Lazy Data
             LocationsService.getLazy(lazyEventSet).then((data: any) => {
-                console.log('Lazy Data', data);
+                // console.log('Lazy Data', data);
                 if (data.status && data.status !== 200) {
-                    console.error(data.error);
                     setDlgError(data);
-                    // router.push('/obi/pages/connection/')
-                    setLoading(false);
                     return;
                 } else {
                     // On Good request process data count
@@ -143,23 +140,22 @@ const Locations = () => {
      * @param event for page changed
      */
     const onPage = (event: Admin.lazy) => {
-        lazyParams.first = event.first;
-        lazyParams.rows = event.rows;
-        lazyParams.page = event.page;
-        lazyParams.pageCount = event.pageCount;
-        setLazyParams(lazyParams);
-        loadLazyData(); //
+        let params = lazyParams
+        params.first = event.first;
+        params.rows = event.rows;
+        params.page = event.page;
+        params.pageCount = event.pageCount;
+        setLazyParams(() => { return { ...params } });
     }
-
 
     /**
      *
      * @param event on sorting changed
      */
     const onSort = (event: Admin.Lazy) => {
-        lazyParams.multiSortMeta = event.multiSortMeta;
-        setLazyParams(lazyParams);
-        loadLazyData(); //
+        let params = lazyParams
+        params.multiSortMeta = event.multiSortMeta;
+        setLazyParams(() => { return { ...params } });
     }
 
     /**
@@ -167,9 +163,7 @@ const Locations = () => {
      * @param event on filter applied
      */
     const onFilter = (event: Admin.Lazy) => {
-        // Create new filter and restore global filter
-        let params = {} as any;
-        params = lazyParams;
+        let params = lazyParams;
         params.filters = event.filters;
         setLazyParams(() => { return { ...params } });
     }
@@ -178,30 +172,30 @@ const Locations = () => {
      * Allow to reset filters
      */
     const clearFilter = () => {
-        initFilters();
-    };
-
-
-    /**
-     *
-     */
-    const initFilters = () => {
-        let params = {} as any;
-        params = lazyParams;
+        let params = lazyParams;
         setLazyParams(() => { return { ...params } });
     };
+
+
 
     /**
      * Global filter reaction
      */
-    useEffect(() => {
-        if (globalFilterValue?.length >= 2) {
+    const doGlobalFilterChanged = () => {
+        if (loadLazyTimeout) {
+            clearTimeout(loadLazyTimeout);
+        }
+
+        loadLazyTimeout = setTimeout(() => {
             let params = lazyParams;
             params.filters.global.value = globalFilterValue;
             params.filters.global.matchMode = 'contains';
             console.log(params);
             setLazyParams(() => { return { ...params } });
-        }
+        }, Math.random() * 1000 + 500) as unknown as number;
+    }
+    useEffect(() => {
+        doGlobalFilterChanged();
     }, [globalFilterValue]);
 
 
@@ -366,8 +360,8 @@ const Locations = () => {
     };
 
 
-    
-    
+
+
 
 
 
@@ -393,8 +387,8 @@ const Locations = () => {
 
             <DialogError
                 error={dlgError}
-                onYes={(e:any) => {setLazyParams((lazyParams: any) => { return { ...lazyParams } })}}
-                />
+                onYes={(e: any) => { setLazyParams((lazyParams: any) => { return { ...lazyParams } }) }}
+            />
 
 
             <DataTable

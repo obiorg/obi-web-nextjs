@@ -54,6 +54,7 @@ interface TableToolbarProps {
 
     onSizeChanged?: (e: any) => void;
     onFilterModeChanged?: (e: any) => void;
+    onStateStorageChanged?: (e: any) => void;
 }
 
 
@@ -69,7 +70,8 @@ export default function TableToolbar({ id, name,
 
     onReload,
     onSizeChanged,
-    onFilterModeChanged
+    onFilterModeChanged,
+    onStateStorageChanged
 }: TableToolbarProps) {
 
 
@@ -133,6 +135,31 @@ export default function TableToolbar({ id, name,
                         _e.filterMode = 'row';
                         onFilterModeChanged && onFilterModeChanged(_e);
                         toast.current.show({ severity: 'info', summary: 'Filtre', detail: 'Mode ligne', life: 3000 });
+                    }
+                }
+            ]
+        },
+        {
+            label: 'Etat Stockage',
+            items: [
+                {
+                    label: 'Session (défault)',
+                    icon: 'pi pi-bookmark',
+                    command: (e:any) => {
+                        let _e = e;
+                        _e.stateStorage = 'session';
+                        onStateStorageChanged && onStateStorageChanged(_e);
+                        toast.current.show({ severity: 'info', summary: 'Stockage', detail: 'Stockage session activé', life: 3000 });
+                    }
+                },
+                {
+                    label: 'Locale',
+                    icon: 'pi pi-bookmark-fill',
+                    command: (e:any) => {
+                        let _e = e;
+                        _e.stateStorage = 'local';
+                        onStateStorageChanged && onStateStorageChanged(_e);
+                        toast.current.show({ severity: 'info', summary: 'Stockage', detail: 'Stockage local activé', life: 3000 });
                     }
                 }
             ]

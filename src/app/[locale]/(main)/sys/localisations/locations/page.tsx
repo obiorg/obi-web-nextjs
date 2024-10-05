@@ -2,7 +2,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { DataTable, DataTableFilterMeta, DataTableSortMeta } from 'primereact/datatable';
 import { Column, ColumnFilterClearTemplateOptions } from 'primereact/column';
-import { InputNumber } from 'primereact/inputnumber';
 import { Button } from 'primereact/button';
 
 import { Admin, OBI } from '@/src/types/index';
@@ -12,16 +11,12 @@ import { LocationsModel } from '@/src/obi/models/localisations/LocationsModel';
 import TableHeader from '@/src/obi/components/Tables/TableHeader';
 import { ExportsService } from '@/src/obi/utilities/export/ExportsService';
 import TableToolbar from '@/src/obi/components/Tables/TableToolbar';
-import { classNames } from 'primereact/utils';
-import { MultiSelect } from 'primereact/multiselect';
-import DropDownCountries from '../countries/components/dropdown';
-import CountriesDropDown from '../countries/components/CountriesDropDown';
 
 
-import { useRouter } from 'next/navigation';
-import { Dialog } from 'primereact/dialog';
-import { Panel } from 'primereact/panel';
 import DialogError from '@/src/obi/components/Dialog/DialogError';
+import { ContextMenu } from 'primereact/contextmenu';
+import { useRouter } from 'next/navigation';
+
 
 
 const templateHelper = require('@/src/obi/components/Tables/TemplateHelper');
@@ -36,11 +31,12 @@ const Locations = () => {
     const [totalRecords, setTotalRecords] = useState(0);
     const [selectedCatalog, setSelectedCatalog] = useState(null);
     const [size, setSize] = useState<string>('small');
-    const [filterDisplay, setFilterDisplay] = useState('menu')
+    const [filterDisplay, setFilterDisplay] = useState('menu');
+    const [stateStorage, setStateStorage] = useState('session');
     const [dlgError, setDlgError] = useState();
     // Manage columns
     const [columns, setColumns]: OBI.ColumnMeta[] = useState([
-        { field: 'id', header: 'ID', dataType: 'numeric', sortable: true, filter: true, filterElement: locationModel.intergerFilterTemplate, style: { textAlign: 'right' } },
+        { field: 'id', header: 'ID', dataType: 'numeric', sortable: true, filter: true, filterElement: templateHelper.integerFilterTemplate, style: { textAlign: 'right' } },
         { field: 'deleted', header: 'Supp.', dataType: "boolean", body: templateHelper.bool, sortable: true, filter: true, filterElement: locationModel.booleanFilterTemplate, style: { textAlign: 'center', minWidth: '6rem' } },
         { field: 'created', header: 'Créé', dataType: 'date', bodyTemplate: templateHelper.datetime, sortable: true, filter: true, filterField: "date", filterPlaceholder: 'Insérer une date', filterElement: locationModel.dateFilterTemplate, style: { textAlign: 'center' } },
         { field: 'changed', header: 'Changé', dataType: 'date', bodyTemplate: templateHelper.datetime, sortable: true, filter: true, filterField: "date", filterPlaceholder: 'Insérer une date', filterElement: locationModel.dateFilterTemplate, style: { textAlign: 'center' } },
@@ -65,7 +61,6 @@ const Locations = () => {
     const [selectedColumns, setSelectedColumns] = useState<any>(columns);
     const columnsRender = selectedColumns?.map((col: any, i: number) => {
         return <Column key={col.field} field={col.field} header={col.header} dataType={col.dataType}
-
             body={col.bodyTemplate ? col.bodyTemplate : col.body} sortable={col.sortable} style={col.style ? col.style : { width: '10%' }}
             filter={col.filter} filterField={col.field} filterPlaceholder={col.filterPlaceholder} filterElement={col.filterElement}
             showFilterMatchModes={col.showFilterMatchModes}
@@ -84,7 +79,25 @@ const Locations = () => {
         locationModel.
             getStandardParam({ field: 'location', order: 1 }, defaultFilters));
 
-
+    const cm = useRef(null);
+    const router = useRouter()
+    const menuModel = [
+        { label: 'Nouveau', icon: 'pi pi-fw pi-plus', url: './create' },
+        { label: 'Modifier', icon: 'pi pi-fw pi-file-edit', url: `./${selectedCatalog?.id}/update` },
+        { label: 'Copier', icon: 'pi pi-fw pi-copy', command: () => viewProduct(selectedProduct) },
+        { label: 'Supprimer', icon: 'pi pi-fw pi-trash', command: () => onDelete(selectedCatalog?.id) },
+        { label: 'Filtre reset', icon: 'pi pi-fw pi-filter-slash', command: () => clearFilter() },
+        { label: 'Actualiser', icon: 'pi pi-fw pi-refresh', command: () => setLazyParams((lazyParams: any) => { return { ...lazyParams } }) },
+        { label: 'Importer...', icon: 'pi pi-fw pi-file-import', command: () => importCatalogs() },
+        {
+            label: 'Exporter...', icon: 'pi pi-fw pi-file-export',
+            items: [
+                { label: 'Export CSV', icon: 'pi pi-fw pi-file', command: () => exportCSV(true) },
+                { label: 'Export Excel', icon: 'pi pi-fw pi-file-excel', command: () => exportExcel() },
+                { label: 'Export PDF', icon: 'pi pi-fw pi-file-pdf', command: () => exportPdf() },
+            ]
+        },
+    ];
 
 
 
@@ -105,7 +118,7 @@ const Locations = () => {
         loadLazyTimeout = setTimeout(() => {
             // Create lazy event object with stringify lazy parameter
             const lazyEventSet = { lazyEvent: JSON.stringify(lazyParams) };
-            // console.log('Lazy Event Set ', lazyEventSet.lazyEvent);
+            console.log('Lazy Event Set ', lazyEventSet.lazyEvent);
 
             // Get Lazy Data
             LocationsService.getLazy(lazyEventSet).then((data: any) => {
@@ -173,6 +186,8 @@ const Locations = () => {
      */
     const clearFilter = () => {
         let params = lazyParams;
+        params.filters = locationModel.
+            getStandardParam({ field: 'location', order: 1 }, defaultFilters).filters;
         setLazyParams(() => { return { ...params } });
     };
 
@@ -383,6 +398,8 @@ const Locations = () => {
                 onReload={(e) => setLazyParams((lazyParams: any) => { return { ...lazyParams } })}
                 onSizeChanged={(e) => setSize(e.size)}
                 onFilterModeChanged={(e: any) => setFilterDisplay(e.filterMode)}
+                onStateStorageChanged={(e: any) => setStateStorage(e.stateStorage)}
+
             />
 
             <DialogError
@@ -390,7 +407,9 @@ const Locations = () => {
                 onYes={(e: any) => { setLazyParams((lazyParams: any) => { return { ...lazyParams } }) }}
             />
 
-
+            <ContextMenu model={menuModel} ref={cm}
+            // onHide={() => setSelectedCatalog(null)} 
+            />
             <DataTable
                 id="dataTable"
                 ref={dt}
@@ -398,6 +417,13 @@ const Locations = () => {
                 selection={selectedCatalog}
                 selectionMode="single"
                 onSelectionChange={(e) => { setSelectedCatalog(e.value) }}
+
+
+                // Context menu
+                onContextMenu={(e) => cm?.current?.show(e.originalEvent)}
+                contextMenuSelection={selectedCatalog}
+                onContextMenuSelectionChange={(e) => { setSelectedCatalog(e.value) }}
+
 
                 lazy
 
@@ -447,7 +473,13 @@ const Locations = () => {
                 totalRecords={totalRecords}
                 onPage={onPage}
 
-                tableStyle={{ minWidth: '50rem' }}>
+                // storage
+                stateStorage={stateStorage} stateKey={stateStorage === 'session' ? "obi-dt-state-location-session" : "obi-dt-state-location-local"}
+
+                tableStyle={{ minWidth: '50rem' }}
+
+
+            >
 
 
                 {

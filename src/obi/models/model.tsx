@@ -24,7 +24,7 @@ export class Model {
   }
 
 
-  intergerFilterTemplate = (options: any) => {
+  integerFilterTemplate = (options: any) => {
     return <InputNumber value={options.value} onValueChange={(e) => { options.filterApplyCallback(e.value); }} />
   }
 
@@ -144,7 +144,7 @@ export class Model {
             filters[key] = {
               value: null,
               matchMode: FilterMatchMode.EQUALS,
-                type: 'boolean'
+              type: 'boolean'
             };
             // console.log("key: " + key + " is a date value")
             break;

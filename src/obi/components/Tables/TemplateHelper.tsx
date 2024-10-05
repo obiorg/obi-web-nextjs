@@ -1,4 +1,9 @@
+import { Calendar } from "primereact/calendar";
+import { InputNumber } from "primereact/inputnumber";
+import { TriStateCheckbox } from "primereact/tristatecheckbox";
 import { classNames } from "primereact/utils";
+
+
 
 
 
@@ -33,6 +38,32 @@ exports.datetime = (rowData: any) => {
         </span>
     )
 }
+
+
+exports.integerFilterTemplate = (options: any) => {
+    console.log(options)
+    return <InputNumber value={options.value} onValueChange={(e) => { options.filterApplyCallback(e.value); }} />
+}
+
+exports.booleanFilterTemplate = (options: any) => {
+    return <TriStateCheckbox value={options.value} onChange={(e) => { options.filterApplyCallback(e.value); }} />
+}
+
+exports.dateFilterTemplate = (options: any) => {
+    return <Calendar value={options.value}
+        onChange={(e: any) => { console.log(e); options.filterCallback(e.value, options.index); options.value = e.value; }}
+        // showTime 
+        showIcon
+        hourFormat="24"
+        showButtonBar
+        dateFormat="dd/mm/yy" placeholder="dd/mm/yy" mask="99/99/9999"
+        locale='fr'
+
+    // headerTemplate={() => <Button label="Custom Button" />} footerTemplate={() => <div>Footer Content</div>}
+    // dateTemplate={dateTemplater}
+    />
+}
+
 
 
 

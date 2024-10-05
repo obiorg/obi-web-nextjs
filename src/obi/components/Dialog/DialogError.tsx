@@ -19,6 +19,7 @@ import { Toolbar } from "primereact/toolbar";
 import React, { useEffect, useRef, useState } from "react";
 
 
+
 interface ErrorProps {
     error: {
         message: string,
@@ -67,6 +68,8 @@ export default function DialogError({
             </div>
         );
     }
+
+    
     return (
         <>
 
@@ -110,6 +113,7 @@ export default function DialogError({
 
                             <h5>{error?.message}</h5>
                             <Panel 
+                                id="errorId"
                                 header="Plus d'infos" 
                                 toggleable 
                                 collapsed={false} 

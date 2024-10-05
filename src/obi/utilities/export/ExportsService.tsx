@@ -8,6 +8,11 @@ require('jspdf-autotable');
 //import
 import * as XLSX from "xlsx";
 
+interface ExportResultProps {
+    type?: string, // CSV, EXCEL, PDF
+    processing?: boolean, //
+    result?: any, //
+}
 
 export const ExportsService = {
 
@@ -211,4 +216,73 @@ export const ExportsService = {
     },
 
 
+
+    exportToCSV(Service: any, lazyParams: any, name: string): any {
+        let res = { type: 'CSV', processing: true, result: null };
+
+        let loadLazyTimeout = 0;
+        if (loadLazyTimeout) {
+            clearTimeout(loadLazyTimeout);
+        }
+
+        //initiate delay of a backend call
+        loadLazyTimeout = setTimeout(() => {
+            // Create lazy event object with stringify lazy parameter
+            const lazyEventSet = { lazyEvent: JSON.stringify(lazyParams) };
+
+            // Get Lazy Data
+            Service.download(lazyEventSet).then((data: any) => {
+                this.downloadAsCSV(data, name + '_' + Math.floor(Date.now() / 1000))
+                res.processing = false
+                res.result = data;
+                return res;
+            });
+        }, Math.random() * 1000 + 500) as unknown as number;
+    },
+
+    exportToExcel(Service: any, lazyParams: any, name: string): any {
+        let res = { type: 'EXCEL', processing: true, result: null };
+
+        let loadLazyTimeout = 0;
+        if (loadLazyTimeout) {
+            clearTimeout(loadLazyTimeout);
+        }
+        //initiate delay of a backend call
+        loadLazyTimeout = setTimeout(() => {
+            // Create lazy event object with stringify lazy parameter
+            const lazyEventSet = { lazyEvent: JSON.stringify(lazyParams) };
+
+            // Get Lazy Data
+            Service.download(lazyEventSet).then((data: any) => {
+                this.downloadAsXLSX(data, name + '_' + Math.floor(Date.now() / 1000))
+                res.processing = false
+                res.result = data;
+                return res;
+            });
+        }, Math.random() * 1000 + 500) as unknown as number;
+    },
+
+    exportToPDF(Service: any, lazyParams: any, name: string, columns: any, columnsStyle: any): any {
+        let res = { type: 'PDF', processing: true, result: null };
+
+        let loadLazyTimeout = 0;
+        if (loadLazyTimeout) {
+            clearTimeout(loadLazyTimeout);
+        }
+
+        //initiate delay of a backend call
+        loadLazyTimeout = setTimeout(() => {
+            // Create lazy event object with stringify lazy parameter
+            const lazyEventSet = { lazyEvent: JSON.stringify(lazyParams) };
+
+            // Get Lazy Data
+            Service.download(lazyEventSet).then((data: any) => {
+                const exportColumns = columns.map((col: any) => ({ title: col.header, dataKey: col.field }));
+                this.downloadAsPdf(exportColumns, data, name + ' ' + Math.floor(Date.now() / 1000) + '.pdf', columnsStyle);
+                res.processing = false
+                res.result = data;
+                return res;
+            });
+        }, Math.random() * 1000 + 500) as unknown as number;
+    },
 };

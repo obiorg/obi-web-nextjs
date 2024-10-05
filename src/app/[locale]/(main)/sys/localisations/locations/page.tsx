@@ -57,6 +57,25 @@ const Locations = () => {
         { field: 'number', header: 'Numéro', dataType: 'text', sortable: true, filter: true, style: { textAlign: 'center' } },
     ]);
 
+    const exportColumnsStyle = {
+        0: { halign: 'right', valign: 'middle', fontSize: 8, cellPadding: 1, minCellWidth: 20, cellWidth: 'wrap' }, // id //fillColor: [0, 255, 0]
+        1: { halign: 'center', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
+        2: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'wrap' },
+        3: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'wrap' },
+        4: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' }, // localisation
+        5: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
+        6: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
+        7: { halign: 'right', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },   // country
+        8: { halign: 'right', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
+        9: { halign: 'right', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'wrap' }, // ville
+        10: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
+        11: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
+        12: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
+        13: { halign: 'center', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
+        14: { halign: 'center', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
+        15: { halign: 'center', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' }
+    }
+
     // DataTable columns toggle
     const [selectedColumns, setSelectedColumns] = useState<any>(columns);
     const columnsRender = selectedColumns?.map((col: any, i: number) => {
@@ -84,7 +103,7 @@ const Locations = () => {
     const menuModel = [
         { label: 'Nouveau', icon: 'pi pi-fw pi-plus', url: './create' },
         { label: 'Modifier', icon: 'pi pi-fw pi-file-edit', url: `./${selectedCatalog?.id}/update` },
-        { label: 'Copier', icon: 'pi pi-fw pi-copy', command: () => viewProduct(selectedProduct) },
+        { label: 'Copier', icon: 'pi pi-fw pi-copy', url: `./${selectedCatalog?.id}/copy` },
         { label: 'Supprimer', icon: 'pi pi-fw pi-trash', command: () => onDelete(selectedCatalog?.id) },
         { label: 'Filtre reset', icon: 'pi pi-fw pi-filter-slash', command: () => clearFilter() },
         { label: 'Actualiser', icon: 'pi pi-fw pi-refresh', command: () => setLazyParams((lazyParams: any) => { return { ...lazyParams } }) },
@@ -92,14 +111,12 @@ const Locations = () => {
         {
             label: 'Exporter...', icon: 'pi pi-fw pi-file-export',
             items: [
-                { label: 'Export CSV', icon: 'pi pi-fw pi-file', command: () => exportCSV(true) },
-                { label: 'Export Excel', icon: 'pi pi-fw pi-file-excel', command: () => exportExcel() },
-                { label: 'Export PDF', icon: 'pi pi-fw pi-file-pdf', command: () => exportPdf() },
+                { label: 'Export CSV', icon: 'pi pi-fw pi-file', command: () => ExportsService.exportToCSV(LocationsService, lazyParams, 'locations') },
+                { label: 'Export Excel', icon: 'pi pi-fw pi-file-excel', command: () => ExportsService.exportToExcel(LocationsService, lazyParams, 'locations') },
+                { label: 'Export PDF', icon: 'pi pi-fw pi-file-pdf', command: () => ExportsService.exportToPDF(LocationsService, lazyParams, 'locations', columns, exportColumnsStyle) },
             ]
         },
     ];
-
-
 
     let loadLazyTimeout = useRef(null);
     /**
@@ -118,7 +135,7 @@ const Locations = () => {
         loadLazyTimeout = setTimeout(() => {
             // Create lazy event object with stringify lazy parameter
             const lazyEventSet = { lazyEvent: JSON.stringify(lazyParams) };
-            console.log('Lazy Event Set ', lazyEventSet.lazyEvent);
+            // console.log('Lazy Event Set ', lazyEventSet.lazyEvent);
 
             // Get Lazy Data
             LocationsService.getLazy(lazyEventSet).then((data: any) => {
@@ -267,9 +284,9 @@ const Locations = () => {
         //const paginatorRight = <Button type="button" icon="pi pi-download" text />;
         return (
             <div className="flex justify-content-between align-items-center">
-                <Button type="button" label='CSV' icon="pi pi-file" onClick={() => exportCSV(false)} className="mr-2" data-pr-tooltip="CSV" />
-                <Button type="button" label='XLSX' icon="pi pi-file-excel" onClick={exportExcel} className="p-button-success mr-2" data-pr-tooltip="XLS" />
-                <Button type="button" label='PDF' icon="pi pi-file-pdf" onClick={exportPdf} className="p-button-warning mr-2" data-pr-tooltip="PDF" />
+                <Button type="button" label='CSV' icon="pi pi-file" onClick={() => ExportsService.exportToCSV(LocationsService, lazyParams, 'locations')} className="mr-2" data-pr-tooltip="CSV" />
+                <Button type="button" label='XLSX' icon="pi pi-file-excel" onClick={() => ExportsService.exportToExcel(LocationsService, lazyParams, 'locations')} className="p-button-success mr-2" data-pr-tooltip="XLS" />
+                <Button type="button" label='PDF' icon="pi pi-file-pdf" onClick={() => ExportsService.exportToPDF(LocationsService, lazyParams, 'locations', columns, exportColumnsStyle)} className="p-button-warning mr-2" data-pr-tooltip="PDF" />
             </div>
         )
     }
@@ -277,87 +294,8 @@ const Locations = () => {
 
     // Export / Import
     const dt = useRef(null);
-    const exportCSV = (vale: boolean) => {
-        setLoading(true);
 
-        if (loadLazyTimeout) {
-            clearTimeout(loadLazyTimeout);
-        }
 
-        //initiate delay of a backend call
-        loadLazyTimeout = setTimeout(() => {
-            // Create lazy event object with stringify lazy parameter
-            const lazyEventSet = { lazyEvent: JSON.stringify(lazyParams) };
-
-            // Get Lazy Data
-            LocationsService.download(lazyEventSet).then((data: any) => {
-                // dt.current.exportCSV(data);
-                ExportsService.downloadAsCSV(data, "locations_" + Math.floor(Date.now() / 1000))
-                setLoading(false);
-            });
-        }, Math.random() * 1000 + 500) as unknown as number;
-
-    }
-    const exportExcel = () => {
-        setLoading(true);
-
-        if (loadLazyTimeout) {
-            clearTimeout(loadLazyTimeout);
-        }
-
-        //initiate delay of a backend call
-        loadLazyTimeout = setTimeout(() => {
-            // Create lazy event object with stringify lazy parameter
-            const lazyEventSet = { lazyEvent: JSON.stringify(lazyParams) };
-
-            // Get Lazy Data
-            LocationsService.download(lazyEventSet).then((data: any) => {
-                ExportsService.downloadAsXLSX(data, "locations_" + Math.floor(Date.now() / 1000))
-                setLoading(false);
-            });
-        }, Math.random() * 1000 + 500) as unknown as number;
-
-    }
-    const exportPdf = () => {
-        setLoading(true);
-
-        if (loadLazyTimeout) {
-            clearTimeout(loadLazyTimeout);
-        }
-
-        //initiate delay of a backend call
-        loadLazyTimeout = setTimeout(() => {
-            // Create lazy event object with stringify lazy parameter
-            const lazyEventSet = { lazyEvent: JSON.stringify(lazyParams) };
-
-            // Get Lazy Data
-            LocationsService.download(lazyEventSet).then((data: any) => {
-                const exportColumns = columns.map((col: any) => ({ title: col.header, dataKey: col.field }));
-                const columnsStyle = {
-                    0: { halign: 'right', valign: 'middle', fontSize: 8, cellPadding: 1, minCellWidth: 20, cellWidth: 'wrap' }, // id //fillColor: [0, 255, 0]
-                    1: { halign: 'center', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
-                    2: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'wrap' },
-                    3: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'wrap' },
-                    4: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' }, // localisation
-                    5: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
-                    6: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
-                    7: { halign: 'right', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },   // country
-                    8: { halign: 'right', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
-                    9: { halign: 'right', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'wrap' }, // ville
-                    10: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
-                    11: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
-                    12: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
-                    13: { halign: 'center', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
-                    14: { halign: 'center', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
-                    15: { halign: 'center', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' }
-                }
-                ExportsService.downloadAsPdf(exportColumns, data, "locations_" + Math.floor(Date.now() / 1000) + '.pdf', columnsStyle);
-
-                setLoading(false);
-            });
-        }, Math.random() * 1000 + 500) as unknown as number;
-
-    }
     const onImportCSV = (e: any) => {
         // handle file upload and import logic here
         ExportsService.importCSV(e);
@@ -400,6 +338,9 @@ const Locations = () => {
                 onFilterModeChanged={(e: any) => setFilterDisplay(e.filterMode)}
                 onStateStorageChanged={(e: any) => setStateStorage(e.stateStorage)}
 
+                onExportCSV={(e: any) => ExportsService.exportToCSV(LocationsService, lazyParams, 'locations')}
+                onExportExcel={(e: any) => ExportsService.exportToExcel(LocationsService, lazyParams, 'locations')}
+                onExportPDF={(e: any) => ExportsService.exportToPDF(LocationsService, lazyParams, 'locations', columns, exportColumnsStyle)}
             />
 
             <DialogError

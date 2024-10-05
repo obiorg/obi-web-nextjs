@@ -52,6 +52,7 @@ import FieldInputNumber from "@/src/obi/components/Inputs/FieldInputNumber"
 import FieldInputCheckbox from "@/src/obi/components/Inputs/FieldInputCheckbox"
 import FieldLabel from "@/src/obi/components/Inputs/FieldOutputLabel"
 import FieldOutputLabel from "@/src/obi/components/Inputs/FieldOutputLabel"
+import { useRouter } from "next/navigation"
 
 
 // Define the shape of the form errors locations
@@ -126,7 +127,6 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
         errors: {},
     })
 
-
     // Used for toast
     const toast = useRef<Toast>(null);
     const msg = useRef(null);
@@ -157,17 +157,18 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
     const formRef = React.useRef();
     const [enableOnupdate, setEnableOnupdate] = useState(true); //
 
-   
+
 
     /**
      * Depends on save mode it will process reset or keed elements
      */
+    const router = useRouter();
     const saveModeProcess = () => {
         if (saveMode === 0) {
             if (type === 0) {
                 formRef.current.reset();
             } else {
-
+                router.push('./../..')
             }
         } else {
             // nothing yet
@@ -291,11 +292,13 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
             clearTimeout(loadLazyTimeout);
         }
 
+
         //imitate delay of a backend call
         loadLazyTimeout = setTimeout(() => {
 
             // Manage create processing
-            if (type === 0) {
+            if (type === 0 || type === 2) {
+                console.log('start create');
                 LocationsService.create(formState, formData).then((data: any) => {
                     if (data.errors) {
                         formState.errors = { errors: {} };
@@ -316,7 +319,7 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
                 });
             }
             // Manage update processing
-            else {
+            else if(type === 1) {
                 LocationsService.update(formState, formData).then((data: any) => {
                     if (data.errors) {
                         formState.errors = { errors: {} };
@@ -335,6 +338,10 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
                     setLazyLoading(false);
                     unBlockForm();
                 });
+            }else{
+                console.error('Unknow type state  ', type);
+                setLazyLoading(false);
+                unBlockForm();
             }
 
 
@@ -410,15 +417,18 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
      */
     const [states, setStates] = useState<any>([]);
     const stateModel = new LocationsStatesModel();
-
-    const [lazyParamsStates, setLazyParamsStates] = useState(stateModel.getStandardParam({ field: 'name', order: 1 },
-        {   "global": { value: null, matchMode: 'contains' }, 
-            "country_id": { operator: 'and', constraints: [{ value: initialData?.country, matchMode: 'equals' }] } 
-        }, 1
-    ), );
+    const defaultFilters: Array<DataTableFilterMeta> = StatesService.defaultFilters();
+    const [lazyParamsStates, setLazyParamsStates] = useState(
+        stateModel.getStandardParam({ field: 'name', order: 1 },
+            {
+                ...defaultFilters,
+                // "global": { value: null, matchMode: 'contains' },
+                "country_id": { operator: 'and', constraints: [{ value: initialData?.country, matchMode: 'equals' }] }
+            }, 0
+        ));
     useEffect(() => {
         const lazyEventSet = { lazyEvent: JSON.stringify(lazyParamsStates) };
-
+        console.log(lazyParamsStates);
         // Get full data list
         StatesService.getLazy(lazyEventSet).then((data: any) => {
             if (data.status) {
@@ -556,7 +566,7 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
 
 
                         {/** Location */}
-                        {type === 0 ?
+                        {type !== 1 ?
                             <FieldInputText
                                 id="location"
                                 name='location'

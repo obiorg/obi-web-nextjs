@@ -21,6 +21,7 @@ interface ButtonSaveProps {
     cancelLabel?: string;
     listLabel?: string;
     updateLabel?: string[];
+    copyLabel?: string[];
 
     onSaveClick?: (e: any) => void;     // The callback function to be called when the button is clicked
     onCancelClick?: (e: any) => void;   // The callback function to
@@ -34,7 +35,7 @@ interface ButtonSaveProps {
 export default function ButtonBarCreate({
     id, name, label,
     createLabel, cancelLabel,
-    listLabel, updateLabel,
+    listLabel, updateLabel, copyLabel,
     onSaveClick, onCancelClick, onModeChanged,
     type = 0,
     formAction }: ButtonSaveProps) {
@@ -75,6 +76,7 @@ export default function ButtonBarCreate({
                     <ButtonSave
                         labelsType0={createLabel}
                         labelsType1={updateLabel}
+                        labelsType2={copyLabel}
                         // onClick={onSaveClick}
                         onModeChanged={onModeChanged}
                         type={type}

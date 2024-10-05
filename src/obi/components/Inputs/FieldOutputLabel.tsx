@@ -39,15 +39,15 @@ export default function FieldOutputLabel(
             setDisplayValue(value);
         } else if (type === 'datetime') {
             let dt = '';
-            console.log('Value', value);
+            // console.log('Value', value);
             let date = new Date(value ? value : new Date());
-            console.log(date);
-            console.log('date.toISOString()', date.toISOString());
-            console.log('date.toUTCString()', date.toUTCString());
-            console.log('date.toLocaleDateString()', date.toLocaleDateString());
-            console.log('date.getHours()', date.getHours());
-            console.log('date.getMinutes()', date.getMinutes());
-            console.log('date.getSeconds()', date.getSeconds());
+            // console.log(date);
+            // console.log('date.toISOString()', date.toISOString());
+            // console.log('date.toUTCString()', date.toUTCString());
+            // console.log('date.toLocaleDateString()', date.toLocaleDateString());
+            // console.log('date.getHours()', date.getHours());
+            // console.log('date.getMinutes()', date.getMinutes());
+            // console.log('date.getSeconds()', date.getSeconds());
             if (value) {
                 // dt = date.toISOString().replace('T', ' ').replace('Z', '').replace('.' + date.getMilliseconds(), ''); //
                 // dt = date.toLocaleString('fr-FR', {
@@ -59,10 +59,10 @@ export default function FieldOutputLabel(
                 //     second: '2-digit'
                 // })
                 dt = format(date, 'dd/MM/yyyy HH:mm:ss');
-                console.log(dt);
+                // console.log(dt);
 
             }
-            console.log(dt);
+            // console.log(dt);
             setDisplayValue(dt);
             // value={new Date(initialData?.changed).toLocaleString() + ' ' +  new Date(initialData?.changed).getTime().toString()}
             // setDisplayValue(value);

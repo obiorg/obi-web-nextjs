@@ -41,7 +41,7 @@ exports.datetime = (rowData: any) => {
 
 
 exports.integerFilterTemplate = (options: any) => {
-    console.log(options)
+    // console.log(options)
     return <InputNumber value={options.value} onValueChange={(e) => { options.filterApplyCallback(e.value); }} />
 }
 

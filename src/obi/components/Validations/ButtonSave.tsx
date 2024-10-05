@@ -13,6 +13,7 @@ interface ButtonSaveProps {
     name?: string;                      // Name of the component
     labelsType0?: string[];                     // preceding title 
     labelsType1?: string[];                     // preceding title 
+    labelsType2?: string[];                     // preceding title 
     icons?: string[];                     // preceding title 
     className?: string; //
     onClick?: (e: any) => void;         // The callback function to be called when the button is clicked
@@ -25,7 +26,8 @@ interface ButtonSaveProps {
 export default function ButtonSave(
     { id, name,
         labelsType0 = ['Créer & Reset', 'Enreg. & Voir'],
-        labelsType1 = ['Créer', 'Enreg. partiel'],
+        labelsType1 = ['Enreg. & Lister', 'Enreg. partiel'],
+        labelsType2 = ['Créer. & Lister', 'Enreg. & Voir'],
         icons = ['pi pi-save', 'pi pi-spin pi-save'],
         className = '',
         onClick, onModeChanged,
@@ -47,7 +49,7 @@ export default function ButtonSave(
 
     const modes = [
         {
-            label: type === 0 ? labelsType0[0] : labelsType1[0],
+            label: type === 0 ? labelsType0[0] : type === 1 ? labelsType1[0] : labelsType2[0],
             icon: icons[0],
             command: (e) => {
                 toast.current.show({ severity: 'success', summary: 'Mode Sauvegarde', detail: 'Mode sauvegarde et reset activé' });
@@ -56,10 +58,10 @@ export default function ButtonSave(
             }
         },
         {
-            label: type === 0 ? labelsType0[1] : labelsType1[1],
+            label: type === 0 ? labelsType0[1] : type === 1 ? labelsType1[1] : labelsType2[1],
             icon: icons[1],
             command: (e) => {
-                toast.current.show({ severity: 'success', summary: 'Delete', detail: 'Mode sauvegarde seul activé' });
+                toast.current.show({ severity: 'success', summary: 'Mode Sauvegarde', detail: 'Mode sauvegarde seul activé' });
                 setMode(1);
                 { onModeChanged ? onModeChanged(1) : null }
             }

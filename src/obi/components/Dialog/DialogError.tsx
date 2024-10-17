@@ -1,21 +1,10 @@
 'use client';
 
 
-import LocationDelete from "@/src/app/[locale]/(main)/sys/localisations/locations/components/post-delete";
-import { OBI } from "@/src/types/obi";
-import { Url } from "next/dist/shared/lib/router/router";
-import Link from "next/link";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
-import { InputText } from "primereact/inputtext";
-import { Menu } from "primereact/menu";
-import { MultiSelect } from "primereact/multiselect";
-import { OverlayPanel } from "primereact/overlaypanel";
 import { Panel } from "primereact/panel";
 import { ScrollPanel } from "primereact/scrollpanel";
-import { SelectButton } from "primereact/selectbutton";
-import { Toast } from "primereact/toast";
-import { Toolbar } from "primereact/toolbar";
 import React, { useEffect, useRef, useState } from "react";
 
 
@@ -69,7 +58,8 @@ export default function DialogError({
         );
     }
 
-    
+
+
     return (
         <>
 
@@ -112,15 +102,16 @@ export default function DialogError({
                             </div>
 
                             <h5>{error?.message}</h5>
-                            <Panel 
+                            <Panel
                                 id="errorId"
-                                header="Plus d'infos" 
-                                toggleable 
-                                collapsed={false} 
+                                header="Plus d'infos"
+                                toggleable
+                                collapsed={false}
                                 className="flex-column align-items-start ml-0 pl-0"
-                                 >
-                                <ScrollPanel className="m-0" style={{ width: '100%', height: '60px' }} >
+                            >
+                                <ScrollPanel className="m-0" style={{ width: '100%', height: '120px' }} >
                                     <p>{error?.error?.stack}</p>
+                                    <p>{error?.url}</p>
                                 </ScrollPanel>
                             </Panel>
 

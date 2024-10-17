@@ -1,13 +1,12 @@
-'use client';
+'use client'
+
+
 import React, { useState, useEffect, useRef } from 'react';
 import { DataTable, DataTableFilterMeta, DataTableSortMeta } from 'primereact/datatable';
 import { Column, ColumnFilterClearTemplateOptions } from 'primereact/column';
 import { Button } from 'primereact/button';
 
 import { Admin, OBI } from '@/src/types/index';
-
-import { LocationsService } from '@/src/obi/service/localisations/LocationsService';
-import { LocationsModel } from '@/src/obi/models/localisations/LocationsModel';
 import TableHeader from '@/src/obi/components/Tables/TableHeader';
 import { ExportsService } from '@/src/obi/utilities/export/ExportsService';
 import TableToolbar from '@/src/obi/components/Tables/TableToolbar';
@@ -19,14 +18,35 @@ import { useRouter } from 'next/navigation';
 import { FileUpload } from 'primereact/fileupload';
 
 
-
 const templateHelper = require('@/src/obi/components/Tables/TemplateHelper');
 const sysComponentsHelper = require('@/src/app/[locale]/(main)/sys/SysComponentsHelper');
 
-const Locations = () => {
+
+interface TableProps {
+    title: string; // Title to use
+    prefixe: string;    //  The prefixed name to be use for files
+    defaultParams: any,                 // a structural parameter model
+    model: any,                 // Specify the model of the table
+    columns: any, // columns representings the table
+    exportColumnsStyle: any, //use for export columns
+    services: any,                // a service allowing request
+}
 
 
-    const locationModel = new LocationsModel();
+
+
+
+export default function Table({
+    title='Default Title',
+    prefixe='defaultPrefixe_',
+    defaultParams,
+    model,
+    columns,
+    exportColumnsStyle,
+    services,
+}: TableProps) {
+
+
     const [loading, setLoading] = useState(false);
     const [totalRecords, setTotalRecords] = useState(0);
     const [selectedCatalog, setSelectedCatalog] = useState(null);
@@ -34,47 +54,7 @@ const Locations = () => {
     const [filterDisplay, setFilterDisplay] = useState('menu');
     const [stateStorage, setStateStorage] = useState('session');
     const [dlgError, setDlgError] = useState();
-    // Manage columns
-    const [columns, setColumns]: OBI.ColumnMeta[] = useState([
-        { field: 'id', header: 'ID', dataType: 'numeric', sortable: true, filter: true, filterElement: templateHelper.integerFilterTemplate, style: { textAlign: 'right' } },
-        { field: 'deleted', header: 'Supp.', dataType: "boolean", body: templateHelper.bool, sortable: true, filter: true, filterElement: templateHelper.booleanFilterTemplate, style: { textAlign: 'center', minWidth: '6rem' } },
-        { field: 'created', header: 'Créé', dataType: 'date', bodyTemplate: templateHelper.datetime, sortable: true, filter: true, filterField: "date", filterPlaceholder: 'Insérer une date', filterElement: templateHelper.dateFilterTemplate, style: { textAlign: 'center' } },
-        { field: 'changed', header: 'Changé', dataType: 'date', bodyTemplate: templateHelper.datetime, sortable: true, filter: true, filterField: "date", filterPlaceholder: 'Insérer une date', filterElement: templateHelper.dateFilterTemplate, style: { textAlign: 'center' } },
 
-        { field: 'location', header: 'Localisation', dataType: 'text', sortable: true, filter: true },
-        { field: 'designation', header: 'Désignation', dataType: 'text', sortable: true, filter: true },
-
-        { field: 'group', header: 'Groupe', dataType: 'text', sortable: true, filter: true },
-        { field: 'country', header: 'Pays', dataType: 'text', bodyTemplate: templateHelper.country, sortable: true, filter: true, filterField: "country", showFilterMatchModes: false, filterPlaceholder: 'Chercher par pays', filterElement: sysComponentsHelper.countries_lazyFilter },
-        { field: 'state', header: 'Province', dataType: 'numeric', bodyTemplate: templateHelper.state, sortable: true, filter: true, filterField: "state", showFilterMatchModes: false, filterPlaceholder: 'Chercher par province', filterElement: sysComponentsHelper.states_lazyFilter },
-        { field: 'city', header: 'Ville', dataType: 'numeric', bodyTemplate: templateHelper.city, sortable: true, filter: true, filterField: "city", showFilterMatchModes: false, filterPlaceholder: 'Chercher par ville', filterElement: sysComponentsHelper.cities_lazyFilter },
-
-        { field: 'address', header: 'Adresse', dataType: 'text', sortable: true, filter: true },
-        { field: 'address1', header: 'Adresse 1', dataType: 'text', sortable: true, filter: true },
-        { field: 'address3', header: 'Adresse 2', dataType: 'text', sortable: true, filter: true },
-        { field: 'bloc', header: 'Bloc', dataType: 'text', sortable: true, filter: true },
-        { field: 'floor', header: 'Etage', dataType: 'numeric', sortable: true, filter: true, style: { textAlign: 'center' } },
-        { field: 'number', header: 'Numéro', dataType: 'text', sortable: true, filter: true, style: { textAlign: 'center' } },
-    ]);
-
-    const exportColumnsStyle = {
-        0: { halign: 'right', valign: 'middle', fontSize: 8, cellPadding: 1, minCellWidth: 20, cellWidth: 'wrap' }, // id //fillColor: [0, 255, 0]
-        1: { halign: 'center', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
-        2: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'wrap' },
-        3: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'wrap' },
-        4: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' }, // localisation
-        5: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
-        6: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
-        7: { halign: 'right', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },   // country
-        8: { halign: 'right', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
-        9: { halign: 'right', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'wrap' }, // ville
-        10: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
-        11: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
-        12: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
-        13: { halign: 'center', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
-        14: { halign: 'center', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
-        15: { halign: 'center', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' }
-    }
 
     // DataTable columns toggle
     const [selectedColumns, setSelectedColumns] = useState<any>(columns);
@@ -89,14 +69,9 @@ const Locations = () => {
 
 
 
-    const defaultMultiSortMeta: Array<DataTableSortMeta> = LocationsService.defaultMultiSortMeta();
-    const defaultFilters: Array<DataTableFilterMeta> = LocationsService.defaultFilters();
 
     const [globalFilterValue, setGlobalFilterValue] = useState(null);
-
-    const [lazyParams, setLazyParams] = useState(
-        locationModel.
-            getStandardParam({ field: 'location', order: 1 }, defaultFilters));
+    const [lazyParams, setLazyParams] = useState(defaultParams);
 
     const cm = useRef(null);
     const router = useRouter()
@@ -111,9 +86,9 @@ const Locations = () => {
         {
             label: 'Exporter...', icon: 'pi pi-fw pi-file-export',
             items: [
-                { label: 'Export CSV', icon: 'pi pi-fw pi-file', command: () => ExportsService.exportToCSV(LocationsService, lazyParams, 'locations') },
-                { label: 'Export Excel', icon: 'pi pi-fw pi-file-excel', command: () => ExportsService.exportToExcel(LocationsService, lazyParams, 'locations') },
-                { label: 'Export PDF', icon: 'pi pi-fw pi-file-pdf', command: () => ExportsService.exportToPDF(LocationsService, lazyParams, 'locations', columns, exportColumnsStyle) },
+                { label: 'Export CSV', icon: 'pi pi-fw pi-file', command: () => ExportsService.exportToCSV(services, lazyParams, prefixe) },
+                { label: 'Export Excel', icon: 'pi pi-fw pi-file-excel', command: () => ExportsService.exportToExcel(services, lazyParams, prefixe) },
+                { label: 'Export PDF', icon: 'pi pi-fw pi-file-pdf', command: () => ExportsService.exportToPDF(services, lazyParams, prefixe, columns, exportColumnsStyle) },
             ]
         },
     ];
@@ -138,14 +113,14 @@ const Locations = () => {
             // console.log('Lazy Event Set ', lazyEventSet.lazyEvent);
 
             // Get Lazy Data
-            LocationsService.getLazy(lazyEventSet).then((data: any) => {
+            services.getLazy(lazyEventSet).then((data: any) => {
                 // console.log('Lazy Data', data);
                 if (data.status && data.status !== 200) {
                     setDlgError(data);
                     return;
                 } else {
                     // On Good request process data count
-                    LocationsService.getLazyCount(lazyEventSet).then((dataCount: any) => {
+                    services.getLazyCount(lazyEventSet).then((dataCount: any) => {
                         setTotalRecords(dataCount);
                     });
 
@@ -201,8 +176,7 @@ const Locations = () => {
      */
     const clearFilter = () => {
         let params = lazyParams;
-        params.filters = locationModel.
-            getStandardParam({ field: 'location', order: 1 }, defaultFilters).filters;
+        params.filters = defaultParams.filters;
         setLazyParams(() => { return { ...params } });
     };
 
@@ -220,7 +194,7 @@ const Locations = () => {
             let params = lazyParams;
             params.filters.global.value = globalFilterValue ? globalFilterValue : null;
             params.filters.global.matchMode = 'contains';
-            console.log(params);
+            // console.log(params);
             setLazyParams(() => { return { ...params } });
         }, Math.random() * 1000 + 500) as unknown as number;
     }
@@ -241,7 +215,7 @@ const Locations = () => {
         return (
             <>
                 <TableHeader
-                    title='Localisations'
+                    title={title}
                     catalogSelected={selectedCatalog}
                     onClear={clearFilter}
                     globalFilter={globalFilterValue}
@@ -282,9 +256,9 @@ const Locations = () => {
         //const paginatorRight = <Button type="button" icon="pi pi-download" text />;
         return (
             <div className="flex justify-content-between align-items-center">
-                <Button type="button" label='CSV' icon="pi pi-file" onClick={() => ExportsService.exportToCSV(LocationsService, lazyParams, 'locations')} className="mr-2" data-pr-tooltip="CSV" />
-                <Button type="button" label='XLSX' icon="pi pi-file-excel" onClick={() => ExportsService.exportToExcel(LocationsService, lazyParams, 'locations')} className="p-button-success mr-2" data-pr-tooltip="XLS" />
-                <Button type="button" label='PDF' icon="pi pi-file-pdf" onClick={() => ExportsService.exportToPDF(LocationsService, lazyParams, 'locations', columns, exportColumnsStyle)} className="p-button-warning mr-2" data-pr-tooltip="PDF" />
+                <Button type="button" label='CSV' icon="pi pi-file" onClick={() => ExportsService.exportToCSV(services, lazyParams, prefixe)} className="mr-2" data-pr-tooltip="CSV" />
+                <Button type="button" label='XLSX' icon="pi pi-file-excel" onClick={() => ExportsService.exportToExcel(services, lazyParams, prefixe)} className="p-button-success mr-2" data-pr-tooltip="XLS" />
+                <Button type="button" label='PDF' icon="pi pi-file-pdf" onClick={() => ExportsService.exportToPDF(services, lazyParams, prefixe, columns, exportColumnsStyle)} className="p-button-warning mr-2" data-pr-tooltip="PDF" />
             </div>
         )
     }
@@ -296,8 +270,8 @@ const Locations = () => {
 
 
     const onDelete = (id: number) => {
-        LocationsService.delete(id).then(() => {
-            console.log('Deleted successfully');
+        services.delete(id).then(() => {
+            // console.log('Deleted successfully');
             loadLazyData();
         });
     };
@@ -328,9 +302,9 @@ const Locations = () => {
                 onFilterModeChanged={(e: any) => setFilterDisplay(e.filterMode)}
                 onStateStorageChanged={(e: any) => setStateStorage(e.stateStorage)}
                 onImportFile={(e) => router.push('./import')}
-                onExportCSV={(e: any) => ExportsService.exportToCSV(LocationsService, lazyParams, 'locations')}
-                onExportExcel={(e: any) => ExportsService.exportToExcel(LocationsService, lazyParams, 'locations')}
-                onExportPDF={(e: any) => ExportsService.exportToPDF(LocationsService, lazyParams, 'locations', columns, exportColumnsStyle)}
+                onExportCSV={(e: any) => ExportsService.exportToCSV(services, lazyParams, prefixe)}
+                onExportExcel={(e: any) => ExportsService.exportToExcel(services, lazyParams, prefixe)}
+                onExportPDF={(e: any) => ExportsService.exportToPDF(services, lazyParams, prefixe, columns, exportColumnsStyle)}
             />
 
             <DialogError
@@ -340,8 +314,9 @@ const Locations = () => {
 
 
             <ContextMenu model={menuModel} ref={cm}
-            // onHide={() => setSelectedCatalog(null)} 
+       
             />
+
             <DataTable
                 id="dataTable"
                 ref={dt}
@@ -406,7 +381,7 @@ const Locations = () => {
                 onPage={onPage}
 
                 // storage
-                stateStorage={stateStorage} stateKey={stateStorage === 'session' ? "obi-dt-state-location-session" : "obi-dt-state-location-local"}
+                stateStorage={stateStorage} stateKey={stateStorage === 'session' ? "obi-dt-state-" + {prefixe} + "-session" : "obi-dt-state-" + {prefixe} + "-local"}
 
                 tableStyle={{ minWidth: '50rem' }}
 
@@ -421,5 +396,3 @@ const Locations = () => {
         </div >
     );
 };
-
-export default Locations;

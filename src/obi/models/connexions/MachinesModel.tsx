@@ -7,9 +7,6 @@ import { Model } from "../model";
 
 
 
-
-
-
 export class MachinesModel extends Model {
 
 
@@ -24,6 +21,7 @@ export class MachinesModel extends Model {
             deleted: false,
             created: 0,
             changed: 0,
+
             company: null,
             address: '',
             mask: '',
@@ -42,8 +40,8 @@ export class MachinesModel extends Model {
             bus: null,
             description: '',
 
-            companies: null,
-            drivers: null
+            companies:  {},
+            drivers:  {},
         };
     }
 
@@ -51,7 +49,7 @@ export class MachinesModel extends Model {
         this.map = new Map();
         this.map.set('pk', 'id');
         this.map.set('id', 'numeric');
-        this.map.set('deleted', 'numeric');
+        this.map.set('deleted', 'boolean');
         this.map.set('created', 'datetime');
         this.map.set('changed', 'datetime');
 
@@ -64,10 +62,10 @@ export class MachinesModel extends Model {
         this.map.set('name', 'text');
         this.map.set('rack', 'numeric');
         this.map.set('slot', 'numeric');
-        this.map.set('mqtt', 'numeric');
+        this.map.set('mqtt', 'boolean');
         this.map.set('mqtt_user', 'text');
         this.map.set('mqtt_password', 'text');
-        this.map.set('webhook', 'numeric');
+        this.map.set('webhook', 'boolean');
         this.map.set('webhook_secret', 'text');
         this.map.set('bus', 'numeric');
         this.map.set('description', 'text');
@@ -101,6 +99,36 @@ export class MachinesModel extends Model {
             drivers:  {   error: false, msg: ''},
         };
     }
+
+
+    
+    get type() {
+        return {
+            id: Number,
+            deleted: Boolean,
+            created: Date,
+            changed: Date,
+
+            company: Number,
+            address: String,
+            mask: String,
+            dns: String,
+            ipv6: String,
+            port: Number,
+            name: String,
+            rack: Number,
+            slot: Number,
+            driver: Number,
+            mqtt: Boolean,
+            mqtt_user: String,
+            mqtt_password: String,
+            webhook: Boolean,
+            webhook_secret: String,
+            bus: Number,
+            description: String,
+        };
+    }
+
 }
 
 

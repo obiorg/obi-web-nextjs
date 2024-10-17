@@ -24,29 +24,6 @@ export class Model {
   }
 
 
-  integerFilterTemplate = (options: any) => {
-    return <InputNumber value={options.value} onValueChange={(e) => { options.filterApplyCallback(e.value); }} />
-  }
-
-  booleanFilterTemplate = (options: any) => {
-    return <TriStateCheckbox value={options.value} onChange={(e) => { options.filterApplyCallback(e.value); }} />
-  }
-
-  dateFilterTemplate = (options: any) => {
-    return <Calendar value={options.value}
-      onChange={(e) => { console.log(e); options.filterCallback(e.value, options.index); options.value = e.value; }}
-      // showTime 
-      showIcon
-      hourFormat="24"
-      showButtonBar
-      dateFormat="dd/mm/yy" placeholder="dd/mm/yy" mask="99/99/9999"
-      locale='fr'
-
-    // headerTemplate={() => <Button label="Custom Button" />} footerTemplate={() => <div>Footer Content</div>}
-    // dateTemplate={dateTemplater}
-    />
-  }
-
 
 
   toMultiSortMeta(): any {
@@ -76,13 +53,6 @@ export class Model {
     // Default global fillter
     filters['global'] = { value: null, matchMode: FilterMatchMode.CONTAINS };
 
-    // add specific filters
-    // console.log('maps', this.map)
-    // console.log('map size', this.map.size)
-
-    // const keys = this.map.keys();
-    // console.log('keys', keys)
-
 
     this.map.forEach((value, key) => {
 
@@ -92,7 +62,7 @@ export class Model {
       // console.log('key ', key, 'value', value)
       if (key !== undefined && key !== 'pk') {
         // Manage type value
-        switch (this.map.get(key)) {
+        switch (this.map.get(key)) { 
           case 'numeric':
             filters[key] = {
               operator: FilterOperator.AND,

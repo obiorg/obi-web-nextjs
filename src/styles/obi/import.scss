@@ -1,0 +1,25 @@
+/* DataTableDemo.css */
+
+.datatable-import .outofstock {
+    font-weight: 700;
+    color: #FF5252;
+    text-decoration: line-through;
+}
+
+.datatable-import .lowstock {
+    font-weight: 700;
+    color: #FFA726;
+}
+
+.datatable-import .instock {
+    font-weight: 700;
+    color: #66BB6A;
+}
+
+.datatable-import .row-error {
+    background-color: rgba(236, 118, 98, 0.966) !important;
+}
+
+.datatable-import .row-success {
+    background-color: #66BB6A!important;
+}

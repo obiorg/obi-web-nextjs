@@ -3,46 +3,22 @@
 // this is a client component
 'use client'
 
-import Link from "next/link"
 import { useFormState } from "react-dom"
 import { LocationsModel } from "@/src/obi/models/localisations/LocationsModel"
 import { Toast } from "primereact/toast"
 import React, { useEffect, useRef, useState } from "react"
-import { Dialog } from "primereact/dialog"
-import { Button } from "primereact/button"
-import { InputText } from "primereact/inputtext"
 
 import { OBI } from "@/src/types"
-import { Checkbox } from "primereact/checkbox"
-import { InputNumber } from "primereact/inputnumber"
-import { Dropdown } from "primereact/dropdown"
-import { Skeleton } from "primereact/skeleton"
-import DropDownLocations from "../../../connexions/drivers/components/dropdown"
-import DropDownCountries from "../../countries/components/dropdown"
-import DropDownStates from "../../states/components/dropdown"
-import DropDownCities from "../../cities/components/dropdown"
-import { Message } from "primereact/message"
 
 
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-    faRectangleXmark,
-} from "@fortawesome/free-solid-svg-icons";
-import {
-    faCircleXmark,
-} from "@fortawesome/free-regular-svg-icons";
 import { Messages } from "primereact/messages"
-import ButtonSave from "@/src/obi/components/Validations/ButtonSave"
 import { LocationsService } from "@/src/obi/service/localisations/LocationsService"
-import { useForm } from "react-hook-form"
 import { BlockUI } from "primereact/blockui"
-import { ToggleButton } from "primereact/togglebutton"
 import OutputRecord from "@/src/obi/components/Output/OutputRecord"
 import ButtonBarCreate from "@/src/obi/components/Validations/ButtonBarCreate"
 import FieldInputText from "@/src/obi/components/Inputs/FieldInputText"
 import FieldDropDown from "@/src/obi/components/Inputs/FieldDropDown"
-import { CountryService } from "@/src/demo/service/CountryService"
 import { CountriesService } from "@/src/obi/service/Localisations/CountriesService"
 import { StatesService } from "@/src/obi/service/localisations/StatesService"
 import { LocationsStatesModel } from "@/src/obi/models/localisations/LocationsStatesModel"
@@ -53,6 +29,7 @@ import FieldInputCheckbox from "@/src/obi/components/Inputs/FieldInputCheckbox"
 import FieldLabel from "@/src/obi/components/Inputs/FieldOutputLabel"
 import FieldOutputLabel from "@/src/obi/components/Inputs/FieldOutputLabel"
 import { useRouter } from "next/navigation"
+import DialogError from "@/src/obi/components/Dialog/DialogError"
 
 
 // Define the shape of the form errors locations
@@ -319,7 +296,7 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
                 });
             }
             // Manage update processing
-            else if(type === 1) {
+            else if (type === 1) {
                 LocationsService.update(formState, formData).then((data: any) => {
                     if (data.errors) {
                         formState.errors = { errors: {} };
@@ -338,7 +315,7 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
                     setLazyLoading(false);
                     unBlockForm();
                 });
-            }else{
+            } else {
                 console.error('Unknow type state  ', type);
                 setLazyLoading(false);
                 unBlockForm();
@@ -394,6 +371,7 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
      * Countries catalog update list
      */
     const [countries, setCountries] = useState<any>([]);
+    const [reload, setReload] = useState(false);
     useEffect(() => {
         // Get full data list
         CountriesService.list().then((data: any) => {
@@ -409,7 +387,7 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
                 });
             }
         });
-    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [reload]); // eslint-disable-line react-hooks/exhaustive-deps
 
 
     /**
@@ -417,22 +395,26 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
      */
     const [states, setStates] = useState<any>([]);
     const stateModel = new LocationsStatesModel();
-    const defaultFilters: Array<DataTableFilterMeta> = StatesService.defaultFilters();
+    const defaultFiltersStates: Array<DataTableFilterMeta> = StatesService.defaultFilters();
     const [lazyParamsStates, setLazyParamsStates] = useState(
         stateModel.getStandardParam({ field: 'name', order: 1 },
             {
-                ...defaultFilters,
+                ...defaultFiltersStates,
                 // "global": { value: null, matchMode: 'contains' },
                 "country_id": { operator: 'and', constraints: [{ value: initialData?.country, matchMode: 'equals' }] }
             }, 0
         ));
+
+
+    const [dlgError, setDlgError] = useState();
     useEffect(() => {
         const lazyEventSet = { lazyEvent: JSON.stringify(lazyParamsStates) };
         console.log(lazyParamsStates);
         // Get full data list
         StatesService.getLazy(lazyEventSet).then((data: any) => {
-            if (data.status) {
-                showError(data.status, data.message);
+            if (data.status && data.status !== 200) {
+                setDlgError(data);
+                return;
             } else {
                 setStates(() => {
                     return data.map((item: OBI.loc_states) => ({
@@ -451,13 +433,15 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
      */
     const [cities, setCities] = useState<any>([]);
     const cityModel = new LocationsCitiesModel();
-    const [lazyParamsCities, setLazyParamsCities] = useState(cityModel.getStandardParam({ field: 'name', order: 1 },
-        {
-            "global": { value: null, matchMode: 'contains' },
-            "country_id": { operator: 'and', constraints: [{ value: initialData?.country, matchMode: 'equals' }] },
-            "state_id": { operator: 'and', constraints: [{ value: initialData?.state, matchMode: 'equals' }] }
-        }, 1
-    ));
+    const defaultFiltersCities: Array<DataTableFilterMeta> = CitiesService.defaultFilters();
+    const [lazyParamsCities, setLazyParamsCities] = useState(
+        cityModel.getStandardParam({ field: 'name', order: 1 },
+            {
+                ...defaultFiltersCities,
+                "country_id": { operator: 'and', constraints: [{ value: initialData?.country, matchMode: 'equals' }] },
+                "state_id": { operator: 'and', constraints: [{ value: initialData?.state, matchMode: 'equals' }] }
+            }, 0
+        ));
     useEffect(() => {
         const lazyEventSet = { lazyEvent: JSON.stringify(lazyParamsCities) };
 
@@ -486,7 +470,14 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
      * Display the catalog
      */
     return <>
-
+        <DialogError
+            error={dlgError}
+            onYes={(e: any) => {
+                setReload((reload: any) => { return { ...reload } })
+                setLazyParamsStates((lazyParamsStates: any) => { return { ...lazyParamsStates } })
+                setLazyParamsCities((lazyParamsCities: any) => { return { ...lazyParamsCities } })
+            }}
+        />
         <div className="card">
 
             {/** Message toaster display */}

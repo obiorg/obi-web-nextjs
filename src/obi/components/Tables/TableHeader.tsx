@@ -1,14 +1,10 @@
 'use client';
 
 
-import LocationDelete from "@/src/app/[locale]/(main)/sys/localisations/locations/components/post-delete";
-import { OBI } from "@/src/types/obi";
+
 import { Url } from "next/dist/shared/lib/router/router";
-import Link from "next/link";
-import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { MultiSelect } from "primereact/multiselect";
-import { SelectButton } from "primereact/selectbutton";
 import React, { useEffect, useRef, useState } from "react";
 
 
@@ -59,8 +55,8 @@ export default function TableHeader({ id, name,
     filterLabel = 'Reset', filterIcon = 'pi pi-filter-slash', filterClassName = 'mr-1 p-2',
     onClear,
     catalogSelected,
-    globalFilter , 
-    globalFilterPlaceholder = 'Rechercher...', 
+    globalFilter,
+    globalFilterPlaceholder = 'Rechercher...',
     onGlobalFilterChanged,
 
     columns,
@@ -87,15 +83,15 @@ export default function TableHeader({ id, name,
     }, [globalFilter]);
 
     const onGlobalFilterChange = (e: any) => {
-        console.log('onGlobalFilterChange', e.target.value);
+        // console.log('onGlobalFilterChange', e.target.value);
 
         let filter = null;
         if (e.target.value !== '') {
             filter = e.target.value;
-        } 
+        }
         setValue(filter);
-        
-        onGlobalFilterChanged && onGlobalFilterChanged(filter===''?null:filter);
+
+        onGlobalFilterChanged && onGlobalFilterChanged(filter === '' ? null : filter);
     }
 
     return (
@@ -118,23 +114,27 @@ export default function TableHeader({ id, name,
                     <div className="flex flex-wrap justify-content-between align-items-center">
 
                         <div className="flex justify-content-between align-items-center" style={{ textAlign: 'left' }}>
-                            <MultiSelect
-                                value={selectedColumns}
-                                options={columns}
-                                optionLabel='header'
-                                onChange={onColumnToggle} style={{ width: '20em' }} />
+                            {columns ?
+                                <MultiSelect
+                                    value={selectedColumns}
+                                    options={columns}
+                                    optionLabel='header'
+                                    onChange={onColumnToggle} style={{ width: '20em' }} />
+                                : null}
                         </div>
 
- 
+
 
                         <div className="p-input-icon-left">
                             <i className="pi pi-search ml-3" />
-                            <InputText
-                                value={value}
-                                onChange={onGlobalFilterChange}
-                                placeholder={globalFilterPlaceholder}
-                                className="pl-6"
-                            />
+                            {value ?
+                                <InputText
+                                    value={value}
+                                    onChange={onGlobalFilterChange}
+                                    placeholder={globalFilterPlaceholder}
+                                    className="pl-6"
+                                />
+                                : null}
                         </div>
 
                     </div>

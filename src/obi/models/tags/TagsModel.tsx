@@ -21,6 +21,7 @@ export class TagsModel extends Model {
             deleted: false,
             created: null,
             changed: null,
+
             company: 0,
             table: 0,
             name: null,
@@ -55,7 +56,7 @@ export class TagsModel extends Model {
             mesure: false,
             mesureMin: 0,
             mesureMax: 0,
-            mesureUnit: 0,
+            measureUnit: 0,
             mqtt_topic: null,
             webhook: null,
             laboratory: false,
@@ -67,7 +68,7 @@ export class TagsModel extends Model {
             errorStamp: null,
             alarmEnable: false,
             alarm: 0,
-            persistenceEnabled: false,
+            persistenceEnable: false,
             persOffsetEnable: false,
             persOffsetFloat: 0,
             persOffsetInt: 0,
@@ -76,14 +77,14 @@ export class TagsModel extends Model {
             comment: null,
             list: 0,
     
-            // alarms: null,
-            // companies: null,
-            // tags_lists: null,
-            // machines: null,
-            // meas_units: null,
-            // tags_memories: null,
-            // tags_tables: null,
-            // tags_types: null
+            alarms: {},
+            companies: {},
+            tags_lists: {},
+            machines: {},
+            meas_units: {},
+            tags_memories: {},
+            tags_tables: {},
+            tags_types: {}
         };
     }
 
@@ -129,7 +130,7 @@ export class TagsModel extends Model {
         this.map.set('mesure', 'numeric');
         this.map.set('mesureMin', 'numeric');
         this.map.set('mesureMax', 'numeric');
-        this.map.set('mesureUnit', 'numeric');
+        this.map.set('measureUnit', 'numeric');
         this.map.set('mqtt_topic', 'text');
         this.map.set('webhook', 'text');
         this.map.set('laboratory', 'numeric');
@@ -141,7 +142,7 @@ export class TagsModel extends Model {
         this.map.set('errorStamp', 'datetime');
         this.map.set('alarmEnable', 'numeric');
         this.map.set('alarm', 'numeric');
-        this.map.set('persistenceEnabled', 'numeric');
+        this.map.set('persistenceEnable', 'numeric');
         this.map.set('persOffsetEnable', 'numeric');
         this.map.set('persOffsetFloat', 'numeric');
         this.map.set('persOffsetInt', 'numeric');
@@ -160,6 +161,72 @@ export class TagsModel extends Model {
         // this.map.set('tags_types', 'OBI.tags_types');
     }
 
+
+    
+    get type() {
+        return {
+            id: Number,
+            deleted: Boolean,
+            created: Date,
+            changed: Date,
+
+            company: Number,
+            table: Number,
+            name: String,
+            machine: Number,
+            type: Number,
+            memory: Number,
+            db: Number,
+            byte: Number,
+            bit: Number,
+            active: Boolean,
+            cycle: Number,
+            delta: Boolean,
+            deltaFloat: Number,
+            deltaInt: Number,
+            deltaBool: Number,
+            deltaDateTime: Number,
+            vFloat: Number,
+            vInt: Number,
+            vBool: Boolean,
+            vStr: String,
+            vDateTime: Date,
+            vStamp: Date,
+            vDefault: Boolean,
+            vFloatDefault: Number,
+            vIntDefault: Number,
+            vBoolDefault: Boolean,
+            vStrDefault: String,
+            vDateTimeDefault: Date,
+            vStampDefault: Date,
+            counter: Boolean,
+            counterType: Number,
+            mesure: Boolean,
+            mesureMin: Number,
+            mesureMax: Number,
+            measureUnit: Number,
+            mqtt_topic: String,
+            webhook: String,
+            laboratory: Boolean,
+            formula: Boolean,
+            formCalculus: String,
+            formProcessing: Number,
+            error: Boolean,
+            errorMsg: String,
+            errorStamp: Date,
+            alarmEnable: Boolean,
+            alarm: Number,
+            persistenceEnable: Boolean,
+            persOffsetEnable: Boolean,
+            persOffsetFloat: Number,
+            persOffsetInt: Number,
+            persOffsetBool: Boolean,
+            persOffsetDateTime: Date,
+            comment: String,
+            list: Number,
+    
+        };
+    }
 }
 
 

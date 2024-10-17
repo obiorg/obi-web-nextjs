@@ -285,4 +285,79 @@ export const ExportsService = {
             });
         }, Math.random() * 1000 + 500) as unknown as number;
     },
+
+
+
+    import(e: any): any {
+        console.log(e);
+    },
+
+    importCSVHandler({ files }: any): any {
+        const [file] = files;
+        const reader = new FileReader();
+        let result = { headers: [], data: [] };
+
+        reader.onload = (e: any) => {
+            const csv = e.target.result;
+            const data = csv.split('\n');
+
+            // Prepare DataTable
+            const cols = data[0].replace(/['"]+/g, '').split(',');
+            data.shift();
+
+            let _importedCols = cols.map(col => ({ field: col, header: this.toCapitalize(col.replace(/['"]+/g, '')) }));
+            let _importedData = data.map(d => {
+                d = d.split(',');
+                return cols.reduce((obj, c, i) => {
+                    obj[c] = d[i].replace(/['"]+/g, '');
+                    return obj;
+                }, {});
+            });
+
+            result.headers = _importedCols;
+            result.data = _importedData;
+        };
+
+        reader.readAsText(file, 'UTF-8');
+    },
+
+    importExcelHandler({ ref, files, onload }: any): any {
+
+        console.log('Starting to import')
+        import('xlsx').then(xlsx => {
+            const [file] = files;
+
+            let result = { headers: [], data: [] };
+            const reader = new FileReader();
+            reader.onload = async (e: any) => {
+                const wb = xlsx.read(e.target.result, { type: 'array' });
+                const wsname = wb.SheetNames[0];
+                const ws = wb.Sheets[wsname];
+                const data = xlsx.utils.sheet_to_json(ws, { header: 1 });
+
+                // Prepare DataTable
+                const cols = data[0];
+                data.shift();
+
+                let _importedCols = cols.map(col => ({ field: col, header: this.toCapitalize(col) }));
+                let _importedData = data.map(d => {
+                    return cols.reduce((obj, c, i) => {
+                        obj[c] = d[i];
+                        return obj;
+                    }, {});
+                });
+
+                result.headers = _importedCols;
+                result.data = _importedData;
+
+
+                console.log('result', result);
+                ref.current.clear();
+                return result;
+            };
+
+            reader.readAsArrayBuffer(file);
+        });
+        console.log('Ending to import')
+    }
 };

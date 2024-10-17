@@ -1,5 +1,6 @@
 import { Calendar } from "primereact/calendar";
 import { InputNumber } from "primereact/inputnumber";
+import { Password } from "primereact/password";
 import { TriStateCheckbox } from "primereact/tristatecheckbox";
 import { classNames } from "primereact/utils";
 
@@ -69,6 +70,8 @@ exports.dateFilterTemplate = (options: any) => {
 
 
 
+
+
 exports.country = (rowData: any) => {
     return <label>
         {rowData.loc_countries?.name + ' - '
@@ -91,4 +94,9 @@ exports.city = (rowData: any) => {
         {rowData.loc_cities?.name + ' [' + rowData.loc_cities?.id + ']'} </label>
 }
 
+
+exports.company = (rowData: any) => {
+    return <label>
+        {rowData.compnay?.campny + '- ' + rowData.compnay?.designation + ' [' + rowData.compnay?.id + ']'} </label>
+}
 

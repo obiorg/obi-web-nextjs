@@ -38,9 +38,6 @@ const LocationUpdate = ({ params }: LocationUpdateProps) => {
                 setLocation(() => {
                     return {
                         ...data,
-                        // id: null,
-                        // created: null,
-                        // changed: null,
                     }
                 });
 

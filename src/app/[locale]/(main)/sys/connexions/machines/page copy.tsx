@@ -1,41 +1,45 @@
 'use client';
 import React, { useState, useEffect, useRef } from 'react';
-import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { DataTable, DataTableFilterMeta, DataTableSortMeta } from 'primereact/datatable';
 import { Column, ColumnFilterClearTemplateOptions } from 'primereact/column';
-import { InputNumber } from 'primereact/inputnumber';
 import { Button } from 'primereact/button';
 
 import { Admin, OBI } from '@/src/types/index';
-// import { Admin } from '@/src/types/index';
 
-
-
-import { Checkbox } from 'primereact/checkbox';
-import { SelectButton, SelectButtonChangeEvent } from 'primereact/selectbutton';
-import { InputSwitch, InputSwitchChangeEvent } from 'primereact/inputswitch';
-
-
-
-import { InputText } from 'primereact/inputtext';
-import { Password } from 'primereact/password';
-import Link from 'next/link';
-import { TagsService } from '@/src/obi/service/tags/TagsService';
-import { TagsModel } from '@/src/obi/models/tags/TagsModel';
-import { ExportsService } from '@/src/obi/utilities/export/ExportsService';
+import { MachinesService } from '@/src/obi/service/connexions/MachinesService';
+import { MachinesModel } from '@/src/obi/models/connexions/MachinesModel';
 import TableHeader from '@/src/obi/components/Tables/TableHeader';
+import { ExportsService } from '@/src/obi/utilities/export/ExportsService';
 import TableToolbar from '@/src/obi/components/Tables/TableToolbar';
+
+
 import DialogError from '@/src/obi/components/Dialog/DialogError';
 import { ContextMenu } from 'primereact/contextmenu';
 import { useRouter } from 'next/navigation';
 
 
+
 const templateHelper = require('@/src/obi/components/Tables/TemplateHelper');
 const sysComponentsHelper = require('@/src/app/[locale]/(main)/sys/SysComponentsHelper');
 
-const Tags = () => {
+const Machines = () => {
 
-    const tagsModel = new TagsModel();
+
+    const mqttPasswordtemplate = (rowData: any) => {
+        let p = '*';
+        for (let i = 0; i < rowData.mqtt_password?.length; i++)
+            p += '*';
+        return <label>{p}</label>
+    }
+
+    const webhookSecretetemplate = (rowData: any) => {
+        let p = '*';
+        for (let i = 0; i < rowData.webhook_secret?.length; i++)
+            p += '*';
+        return <label>{p}</label>
+    }
+
+    const model = new MachinesModel();
     const [loading, setLoading] = useState(false);
     const [totalRecords, setTotalRecords] = useState(0);
     const [selectedCatalog, setSelectedCatalog] = useState(null);
@@ -43,90 +47,39 @@ const Tags = () => {
     const [filterDisplay, setFilterDisplay] = useState('menu');
     const [stateStorage, setStateStorage] = useState('session');
     const [dlgError, setDlgError] = useState();
-
-    const columns: OBI.ColumnMeta[] = [
+    // Manage columns
+    const [columns, setColumns]: OBI.ColumnMeta[] = useState([
         { field: 'id', header: 'ID', dataType: 'numeric', sortable: true, filter: true, filterElement: templateHelper.integerFilterTemplate, style: { textAlign: 'right' } },
         { field: 'deleted', header: 'Supp.', dataType: "boolean", body: templateHelper.bool, sortable: true, filter: true, filterElement: templateHelper.booleanFilterTemplate, style: { textAlign: 'center', minWidth: '6rem' } },
         { field: 'created', header: 'Créé', dataType: 'date', bodyTemplate: templateHelper.datetime, sortable: true, filter: true, filterField: "date", filterPlaceholder: 'Insérer une date', filterElement: templateHelper.dateFilterTemplate, style: { textAlign: 'center' } },
         { field: 'changed', header: 'Changé', dataType: 'date', bodyTemplate: templateHelper.datetime, sortable: true, filter: true, filterField: "date", filterPlaceholder: 'Insérer une date', filterElement: templateHelper.dateFilterTemplate, style: { textAlign: 'center' } },
 
-
-        { field: 'company', header: 'Société', dataType: 'numeric', sortable: true, filter: true },
-        { field: 'table', header: 'Table', dataType: 'numeric', sortable: true, filter: true },
+        { field: 'company', header: 'Société', dataType: 'text', bodyTemplate: templateHelper.company, sortable: true, filter: true, filterField: "company", showFilterMatchModes: false, filterPlaceholder: 'Chercher une société', filterElement: sysComponentsHelper.company_lazyFilter },
+        { field: 'address', header: 'Adresse', dataType: 'text', sortable: true, filter: true },
+        { field: 'mask', header: 'Mask', dataType: 'text', sortable: true, filter: true },
+        { field: 'dns', header: 'DNS', dataType: 'text', sortable: true, filter: true },
+        { field: 'ipv6', header: 'IPv6', dataType: 'text', sortable: true, filter: true },
+        { field: 'port', header: 'Port', dataType: 'numeric', sortable: true, filter: true, style: { textAlign: 'right' } },
         { field: 'name', header: 'Nom', dataType: 'text', sortable: true, filter: true },
-        { field: 'machine', header: 'Machines', dataType: 'numeric', sortable: true, filter: true },
-        { field: 'type', header: 'Types', dataType: 'numeric', sortable: true, filter: true },
+        { field: 'rack', header: 'Rack', dataType: 'numeric', sortable: true, filter: true, style: { textAlign: 'right' } },
+        { field: 'slot', header: 'Slot', dataType: 'numeric', sortable: true, filter: true, style: { textAlign: 'right' } },
+        { field: 'driver', header: 'Driver', dataType: 'text', bodyTemplate: templateHelper.country, sortable: true, filter: true, filterField: "driver", showFilterMatchModes: false, filterPlaceholder: 'Chercher par driver', filterElement: sysComponentsHelper.machines_drivers_lazyFilter },
+        { field: 'mqtt', header: 'MQTT ON', dataType: "boolean", body: templateHelper.bool, sortable: true, filter: true, filterElement: templateHelper.booleanFilterTemplate, style: { textAlign: 'center', minWidth: '6rem' } },
+        { field: 'mqtt_user', header: 'MQTT Utilisateur', dataType: 'text', sortable: true, filter: true },
+        { field: 'mqtt_password', header: 'MQTT Password', dataType: 'text', bodyTemplate: mqttPasswordtemplate, sortable: true, filter: true },
+        { field: 'webhook', header: 'Webhook ON', dataType: "boolean", body: templateHelper.bool, sortable: true, filter: true, filterElement: templateHelper.booleanFilterTemplate, style: { textAlign: 'center', minWidth: '6rem' } },
+        { field: 'webhook_secret', header: 'Webhook Secret', dataType: 'text', bodyTemplate: webhookSecretetemplate, sortable: true, filter: true },
+        { field: 'bus', header: 'Bus', dataType: 'numeric', sortable: true, filter: true, style: { textAlign: 'center' } },
+        { field: 'description', header: 'Description', dataType: 'text', sortable: true, filter: true },
 
-        { field: 'memory', header: 'Mémoire', dataType: 'numeric', sortable: true, filter: true },
-        { field: 'db', header: 'DB', dataType: 'numeric', sortable: true, filter: true },
-        { field: 'byte', header: 'Byte', dataType: 'numeric', sortable: true, filter: true },
-        { field: 'bit', header: 'Bit', dataType: 'numeric', sortable: true, filter: true },
-
-        { field: 'active', header: 'Activé.', dataType: "boolean", body: templateHelper.bool, sortable: true, filter: true, filterElement: templateHelper.booleanFilterTemplate, style: { textAlign: 'center', minWidth: '6rem' } },
-        { field: 'cycle', header: 'Cycle', dataType: 'numeric', sortable: true, filter: true },
-
-        { field: 'delta', header: 'Delta ON.', dataType: "boolean", body: templateHelper.bool, sortable: true, filter: true, filterElement: templateHelper.booleanFilterTemplate, style: { textAlign: 'center', minWidth: '6rem' } },
-        { field: 'deltaFloat', header: 'Delta float', dataType: 'numeric', sortable: true, filter: true },
-        { field: 'deltaInt', header: 'Delta Int', dataType: 'numeric', sortable: true, filter: true },
-        { field: 'deltaBool', header: 'Delta Bool', dataType: "boolean", body: templateHelper.bool, sortable: true, filter: true, filterElement: templateHelper.booleanFilterTemplate, style: { textAlign: 'center', minWidth: '6rem' } },
-        { field: 'deltaDateTime', header: 'Delta Date Heure', dataType: 'date', bodyTemplate: templateHelper.datetime, sortable: true, filter: true, filterField: "date", filterPlaceholder: 'Insérer une date', filterElement: templateHelper.dateFilterTemplate, style: { textAlign: 'center' } },
-
-
-        { field: 'vFloat', header: 'Val. Float', dataType: 'numeric', sortable: true, filter: true },
-        { field: 'vInt', header: 'Val. Int', dataType: 'numeric', sortable: true, filter: true },
-        { field: 'vBool', header: 'Val. Bool', dataType: "boolean", body: templateHelper.bool, sortable: true, filter: true, filterElement: templateHelper.booleanFilterTemplate, style: { textAlign: 'center', minWidth: '6rem' } },
-        { field: 'vStr', header: 'Val. Texte', dataType: 'text', sortable: true, filter: true },
-        { field: 'vDateTime', header: 'Val. Date Heure', dataType: 'date', bodyTemplate: templateHelper.datetime, sortable: true, filter: true, filterField: "date", filterPlaceholder: 'Insérer une date', filterElement: templateHelper.dateFilterTemplate, style: { textAlign: 'center' } },
-        { field: 'vStamp', header: 'Val. Stamp', dataType: 'date', bodyTemplate: templateHelper.datetime, sortable: true, filter: true, filterField: "date", filterPlaceholder: 'Insérer une date', filterElement: templateHelper.dateFilterTemplate, style: { textAlign: 'center' } },
-        { field: 'vDefault', header: 'Val. Default On', dataType: "boolean", body: templateHelper.bool, sortable: true, filter: true, filterElement: templateHelper.booleanFilterTemplate, style: { textAlign: 'center', minWidth: '6rem' } },
-        { field: 'vFloatDefault', header: 'Val. Def. Float', dataType: 'numeric', sortable: true, filter: true },
-        { field: 'vIntDefault', header: 'Val. Def. Int', dataType: 'numeric', sortable: true, filter: true },
-        { field: 'vBoolDefault', header: 'Val. Def. Bool', dataType: "boolean", body: templateHelper.bool, sortable: true, filter: true, filterElement: templateHelper.booleanFilterTemplate, style: { textAlign: 'center', minWidth: '6rem' } },
-        { field: 'vStrDefault', header: 'Val. Def. Texte', dataType: 'text', sortable: true, filter: true },
-        { field: 'vDateTimeDefault', header: 'Val. Def. D.H', dataType: 'date', bodyTemplate: templateHelper.datetime, sortable: true, filter: true, filterField: "date", filterPlaceholder: 'Insérer une date', filterElement: templateHelper.dateFilterTemplate, style: { textAlign: 'center' } },
-        { field: 'vStampDefault', header: 'Val. Def. Stamp', dataType: 'date', bodyTemplate: templateHelper.datetime, sortable: true, filter: true, filterField: "date", filterPlaceholder: 'Insérer une date', filterElement: templateHelper.dateFilterTemplate, style: { textAlign: 'center' } },
-
-
-        { field: 'counter', header: 'Compteur ON', dataType: "boolean", body: templateHelper.bool, sortable: true, filter: true, filterElement: templateHelper.booleanFilterTemplate, style: { textAlign: 'center', minWidth: '6rem' } },
-        { field: 'counterType', header: 'Type Compteur', dataType: 'numeric', sortable: true, filter: true },
-
-        { field: 'mesure', header: 'Mesure ON', dataType: "boolean", body: templateHelper.bool, sortable: true, filter: true, filterElement: templateHelper.booleanFilterTemplate, style: { textAlign: 'center', minWidth: '6rem' } },
-        { field: 'mesureMin', header: 'Mesure Min.', dataType: 'numeric', sortable: true, filter: true },
-        { field: 'mesureMax', header: 'Mesure Max.', dataType: 'numeric', sortable: true, filter: true },
-        { field: 'measureUnit', header: 'Mesure Unité', dataType: 'numeric', sortable: true, filter: true },
-
-        { field: 'mqtt_topic', header: 'MQTT TOPIC', dataType: 'text', sortable: true, filter: true },
-        { field: 'webhook', header: 'WEBHOOK', dataType: 'text', sortable: true, filter: true },
-
-        { field: 'laboratory', header: 'Laboratoire ON', dataType: "boolean", body: templateHelper.bool, sortable: true, filter: true, filterElement: templateHelper.booleanFilterTemplate, style: { textAlign: 'center', minWidth: '6rem' } },
-
-        { field: 'formula', header: 'Formule ON', dataType: "boolean", body: templateHelper.bool, sortable: true, filter: true, filterElement: templateHelper.booleanFilterTemplate, style: { textAlign: 'center', minWidth: '6rem' } },
-        { field: 'formCalculus', header: 'Formule Calc.', dataType: 'text', sortable: true, filter: true },
-        { field: 'formProcessing', header: 'Formule Processing', dataType: 'numeric', sortable: true, filter: true },
-
-        { field: 'error', header: 'Erreur ON', dataType: "boolean", body: templateHelper.bool, sortable: true, filter: true, filterElement: templateHelper.booleanFilterTemplate, style: { textAlign: 'center', minWidth: '6rem' } },
-        { field: 'errorMsg', header: 'Msg. Erreur', dataType: 'text', sortable: true, filter: true },
-        { field: 'errorStamp', header: 'Stamp Erreur', dataType: 'date', bodyTemplate: templateHelper.datetime, sortable: true, filter: true, filterField: "date", filterPlaceholder: 'Insérer une date', filterElement: templateHelper.dateFilterTemplate, style: { textAlign: 'center' } },
-
-        { field: 'alarmEnable', header: 'Alarme ON', dataType: "boolean", body: templateHelper.bool, sortable: true, filter: true, filterElement: templateHelper.booleanFilterTemplate, style: { textAlign: 'center', minWidth: '6rem' } },
-        { field: 'alarm', header: 'Alarme', dataType: 'numeric', sortable: true, filter: true },
-
-        { field: 'persOffsetEnable', header: 'Pers. Offset  ON', dataType: "boolean", body: templateHelper.bool, sortable: true, filter: true, filterElement: templateHelper.booleanFilterTemplate, style: { textAlign: 'center', minWidth: '6rem' } },
-        { field: 'persOffsetFloat', header: 'Pers. Offset Fl.', dataType: 'numeric', sortable: true, filter: true },
-        { field: 'persOffsetInt', header: 'Pers. Offset Int', dataType: 'numeric', sortable: true, filter: true },
-
-        { field: 'persOffsetBool', header: 'Pers. Offset Bool', dataType: "boolean", body: templateHelper.bool, sortable: true, filter: true, filterElement: templateHelper.booleanFilterTemplate, style: { textAlign: 'center', minWidth: '6rem' } },
-        { field: 'persOffsetDateTime', header: 'Pers. Offset D.H.', dataType: 'date', bodyTemplate: templateHelper.datetime, sortable: true, filter: true, filterField: "date", filterPlaceholder: 'Insérer une date', filterElement: templateHelper.dateFilterTemplate, style: { textAlign: 'center' } },
-        { field: 'comment', header: 'Commentaire', dataType: 'text', sortable: true, filter: true },
-        { field: 'list', header: 'Liste', dataType: 'numeric', sortable: true, filter: true },
-    ];
+    ]);
 
     const exportColumnsStyle = {
         0: { halign: 'right', valign: 'middle', fontSize: 8, cellPadding: 1, minCellWidth: 20, cellWidth: 'wrap' }, // id //fillColor: [0, 255, 0]
         1: { halign: 'center', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
         2: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'wrap' },
         3: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'wrap' },
-        4: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' }, // 
+        4: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' }, // localisation
         5: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
         6: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
         7: { halign: 'right', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },   // country
@@ -140,8 +93,6 @@ const Tags = () => {
         15: { halign: 'center', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' }
     }
 
-
-
     // DataTable columns toggle
     const [selectedColumns, setSelectedColumns] = useState<any>(columns);
     const columnsRender = selectedColumns?.map((col: any, i: number) => {
@@ -154,18 +105,18 @@ const Tags = () => {
     const [catalogs, setCatalogs] = useState<any>([]);
 
 
-    const defaultMultiSortMeta: Array<DataTableSortMeta> = TagsService.defaultMultiSortMeta();
-    const defaultFilters: Array<DataTableFilterMeta> = TagsService.defaultFilters();
+
+    const defaultMultiSortMeta: Array<DataTableSortMeta> = MachinesService.defaultMultiSortMeta();
+    const defaultFilters: Array<DataTableFilterMeta> = MachinesService.defaultFilters();
 
     const [globalFilterValue, setGlobalFilterValue] = useState(null);
 
-    const [lazyParams, setLazyParams] = useState(
-        tagsModel.
-            getStandardParam([{ field: 'machine', order: 1 }, { field: 'name', order: 1 }], TagsService.defaultFilters()));
+    const standardParam = model.getStandardParam({ field: 'address', order: 1 }, defaultFilters);
+    const [lazyParams, setLazyParams] = useState(standardParam);
 
 
     const cm = useRef(null);
-    const router = useRouter();
+    const router = useRouter()
     const menuModel = [
         { label: 'Nouveau', icon: 'pi pi-fw pi-plus', url: './create' },
         { label: 'Modifier', icon: 'pi pi-fw pi-file-edit', url: `./${selectedCatalog?.id}/update` },
@@ -177,16 +128,14 @@ const Tags = () => {
         {
             label: 'Exporter...', icon: 'pi pi-fw pi-file-export',
             items: [
-                { label: 'Export CSV', icon: 'pi pi-fw pi-file', command: () => ExportsService.exportToCSV(TagsService, lazyParams, 'tags') },
-                { label: 'Export Excel', icon: 'pi pi-fw pi-file-excel', command: () => ExportsService.exportToExcel(TagsService, lazyParams, 'tags') },
-                { label: 'Export PDF', icon: 'pi pi-fw pi-file-pdf', command: () => ExportsService.exportToPDF(TagsService, lazyParams, 'tags', columns, exportColumnsStyle) },
+                { label: 'Export CSV', icon: 'pi pi-fw pi-file', command: () => ExportsService.exportToCSV(MachinesService, lazyParams, 'machines') },
+                { label: 'Export Excel', icon: 'pi pi-fw pi-file-excel', command: () => ExportsService.exportToExcel(MachinesService, lazyParams, 'machines') },
+                { label: 'Export PDF', icon: 'pi pi-fw pi-file-pdf', command: () => ExportsService.exportToPDF(MachinesService, lazyParams, 'machines', columns, exportColumnsStyle) },
             ]
         },
     ];
 
     let loadLazyTimeout = useRef(null);
-
-
     /**
     * Loading data with lazy loading
     */
@@ -197,31 +146,24 @@ const Tags = () => {
             clearTimeout(loadLazyTimeout);
         }
 
+        // console.log('lazyParams', lazyParams);
 
         //initiate delay of a backend call
         loadLazyTimeout = setTimeout(() => {
-            // console.log('lazyParams', lazyParams);
             // Create lazy event object with stringify lazy parameter
             const lazyEventSet = { lazyEvent: JSON.stringify(lazyParams) };
-            console.log('Lazy Event Set ', lazyEventSet.lazyEvent);
+            console.log('Lazy Event Set ', lazyParams);
 
             // Get Lazy Data
-            TagsService.getLazy(lazyEventSet).then((data: any) => {
+            MachinesService.getLazy(lazyEventSet).then((data: any) => {
                 // console.log('Lazy Data', data);
                 if (data.status && data.status !== 200) {
                     setDlgError(data);
                     return;
                 } else {
                     // On Good request process data count
-                    TagsService.getLazyCount(lazyEventSet).then((dataCount: any) => {
-                        console.log('Data Count', dataCount);
-                        if (dataCount.status && dataCount.status !== 200) {
-                            setDlgError(data);
-                            return;
-                        } else {
-
-                            setTotalRecords(dataCount);
-                        }
+                    MachinesService.getLazyCount(lazyEventSet).then((dataCount: any) => {
+                        setTotalRecords(dataCount);
                     });
 
                     setCatalogs(data);
@@ -235,6 +177,7 @@ const Tags = () => {
     useEffect(() => {
         loadLazyData();
     }, [lazyParams]);
+
 
 
     /**
@@ -275,10 +218,11 @@ const Tags = () => {
      */
     const clearFilter = () => {
         let params = lazyParams;
-        params.filters = tagsModel.
-            getStandardParam([{ field: 'machine', order: 1 }, { field: 'name', order: 1 }], defaultFilters).filters;
+        params.filters = standardParam.filters;
         setLazyParams(() => { return { ...params } });
     };
+
+
 
     /**
      * Global filter reaction
@@ -290,7 +234,7 @@ const Tags = () => {
 
         loadLazyTimeout = setTimeout(() => {
             let params = lazyParams;
-            params.filters.global.value = globalFilterValue;
+            params.filters.global.value = globalFilterValue ? globalFilterValue : null;
             params.filters.global.matchMode = 'contains';
             console.log(params);
             setLazyParams(() => { return { ...params } });
@@ -305,11 +249,15 @@ const Tags = () => {
 
 
 
+
+
+
+
     const header = () => {
         return (
             <>
                 <TableHeader
-                    title='Tags'
+                    title='Machines'
                     catalogSelected={selectedCatalog}
                     onClear={clearFilter}
                     globalFilter={globalFilterValue}
@@ -350,9 +298,9 @@ const Tags = () => {
         //const paginatorRight = <Button type="button" icon="pi pi-download" text />;
         return (
             <div className="flex justify-content-between align-items-center">
-                <Button type="button" label='CSV' icon="pi pi-file" onClick={() => ExportsService.exportToCSV(TagsService, lazyParams, 'tags')} className="mr-2" data-pr-tooltip="CSV" />
-                <Button type="button" label='XLSX' icon="pi pi-file-excel" onClick={() => ExportsService.exportToExcel(TagsService, lazyParams, 'tags')} className="p-button-success mr-2" data-pr-tooltip="XLS" />
-                <Button type="button" label='PDF' icon="pi pi-file-pdf" onClick={() => ExportsService.exportToPDF(TagsService, lazyParams, 'tags', columns, exportColumnsStyle)} className="p-button-warning mr-2" data-pr-tooltip="PDF" />
+                <Button type="button" label='CSV' icon="pi pi-file" onClick={() => ExportsService.exportToCSV(MachinesService, lazyParams, 'machines')} className="mr-2" data-pr-tooltip="CSV" />
+                <Button type="button" label='XLSX' icon="pi pi-file-excel" onClick={() => ExportsService.exportToExcel(MachinesService, lazyParams, 'machines')} className="p-button-success mr-2" data-pr-tooltip="XLS" />
+                <Button type="button" label='PDF' icon="pi pi-file-pdf" onClick={() => ExportsService.exportToPDF(MachinesService, lazyParams, 'machines', columns, exportColumnsStyle)} className="p-button-warning mr-2" data-pr-tooltip="PDF" />
             </div>
         )
     }
@@ -364,11 +312,19 @@ const Tags = () => {
 
 
     const onDelete = (id: number) => {
-        TagsService.delete(id).then(() => {
+        MachinesService.delete(id).then(() => {
             console.log('Deleted successfully');
             loadLazyData();
         });
     };
+
+
+
+
+
+
+
+
 
 
 
@@ -388,10 +344,11 @@ const Tags = () => {
                 onFilterModeChanged={(e: any) => setFilterDisplay(e.filterMode)}
                 onStateStorageChanged={(e: any) => setStateStorage(e.stateStorage)}
                 onImportFile={(e) => router.push('./import')}
-                onExportCSV={(e: any) => ExportsService.exportToCSV(TagsService, lazyParams, 'tags')}
-                onExportExcel={(e: any) => ExportsService.exportToExcel(TagsService, lazyParams, 'tags')}
-                onExportPDF={(e: any) => ExportsService.exportToPDF(TagsService, lazyParams, 'tags', columns, exportColumnsStyle)}
+                onExportCSV={(e: any) => ExportsService.exportToCSV(MachinesService, lazyParams, 'machines')}
+                onExportExcel={(e: any) => ExportsService.exportToExcel(MachinesService, lazyParams, 'machines')}
+                onExportPDF={(e: any) => ExportsService.exportToPDF(MachinesService, lazyParams, 'machines', columns, exportColumnsStyle)}
             />
+
             <DialogError
                 error={dlgError}
                 onYes={(e: any) => { setLazyParams((lazyParams: any) => { return { ...lazyParams } }) }}
@@ -401,7 +358,6 @@ const Tags = () => {
             <ContextMenu model={menuModel} ref={cm}
             // onHide={() => setSelectedCatalog(null)} 
             />
-
             <DataTable
                 id="dataTable"
                 ref={dt}
@@ -466,7 +422,7 @@ const Tags = () => {
                 onPage={onPage}
 
                 // storage
-                stateStorage={stateStorage} stateKey={stateStorage === 'session' ? "obi-dt-state-tag-session" : "obi-dt-state-tag-local"}
+                stateStorage={stateStorage} stateKey={stateStorage === 'session' ? "obi-dt-state-machines-session" : "obi-dt-state-machines-local"}
 
                 tableStyle={{ minWidth: '50rem' }}
 
@@ -482,4 +438,4 @@ const Tags = () => {
     );
 };
 
-export default Tags;
+export default Machines;

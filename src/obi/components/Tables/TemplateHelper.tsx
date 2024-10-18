@@ -71,7 +71,6 @@ exports.dateFilterTemplate = (options: any) => {
 
 
 
-
 exports.country = (rowData: any) => {
     return <label>
         {rowData.loc_countries?.name + ' - '
@@ -97,6 +96,12 @@ exports.city = (rowData: any) => {
 
 exports.company = (rowData: any) => {
     return <label>
-        {rowData.compnay?.campny + '- ' + rowData.compnay?.designation + ' [' + rowData.compnay?.id + ']'} </label>
+        {rowData.companies?.company + '- ' + rowData.companies?.designation + ' [' + rowData.companies?.id + ']'} </label>
+}
+
+
+exports.driver = (rowData: any) => {
+    return <label>
+        {rowData.mach_drivers?.driver + '- ' + rowData.mach_drivers?.designation + ' [' + rowData.mach_drivers?.id + ']'} </label>
 }
 

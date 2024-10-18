@@ -29,6 +29,7 @@ export class EntitiesModel extends Model {
             activated: false,
             logoPath: '',
             location: 0,
+            locations: {},
         };
     }
 
@@ -36,15 +37,15 @@ export class EntitiesModel extends Model {
         this.map = new Map();
         this.map.set('pk', 'id');
         this.map.set('id', 'numeric');
-        this.map.set('deleted', 'numeric');
+        this.map.set('deleted', 'boolean');
         this.map.set('created', 'datetime');
         this.map.set('changed', 'datetime');
 
         this.map.set('entity', 'text');
         this.map.set('designation', 'text');
         this.map.set('builded', 'numeric');
-        this.map.set('main', 'numeric');
-        this.map.set('activated', 'numeric');
+        this.map.set('main', 'boolean');
+        this.map.set('activated', 'boolean');
         this.map.set('logoPath', 'text');
         this.map.set('location', 'numeric');
     }
@@ -52,7 +53,7 @@ export class EntitiesModel extends Model {
     get type() {
         return {
             id: Number,
-            deleted: Number,
+            deleted: Boolean,
             created: Date,
             changed: Date,
 
@@ -62,7 +63,7 @@ export class EntitiesModel extends Model {
             main: Boolean,
             activated: Boolean,
             logoPath: String,
-            location: String,
+            location: Number,
         };
     }
 }

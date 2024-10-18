@@ -10,61 +10,111 @@ import { EntitiesModel } from "../../models/businesses/EntitiesModel";
 
 
 
-// Import the Zod library for validation
-import { z } from "zod";
-
-// Define a schema for the post using Zod
-const postSchema = z.object({
-    // id: z.number(),
-    //deleted: z.boolean(),
-    // created: z.date(),
-    // changed: z.date(),
-    entity: z.string().min(3),
-    designation: z.string().min(3),
-    builded: z.number().int().min(4),
-    main: z.boolean(),
-    activated: z.boolean(),
-    logoPath: z.string().url(),
-    location: z.string(),
-
-});
 
 export const EntitiesService = {
 
 
-    async getLazy(lazy: any) {
-        // console.log('MachinesService : getLazy >> lazyEvent : ', lazy.lazyEvent);
+
+    /**
+     * Find catalogs specified by lazy parameters
+     * Recover all catalog based on lazy parameter structured as fitler model 
+     * primeract
+     * @param lazy is configured parameter defined as primereact
+     * @returns catalogs table.
+     */
+    async getLazy(lazy: any): Promise<any> {
         const url = process.env.httpPath + '/businesses/entities/lazy/' + lazy.lazyEvent;
-        //console.log('MachinesService : getLay >> url : ', url);
-        const res = await fetch(
-            url,
-            { headers: { 'Cache-Control': 'no-cache' } }
-        )
-        const dataset: OBI.entities[] = await res.json();
-        // console.log('MachinesService >> result from api mach_drivers ', dataset);
-        return dataset;
+        // console.log(JSON.parse(lazy.lazyEvent))
+        // console.log(url)
+        try {
+            const res = await fetch(url, { headers: { 'Cache-Control': 'no-cache' } })
+            if (res.ok) {
+                // console.log('Promise resolved and HTTP status is successful');
+                const dataset: any[] = await res.json();
+                return dataset;
+            } else {
+                // console.error('Promise resolved but HTTP status failed');
+                Promise.reject({ status: res.status, message: res.status });
+                if (res.status === 404) throw new Error('404, Not found');
+                if (res.status === 500) throw new Error('500, internal server error');
+                // For any other server error
+                throw new Error(res.status);
+            }
+        } catch (error) {
+            if (error instanceof SyntaxError) {
+                // Unexpected token < in JSON
+                // console.log('There was a SyntaxError', error);
+
+            } else {
+                // console.log('There was an error', error);
+                // Promise.reject(error);
+                return ({
+                    name: 'Fetching',
+                    message: 'Check OAP API is running or database is reachable',
+                    error: error,
+                    url: url,
+                    status: 500,
+                });
+            }
+        }
     },
 
 
     /**
-     * Get Count using Lazy filter
+     * Count the number of catalogs in lazy way
+     * @param lazy is configured parameter defined as primereact
+     * @returns number of catalogs
      */
     async getLazyCount(lazy: any) {
-        // console.log('EntitiesService : getLazyCount >> lazyEvent : ', lazy.lazyEvent);
         const url = process.env.httpPath + '/businesses/entities/lazy/count/' + lazy.lazyEvent;
-        // console.log('EntitiesService : getLay >> url : ', url);
-        const res = await fetch(
-            url,
-            { headers: { 'Cache-Control': 'no-cache' } }
-        )
-        const val = await res.json();
-        // console.log('EntitiesService : get', val);
-        const dataset: OBI.entities = val; //await res.json();
-        // console.log('EntitiesService >>> result from api persistenceStandard ', dataset[0]);
-        return val;
+        try {
+            const res = await fetch(url, { headers: { 'Cache-Control': 'no-cache' } })
+            if (res.ok) {
+                const val = await res.json();
+                const dataset: any = val;
+                return val;
+            } else {
+                if (res.status === 404) throw new Error('404, Not found');
+                if (res.status === 500) throw new Error('500, internal server error');
+                // For any other server error
+                throw new Error(res.status);
+            }
+        } catch (error) {
+            if (error instanceof SyntaxError) {
+                console.log('There was a SyntaxError', error);
+            } else {
+                // console.log('There was an error', error);
+                // Promise.reject(error);
+                return JSON.stringify({ error: error });
+            }
+        }
     },
 
+    async getById(id: any) {
+        const url = process.env.httpPath + '/businesses/entities/' + id;
+        try {
+            const res = await fetch(url, { headers: { 'Cache-Control': 'no-cache' } })
+            if (res.ok) {
+                const val = await res.json();
+                const dataset: any = val;
+                return val;
+            } else {
+                if (res.status === 404) throw new Error('404, Not found');
+                if (res.status === 500) throw new Error('500, internal server error');
+                // For any other server error
+                throw new Error(res.status);
+            }
+        } catch (error) {
+            if (error instanceof SyntaxError) {
+                console.log('There was a SyntaxError', error);
+            } else {
+                // console.log('There was an error', error);
+                // Promise.reject(error);
 
+                return JSON.stringify({ error: error });
+            }
+        }
+    },
 
 
     defaultMultiSortMeta(): any {
@@ -79,52 +129,49 @@ export const EntitiesService = {
 
 
 
+    /**
+     * 
+     * @param formState 
+     * @param formData 
+     * @returns 
+     */
+    async create(
+        formState: OBI.EntitiesFormState,
+        formData: FormData): Promise<OBI.EntitiesFormState> {
 
-    async createPost(
-        formState: OBI.EntitiesPostFormState,
-        formData: FormData): Promise<OBI.EntitiesPostFormState> {
+        // console.log('formData', formData);
+        let data: any;
 
+        if (formData.id) {
+            data = formData;
+        } else {
+            data = {
+                id: undefined, //(formData.get("id") === '') ? undefined : Number(formData.get("id")),
+                deleted: formData.get("deleted") === "true",
+                created: formData.get("created"),
+                changed: formData.get("changed"),
 
-        // Validate the form data against the post schema
-        // If the form data does not match the schema, the safeParse method returns an object
-        // with a success property of false and an error property containing the validation errors.
-        // If the form data matches the schema, the safeParse method returns an object
-        // with a success property of true and a data property containing the validated data.
-        // const result = postSchema.safeParse({
-        //     entity: formData.get("entity"),
-        //     designation: formData.get("designation"),
-        // });
-
-
-        // console.log("result", result.error);
-        // console.log('EntitiesService : createPost >> formData : ', formData);
-        // console.log('EntitiesService : createPost >> formState : ', formState);
-
-
-        // // If validation fails, return the errors
-        // if (!result.success) {
-        //     return {
-        //         // The flatten method is used to convert the validation errors into a flat object structure
-        //         // that can be easily displayed in the form.
-        //         errors: result.error.flatten().fieldErrors,
-        //     };
-        // }
-
-        
-        let data = {
-            entity: formData.get("entity"),
-            designation: formData.get("designation"),
-            builded: (((formData.get("builded") === null) | (formData.get("builded") === '')) ? undefined : Number(formData.get("builded"))),
-            main: formData.get("main") === "true",
-            activated: formData.get("activated") === "true",
-            logoPath: formData.get("logoPath"),
-            location: formData.get("location"),
-        };
-
+                location: formData.get("location"),
+                designation: formData.get("designation"),
+                group: formData.get("group"),
+                country: (formData.get("country") === '') ? undefined : Number(formData.get("country")),
+                state: (formData.get("state") === '') ? undefined : Number(formData.get("state")),
+                city: (formData.get("city") === '') ? undefined : Number(formData.get("city")),
+                address: formData.get("address"),
+                address1: formData.get("address1"),
+                address3: formData.get("address3"),
+                bloc: formData.get("bloc"),
+                floor: (formData.get("floor") === '') ? undefined : Number(formData.get("floor")),
+                number: formData.get("number"),
+            };
+        }
+        // console.log(data);
+        // console.log(formState);
 
 
         const url = process.env.httpPath + '/businesses/entities';
-        //console.log('MachinesService : getLay >> url : ', url);
+
+
         const res = await fetch(
             url,
             {
@@ -139,68 +186,185 @@ export const EntitiesService = {
                 body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
             }
         )
-        console.log("EntitiesService response", res);
-        const dataset: OBI.EntitiesPostFormState = await res.json();
-        console.log('EntitiesService >> result from api entities ', dataset);
+        const dataset: OBI.EntitiesFormState = await res.json();
         return dataset;
 
+    },
 
+    async processAll(formState: any, datas: any): Promise<any> {
+        let res: any = [];
+        datas.forEach((row, index) => {
+            EntitiesService.create(formState, row).then((res_row) => {
+                console.log('res_row', res_row, 'res', res);
+                res.push(res_row);
+                console.log('res_row', res_row, 'res', res);
+            })
+        })
 
+        return res;
+    },
 
-        // Validate the form data against the post schema
-        // If the form data does not match the schema, the safeParse method returns an object
-        // with a success property of false and an error property containing the validation errors.
-        // If the form data matches the schema, the safeParse method returns an object
-        // with a success property of true and a data property containing the validated data.
-        // const result = postSchema.safeParse({
-        //     title: formData.get("title"),
-        //     content: formData.get("content"),
-        // });
+    async createMany(data: any[]): Promise<any[]> {
 
-        // // If validation fails, return the errors
-        // if (!result.success) {
-        //     return {
-        //         // The flatten method is used to convert the validation errors into a flat object structure
-        //         // that can be easily displayed in the form.
-        //         errors: result.error.flatten().fieldErrors,
-        //     };
-        // }
+        const url = process.env.httpPath + '/businesses/entities/create';
 
+        const res = await fetch(
+            url,
+            {
+                method: "POST",
+                mode: "cors", // no-cors, *cors, same-origin
+                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: "same-origin", // include, *same-origin, omit
+                headers: {
+                    "Content-Type": "application/json",
+                    'Cache-Control': 'no-cache'
+                },
+                body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
+            }
+        )
+        // console.log("EntitiesService response", res);
+        const dataset: OBI.EntitiesFormState = await res.json();
+        return dataset;
 
-
-        // let post: Post;
-        // try {
-        //     // If validation passes, create a new post in the database
-        //     post = await db.post.create({
-        //         data: {
-        //             title: result.data.title,
-        //             content: result.data.content,
-        //         },
-        //     });
-        // } catch (error: unknown) {
-        //     // If there's an error, return it
-        //     if (error instanceof Error) {
-        //         return {
-        //             errors: {
-        //                 _form: [error.message],
-        //             },
-        //         };
-        //     } else {
-        //         return {
-        //             errors: {
-        //                 _form: ["Something went wrong"],
-        //             },
-        //         };
-        //     }
-        // }
-
-        // // Revalidate the path and redirect to the home page
-        // revalidatePath("/");
-        // redirect("/");
-
-        // return ;
     },
 
 
+    async update(
+        formState: OBI.EntitiesFormState,
+        formData: FormData): Promise<OBI.EntitiesFormState> {
+
+
+        let data = {
+            id: (formData.get("id") === '') ? undefined : Number(formData.get("id")),
+            deleted: formData.get("deleted") === "on",
+            created: formData.get("created"),
+            changed: formData.get("changed"),
+
+            location: formData.get("location"),
+            designation: formData.get("designation"),
+            group: formData.get("group"),
+            country: (formData.get("country") === '') ? undefined : Number(formData.get("country")),
+            state: (formData.get("state") === '') ? undefined : Number(formData.get("state")),
+            city: (formData.get("city") === '') ? undefined : Number(formData.get("city")),
+            address: formData.get("address"),
+            address1: formData.get("address1"),
+            address3: formData.get("address3"),
+            bloc: formData.get("bloc"),
+            floor: (formData.get("floor") === '') ? undefined : Number(formData.get("floor")),
+            number: formData.get("number"),
+        };
+        // console.log(data);
+        // console.log(formState);
+
+
+        const url = process.env.httpPath + '/businesses/entities/' + data.id;
+
+
+        const res = await fetch(
+            url,
+            {
+                method: "PUT",
+                mode: "cors", // no-cors, *cors, same-origin
+                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: "same-origin", // include, *same-origin, omit
+                headers: {
+                    "Content-Type": "application/json",
+                    'Cache-Control': 'no-cache'
+                },
+                body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
+            }
+        )
+        // console.log("EntitiesService response", res);
+        const dataset: OBI.EntitiesFormState = await res.json();
+        return dataset;
+
+
+    },
+
+
+    async updateMany(
+        data: any[]): Promise<any[]> {
+
+        const url = process.env.httpPath + '/businesses/entities/update';
+        // console.log(data);
+        const res = await fetch(
+            url,
+            {
+                method: "POST",
+                mode: "cors", // no-cors, *cors, same-origin
+                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: "same-origin", // include, *same-origin, omit
+                headers: {
+                    "Content-Type": "application/json",
+                    'Cache-Control': 'no-cache'
+                },
+                body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
+            }
+        )
+        // console.log("EntitiesService response", res);
+        const dataset: any = await res.json();
+        return dataset;
+
+    },
+
+
+
+    async delete(id: any): Promise<OBI.EntitiesFormState> {
+
+
+        const url = process.env.httpPath + '/businesses/entities/' + id;
+
+        const res = await fetch(
+            url,
+            {
+                method: "DELETE",
+                mode: "cors", // no-cors, *cors, same-origin
+                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: "same-origin", // include, *same-origin, omit
+                headers: {
+                    "Content-Type": "application/json",
+                    'Cache-Control': 'no-cache'
+                },
+            }
+        )
+        console.log("EntitiesService response", res);
+        const dataset: OBI.EntitiesFormState = await res.json();
+        return dataset;
+
+
+    },
+
+    async deleteMany(
+        data: any[]): Promise<any[]> {
+
+        const url = process.env.httpPath + '/businesses/entities/delete';
+        // console.log(data);
+        const res = await fetch(
+            url,
+            {
+                method: "POST",
+                mode: "cors", // no-cors, *cors, same-origin
+                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: "same-origin", // include, *same-origin, omit
+                headers: {
+                    "Content-Type": "application/json",
+                    'Cache-Control': 'no-cache'
+                },
+                body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
+            }
+        )
+        // console.log("EntitiesService response", res);
+        const dataset: any = await res.json();
+        return dataset;
+
+    },
+
+    async download(lazy: any): Promise<any[]> {
+        const url = process.env.httpPath + '/businesses/entities/download/' + lazy.lazyEvent;
+        const res = await fetch(url, { headers: { 'Cache-Control': 'no-cache' } })
+        const dataset: any[] = await res.json();
+        // console.log("Entities dataset", dataset);
+        return dataset;
+    },
 
 };

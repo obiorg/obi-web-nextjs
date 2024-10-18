@@ -40,8 +40,14 @@ const Machines = () => {
         return <label>{p}</label>
     }
 
-
-    
+    const model = new MachinesModel();
+    const [loading, setLoading] = useState(false);
+    const [totalRecords, setTotalRecords] = useState(0);
+    const [selectedCatalog, setSelectedCatalog] = useState(null);
+    const [size, setSize] = useState<string>('small');
+    const [filterDisplay, setFilterDisplay] = useState('menu');
+    const [stateStorage, setStateStorage] = useState('session');
+    const [dlgError, setDlgError] = useState();
     // Manage columns
     const [columns, setColumns]: OBI.ColumnMeta[] = useState([
         { field: 'id', header: 'ID', dataType: 'numeric', sortable: true, filter: true, filterElement: templateHelper.integerFilterTemplate, style: { textAlign: 'right' } },
@@ -58,7 +64,7 @@ const Machines = () => {
         { field: 'name', header: 'Nom', dataType: 'text', sortable: true, filter: true },
         { field: 'rack', header: 'Rack', dataType: 'numeric', sortable: true, filter: true, style: { textAlign: 'right' } },
         { field: 'slot', header: 'Slot', dataType: 'numeric', sortable: true, filter: true, style: { textAlign: 'right' } },
-        { field: 'driver', header: 'Driver', dataType: 'text', bodyTemplate: templateHelper.driver, sortable: true, filter: true, filterField: "driver", showFilterMatchModes: false, filterPlaceholder: 'Chercher par driver', filterElement: sysComponentsHelper.machines_drivers_lazyFilter },
+        { field: 'driver', header: 'Driver', dataType: 'text', bodyTemplate: templateHelper.country, sortable: true, filter: true, filterField: "driver", showFilterMatchModes: false, filterPlaceholder: 'Chercher par driver', filterElement: sysComponentsHelper.machines_drivers_lazyFilter },
         { field: 'mqtt', header: 'MQTT ON', dataType: "boolean", body: templateHelper.bool, sortable: true, filter: true, filterElement: templateHelper.booleanFilterTemplate, style: { textAlign: 'center', minWidth: '6rem' } },
         { field: 'mqtt_user', header: 'MQTT Utilisateur', dataType: 'text', sortable: true, filter: true },
         { field: 'mqtt_password', header: 'MQTT Password', dataType: 'text', bodyTemplate: mqttPasswordtemplate, sortable: true, filter: true },
@@ -89,14 +95,14 @@ const Machines = () => {
     }
 
 
-    
 
     return (<>
 
         <Table
             title='Machines'
-            prefix='machines'
-            defaultParams={new MachinesModel().getStandardParam({ field: 'address', order: 1 }, MachinesService.defaultFilters())}
+            prefixe='machines'
+            defaultParams={(new MachinesModel()).getStandardParam({ field: 'address', order: 1 }, MachinesService.defaultFilters())}
+            model={new MachinesModel()}
             columns={columns}
             exportColumnsStyle={exportColumnsStyle}
             services={MachinesService}

@@ -12,7 +12,7 @@ import { Admin, OBI } from '@/src/types/index';
 import { Checkbox } from 'primereact/checkbox';
 import { SelectButton, SelectButtonChangeEvent } from 'primereact/selectbutton';
 import { InputSwitch, InputSwitchChangeEvent } from 'primereact/inputswitch';
-import { PersistencesService } from '@/src/obi/service/persistences/PersistencesService';
+import { PersistencesService } from '@/src/obi/service/persistences/PersistencesService copy';
 
 
 import { useSession, signIn, signOut } from 'next-auth/react'

@@ -2,16 +2,14 @@
 'use client'
 
 
-import { Toast } from "primereact/toast"
 import { useEffect, useRef, useState } from "react"
 
 
-import { OBI } from "@/src/types"
-import { Dropdown } from "primereact/dropdown"
-import { StatesService } from "@/src/obi/service/localisations/StatesService"
-import { Skeleton } from "primereact/skeleton"
 import { LocationsStatesModel } from "@/src/obi/models/localisations/LocationsStatesModel"
+import { LocationsStatesService } from "@/src/obi/service/localisations/LocationsStatesService"
 import { DataTableFilterMeta } from "primereact/datatable"
+import { Dropdown } from "primereact/dropdown"
+import { Skeleton } from "primereact/skeleton"
 
 
 // Define the props that the PostForm component expects
@@ -38,7 +36,7 @@ export default function StatesDropDown({
 
 
     const statesModel = new LocationsStatesModel();
-    const defaultFilters: Array<DataTableFilterMeta> = StatesService.defaultFilters();
+    const defaultFilters: Array<DataTableFilterMeta> = LocationsStatesService.defaultFilters();
     const [lazyParams, setLazyParams] = useState(
         statesModel.
             getStandardParam({ field: 'name', order: 1 }, defaultFilters));
@@ -63,10 +61,10 @@ export default function StatesDropDown({
             const _catalogs = Array.from({ length: 100000 });
             const lazyEventSet = { lazyEvent: JSON.stringify(lazyParams) };
             // Get Lazy Data
-            StatesService.getLazy(lazyEventSet).then((data: any) => {
+            LocationsStatesService.getLazy(lazyEventSet).then((data: any) => {
                 for (let i = lazyParams.first; i < lazyParams.rows; i++) {
                     _catalogs[i] = {
-                        label: data[i].name + ' - ' + data[i].iso2 +' [' + data[i].id + ']',
+                        label: data[i].name + ' - ' + data[i].iso2 + ' [' + data[i].id + ']',
                         value: data[i].id,
                         catalogs: data[i]
                     };
@@ -79,7 +77,7 @@ export default function StatesDropDown({
 
         }
         setSelectedCatalog(value);
-    }, [value]); 
+    }, [value]);
 
 
     const onChangeCatalog = (e: { value: any }) => {
@@ -114,10 +112,7 @@ export default function StatesDropDown({
         // console.log('onLazyLoad', e, lazyParams);
     }
 
-    /**
-     * Main data effect depending on lazyParams
-     */
-    useEffect(() => {
+    const loadData = (e: any) => {
         // console.log('useEffect reload');
         setLazyLoading(true);
 
@@ -134,12 +129,12 @@ export default function StatesDropDown({
             const lazyEventSet = { lazyEvent: JSON.stringify(lazyParams) };
 
             // Get Lazy Data
-            StatesService.getLazy(lazyEventSet).then((data: any) => {
+            LocationsStatesService.getLazy(lazyEventSet).then((data: any) => {
                 // console.log(lazyParams.rows, data, catalogs);
                 for (let i = lazyParams.first; (i < lazyParams.rows && i < data.length); i++) {
                     // console.log('for i', i, data[i])
                     _catalogs[i] = {
-                        label: data[i].name + ' - ' + data[i].iso2 +' [' + data[i].id + ']',
+                        label: data[i].name + ' - ' + data[i].iso2 + ' [' + data[i].id + ']',
                         value: data[i].id,
                         catalogs: data[i]
                     };
@@ -152,6 +147,12 @@ export default function StatesDropDown({
             });
 
         }, Math.random() * 1000 + 250);
+    }
+    /**
+     * Main data effect depending on lazyParams
+     */
+    useEffect(() => {
+        loadData(lazyParams);
     }, [lazyParams]);
 
 

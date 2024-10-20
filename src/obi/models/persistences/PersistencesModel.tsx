@@ -24,9 +24,14 @@ export class PersistencesModel extends Model {
 
             company: 0,
             tag: 0,
-            method: '',
+            method: 0,
             activate: false,
-            comment: ''
+            comment: '',
+
+
+            companies: {},
+            pers_method: {},
+            tags: {},
         };
     }
 
@@ -40,9 +45,25 @@ export class PersistencesModel extends Model {
 
         this.map.set('company', 'numeric');
         this.map.set('tag', 'numeric');
-        this.map.set('method', 'text');
+        this.map.set('method', 'numeric');
         this.map.set('activate', 'numeric');
         this.map.set('comment', 'text');
+    }
+
+    get type() {
+        return {
+            id: Number,
+            deleted: Boolean,
+            created: Date,
+            changed: Date,
+
+            company: Number,
+            tag: Number,
+            method: Number,
+            activate: Boolean,
+            comment: String,
+
+        };
     }
 
 }

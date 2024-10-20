@@ -22,7 +22,13 @@ exports.datetime = (rowData: any) => {
     if (rowData === undefined) {
         return '';
     }
-    var dateParts = rowData.created.split('-')
+
+    var dateParts;
+    if (rowData.created) {
+        dateParts = rowData.created.split('-')
+    } else {
+        dateParts = rowData.created_at.split('-')
+    }
     var jsDate = new Date(
         dateParts[0],
         dateParts[1] - 1,
@@ -69,6 +75,34 @@ exports.dateFilterTemplate = (options: any) => {
 
 
 
+exports.business = (rowData: any) => {
+    return <label>
+        {rowData.businesses?.business + ' - '
+            + rowData.businesses?.designation
+            + ' [' + rowData.businesses?.id + ']'} </label>
+}
+
+exports.entity = (rowData: any) => {
+    return <label>
+        {rowData.entities?.entity + ' - '
+            + rowData.entities?.designation
+            + ' [' + rowData.entities?.id + ']'} </label>
+}
+
+
+exports.regions = (rowData: any) => {
+    return <label>
+        {rowData.loc_regions?.name + ' ('
+            + rowData.loc_regions?.wikiDataId
+            + ') [' + rowData.loc_regions?.id + ']'} </label>
+}
+
+exports.subregions = (rowData: any) => {
+    return <label>
+        {rowData.loc_subregions?.name + ' ('
+            + rowData.loc_subregions?.wikiDataId
+            + ') [' + rowData.loc_subregions?.id + ']'} </label>
+}
 
 
 exports.country = (rowData: any) => {
@@ -77,6 +111,7 @@ exports.country = (rowData: any) => {
             + rowData.loc_countries?.iso3
             + ' [' + rowData.loc_countries?.id + ']'} </label>
 }
+
 
 
 

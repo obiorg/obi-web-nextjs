@@ -2,16 +2,14 @@
 'use client'
 
 
-import { Toast } from "primereact/toast"
 import { useEffect, useRef, useState } from "react"
 
 
-import { OBI } from "@/src/types"
-import { Dropdown } from "primereact/dropdown"
-import { CitiesService } from "@/src/obi/service/localisations/CitiesService"
-import { Skeleton } from "primereact/skeleton"
 import { LocationsCitiesModel } from "@/src/obi/models/localisations/LocationsCitiesModel"
+import { LocationsCitiesService } from "@/src/obi/service/localisations/LocationsCitiesService"
 import { DataTableFilterMeta } from "primereact/datatable"
+import { Dropdown } from "primereact/dropdown"
+import { Skeleton } from "primereact/skeleton"
 
 
 // Define the props that the PostForm component expects
@@ -41,7 +39,7 @@ export default function CitiesDropDown({
      * Modling of city
      */
     const citiesModel = new LocationsCitiesModel();
-    const defaultFilters: Array<DataTableFilterMeta> = CitiesService.defaultFilters();
+    const defaultFilters: Array<DataTableFilterMeta> = LocationsCitiesService.defaultFilters();
     const [lazyParams, setLazyParams] = useState(
         citiesModel.
             getStandardParam({ field: 'name', order: 1 }, defaultFilters));
@@ -68,7 +66,7 @@ export default function CitiesDropDown({
             const _catalogs = Array.from({ length: 100000 });
             const lazyEventSet = { lazyEvent: JSON.stringify(lazyParams) };
             // Get Lazy Data
-            CitiesService.getLazy(lazyEventSet).then((data: any) => {
+            LocationsCitiesService.getLazy(lazyEventSet).then((data: any) => {
                 for (let i = lazyParams.first; i < lazyParams.rows; i++) {
                     _catalogs[i] = {
                         label: data[i].name + ' [' + data[i].id + ']',
@@ -112,13 +110,9 @@ export default function CitiesDropDown({
         _lazyParams.filters.global.value = filter === '' ? null : filter;
         _lazyParams.filters.global.matchMode = 'contains';
         setLazyParams(() => { return { ..._lazyParams } });
-        console.log('onLazyLoad', e, lazyParams);
     }
 
-    /**
-     * Main data effect depending on lazyParams
-     */
-    useEffect(() => {
+    const loadData = (e: any) => {
         // console.log('useEffect reload');
         setLazyLoading(true);
 
@@ -135,7 +129,7 @@ export default function CitiesDropDown({
             const lazyEventSet = { lazyEvent: JSON.stringify(lazyParams) };
 
             // Get Lazy Data
-            CitiesService.getLazy(lazyEventSet).then((data: any) => {
+            LocationsCitiesService.getLazy(lazyEventSet).then((data: any) => {
                 // console.log(lazyParams.rows, data, catalogs);
                 for (let i = lazyParams.first; (i < lazyParams.rows && i < data.length); i++) {
                     // console.log('for i', i, data[i])
@@ -153,6 +147,12 @@ export default function CitiesDropDown({
             });
 
         }, Math.random() * 1000 + 250);
+    };
+    /**
+     * Main data effect depending on lazyParams
+     */
+    useEffect(() => {
+        loadData(lazyParams);
     }, [lazyParams]);
 
 

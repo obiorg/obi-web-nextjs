@@ -20,11 +20,11 @@ import { ChartData, ChartOptions } from 'chart.js';
 import { Chart } from 'primereact/chart';
 import type { ChartDataState, ChartOptionsState } from '@/src/types';
 import { LayoutContext } from '@/src/layout/context/layoutcontext';
-import { PersistenceStandardService } from '@/src/obi/service/persistences/PersistenceStandardService';
-import { PersistencesService } from '@/src/obi/service/persistences/PersistencesService';
+import { PersistenceStandardService } from '@/src/obi/service/persistences/PersistenceStandardService copy';
+import { PersistencesService } from '@/src/obi/service/persistences/PersistencesService copy';
 import { Skeleton } from 'primereact/skeleton';
 import { TagsModel } from '@/src/obi/models/tags/TagsModel';
-import { TagsService } from '@/src/obi/service/tags/TagsService';
+import { TagsService } from '@/src/obi/service/tags/TagsService copy';
 import { Model } from '@/src/obi/models/model';
 import HighchartsReact from 'highcharts-react-official';
 

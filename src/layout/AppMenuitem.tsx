@@ -8,8 +8,15 @@ import { CSSTransition } from 'react-transition-group';
 import { MenuContext } from './context/menucontext';
 import { AppMenuItemProps } from '@/src/types';
 import { usePathname, useSearchParams } from 'next/navigation';
+import ReactIcons from '../obi/components/Icons/ReactIcons';
+
+
+
+
 
 const AppMenuitem = (props: AppMenuItemProps) => {
+
+
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const { activeMenu, setActiveMenu } = useContext(MenuContext);
@@ -60,7 +67,10 @@ const AppMenuitem = (props: AppMenuItemProps) => {
             {props.root && item!.visible !== false && <div className="layout-menuitem-root-text">{item!.label}</div>}
             {(!item!.to || item!.items) && item!.visible !== false ? (
                 <a href={item!.url} onClick={(e) => itemClick(e)} className={classNames(item!.class, 'p-ripple')} target={item!.target} tabIndex={0}>
-                    <i className={classNames('layout-menuitem-icon', item!.icon)}></i>
+                    {item!.group ?
+                        <ReactIcons group={item!.group} icon={item!.icon} className={classNames('layout-menuitem-icon', item!.icon)} />
+                        : <i className={classNames('layout-menuitem-icon', item!.icon)}></i>
+                    }
                     <span className="layout-menuitem-text">{item!.label}</span>
                     {item!.items && <i className="pi pi-fw pi-angle-down layout-submenu-toggler"></i>}
                     <Ripple />
@@ -69,7 +79,10 @@ const AppMenuitem = (props: AppMenuItemProps) => {
 
             {item!.to && !item!.items && item!.visible !== false ? (
                 <Link href={item!.to} replace={item!.replaceUrl} target={item!.target} onClick={(e) => itemClick(e)} className={classNames(item!.class, 'p-ripple', { 'active-route': isActiveRoute })} tabIndex={0}>
-                    <i className={classNames('layout-menuitem-icon', item!.icon)}></i>
+                    {item!.group ?
+                        <ReactIcons group={item!.group} icon={item!.icon} className={classNames('layout-menuitem-icon', item!.icon)} />
+                        : <i className={classNames('layout-menuitem-icon', item!.icon)}></i>
+                    }
                     <span className="layout-menuitem-text">{item!.label}</span>
                     {item!.items && <i className="pi pi-fw pi-angle-down layout-submenu-toggler"></i>}
                     <Ripple />

@@ -79,6 +79,7 @@ export interface MenuProps {
 export interface MenuModel {
     label: string;
     icon?: string;
+    group?: string;
     items?: MenuModel[];
     to?: string;
     url?: string;

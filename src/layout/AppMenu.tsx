@@ -7,6 +7,8 @@ import { MenuProvider } from './context/menucontext';
 import Link from 'next/link';
 import { AppMenuItem } from '@/src/types';
 
+import { GrGlobe } from "react-icons/gr";
+
 const AppMenu = () => {
     const { layoutConfig } = useContext(LayoutContext);
 
@@ -21,18 +23,20 @@ const AppMenu = () => {
                 {
                     label: 'Businesses', icon: 'pi pi-fw pi-briefcase',
                     items: [
-                        { label: 'Entitées', icon: 'pi pi-fw pi-building', to: '/obi/sys/business/entities' },
-                        { label: 'Businesses', icon: 'pi pi-fw pi-briefcase', to: '/obi/sys/business/businesses' },
-                        { label: 'Sociétées', icon: 'pi pi-fw pi-building-columns', to: '/obi/sys/business/entitiescompanies' },
+                        { label: 'Entités', icon: 'pi pi-fw pi-building', to: '/obi/sys/businesses/entities' },
+                        { label: 'Entreprises', icon: 'pi pi-fw pi-briefcase', to: '/obi/sys/businesses/businesses' },
+                        { label: 'Sociétés', icon: 'pi pi-fw pi-building-columns', to: '/obi/sys/businesses/companies' },
                     ]
                 },
                 {
                     label: 'Localisations', icon: 'pi pi-fw pi-map',
                     items: [
-                        { label: 'Pays', icon: 'pi pi-fw pi-globe', to: '/business/entities' },
-                        { label: 'Locations', icon: 'pi pi-fw pi-briefcase', to: '/obi/sys/localisations/locations' },
-                        { label: 'Businesses', icon: 'pi pi-fw pi-briefcase', to: '/business/business' },
-                        { label: 'Sociétées', icon: 'pi pi-fw pi-building-columns', to: '/business/companies' },
+                        { label: 'Continent', group: 'fa6', icon: 'FaGlobe',  to: '/obi/sys/localisations/regions' },
+                        { label: 'Sous-continent', group: 'fa', icon: 'FaGlobeEurope', to: '/obi/sys/localisations/subregions' },
+                        { label: 'Pays',  group: 'fa', icon: 'FaCity', to: '/obi/sys/localisations/countries' },
+                        { label: 'États',  group: 'fa6', icon: 'FaMountainCity', to: '/obi/sys/localisations/states' },
+                        { label: 'Villes',  group: 'fa', icon: 'FaCity', to: '/obi/sys/localisations/cities' },
+                        { label: 'Localisation',  group: 'fa6', icon: 'FaMapLocationDot', to: '/obi/sys/localisations/locations' },
                     ]
                 },
                 {
@@ -285,11 +289,15 @@ const AppMenu = () => {
     return (
         <MenuProvider>
             <ul className="layout-menu">
-                {model.map((item, i) => {
-                    return !item?.seperator ? <AppMenuitem item={item} root={true} index={i} key={item.label} /> : <li className="menu-separator"></li>;
-                })}
+                {
+                    model.map((item, i) => {
+                        return !item?.seperator ?
+                            <AppMenuitem item={item} root={true} index={i} key={item.label} />
+                            : <li className="menu-separator"></li>;
+                    })
+                }
 
-      
+
             </ul>
         </MenuProvider>
     );

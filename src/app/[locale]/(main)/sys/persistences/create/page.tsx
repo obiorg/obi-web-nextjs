@@ -12,7 +12,7 @@ import { Calendar } from 'primereact/calendar';
 import { MultiSelect } from 'primereact/multiselect';
 import { Slider } from 'primereact/slider';
 
-import { PersistenceService } from '@/src/obi/service/persistences/PersistencesService';
+import { PersistenceService } from '@/src/obi/service/persistences/PersistencesService copy';
 import { OBI } from '@/src/types/obi';
 
 

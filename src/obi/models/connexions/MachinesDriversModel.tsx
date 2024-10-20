@@ -20,11 +20,11 @@ export class MachinesDriversModel extends Model {
     get defaults() {
         return {
             id: 0,
-            deleted:0,
+            deleted: 0,
             created: 0,
             changed: 0,
             driver: '',
-            description: ''
+            designation: ''
         };
     }
 
@@ -37,9 +37,22 @@ export class MachinesDriversModel extends Model {
         this.map.set('changed', 'datetime');
 
         this.map.set('driver', 'text');
-        this.map.set('description', 'text');
+        this.map.set('designation', 'text');
     }
 
+
+    get type() {
+        return {
+            id: Number,
+            deleted: Boolean,
+            created: Date,
+            changed: Date,
+
+            driver: String,
+            designation: String,
+
+        };
+    }
 }
 
 

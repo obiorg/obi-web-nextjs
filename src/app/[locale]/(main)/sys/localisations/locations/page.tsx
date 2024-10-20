@@ -1,9 +1,9 @@
 'use client';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
-import { LocationsService } from '@/src/obi/service/localisations/LocationsService';
-import { LocationsModel } from '@/src/obi/models/localisations/LocationsModel';
 import Table from '@/src/obi/components/Tables/Table';
+import { LocationsModel } from '@/src/obi/models/localisations/LocationsModel';
+import { LocationsService } from '@/src/obi/service/localisations/LocationsService';
 
 
 
@@ -60,7 +60,7 @@ const Locations = () => {
     return (<>
 
         <Table
-            title='Locations'
+            title='Localisation'
             prefix='locations'
             defaultParams={new LocationsModel().getStandardParam({ field: 'location', order: 1 }, LocationsService.defaultFilters())}
             columns={columns}

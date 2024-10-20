@@ -34,7 +34,10 @@ export class LocationsCitiesModel extends Model {
 
             flag: false,
 
-            wikiDataId: ''
+            wikiDataId: '',
+
+            loc_states: {},
+            loc_countries: {},
         };
     }
 
@@ -57,7 +60,7 @@ export class LocationsCitiesModel extends Model {
         this.map.set('created_at', 'datetime');
         this.map.set('updated_at', 'datetime');
 
-        this.map.set('flag', 'numeric');
+        this.map.set('flag', 'boolean');
 
         this.map.set('wikiDataId', 'text');
 

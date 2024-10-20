@@ -28,64 +28,7 @@ declare namespace OBI {
         value: string;
     }
 
-    // Define the shape of the form errors entities
-    interface EntitiesFormErrors {
-        id?: string[];
-        deleted?: string[];
-        created?: string[];
-        changed?: string[];
-        entity?: string[];
-        designation?: string[];
-        builded?: string[];
-        main?: string[];
-        activated?: string[];
-        logoPath?: string[];
-        location?: string[];
-    }
 
-    // Define the shape of the form state
-    interface EntitiesFormState {
-        errors: EntitiesFormErrors;
-    }
-
-    // Define the props that the PostForm component expects
-    interface EntitiesPostFormProps {
-        formAction: any; // The action to perform when the form is submitted
-        type: number; // 0: create, 1: update, 2: destroy (delete), 3: read
-        initialData: {
-            // The initial data for the form fields
-            id: number;
-            deleted: boolean;
-            created: date;
-            changed: date;
-
-            entity: string;
-            designation: string;
-            builded: boolean;
-            main: number;
-            activated: boolean;
-            logoPath: string;
-            location: number;
-        };
-    }
-
-    // Define an interface for the form state
-    interface EntitiesPostFormState {
-        errors: {
-            id?: string[];
-            deleted?: string[];
-            created?: string[];
-            changed?: string[];
-            entity?: string[];
-            designation?: string[];
-            builded?: string[];
-            main?: string[];
-            activated?: string[];
-            logoPath?: string[];
-            location?: string[];
-            _form?: string[];
-        };
-    }
 
     // Define an interface for the form state
     interface LocationsFormState {
@@ -270,6 +213,7 @@ declare namespace OBI {
         loc_countries?: OBI.loc_countries;
         loc_states?: OBI.loc_states;
     };
+
     type mach_drivers = {
         id?: number;
         deleted?: boolean;

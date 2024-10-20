@@ -44,6 +44,9 @@ export class LocationsCountriesModel extends Model {
             updated_at: 0,
             flag: false,
             wikiDataId: '',
+
+            loc_regions: {},
+            loc_subregions: {},
         };
     }
 
@@ -76,7 +79,7 @@ export class LocationsCountriesModel extends Model {
         this.map.set('emojiU', 'text');
         this.map.set('created_at', 'datetime');
         this.map.set('updated_at', 'datetime');
-        this.map.set('flag', 'numeric');
+        this.map.set('flag', 'boolean');
         this.map.set('wikiDataId', 'text');
     }
 

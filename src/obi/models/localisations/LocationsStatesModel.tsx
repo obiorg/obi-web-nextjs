@@ -2,7 +2,7 @@
  * Analyse Data Model
  */
 
-import { Model } from '../model'
+import { Model } from '../model';
 
 
 
@@ -30,6 +30,8 @@ export class LocationsStatesModel extends Model {
             updated_at: 0,
             flag: false,
             wikiDataId: '',
+
+            loc_countries: {},
         };
     }
 
@@ -47,7 +49,7 @@ export class LocationsStatesModel extends Model {
         this.map.set('longitude', 'numeric');
         this.map.set('created_at', 'datetime');
         this.map.set('updated_at', 'datetime');
-        this.map.set('flag', 'numeric');
+        this.map.set('flag', 'boolean');
         this.map.set('wikiDataId', 'text');
     }
 

@@ -20,11 +20,14 @@ export class LocationsSubRegionsModel extends Model {
             id: 0,
             name: '',
             translations: '',
+            
             region_id: 0,
             created_at: 0,
             updated_at: 0,
             flag: false,
             wikiDataId: '',
+
+            loc_regions: {},
         };
     }
 
@@ -39,7 +42,7 @@ export class LocationsSubRegionsModel extends Model {
 
         this.map.set('created_at', 'datetime');
         this.map.set('updated_at', 'datetime');
-        this.map.set('flag', 'numeric');
+        this.map.set('flag', 'boolean');
         this.map.set('wikiDataId', 'text');
 
     }

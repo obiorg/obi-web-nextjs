@@ -1,0 +1,397 @@
+/**
+ * https://react-icons.github.io/react-icons/icons/tfi/
+ */
+
+
+import * as LIB from "react-icons/tfi";
+
+
+// Define the props that the PostForm component expects
+interface tfiProps {
+    icon?: string; // Name of icon default FaFonticons 
+    className?: string; // Default class name
+}
+
+
+function Tfi(
+    {
+        icon = 'TfiAgenda',
+        className,
+    }: tfiProps
+) {
+
+
+    const getIcon = (iconName: string) => {
+        switch (iconName) {
+            case 'TfiAgenda': return <LIB.TfiAgenda className={className} />;
+            case 'TfiAlarmClock': return <LIB.TfiAlarmClock className={className} />;
+            case 'TfiAlert': return <LIB.TfiAlert className={className} />;
+            case 'TfiAlignCenter': return <LIB.TfiAlignCenter className={className} />;
+            case 'TfiAlignJustify': return <LIB.TfiAlignJustify className={className} />;
+            case 'TfiAlignLeft': return <LIB.TfiAlignLeft className={className} />;
+            case 'TfiAlignRight': return <LIB.TfiAlignRight className={className} />;
+            case 'TfiAnchor': return <LIB.TfiAnchor className={className} />;
+            case 'TfiAndroid': return <LIB.TfiAndroid className={className} />;
+            case 'TfiAngleDoubleDown': return <LIB.TfiAngleDoubleDown className={className} />;
+            case 'TfiAngleDoubleLeft': return <LIB.TfiAngleDoubleLeft className={className} />;
+            case 'TfiAngleDoubleRight': return <LIB.TfiAngleDoubleRight className={className} />;
+            case 'TfiAngleDoubleUp': return <LIB.TfiAngleDoubleUp className={className} />;
+            case 'TfiAngleDown': return <LIB.TfiAngleDown className={className} />;
+            case 'TfiAngleLeft': return <LIB.TfiAngleLeft className={className} />;
+            case 'TfiAngleRight': return <LIB.TfiAngleRight className={className} />;
+            case 'TfiAngleUp': return <LIB.TfiAngleUp className={className} />;
+            case 'TfiAnnouncement': return <LIB.TfiAnnouncement className={className} />;
+            case 'TfiApple': return <LIB.TfiApple className={className} />;
+            case 'TfiArchive': return <LIB.TfiArchive className={className} />;
+            case 'TfiArrowCircleDown': return <LIB.TfiArrowCircleDown className={className} />;
+            case 'TfiArrowCircleLeft': return <LIB.TfiArrowCircleLeft className={className} />;
+            case 'TfiArrowCircleRight': return <LIB.TfiArrowCircleRight className={className} />;
+            case 'TfiArrowCircleUp': return <LIB.TfiArrowCircleUp className={className} />;
+            case 'TfiArrowDown': return <LIB.TfiArrowDown className={className} />;
+            case 'TfiArrowLeft': return <LIB.TfiArrowLeft className={className} />;
+            case 'TfiArrowRight': return <LIB.TfiArrowRight className={className} />;
+            case 'TfiArrowTopLeft': return <LIB.TfiArrowTopLeft className={className} />;
+            case 'TfiArrowTopRight': return <LIB.TfiArrowTopRight className={className} />;
+            case 'TfiArrowUp': return <LIB.TfiArrowUp className={className} />;
+            case 'TfiArrow': return <LIB.TfiArrow className={className} />;
+            case 'TfiArrowsCorner': return <LIB.TfiArrowsCorner className={className} />;
+            case 'TfiArrowsHorizontal': return <LIB.TfiArrowsHorizontal className={className} />;
+            case 'TfiArrowsVertical': return <LIB.TfiArrowsVertical className={className} />;
+            case 'TfiBackLeft': return <LIB.TfiBackLeft className={className} />;
+            case 'TfiBackRight': return <LIB.TfiBackRight className={className} />;
+            case 'TfiBag': return <LIB.TfiBag className={className} />;
+            case 'TfiBarChartAlt': return <LIB.TfiBarChartAlt className={className} />;
+            case 'TfiBarChart': return <LIB.TfiBarChart className={className} />;
+            case 'TfiBasketball': return <LIB.TfiBasketball className={className} />;
+            case 'TfiBell': return <LIB.TfiBell className={className} />;
+            case 'TfiBlackboard': return <LIB.TfiBlackboard className={className} />;
+            case 'TfiBoltAlt': return <LIB.TfiBoltAlt className={className} />;
+            case 'TfiBolt': return <LIB.TfiBolt className={className} />;
+            case 'TfiBook': return <LIB.TfiBook className={className} />;
+            case 'TfiBookmarkAlt': return <LIB.TfiBookmarkAlt className={className} />;
+            case 'TfiBookmark': return <LIB.TfiBookmark className={className} />;
+            case 'TfiBriefcase': return <LIB.TfiBriefcase className={className} />;
+            case 'TfiBrushAlt': return <LIB.TfiBrushAlt className={className} />;
+            case 'TfiBrush': return <LIB.TfiBrush className={className} />;
+            case 'TfiCalendar': return <LIB.TfiCalendar className={className} />;
+            case 'TfiCamera': return <LIB.TfiCamera className={className} />;
+            case 'TfiCar': return <LIB.TfiCar className={className} />;
+            case 'TfiCheckBox': return <LIB.TfiCheckBox className={className} />;
+            case 'TfiCheck': return <LIB.TfiCheck className={className} />;
+            case 'TfiClip': return <LIB.TfiClip className={className} />;
+            case 'TfiClipboard': return <LIB.TfiClipboard className={className} />;
+            case 'TfiClose': return <LIB.TfiClose className={className} />;
+            case 'TfiCloudDown': return <LIB.TfiCloudDown className={className} />;
+            case 'TfiCloudUp': return <LIB.TfiCloudUp className={className} />;
+            case 'TfiCloud': return <LIB.TfiCloud className={className} />;
+            case 'TfiCommentAlt': return <LIB.TfiCommentAlt className={className} />;
+            case 'TfiComment': return <LIB.TfiComment className={className} />;
+            case 'TfiCommentsSmiley': return <LIB.TfiCommentsSmiley className={className} />;
+            case 'TfiComments': return <LIB.TfiComments className={className} />;
+            case 'TfiControlBackward': return <LIB.TfiControlBackward className={className} />;
+            case 'TfiControlEject': return <LIB.TfiControlEject className={className} />;
+            case 'TfiControlForward': return <LIB.TfiControlForward className={className} />;
+            case 'TfiControlPause': return <LIB.TfiControlPause className={className} />;
+            case 'TfiControlPlay': return <LIB.TfiControlPlay className={className} />;
+            case 'TfiControlRecord': return <LIB.TfiControlRecord className={className} />;
+            case 'TfiControlShuffle': return <LIB.TfiControlShuffle className={className} />;
+            case 'TfiControlSkipBackward': return <LIB.TfiControlSkipBackward className={className} />;
+            case 'TfiControlSkipForward': return <LIB.TfiControlSkipForward className={className} />;
+            case 'TfiControlStop': return <LIB.TfiControlStop className={className} />;
+            case 'TfiCreditCard': return <LIB.TfiCreditCard className={className} />;
+            case 'TfiCrown': return <LIB.TfiCrown className={className} />;
+            case 'TfiCss3': return <LIB.TfiCss3 className={className} />;
+            case 'TfiCup': return <LIB.TfiCup className={className} />;
+            case 'TfiCut': return <LIB.TfiCut className={className} />;
+            case 'TfiDashboard': return <LIB.TfiDashboard className={className} />;
+            case 'TfiDesktop': return <LIB.TfiDesktop className={className} />;
+            case 'TfiDirectionAlt': return <LIB.TfiDirectionAlt className={className} />;
+            case 'TfiDirection': return <LIB.TfiDirection className={className} />;
+            case 'TfiDownload': return <LIB.TfiDownload className={className} />;
+            case 'TfiDribbble': return <LIB.TfiDribbble className={className} />;
+            case 'TfiDropboxAlt': return <LIB.TfiDropboxAlt className={className} />;
+            case 'TfiDropbox': return <LIB.TfiDropbox className={className} />;
+            case 'TfiDrupal': return <LIB.TfiDrupal className={className} />;
+            case 'TfiEmail': return <LIB.TfiEmail className={className} />;
+            case 'TfiEnvelope': return <LIB.TfiEnvelope className={className} />;
+            case 'TfiEraser': return <LIB.TfiEraser className={className} />;
+            case 'TfiExchangeVertical': return <LIB.TfiExchangeVertical className={className} />;
+            case 'TfiExport': return <LIB.TfiExport className={className} />;
+            case 'TfiEye': return <LIB.TfiEye className={className} />;
+            case 'TfiFaceSad': return <LIB.TfiFaceSad className={className} />;
+            case 'TfiFaceSmile': return <LIB.TfiFaceSmile className={className} />;
+            case 'TfiFacebook': return <LIB.TfiFacebook className={className} />;
+            case 'TfiFile': return <LIB.TfiFile className={className} />;
+            case 'TfiFiles': return <LIB.TfiFiles className={className} />;
+            case 'TfiFilter': return <LIB.TfiFilter className={className} />;
+            case 'TfiFlagAlt2': return <LIB.TfiFlagAlt2 className={className} />;
+            case 'TfiFlagAlt': return <LIB.TfiFlagAlt className={className} />;
+            case 'TfiFlag': return <LIB.TfiFlag className={className} />;
+            case 'TfiFlickrAlt': return <LIB.TfiFlickrAlt className={className} />;
+            case 'TfiFlickr': return <LIB.TfiFlickr className={className} />;
+            case 'TfiFolder': return <LIB.TfiFolder className={className} />;
+            case 'TfiFullscreen': return <LIB.TfiFullscreen className={className} />;
+            case 'TfiGallery': return <LIB.TfiGallery className={className} />;
+            case 'TfiGame': return <LIB.TfiGame className={className} />;
+            case 'TfiGift': return <LIB.TfiGift className={className} />;
+            case 'TfiGithub': return <LIB.TfiGithub className={className} />;
+            case 'TfiGoogle': return <LIB.TfiGoogle className={className} />;
+            case 'TfiHandDrag': return <LIB.TfiHandDrag className={className} />;
+            case 'TfiHandOpen': return <LIB.TfiHandOpen className={className} />;
+            case 'TfiHandPointDown': return <LIB.TfiHandPointDown className={className} />;
+            case 'TfiHandPointLeft': return <LIB.TfiHandPointLeft className={className} />;
+            case 'TfiHandPointRight': return <LIB.TfiHandPointRight className={className} />;
+            case 'TfiHandPointUp': return <LIB.TfiHandPointUp className={className} />;
+            case 'TfiHandStop': return <LIB.TfiHandStop className={className} />;
+            case 'TfiHarddrive': return <LIB.TfiHarddrive className={className} />;
+            case 'TfiHarddrives': return <LIB.TfiHarddrives className={className} />;
+            case 'TfiHeadphoneAlt': return <LIB.TfiHeadphoneAlt className={className} />;
+            case 'TfiHeadphone': return <LIB.TfiHeadphone className={className} />;
+            case 'TfiHeartBroken': return <LIB.TfiHeartBroken className={className} />;
+            case 'TfiHeart': return <LIB.TfiHeart className={className} />;
+            case 'TfiHelpAlt': return <LIB.TfiHelpAlt className={className} />;
+            case 'TfiHelp': return <LIB.TfiHelp className={className} />;
+            case 'TfiHome': return <LIB.TfiHome className={className} />;
+            case 'TfiHtml5': return <LIB.TfiHtml5 className={className} />;
+            case 'TfiHummer': return <LIB.TfiHummer className={className} />;
+            case 'TfiIdBadge': return <LIB.TfiIdBadge className={className} />;
+            case 'TfiImage': return <LIB.TfiImage className={className} />;
+            case 'TfiImport': return <LIB.TfiImport className={className} />;
+            case 'TfiInfinite': return <LIB.TfiInfinite className={className} />;
+            case 'TfiInfoAlt': return <LIB.TfiInfoAlt className={className} />;
+            case 'TfiInfo': return <LIB.TfiInfo className={className} />;
+            case 'TfiInkPen': return <LIB.TfiInkPen className={className} />;
+            case 'TfiInstagram': return <LIB.TfiInstagram className={className} />;
+            case 'TfiItalic': return <LIB.TfiItalic className={className} />;
+            case 'TfiJoomla': return <LIB.TfiJoomla className={className} />;
+            case 'TfiJsfiddle': return <LIB.TfiJsfiddle className={className} />;
+            case 'TfiKey': return <LIB.TfiKey className={className} />;
+            case 'TfiLayersAlt': return <LIB.TfiLayersAlt className={className} />;
+            case 'TfiLayers': return <LIB.TfiLayers className={className} />;
+            case 'TfiLayoutAccordionList': return <LIB.TfiLayoutAccordionList className={className} />;
+            case 'TfiLayoutAccordionMerged': return <LIB.TfiLayoutAccordionMerged className={className} />;
+            case 'TfiLayoutAccordionSeparated': return <LIB.TfiLayoutAccordionSeparated className={className} />;
+            case 'TfiLayoutColumn2Alt': return <LIB.TfiLayoutColumn2Alt className={className} />;
+            case 'TfiLayoutColumn2': return <LIB.TfiLayoutColumn2 className={className} />;
+            case 'TfiLayoutColumn3Alt': return <LIB.TfiLayoutColumn3Alt className={className} />;
+            case 'TfiLayoutColumn3': return <LIB.TfiLayoutColumn3 className={className} />;
+            case 'TfiLayoutColumn4Alt': return <LIB.TfiLayoutColumn4Alt className={className} />;
+            case 'TfiLayoutColumn4': return <LIB.TfiLayoutColumn4 className={className} />;
+            case 'TfiLayoutCtaBtnLeft': return <LIB.TfiLayoutCtaBtnLeft className={className} />;
+            case 'TfiLayoutCtaBtnRight': return <LIB.TfiLayoutCtaBtnRight className={className} />;
+            case 'TfiLayoutCtaCenter': return <LIB.TfiLayoutCtaCenter className={className} />;
+            case 'TfiLayoutCtaLeft': return <LIB.TfiLayoutCtaLeft className={className} />;
+            case 'TfiLayoutCtaRight': return <LIB.TfiLayoutCtaRight className={className} />;
+            case 'TfiLayoutGrid2Alt': return <LIB.TfiLayoutGrid2Alt className={className} />;
+            case 'TfiLayoutGrid2Thumb': return <LIB.TfiLayoutGrid2Thumb className={className} />;
+            case 'TfiLayoutGrid2': return <LIB.TfiLayoutGrid2 className={className} />;
+            case 'TfiLayoutGrid3Alt': return <LIB.TfiLayoutGrid3Alt className={className} />;
+            case 'TfiLayoutGrid3': return <LIB.TfiLayoutGrid3 className={className} />;
+            case 'TfiLayoutGrid4Alt': return <LIB.TfiLayoutGrid4Alt className={className} />;
+            case 'TfiLayoutGrid4': return <LIB.TfiLayoutGrid4 className={className} />;
+            case 'TfiLayoutLineSolid': return <LIB.TfiLayoutLineSolid className={className} />;
+            case 'TfiLayoutListLargeImage': return <LIB.TfiLayoutListLargeImage className={className} />;
+            case 'TfiLayoutListPost': return <LIB.TfiLayoutListPost className={className} />;
+            case 'TfiLayoutListThumbAlt': return <LIB.TfiLayoutListThumbAlt className={className} />;
+            case 'TfiLayoutListThumb': return <LIB.TfiLayoutListThumb className={className} />;
+            case 'TfiLayoutMediaCenterAlt': return <LIB.TfiLayoutMediaCenterAlt className={className} />;
+            case 'TfiLayoutMediaCenter': return <LIB.TfiLayoutMediaCenter className={className} />;
+            case 'TfiLayoutMediaLeftAlt': return <LIB.TfiLayoutMediaLeftAlt className={className} />;
+            case 'TfiLayoutMediaLeft': return <LIB.TfiLayoutMediaLeft className={className} />;
+            case 'TfiLayoutMediaOverlayAlt2': return <LIB.TfiLayoutMediaOverlayAlt2 className={className} />;
+            case 'TfiLayoutMediaOverlayAlt': return <LIB.TfiLayoutMediaOverlayAlt className={className} />;
+            case 'TfiLayoutMediaOverlay': return <LIB.TfiLayoutMediaOverlay className={className} />;
+            case 'TfiLayoutMediaRightAlt': return <LIB.TfiLayoutMediaRightAlt className={className} />;
+            case 'TfiLayoutMediaRight': return <LIB.TfiLayoutMediaRight className={className} />;
+            case 'TfiLayoutMenuFull': return <LIB.TfiLayoutMenuFull className={className} />;
+            case 'TfiLayoutMenuSeparated': return <LIB.TfiLayoutMenuSeparated className={className} />;
+            case 'TfiLayoutMenuV': return <LIB.TfiLayoutMenuV className={className} />;
+            case 'TfiLayoutMenu': return <LIB.TfiLayoutMenu className={className} />;
+            case 'TfiLayoutPlaceholder': return <LIB.TfiLayoutPlaceholder className={className} />;
+            case 'TfiLayoutSidebar2': return <LIB.TfiLayoutSidebar2 className={className} />;
+            case 'TfiLayoutSidebarLeft': return <LIB.TfiLayoutSidebarLeft className={className} />;
+            case 'TfiLayoutSidebarNone': return <LIB.TfiLayoutSidebarNone className={className} />;
+            case 'TfiLayoutSidebarRight': return <LIB.TfiLayoutSidebarRight className={className} />;
+            case 'TfiLayoutSliderAlt': return <LIB.TfiLayoutSliderAlt className={className} />;
+            case 'TfiLayoutSlider': return <LIB.TfiLayoutSlider className={className} />;
+            case 'TfiLayoutTabMin': return <LIB.TfiLayoutTabMin className={className} />;
+            case 'TfiLayoutTabV': return <LIB.TfiLayoutTabV className={className} />;
+            case 'TfiLayoutTabWindow': return <LIB.TfiLayoutTabWindow className={className} />;
+            case 'TfiLayoutTab': return <LIB.TfiLayoutTab className={className} />;
+            case 'TfiLayoutWidthDefaultAlt': return <LIB.TfiLayoutWidthDefaultAlt className={className} />;
+            case 'TfiLayoutWidthDefault': return <LIB.TfiLayoutWidthDefault className={className} />;
+            case 'TfiLayoutWidthFull': return <LIB.TfiLayoutWidthFull className={className} />;
+            case 'TfiLayout': return <LIB.TfiLayout className={className} />;
+            case 'TfiLightBulb': return <LIB.TfiLightBulb className={className} />;
+            case 'TfiLineDashed': return <LIB.TfiLineDashed className={className} />;
+            case 'TfiLineDotted': return <LIB.TfiLineDotted className={className} />;
+            case 'TfiLineDouble': return <LIB.TfiLineDouble className={className} />;
+            case 'TfiLink': return <LIB.TfiLink className={className} />;
+            case 'TfiLinkedin': return <LIB.TfiLinkedin className={className} />;
+            case 'TfiLinux': return <LIB.TfiLinux className={className} />;
+            case 'TfiListOl': return <LIB.TfiListOl className={className} />;
+            case 'TfiList': return <LIB.TfiList className={className} />;
+            case 'TfiLocationArrow': return <LIB.TfiLocationArrow className={className} />;
+            case 'TfiLocationPin': return <LIB.TfiLocationPin className={className} />;
+            case 'TfiLock': return <LIB.TfiLock className={className} />;
+            case 'TfiLoop': return <LIB.TfiLoop className={className} />;
+            case 'TfiMagnet': return <LIB.TfiMagnet className={className} />;
+            case 'TfiMapAlt': return <LIB.TfiMapAlt className={className} />;
+            case 'TfiMap': return <LIB.TfiMap className={className} />;
+            case 'TfiMarkerAlt': return <LIB.TfiMarkerAlt className={className} />;
+            case 'TfiMarker': return <LIB.TfiMarker className={className} />;
+            case 'TfiMedallAlt': return <LIB.TfiMedallAlt className={className} />;
+            case 'TfiMedall': return <LIB.TfiMedall className={className} />;
+            case 'TfiMenuAlt': return <LIB.TfiMenuAlt className={className} />;
+            case 'TfiMenu': return <LIB.TfiMenu className={className} />;
+            case 'TfiMicrophoneAlt': return <LIB.TfiMicrophoneAlt className={className} />;
+            case 'TfiMicrophone': return <LIB.TfiMicrophone className={className} />;
+            case 'TfiMicrosoftAlt': return <LIB.TfiMicrosoftAlt className={className} />;
+            case 'TfiMicrosoft': return <LIB.TfiMicrosoft className={className} />;
+            case 'TfiMinus': return <LIB.TfiMinus className={className} />;
+            case 'TfiMobile': return <LIB.TfiMobile className={className} />;
+            case 'TfiMoney': return <LIB.TfiMoney className={className} />;
+            case 'TfiMoreAlt': return <LIB.TfiMoreAlt className={className} />;
+            case 'TfiMore': return <LIB.TfiMore className={className} />;
+            case 'TfiMouseAlt': return <LIB.TfiMouseAlt className={className} />;
+            case 'TfiMouse': return <LIB.TfiMouse className={className} />;
+            case 'TfiMusicAlt': return <LIB.TfiMusicAlt className={className} />;
+            case 'TfiMusic': return <LIB.TfiMusic className={className} />;
+            case 'TfiNa': return <LIB.TfiNa className={className} />;
+            case 'TfiNewWindow': return <LIB.TfiNewWindow className={className} />;
+            case 'TfiNotepad': return <LIB.TfiNotepad className={className} />;
+            case 'TfiPackage': return <LIB.TfiPackage className={className} />;
+            case 'TfiPaintBucket': return <LIB.TfiPaintBucket className={className} />;
+            case 'TfiPaintRoller': return <LIB.TfiPaintRoller className={className} />;
+            case 'TfiPalette': return <LIB.TfiPalette className={className} />;
+            case 'TfiPanel': return <LIB.TfiPanel className={className} />;
+            case 'TfiParagraph': return <LIB.TfiParagraph className={className} />;
+            case 'TfiPencilAlt': return <LIB.TfiPencilAlt className={className} />;
+            case 'TfiPencilAlt2': return <LIB.TfiPencilAlt2 className={className} />;
+            case 'TfiPencil': return <LIB.TfiPencil className={className} />;
+            case 'TfiPieChart': return <LIB.TfiPieChart className={className} />;
+            case 'TfiPinAlt': return <LIB.TfiPinAlt className={className} />;
+            case 'TfiPin': return <LIB.TfiPin className={className} />;
+            case 'TfiPin2': return <LIB.TfiPin2 className={className} />;
+            case 'TfiPinterestAlt': return <LIB.TfiPinterestAlt className={className} />;
+            case 'TfiPinterest': return <LIB.TfiPinterest className={className} />;
+            case 'TfiPlug': return <LIB.TfiPlug className={className} />;
+            case 'TfiPlus': return <LIB.TfiPlus className={className} />;
+            case 'TfiPowerOff': return <LIB.TfiPowerOff className={className} />;
+            case 'TfiPrinter': return <LIB.TfiPrinter className={className} />;
+            case 'TfiPulse': return <LIB.TfiPulse className={className} />;
+            case 'TfiQuoteLeft': return <LIB.TfiQuoteLeft className={className} />;
+            case 'TfiQuoteRight': return <LIB.TfiQuoteRight className={className} />;
+            case 'TfiReceipt': return <LIB.TfiReceipt className={className} />;
+            case 'TfiReddit': return <LIB.TfiReddit className={className} />;
+            case 'TfiReload': return <LIB.TfiReload className={className} />;
+            case 'TfiRocket': return <LIB.TfiRocket className={className} />;
+            case 'TfiRssAlt': return <LIB.TfiRssAlt className={className} />;
+            case 'TfiRss': return <LIB.TfiRss className={className} />;
+            case 'TfiRulerAlt2': return <LIB.TfiRulerAlt2 className={className} />;
+            case 'TfiRulerAlt': return <LIB.TfiRulerAlt className={className} />;
+            case 'TfiRulerPencil': return <LIB.TfiRulerPencil className={className} />;
+            case 'TfiRuler': return <LIB.TfiRuler className={className} />;
+            case 'TfiSaveAlt': return <LIB.TfiSaveAlt className={className} />;
+            case 'TfiSave': return <LIB.TfiSave className={className} />;
+            case 'TfiSearch': return <LIB.TfiSearch className={className} />;
+            case 'TfiServer': return <LIB.TfiServer className={className} />;
+            case 'TfiSettings': return <LIB.TfiSettings className={className} />;
+            case 'TfiShareAlt': return <LIB.TfiShareAlt className={className} />;
+            case 'TfiShare': return <LIB.TfiShare className={className} />;
+            case 'TfiSharethisAlt': return <LIB.TfiSharethisAlt className={className} />;
+            case 'TfiSharethis': return <LIB.TfiSharethis className={className} />;
+            case 'TfiShield': return <LIB.TfiShield className={className} />;
+            case 'TfiShiftLeftAlt': return <LIB.TfiShiftLeftAlt className={className} />;
+            case 'TfiShiftLeft': return <LIB.TfiShiftLeft className={className} />;
+            case 'TfiShiftRightAlt': return <LIB.TfiShiftRightAlt className={className} />;
+            case 'TfiShiftRight': return <LIB.TfiShiftRight className={className} />;
+            case 'TfiShine': return <LIB.TfiShine className={className} />;
+            case 'TfiShoppingCartFull': return <LIB.TfiShoppingCartFull className={className} />;
+            case 'TfiShoppingCart': return <LIB.TfiShoppingCart className={className} />;
+            case 'TfiShortcode': return <LIB.TfiShortcode className={className} />;
+            case 'TfiSignal': return <LIB.TfiSignal className={className} />;
+            case 'TfiSkype': return <LIB.TfiSkype className={className} />;
+            case 'TfiSlice': return <LIB.TfiSlice className={className} />;
+            case 'TfiSmallcap': return <LIB.TfiSmallcap className={className} />;
+            case 'TfiSoundcloud': return <LIB.TfiSoundcloud className={className} />;
+            case 'TfiSplitH': return <LIB.TfiSplitH className={className} />;
+            case 'TfiSplitVAlt': return <LIB.TfiSplitVAlt className={className} />;
+            case 'TfiSplitV': return <LIB.TfiSplitV className={className} />;
+            case 'TfiSpray': return <LIB.TfiSpray className={className} />;
+            case 'TfiStackOverflow': return <LIB.TfiStackOverflow className={className} />;
+            case 'TfiStamp': return <LIB.TfiStamp className={className} />;
+            case 'TfiStar': return <LIB.TfiStar className={className} />;
+            case 'TfiStatsDown': return <LIB.TfiStatsDown className={className} />;
+            case 'TfiStatsUp': return <LIB.TfiStatsUp className={className} />;
+            case 'TfiSupport': return <LIB.TfiSupport className={className} />;
+            case 'TfiTablet': return <LIB.TfiTablet className={className} />;
+            case 'TfiTag': return <LIB.TfiTag className={className} />;
+            case 'TfiTarget': return <LIB.TfiTarget className={className} />;
+            case 'TfiText': return <LIB.TfiText className={className} />;
+            case 'TfiThemifyFaviconAlt': return <LIB.TfiThemifyFaviconAlt className={className} />;
+            case 'TfiThemifyFavicon': return <LIB.TfiThemifyFavicon className={className} />;
+            case 'TfiThemifyLogo': return <LIB.TfiThemifyLogo className={className} />;
+            case 'TfiThought': return <LIB.TfiThought className={className} />;
+            case 'TfiThumbDown': return <LIB.TfiThumbDown className={className} />;
+            case 'TfiThumbUp': return <LIB.TfiThumbUp className={className} />;
+            case 'TfiTicket': return <LIB.TfiTicket className={className} />;
+            case 'TfiTime': return <LIB.TfiTime className={className} />;
+            case 'TfiTimer': return <LIB.TfiTimer className={className} />;
+            case 'TfiTrash': return <LIB.TfiTrash className={className} />;
+            case 'TfiTrello': return <LIB.TfiTrello className={className} />;
+            case 'TfiTruck': return <LIB.TfiTruck className={className} />;
+            case 'TfiTumblrAlt': return <LIB.TfiTumblrAlt className={className} />;
+            case 'TfiTumblr': return <LIB.TfiTumblr className={className} />;
+            case 'TfiTwitterAlt': return <LIB.TfiTwitterAlt className={className} />;
+            case 'TfiTwitter': return <LIB.TfiTwitter className={className} />;
+            case 'TfiUnderline': return <LIB.TfiUnderline className={className} />;
+            case 'TfiUnlink': return <LIB.TfiUnlink className={className} />;
+            case 'TfiUnlock': return <LIB.TfiUnlock className={className} />;
+            case 'TfiUpload': return <LIB.TfiUpload className={className} />;
+            case 'TfiUppercase': return <LIB.TfiUppercase className={className} />;
+            case 'TfiUser': return <LIB.TfiUser className={className} />;
+            case 'TfiVector': return <LIB.TfiVector className={className} />;
+            case 'TfiVideoCamera': return <LIB.TfiVideoCamera className={className} />;
+            case 'TfiVideoClapper': return <LIB.TfiVideoClapper className={className} />;
+            case 'TfiViewGrid': return <LIB.TfiViewGrid className={className} />;
+            case 'TfiViewListAlt': return <LIB.TfiViewListAlt className={className} />;
+            case 'TfiViewList': return <LIB.TfiViewList className={className} />;
+            case 'TfiVimeoAlt': return <LIB.TfiVimeoAlt className={className} />;
+            case 'TfiVimeo': return <LIB.TfiVimeo className={className} />;
+            case 'TfiVolume': return <LIB.TfiVolume className={className} />;
+            case 'TfiWallet': return <LIB.TfiWallet className={className} />;
+            case 'TfiWand': return <LIB.TfiWand className={className} />;
+            case 'TfiWheelchair': return <LIB.TfiWheelchair className={className} />;
+            case 'TfiWidgetAlt': return <LIB.TfiWidgetAlt className={className} />;
+            case 'TfiWidget': return <LIB.TfiWidget className={className} />;
+            case 'TfiWidgetized': return <LIB.TfiWidgetized className={className} />;
+            case 'TfiWindow': return <LIB.TfiWindow className={className} />;
+            case 'TfiWordpress': return <LIB.TfiWordpress className={className} />;
+            case 'TfiWorld': return <LIB.TfiWorld className={className} />;
+            case 'TfiWrite': return <LIB.TfiWrite className={className} />;
+            case 'TfiYahoo': return <LIB.TfiYahoo className={className} />;
+            case 'TfiYoutube': return <LIB.TfiYoutube className={className} />;
+            case 'TfiZip': return <LIB.TfiZip className={className} />;
+            case 'TfiZoomIn': return <LIB.TfiZoomIn className={className} />;
+            case 'TfiZoomOut': return <LIB.TfiZoomOut className={className} />;
+
+            default:
+                console.log('Tfi - unknown icon : ' + icon + ' by the name ' + iconName);
+                return null;
+
+        }
+    }
+    const iconComponent = getIcon(icon);
+
+
+    return (<>
+        {iconComponent}
+    </>);
+
+
+
+
+};
+
+export default Tfi;

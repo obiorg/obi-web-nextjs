@@ -93,9 +93,11 @@ export class TagsModel extends Model {
         this.map.set('pk', 'id');
 
         this.map.set('id', 'numeric');
-        this.map.set('deleted', 'numeric');
+        this.map.set('deleted', 'boolean');
         this.map.set('created', 'datetime');
         this.map.set('changed', 'datetime');
+        
+        
         this.map.set('company', 'numeric');
         this.map.set('table', 'numeric');
         this.map.set('name', 'text');
@@ -105,60 +107,52 @@ export class TagsModel extends Model {
         this.map.set('db', 'numeric');
         this.map.set('byte', 'numeric');
         this.map.set('bit', 'numeric');
-        this.map.set('active', 'numeric');
+        this.map.set('active', 'boolean');
         this.map.set('cycle', 'numeric');
-        this.map.set('delta', 'numeric');
+        this.map.set('delta', 'boolean');
         this.map.set('deltaFloat', 'numeric');
         this.map.set('deltaInt', 'numeric');
         this.map.set('deltaBool', 'numeric');
         this.map.set('deltaDateTime', 'datetime');
         this.map.set('vFloat', 'numeric');
         this.map.set('vInt', 'numeric');
-        this.map.set('vBool', 'numeric');
+        this.map.set('vBool', 'boolean');
         this.map.set('vStr', 'text');
         this.map.set('vDateTime', 'datetime');
         this.map.set('vStamp', 'datetime');
         this.map.set('vDefault', 'numeric');
         this.map.set('vFloatDefault', 'numeric');
         this.map.set('vIntDefault', 'numeric');
-        this.map.set('vBoolDefault', 'numeric');
+        this.map.set('vBoolDefault', 'boolean');
         this.map.set('vStrDefault', 'text');
         this.map.set('vDateTimeDefault', 'datetime');
         this.map.set('vStampDefault', 'datetime');
-        this.map.set('counter', 'numeric');
+        this.map.set('counter', 'boolean');
         this.map.set('counterType', 'numeric');
-        this.map.set('mesure', 'numeric');
+        this.map.set('mesure', 'boolean');
         this.map.set('mesureMin', 'numeric');
         this.map.set('mesureMax', 'numeric');
         this.map.set('measureUnit', 'numeric');
         this.map.set('mqtt_topic', 'text');
         this.map.set('webhook', 'text');
-        this.map.set('laboratory', 'numeric');
-        this.map.set('formula', 'numeric');
+        this.map.set('laboratory', 'boolean');
+        this.map.set('formula', 'boolean');
         this.map.set('formCalculus', 'text');
         this.map.set('formProcessing', 'numeric');
-        this.map.set('error', 'numeric');
+        this.map.set('error', 'boolean');
         this.map.set('errorMsg', 'text');
         this.map.set('errorStamp', 'datetime');
-        this.map.set('alarmEnable', 'numeric');
+        this.map.set('alarmEnable', 'boolean');
         this.map.set('alarm', 'numeric');
-        this.map.set('persistenceEnable', 'numeric');
-        this.map.set('persOffsetEnable', 'numeric');
+        this.map.set('persistenceEnabled', 'boolean');
+        this.map.set('persOffsetEnable', 'boolean');
         this.map.set('persOffsetFloat', 'numeric');
         this.map.set('persOffsetInt', 'numeric');
-        this.map.set('persOffsetBool', 'numeric');
+        this.map.set('persOffsetBool', 'boolean');
         this.map.set('persOffsetDateTime', 'datetime');
         this.map.set('comment', 'text');
         this.map.set('list', 'numeric');
 
-        // this.map.set('alarms', 'OBI.alarms');
-        // this.map.set('companies', 'OBI.companies');
-        // this.map.set('tags_lists', 'OBI.tags_lists');
-        // this.map.set('machines', 'OBI.machines');
-        // this.map.set('meas_units', 'OBI.meas_units');
-        // this.map.set('tags_memories', 'OBI.tags_memories');
-        // this.map.set('tags_tables', 'OBI.tags_tables');
-        // this.map.set('tags_types', 'OBI.tags_types');
     }
 
 
@@ -169,7 +163,7 @@ export class TagsModel extends Model {
             deleted: Boolean,
             created: Date,
             changed: Date,
-
+            
             company: Number,
             table: Number,
             name: String,
@@ -184,15 +178,15 @@ export class TagsModel extends Model {
             delta: Boolean,
             deltaFloat: Number,
             deltaInt: Number,
-            deltaBool: Number,
-            deltaDateTime: Number,
+            deltaBool: Boolean,
+            deltaDateTime: Date,
             vFloat: Number,
             vInt: Number,
             vBool: Boolean,
             vStr: String,
             vDateTime: Date,
             vStamp: Date,
-            vDefault: Boolean,
+            vDefault: Number,
             vFloatDefault: Number,
             vIntDefault: Number,
             vBoolDefault: Boolean,
@@ -216,7 +210,7 @@ export class TagsModel extends Model {
             errorStamp: Date,
             alarmEnable: Boolean,
             alarm: Number,
-            persistenceEnable: Boolean,
+            persistenceEnabled: Boolean,
             persOffsetEnable: Boolean,
             persOffsetFloat: Number,
             persOffsetInt: Number,
@@ -224,7 +218,7 @@ export class TagsModel extends Model {
             persOffsetDateTime: Date,
             comment: String,
             list: Number,
-    
+            
         };
     }
 }

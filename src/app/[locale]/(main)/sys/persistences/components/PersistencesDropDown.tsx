@@ -11,7 +11,7 @@ import { Dropdown } from "primereact/dropdown"
 import { Skeleton } from "primereact/skeleton"
 import { DataTableFilterMeta } from "primereact/datatable"
 import { PersistencesModel } from "@/src/obi/models/persistences/PersistencesModel"
-import { PersistencesService } from "@/src/obi/service/persistences/PersistencesService"
+import { PersistencesService } from "@/src/obi/service/persistences/PersistencesService copy"
 
 
 // Define the props that the PostForm component expects

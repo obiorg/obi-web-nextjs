@@ -1,79 +1,57 @@
 'use client';
-import React, { useState, useEffect, useRef } from 'react';
-import { DataTable, DataTableFilterMeta, DataTableSortMeta } from 'primereact/datatable';
-import { Column, ColumnFilterClearTemplateOptions } from 'primereact/column';
-import { Button } from 'primereact/button';
+import { useState } from 'react';
 
-import { Admin, OBI } from '@/src/types/index';
-
-import { MachinesService } from '@/src/obi/service/connexions/MachinesService';
-import { MachinesModel } from '@/src/obi/models/connexions/MachinesModel';
-import TableHeader from '@/src/obi/components/Tables/TableHeader';
-import { ExportsService } from '@/src/obi/utilities/export/ExportsService';
-import TableToolbar from '@/src/obi/components/Tables/TableToolbar';
-
-
-import DialogError from '@/src/obi/components/Dialog/DialogError';
-import { ContextMenu } from 'primereact/contextmenu';
-import { useRouter } from 'next/navigation';
 import Table from '@/src/obi/components/Tables/Table';
+import { LocationsCountriesModel } from '@/src/obi/models/localisations/LocationsCountriesModel';
+import { LocationsCountriesService } from '@/src/obi/service/localisations/LocationsCountriesService';
 
 
 
 const templateHelper = require('@/src/obi/components/Tables/TemplateHelper');
 const sysComponentsHelper = require('@/src/app/[locale]/(main)/sys/SysComponentsHelper');
 
-const Machines = () => {
+const SubRegions = () => {
 
 
-    const mqttPasswordtemplate = (rowData: any) => {
-        let p = '*';
-        for (let i = 0; i < rowData.mqtt_password?.length; i++)
-            p += '*';
-        return <label>{p}</label>
-    }
-
-    const webhookSecretetemplate = (rowData: any) => {
-        let p = '*';
-        for (let i = 0; i < rowData.webhook_secret?.length; i++)
-            p += '*';
-        return <label>{p}</label>
-    }
-
-    const model = new MachinesModel();
-    const [loading, setLoading] = useState(false);
-    const [totalRecords, setTotalRecords] = useState(0);
-    const [selectedCatalog, setSelectedCatalog] = useState(null);
-    const [size, setSize] = useState<string>('small');
-    const [filterDisplay, setFilterDisplay] = useState('menu');
-    const [stateStorage, setStateStorage] = useState('session');
-    const [dlgError, setDlgError] = useState();
     // Manage columns
     const [columns, setColumns]: OBI.ColumnMeta[] = useState([
         { field: 'id', header: 'ID', dataType: 'numeric', sortable: true, filter: true, filterElement: templateHelper.integerFilterTemplate, style: { textAlign: 'right' } },
-        { field: 'deleted', header: 'Supp.', dataType: "boolean", body: templateHelper.bool, sortable: true, filter: true, filterElement: templateHelper.booleanFilterTemplate, style: { textAlign: 'center', minWidth: '6rem' } },
-        { field: 'created', header: 'Créé', dataType: 'date', bodyTemplate: templateHelper.datetime, sortable: true, filter: true, filterField: "date", filterPlaceholder: 'Insérer une date', filterElement: templateHelper.dateFilterTemplate, style: { textAlign: 'center' } },
-        { field: 'changed', header: 'Changé', dataType: 'date', bodyTemplate: templateHelper.datetime, sortable: true, filter: true, filterField: "date", filterPlaceholder: 'Insérer une date', filterElement: templateHelper.dateFilterTemplate, style: { textAlign: 'center' } },
 
-        { field: 'company', header: 'Société', dataType: 'text', bodyTemplate: templateHelper.company, sortable: true, filter: true, filterField: "company", showFilterMatchModes: false, filterPlaceholder: 'Chercher une société', filterElement: sysComponentsHelper.company_lazyFilter },
-        { field: 'address', header: 'Adresse', dataType: 'text', sortable: true, filter: true },
-        { field: 'mask', header: 'Mask', dataType: 'text', sortable: true, filter: true },
-        { field: 'dns', header: 'DNS', dataType: 'text', sortable: true, filter: true },
-        { field: 'ipv6', header: 'IPv6', dataType: 'text', sortable: true, filter: true },
-        { field: 'port', header: 'Port', dataType: 'numeric', sortable: true, filter: true, style: { textAlign: 'right' } },
         { field: 'name', header: 'Nom', dataType: 'text', sortable: true, filter: true },
-        { field: 'rack', header: 'Rack', dataType: 'numeric', sortable: true, filter: true, style: { textAlign: 'right' } },
-        { field: 'slot', header: 'Slot', dataType: 'numeric', sortable: true, filter: true, style: { textAlign: 'right' } },
-        { field: 'driver', header: 'Driver', dataType: 'text', bodyTemplate: templateHelper.country, sortable: true, filter: true, filterField: "driver", showFilterMatchModes: false, filterPlaceholder: 'Chercher par driver', filterElement: sysComponentsHelper.machines_drivers_lazyFilter },
-        { field: 'mqtt', header: 'MQTT ON', dataType: "boolean", body: templateHelper.bool, sortable: true, filter: true, filterElement: templateHelper.booleanFilterTemplate, style: { textAlign: 'center', minWidth: '6rem' } },
-        { field: 'mqtt_user', header: 'MQTT Utilisateur', dataType: 'text', sortable: true, filter: true },
-        { field: 'mqtt_password', header: 'MQTT Password', dataType: 'text', bodyTemplate: mqttPasswordtemplate, sortable: true, filter: true },
-        { field: 'webhook', header: 'Webhook ON', dataType: "boolean", body: templateHelper.bool, sortable: true, filter: true, filterElement: templateHelper.booleanFilterTemplate, style: { textAlign: 'center', minWidth: '6rem' } },
-        { field: 'webhook_secret', header: 'Webhook Secret', dataType: 'text', bodyTemplate: webhookSecretetemplate, sortable: true, filter: true },
-        { field: 'bus', header: 'Bus', dataType: 'numeric', sortable: true, filter: true, style: { textAlign: 'center' } },
-        { field: 'description', header: 'Description', dataType: 'text', sortable: true, filter: true },
+        { field: 'iso3', header: 'iso3', dataType: 'text', sortable: true, filter: true },
+        { field: 'numeric_code', header: 'Code Numerique', dataType: 'text', sortable: true, filter: true },
+        { field: 'iso2', header: 'iso2', dataType: 'text', sortable: true, filter: true },
+        { field: 'phonecode', header: 'Préfixe (Tel.)', dataType: 'text', sortable: true, filter: true },
+        { field: 'capital', header: 'Capitale', dataType: 'text', sortable: true, filter: true },
+        { field: 'currency', header: 'Money', dataType: 'text', sortable: true, filter: true },
+        { field: 'currency_name', header: 'Money Nom', dataType: 'text', sortable: true, filter: true },
+        { field: 'currency_symbol', header: 'Money Symbol', dataType: 'text', sortable: true, filter: true },
+        { field: 'tld', header: 'TLD', dataType: 'text', sortable: true, filter: true },
+        { field: 'native', header: 'Native', dataType: 'text', sortable: true, filter: true },
+        { field: 'region', header: 'Id Continent', dataType: 'text', sortable: true, filter: true },
+        { field: 'region_id', header: 'Continent', dataType: 'text', bodyTemplate: templateHelper.regions, sortable: true, filter: true, filterField: "region_id", showFilterMatchModes: false, filterPlaceholder: 'Continent...', filterElement: sysComponentsHelper.regions_lazyFilter },
+        { field: 'subregion', header: 'Id SR', dataType: 'text', sortable: true, filter: true },
+        { field: 'subregion_id', header: 'Sous-régions', dataType: 'text', bodyTemplate: templateHelper.subregions, sortable: true, filter: true, filterField: "subregion_id", showFilterMatchModes: false, filterPlaceholder: 'Sous-régions...', filterElement: sysComponentsHelper.subregions_lazyFilter },
+
+        { field: 'nationality', header: 'Nationalités', dataType: 'text', sortable: true, filter: true },
+        { field: 'timezones', header: 'Time Zones', dataType: 'text', sortable: true, filter: true },
+        { field: 'translations', header: 'Traduction', dataType: 'text', sortable: true, filter: true },
+        { field: 'latitude', header: 'latitude', dataType: 'numeric', sortable: true, filter: true, filterElement: templateHelper.integerFilterTemplate, style: { textAlign: 'right' } },
+        { field: 'longitude', header: 'longitude', dataType: 'numeric', sortable: true, filter: true, filterElement: templateHelper.integerFilterTemplate, style: { textAlign: 'right' } },
+
+        { field: 'emoji', header: 'emoji', dataType: 'text', sortable: true, filter: true },
+        { field: 'emojiU', header: 'emojiU', dataType: 'text', sortable: true, filter: true },
+
+        { field: 'created_at', header: 'Créé', dataType: 'date', bodyTemplate: templateHelper.datetime, sortable: true, filter: true, filterField: "date", filterPlaceholder: 'Insérer une date', filterElement: templateHelper.dateFilterTemplate, style: { textAlign: 'center' } },
+        { field: 'updated_at', header: 'Changé', dataType: 'date', bodyTemplate: templateHelper.datetime, sortable: true, filter: true, filterField: "date", filterPlaceholder: 'Insérer une date', filterElement: templateHelper.dateFilterTemplate, style: { textAlign: 'center' } },
+
+        { field: 'flag', header: 'drapeau', dataType: "boolean", body: templateHelper.bool, sortable: true, filter: true, filterElement: templateHelper.booleanFilterTemplate, style: { textAlign: 'center', minWidth: '6rem' } },
+        { field: 'wikiDataId', header: 'Wiki Data Id', dataType: 'text', sortable: true, filter: true },
+
 
     ]);
+
+
 
     const exportColumnsStyle = {
         0: { halign: 'right', valign: 'middle', fontSize: 8, cellPadding: 1, minCellWidth: 20, cellWidth: 'wrap' }, // id //fillColor: [0, 255, 0]
@@ -99,17 +77,16 @@ const Machines = () => {
     return (<>
 
         <Table
-            title='Machines'
-            prefixe='machines'
-            defaultParams={(new MachinesModel()).getStandardParam({ field: 'address', order: 1 }, MachinesService.defaultFilters())}
-            model={new MachinesModel()}
+            title='Pays'
+            prefix='countries'
+            defaultParams={new LocationsCountriesModel().getStandardParam({ field: 'name', order: 1 }, LocationsCountriesService.defaultFilters())}
             columns={columns}
             exportColumnsStyle={exportColumnsStyle}
-            services={MachinesService}
+            services={LocationsCountriesService}
         />
 
     </>)
 
 };
 
-export default Machines;
+export default SubRegions;

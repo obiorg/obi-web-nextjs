@@ -2,18 +2,14 @@
 'use client'
 
 
-import { Toast } from "primereact/toast"
 import { useEffect, useRef, useState } from "react"
 
 
-import { OBI } from "@/src/types"
-import { Dropdown } from "primereact/dropdown"
-import { CountriesService } from "@/src/obi/service/Localisations/CountriesService"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faCircleXmark } from "@fortawesome/free-regular-svg-icons"
-import { Skeleton } from "primereact/skeleton"
 import { LocationsCountriesModel } from "@/src/obi/models/localisations/LocationsCountriesModel"
+import { LocationsCountriesService } from "@/src/obi/service/localisations/LocationsCountriesService"
 import { DataTableFilterMeta } from "primereact/datatable"
+import { Dropdown } from "primereact/dropdown"
+import { Skeleton } from "primereact/skeleton"
 
 
 // Define the props that the PostForm component expects
@@ -43,7 +39,7 @@ export default function CountriesDropDown({
      * Modling of country
      */
     const countriesModel = new LocationsCountriesModel();
-    const defaultFilters: Array<DataTableFilterMeta> = CountriesService.defaultFilters();
+    const defaultFilters: Array<DataTableFilterMeta> = LocationsCountriesService.defaultFilters();
     const [lazyParams, setLazyParams] = useState(
         countriesModel.
             getStandardParam({ field: 'name', order: 1 }, defaultFilters));
@@ -67,12 +63,12 @@ export default function CountriesDropDown({
      */
     useEffect(() => {
         if (initCatalog === false) {
-            // CountriesService.count().then((count) => {
+            // LocationsCountriesService.count().then((count) => {
             // const _catalogs = Array.from({ length: count });
             const _catalogs = Array.from({ length: 100000 });
             const lazyEventSet = { lazyEvent: JSON.stringify(lazyParams) };
             // Get Lazy Data
-            CountriesService.getLazy(lazyEventSet).then((data: any) => {
+            LocationsCountriesService.getLazy(lazyEventSet).then((data: any) => {
                 for (let i = lazyParams.first; i < lazyParams.rows; i++) {
                     _catalogs[i] = {
                         label: data[i].name + ' - ' + data[i].iso3 + ' (' + data[i].numeric_code + ') ' + ' -  [' + data[i].id + ']',
@@ -123,11 +119,9 @@ export default function CountriesDropDown({
         // console.log('onLazyLoad', e, lazyParams);
     }
 
-    /**
-     * Main data effect depending on lazyParams
-     */
-    useEffect(() => {
-        console.log('useEffect reload');
+
+    const loadData = (e: any) => {
+        // console.log('useEffect reload');
         setLazyLoading(true);
 
         if (loadLazyTimeout) {
@@ -143,7 +137,7 @@ export default function CountriesDropDown({
             const lazyEventSet = { lazyEvent: JSON.stringify(lazyParams) };
 
             // Get Lazy Data
-            CountriesService.getLazy(lazyEventSet).then((data: any) => {
+            LocationsCountriesService.getLazy(lazyEventSet).then((data: any) => {
                 console.log(lazyParams.rows, data, catalogs);
                 for (let i = lazyParams.first; (i < lazyParams.rows && i < data.length); i++) {
                     // console.log('for i', i, data[i])
@@ -161,6 +155,13 @@ export default function CountriesDropDown({
             });
 
         }, Math.random() * 1000 + 250);
+    }
+
+    /**
+     * Main data effect depending on lazyParams
+     */
+    useEffect(() => {
+        loadData(lazyParams);
     }, [lazyParams]);
 
 

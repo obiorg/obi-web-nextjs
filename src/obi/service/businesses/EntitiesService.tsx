@@ -9,7 +9,64 @@ import { OBI } from "@/src/types/obi";
 import { EntitiesModel } from "../../models/businesses/EntitiesModel";
 
 
+// Define the shape of the form errors entities
+interface EntitiesFormErrors {
+    id?: string[];
+    deleted?: string[];
+    created?: string[];
+    changed?: string[];
+    entity?: string[];
+    designation?: string[];
+    builded?: string[];
+    main?: string[];
+    activated?: string[];
+    logoPath?: string[];
+    location?: string[];
+}
 
+// Define the shape of the form state
+interface EntitiesFormState {
+    errors: EntitiesFormErrors;
+}
+
+// Define the props that the PostForm component expects
+interface EntitiesPostFormProps {
+    formAction: any; // The action to perform when the form is submitted
+    type: number; // 0: create, 1: update, 2: destroy (delete), 3: read
+    initialData: {
+        // The initial data for the form fields
+        id: number;
+        deleted: boolean;
+        created: date;
+        changed: date;
+
+        entity: string;
+        designation: string;
+        builded: boolean;
+        main: number;
+        activated: boolean;
+        logoPath: string;
+        location: number;
+    };
+}
+
+// Define an interface for the form state
+interface EntitiesPostFormState {
+    errors: {
+        id?: string[];
+        deleted?: string[];
+        created?: string[];
+        changed?: string[];
+        entity?: string[];
+        designation?: string[];
+        builded?: string[];
+        main?: string[];
+        activated?: string[];
+        logoPath?: string[];
+        location?: string[];
+        _form?: string[];
+    };
+}
 
 export const EntitiesService = {
 
@@ -136,8 +193,8 @@ export const EntitiesService = {
      * @returns 
      */
     async create(
-        formState: OBI.EntitiesFormState,
-        formData: FormData): Promise<OBI.EntitiesFormState> {
+        formState: EntitiesFormState,
+        formData: FormData): Promise<EntitiesFormState> {
 
         // console.log('formData', formData);
         let data: any;
@@ -186,7 +243,7 @@ export const EntitiesService = {
                 body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
             }
         )
-        const dataset: OBI.EntitiesFormState = await res.json();
+        const dataset: EntitiesFormState = await res.json();
         return dataset;
 
     },
@@ -223,15 +280,15 @@ export const EntitiesService = {
             }
         )
         // console.log("EntitiesService response", res);
-        const dataset: OBI.EntitiesFormState = await res.json();
+        const dataset: EntitiesFormState = await res.json();
         return dataset;
 
     },
 
 
     async update(
-        formState: OBI.EntitiesFormState,
-        formData: FormData): Promise<OBI.EntitiesFormState> {
+        formState: EntitiesFormState,
+        formData: FormData): Promise<EntitiesFormState> {
 
 
         let data = {
@@ -275,7 +332,7 @@ export const EntitiesService = {
             }
         )
         // console.log("EntitiesService response", res);
-        const dataset: OBI.EntitiesFormState = await res.json();
+        const dataset: EntitiesFormState = await res.json();
         return dataset;
 
 
@@ -309,7 +366,7 @@ export const EntitiesService = {
 
 
 
-    async delete(id: any): Promise<OBI.EntitiesFormState> {
+    async delete(id: any): Promise<EntitiesFormState> {
 
 
         const url = process.env.httpPath + '/businesses/entities/' + id;
@@ -328,7 +385,7 @@ export const EntitiesService = {
             }
         )
         console.log("EntitiesService response", res);
-        const dataset: OBI.EntitiesFormState = await res.json();
+        const dataset: EntitiesFormState = await res.json();
         return dataset;
 
 

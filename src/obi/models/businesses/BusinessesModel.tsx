@@ -18,7 +18,7 @@ export class BusinessesModel extends Model {
     get defaults() {
         return {
             id: 0,
-            deleted:0,
+            deleted: 0,
             created: 0,
             changed: 0,
             business: '',
@@ -29,6 +29,9 @@ export class BusinessesModel extends Model {
             logoPath: '',
             location: 0,
             entity: '',
+
+            locations: {},
+            entities: {},
         };
     }
 
@@ -43,13 +46,30 @@ export class BusinessesModel extends Model {
         this.map.set('business', 'text');
         this.map.set('designation', 'text');
         this.map.set('builded', 'numeric');
-        this.map.set('main', 'numeric');
-        this.map.set('activated', 'numeric');
+        this.map.set('main', 'boolean');
+        this.map.set('activated', 'boolean');
         this.map.set('logoPath', 'text');
         this.map.set('location', 'numeric');
         this.map.set('entity', 'text');
     }
 
+    get type() {
+        return {
+            id: Number,
+            deleted: Boolean,
+            created: Date,
+            changed: Date,
+
+            business: String,
+            designation: String,
+            builded: Number,
+            main: Boolean,
+            activated: Boolean,
+            logoPath: String,
+            location: Number,
+            entity: String,
+        };
+    }
 }
 
 

@@ -34,9 +34,10 @@ export class LocationsModel extends Model {
             bloc: '',
             floor: 0,
             number: '',
-            businesses: {},
-            companies: {},
-            entities: {},
+
+            loc_cities: {},
+            loc_countries: {},
+            loc_states: {},
         };
     }
 

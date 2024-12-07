@@ -4,6 +4,8 @@ import { useState } from 'react';
 import Table from '@/src/obi/components/Tables/Table';
 import { LocationsCountriesModel } from '@/src/obi/models/localisations/LocationsCountriesModel';
 import { LocationsCountriesService } from '@/src/obi/service/localisations/LocationsCountriesService';
+import { ExportsService } from '@/src/obi/utilities/export/ExportsService';
+import { OBI } from '@/src/types/obi';
 
 
 
@@ -14,7 +16,7 @@ const SubRegions = () => {
 
 
     // Manage columns
-    const [columns, setColumns]: OBI.ColumnMeta[] = useState([
+    const [columns, setColumns] = useState<OBI.ColumnMeta[]>([
         { field: 'id', header: 'ID', dataType: 'numeric', sortable: true, filter: true, filterElement: templateHelper.integerFilterTemplate, style: { textAlign: 'right' } },
 
         { field: 'name', header: 'Nom', dataType: 'text', sortable: true, filter: true },
@@ -53,27 +55,6 @@ const SubRegions = () => {
 
 
 
-    const exportColumnsStyle = {
-        0: { halign: 'right', valign: 'middle', fontSize: 8, cellPadding: 1, minCellWidth: 20, cellWidth: 'wrap' }, // id //fillColor: [0, 255, 0]
-        1: { halign: 'center', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
-        2: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'wrap' },
-        3: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'wrap' },
-        4: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' }, // localisation
-        5: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
-        6: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
-        7: { halign: 'right', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },   // country
-        8: { halign: 'right', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
-        9: { halign: 'right', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'wrap' }, // ville
-        10: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
-        11: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
-        12: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
-        13: { halign: 'center', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
-        14: { halign: 'center', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
-        15: { halign: 'center', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' }
-    }
-
-
-
     return (<>
 
         <Table
@@ -81,7 +62,7 @@ const SubRegions = () => {
             prefix='countries'
             defaultParams={new LocationsCountriesModel().getStandardParam({ field: 'name', order: 1 }, LocationsCountriesService.defaultFilters())}
             columns={columns}
-            exportColumnsStyle={exportColumnsStyle}
+            exportColumnsStyle={ExportsService.pdfColumnsStyle(columns)}
             services={LocationsCountriesService}
         />
 

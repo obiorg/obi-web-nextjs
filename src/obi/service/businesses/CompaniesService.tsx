@@ -83,7 +83,7 @@ export const CompaniesService = {
      */
     async getLazy(lazy: any): Promise<any> {
         const url = process.env.httpPath + '/businesses/companies/lazy/' + lazy.lazyEvent;
-        // console.log(JSON.parse(lazy.lazyEvent))
+        console.log(JSON.parse(lazy.lazyEvent))
         // console.log(url)
         try {
             const res = await fetch(url, { headers: { 'Cache-Control': 'no-cache' } })

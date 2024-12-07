@@ -1,13 +1,13 @@
 
 
 import { OBI } from "@/src/types/obi";
-import { PersistencesMethodsModel } from "../../models/persistences/PersistencesMethodsModel";
+import { PersistencesModel } from "../../models/persistences/PersistencesModel";
 
 
 
 
-    // Define the shape of the form errors PersistencesMethods
-    interface PersistencesMethodsFormErrors {
+    // Define the shape of the form errors Persistences
+    interface PersistencesFormErrors {
         id?: string[];
         deleted?: string[];
         created?: string[];
@@ -22,12 +22,12 @@ import { PersistencesMethodsModel } from "../../models/persistences/Persistences
     }
 
     // Define the shape of the form state
-    interface PersistencesMethodsFormState {
-        errors: PersistencesMethodsFormErrors;
+    interface PersistencesFormState {
+        errors: PersistencesFormErrors;
     }
 
     // Define the props that the PostForm component expects
-    interface PersistencesMethodsPostFormProps {
+    interface PersistencesPostFormProps {
         formAction: any; // The action to perform when the form is submitted
         type: number; // 0: create, 1: update, 2: destroy (delete), 3: read
         initialData: {
@@ -48,7 +48,7 @@ import { PersistencesMethodsModel } from "../../models/persistences/Persistences
     }
 
     // Define an interface for the form state
-    interface PersistencesMethodsPostFormState {
+    interface PersistencesPostFormState {
         errors: {
             id?: string[];
             deleted?: string[];
@@ -68,7 +68,7 @@ import { PersistencesMethodsModel } from "../../models/persistences/Persistences
 
 
 
-export const PersistencesMethodsService = {
+export const PersistencesService = {
 
     /**
      * Find catalogs specified by lazy parameters
@@ -173,12 +173,12 @@ export const PersistencesMethodsService = {
 
 
     defaultMultiSortMeta(): any {
-        const model = new PersistencesMethodsModel();
+        const model = new PersistencesModel();
         return model.toMultiSortMeta();
     },
 
     defaultFilters(): any {
-        const model = new PersistencesMethodsModel();
+        const model = new PersistencesModel();
         return model.toDefaultFilters();
     },
 
@@ -191,8 +191,8 @@ export const PersistencesMethodsService = {
      * @returns 
      */
     async create(
-        formState: PersistencesMethodsFormState,
-        formData: FormData): Promise<PersistencesMethodsFormState> {
+        formState: PersistencesFormState,
+        formData: FormData): Promise<PersistencesFormState> {
 
         // console.log('formData', formData);
         let data: any;
@@ -241,7 +241,7 @@ export const PersistencesMethodsService = {
                 body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
             }
         )
-        const dataset: PersistencesMethodsFormState = await res.json();
+        const dataset: PersistencesFormState = await res.json();
         return dataset;
 
     },
@@ -249,7 +249,7 @@ export const PersistencesMethodsService = {
     async processAll(formState: any, datas: any): Promise<any> {
         let res: any = [];
         datas.forEach((row, index) => {
-            PersistencesMethodsService.create(formState, row).then((res_row) => {
+            PersistencesService.create(formState, row).then((res_row) => {
                 console.log('res_row', res_row, 'res', res);
                 res.push(res_row);
                 console.log('res_row', res_row, 'res', res);
@@ -277,15 +277,15 @@ export const PersistencesMethodsService = {
                 body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
             }
         )
-        const dataset: PersistencesMethodsFormState = await res.json();
+        const dataset: PersistencesFormState = await res.json();
         return dataset;
 
     },
 
 
     async update(
-        formState: PersistencesMethodsFormState,
-        formData: FormData): Promise<PersistencesMethodsFormState> {
+        formState: PersistencesFormState,
+        formData: FormData): Promise<PersistencesFormState> {
 
 
         let data = {
@@ -328,7 +328,7 @@ export const PersistencesMethodsService = {
                 body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
             }
         )
-        const dataset: PersistencesMethodsFormState = await res.json();
+        const dataset: PersistencesFormState = await res.json();
         return dataset;
 
 
@@ -361,7 +361,7 @@ export const PersistencesMethodsService = {
 
 
 
-    async delete(id: any): Promise<PersistencesMethodsFormState> {
+    async delete(id: any): Promise<PersistencesFormState> {
 
 
         const url = process.env.httpPath + '/persistences/' + id;
@@ -379,7 +379,7 @@ export const PersistencesMethodsService = {
                 },
             }
         )
-        const dataset: PersistencesMethodsFormState = await res.json();
+        const dataset: PersistencesFormState = await res.json();
         return dataset;
 
 

@@ -7,7 +7,7 @@ import { Model } from '../model'
 
 
 
-export class PersistenceStandardsModel extends Model {
+export class PersistencesStandardsModel extends Model {
 
 
     constructor(attributes = {}) {
@@ -18,7 +18,7 @@ export class PersistenceStandardsModel extends Model {
     get defaults() {
         return {
             id: 0,
-            deleted:0,
+            deleted: 0,
             created: 0,
             changed: 0,
 

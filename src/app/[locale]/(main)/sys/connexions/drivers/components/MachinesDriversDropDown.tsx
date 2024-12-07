@@ -2,23 +2,17 @@
 'use client'
 
 
-import { Toast } from "primereact/toast"
 import { useEffect, useRef, useState } from "react"
 
 
-import { OBI } from "@/src/types"
-import { Dropdown } from "primereact/dropdown"
-import { MachinesDriversService } from "@/src/obi/service/connexions/MachinesDriversService"
-import { Skeleton } from "primereact/skeleton"
 import { MachinesDriversModel } from "@/src/obi/models/connexions/MachinesDriversModel"
-import { DataTableFilterMeta } from "primereact/datatable"
+import { MachinesDriversService } from "@/src/obi/service/connexions/MachinesDriversService"
+import { Dropdown } from "primereact/dropdown"
+import { Skeleton } from "primereact/skeleton"
 
-
+ 
 // Define the props that the PostForm component expects
 interface MachinesDriversDropDownProps {
-    // id: string;                         // ID of the component
-    // name: string;                       // Name of the component
-    // title: string;                      // preceding title of dropdown
     value: any;
     onChanged?: (e: any) => void;       // The callback function to be called when the value changes
 
@@ -30,25 +24,25 @@ interface MachinesDriversDropDownProps {
 
 
 export default function MachinesDriversDropDown({
-    // id, name, title, 
     value,
     onChanged,
     placeholder, tooltip, tooltipOptions
 }: MachinesDriversDropDownProps) {
 
 
-    const model = new MachinesDriversModel();
-    const defaultFilters: Array<DataTableFilterMeta> = MachinesDriversService.defaultFilters();
-    const [lazyParams, setLazyParams] = useState(
-        model.
-            getStandardParam({ field: 'name', order: 1 }, defaultFilters));
 
-    // catalog processing
+    const [lazyParams, setLazyParams] = useState(
+        new MachinesDriversModel().
+            getStandardParam([{ field: 'driver', order: 1 }, { field: 'designation', order: 1 }],
+                MachinesDriversService.defaultFilters()));
+
+    /**
+     * Managing catlog
+     */
     const [selectedCatalog, setSelectedCatalog] = useState<any>(value);
     const [catalogs, setCatalogs] = useState<any>([]);
     const [lazyLoading, setLazyLoading] = useState(true);
     const [initCatalog, setInitCatalog] = useState(false);
-    const [currentValue, setCurrentValue] = useState();
 
 
     let loadLazyTimeout = useRef(null);
@@ -75,24 +69,22 @@ export default function MachinesDriversDropDown({
                 setLazyLoading(false);
             });
             setInitCatalog(true);
+
         }
         setSelectedCatalog(value);
     }, [value]);
 
 
     const onChangeCatalog = (e: { value: any }) => {
-        // console.log('onLazyItemChange', e);
         setSelectedCatalog(e.value)
         onChanged && onChanged(e);
     }
 
     const onChangedFilter = (e: any) => {
-
         let _lazyParams = lazyParams;
         _lazyParams.filters.global.value = e.filter === '' ? null : e.filter;
         _lazyParams.filters.global.matchMode = 'contains';
         setLazyParams(() => { return { ..._lazyParams } });
-        // console.log('onChangedFilter', e, lazyParams);
 
     }
 
@@ -109,14 +101,9 @@ export default function MachinesDriversDropDown({
         _lazyParams.filters.global.value = filter === '' ? null : filter;
         _lazyParams.filters.global.matchMode = 'contains';
         setLazyParams(() => { return { ..._lazyParams } });
-        // console.log('onLazyLoad', e, lazyParams);
     }
 
-    /**
-     * 
-     * 
-     */
-    const loadCatalogs = () => {
+    const loadData = (e: any) => {
         // console.log('useEffect reload');
         setLazyLoading(true);
 
@@ -151,23 +138,14 @@ export default function MachinesDriversDropDown({
             });
 
         }, Math.random() * 1000 + 250);
-    };
+    }
 
     /**
      * Main data effect depending on lazyParams
      */
     useEffect(() => {
-        loadCatalogs();
+        loadData(lazyParams);
     }, [lazyParams]);
-
-
-
-
-
-
-
-
-
 
 
 
@@ -180,7 +158,7 @@ export default function MachinesDriversDropDown({
 
             options={catalogs}
             onChange={onChangeCatalog}
-            placeholder="Sélectionner un driver..."
+            placeholder="Drivers..."
             showClear
             filter
             onFilter={onChangedFilter}

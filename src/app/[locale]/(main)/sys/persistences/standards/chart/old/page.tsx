@@ -20,7 +20,7 @@ import { ChartData, ChartOptions } from 'chart.js';
 import { Chart } from 'primereact/chart';
 import type { ChartDataState, ChartOptionsState } from '@/src/types';
 import { LayoutContext } from '@/src/layout/context/layoutcontext';
-import { PersistenceStandardService } from '@/src/obi/service/persistences/PersistenceStandardService copy';
+import { PersistencesStandardsService } from '@/src/obi/service/persistences/PersistencesStandardsService';
 import { PersistencesService } from '@/src/obi/service/persistences/PersistencesService copy';
 import { Skeleton } from 'primereact/skeleton';
 import { TagsModel } from '@/src/obi/models/tags/TagsModel';
@@ -83,7 +83,7 @@ const PersistanceStandard = () => {
      */
     useEffect(() => {
         // Count total amount of persistences with method standard
-        PersistenceStandardService.count().then((data) => {
+        PersistencesStandardsService.count().then((data) => {
             setTotalRecords(data);
         });
 
@@ -106,7 +106,7 @@ const PersistanceStandard = () => {
         // console.log(tag);
         if (tag !== undefined && tag !== null) {
             // console.log("Now call persistence service")
-            PersistenceStandardService.findByTags(tag, 0, pointCollect, 'desc').then((data) => {
+            PersistencesStandardsService.findByTags(tag, 0, pointCollect, 'desc').then((data) => {
                 setPersStandard(data);
             });
         } else {

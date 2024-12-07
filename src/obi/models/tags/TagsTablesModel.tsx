@@ -22,13 +22,13 @@ export class TagsTablesModel extends Model {
             created: 0,
             changed: 0,
 
-            type: '',
+            company: 0,
+            table: '',
             designation: '',
-            bit: 0,
-            byte: 0,
-            word: 0,
-            group: '',
-        }
+            comment: '',
+            
+            companies: {},
+        };
     }
 
 
@@ -41,13 +41,11 @@ export class TagsTablesModel extends Model {
         this.map.set('deleted', 'boolean');
         this.map.set('created', 'datetime');
         this.map.set('changed', 'datetime');
-
-        this.map.set('type', 'text');
+        
+        this.map.set('company', 'numeric');
+        this.map.set('table', 'text');
         this.map.set('designation', 'text');
-        this.map.set('bit', 'numeric');
-        this.map.set('byte', 'numeric');
-        this.map.set('word', 'numeric');
-        this.map.set('group', 'text');
+        this.map.set('comment', 'text');
 
     }
 
@@ -58,14 +56,14 @@ export class TagsTablesModel extends Model {
             created: Date,
             changed: Date,
             
-            type: String,
+            company: Number,
+            table: String,
             designation: String,
-            bit: Number,
-            byte: Number,
-            word: Number,
-            group: String,
+            comment: String,
         };
     }
+
+    
 }
 
 

@@ -37,14 +37,16 @@ const lineData: ChartData = {
     ]
 };
 import { getIntl } from "@/src/lib/intl";
+import ReactIcons from '@/src/obi/components/Icons/ReactIcons';
+import { Card } from 'primereact/card';
 
 type HomeProps = {
-  params: { locale: string };
+    params: { locale: string };
 };
 
 const Dashboard = ({ params: { locale } }: HomeProps) => {
     // console.log("Dashboard", locale);
-    
+
     const [products, setProducts] = useState<Demo.Product[]>([]);
     const menu1 = useRef<Menu>(null);
     const menu2 = useRef<Menu>(null);
@@ -134,23 +136,294 @@ const Dashboard = ({ params: { locale } }: HomeProps) => {
         });
     };
 
-    return (
-        <div className="grid">
-            <div className="col-12 lg:col-6 xl:col-3">
-                <div className="card mb-0">
-                    <div className="flex justify-content-between mb-3">
-                        <div>
-                            <span className="block text-500 font-medium mb-3">Orders</span>
-                            <div className="text-900 font-medium text-xl">152</div>
-                        </div>
-                        <div className="flex align-items-center justify-content-center bg-blue-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
-                            <i className="pi pi-shopping-cart text-blue-500 text-xl" />
-                        </div>
-                    </div>
-                    <span className="text-green-500 font-medium">24 new </span>
-                    <span className="text-500">since last visit</span>
+    const titleHeader = (
+        <span className='flex flex-auto justify-content-between'>
+            {/* icon */}
+            <div className="flex align-items-center justify-content-center bg-blue-100 border-round"
+                style={{ width: '2.5rem', height: '2.5rem' }}>
+                <ReactIcons group="gi" icon="GiChemicalTank" className="text-blue-500 text-2xl" />
+            </div>
+            TOD 35
+        </span>
+    );
+
+    const header = (
+        <></>
+    );
+    const footer = (
+        <>
+            {/* Date line */}
+            <div className="flex flex-row-reverse justify-content-start mt-0">
+                <div className="vertical-align-middle">
+                    <label >13:10:15</label>
+                    <ReactIcons group="fa" icon="FaClock" className='ml-3' />
                 </div>
             </div>
+        </>
+    );
+
+    return (
+        <div className="grid">
+
+
+            <div className="col-12 lg:col-6 xl:col-3">
+                <div className="card mb-0 p-1">
+
+                    <span className='flex flex-auto justify-content-between'>
+                        {/* icon */}
+                        <div className="flex align-items-center justify-content-center bg-blue-100 border-round m-2"
+                            style={{ width: '4.5rem', height: '3.5rem' }}>
+                            <ReactIcons group="gi" icon="GiEnergyTank" className="text-orange-500 text-5xl" />
+                        </div>
+                        <div className='flex flex-column w-full'>
+                            <span className="flex block text-500 font-medium text-3xl mb-2 justify-content-end">TOD 35</span>
+                            <div className="flex text-900 text-md justify-content-end align-content-center w-100">
+                                En attente de vidange
+                                <ReactIcons group="gi" icon="GiPressureCooker" className='ml-3' />
+                            </div>
+                        </div>
+                    </span>
+
+                    <div>
+                        <div className='flex flex-auto justify-content-between'>
+                            <div>
+                                <ReactIcons group="gi" icon="GiPressureCooker" className='mr-3' />
+                                <span className="text-green-500 font-medium text-2xl">0,7354</span> <span className="text-500"> bar</span><br />
+                                <ReactIcons group="fa6" icon="FaTemperatureLow" className='mr-3' /><span className="text-green-500 font-medium">17,5</span> <span className="text-500">°C (Tm)</span><br />
+                                <ReactIcons group="fa6" icon="FaTemperatureLow" className='mr-3' /><span className="text-green-500 font-medium">17,5</span> <span className="text-500">°C Tb</span>
+                            </div>
+                            <div className='flex flex-column w-6 align-content-center justify-content-center '>
+                                <div className="flex text-yellow-500 text-900 font-bold text-5xl justify-content-center w-100">2 765,5 hl</div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div className="col-12 lg:col-6 xl:col-3">
+                <div className="card mb-0 p-3">
+                    <div className="flex justify-content-between mb-1">
+                        <div>
+                            <span className="block text-500 font-medium text-3xl mb-2">TOD 35</span>
+                            <div className="text-yellow-500 text-900 font-bold text-3xl">2 765,5 hl</div>
+                        </div>
+                        <div className="flex align-items-center justify-content-center bg-blue-100 border-round"
+                            style={{ width: '2.5rem', height: '2.5rem' }}>
+                            <ReactIcons group="gi" icon="GiChemicalTank" className="text-blue-500 text-2xl" />
+                        </div>
+                    </div>
+
+
+                    <ReactIcons group="gi" icon="GiPressureCooker" className='mr-3' /><span className="text-green-500 font-medium text-2xl">0,7354</span> <span className="text-500"> bar</span><br />
+                    <ReactIcons group="fa6" icon="FaTemperatureLow" className='mr-3' /><span className="text-green-500 font-medium">17,5</span> <span className="text-500">°C (Tm)</span><br />
+                    <ReactIcons group="fa6" icon="FaTemperatureLow" className='mr-3' /><span className="text-green-500 font-medium">17,5</span> <span className="text-500">°C Tb</span>
+
+                    {/* Date line */}
+                    <div className="card-text">
+                        <div className="vertical-align-middle">
+                            <ReactIcons group="fa" icon="FaClock" className='mr-3' />
+                            <label >13:10:15</label>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+
+
+            <div className="col-12 lg:col-6 xl:col-3">
+                <div className="card mb-0 p-3">
+                    <div className="flex justify-content-between mb-1">
+                        <div>
+                            <span className="block text-500 font-medium text-3xl mb-2">TOD 35</span>
+                            <div className="text-yellow-500 text-900 font-bold text-3xl">2 765,5 hl</div>
+                        </div>
+                        <div className="flex align-items-center justify-content-center bg-blue-100 border-round"
+                            style={{ width: '2.5rem', height: '2.5rem' }}>
+                            <ReactIcons group="gi" icon="GiChemicalTank" className="text-blue-500 text-2xl" />
+                        </div>
+                    </div>
+
+
+                    <ReactIcons group="gi" icon="GiPressureCooker" className='mr-3' /><span className="text-green-500 font-medium text-2xl">0,7354</span> <span className="text-500"> bar</span><br />
+                    <ReactIcons group="fa6" icon="FaTemperatureLow" className='mr-3' /><span className="text-green-500 font-medium">17,5</span> <span className="text-500">°C (Tm)</span><br />
+                    <ReactIcons group="fa6" icon="FaTemperatureLow" className='mr-3' /><span className="text-green-500 font-medium">17,5</span> <span className="text-500">°C Tb</span>
+
+                    {/* Date line */}
+                    <div className="card-text">
+                        <div className="vertical-align-middle">
+                            <ReactIcons group="fa" icon="FaClock" className='mr-3' />
+                            <label >13:10:15</label>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+
+
+
+
+            <div className="col-12 lg:col-6 xl:col-3">
+                <Card title={titleHeader} subTitle='State TOD' header={header} footer={footer}>
+                    <p>Content</p>
+                </Card>
+
+            </div>
+
+
+
+            <div className="col-12 lg:col-6 xl:col-3">
+                <div className="card mb-0 p-2">
+                    <div className="flex justify-content-between mb-0">
+                        <div className='w-100'>
+                            <span className="block text-500 font-medium text-3xl mb-2">
+                                TOD 38
+
+                                <span className="text-xl">
+                                    <ReactIcons group="fa6" icon="FaTemperatureLow" className='ml-2 mr-2' />
+                                    <span className="text-500 text-grey-500 ">Attente vidange</span><br />
+
+                                </span>
+                            </span>
+                        </div>
+                        <div className="flex align-items-center justify-content-center bg-blue-100 border-round"
+                            style={{ width: '2.5rem', height: '2.5rem' }}>
+                            <ReactIcons group="gi" icon="GiChemicalTank" className="text-blue-500 text-2xl" />
+                        </div>
+                    </div>
+
+                    <div className="text-yellow-500 align-items-center  text-center text-900 font-bold text-3xl">2 765,5 hl</div>
+
+                    <div>
+                        <ReactIcons group="gi" icon="GiPressureCooker" className='mr-3' /><span className="text-green-500 font-medium text-2xl">0,7354</span> <span className="text-500"> bar</span><br />
+                    </div>
+                    <ReactIcons group="fa6" icon="FaTemperatureLow" className='mr-3' /><span className="text-green-500 font-medium">17,5</span> <span className="text-500">°C (Tm)</span><br />
+                    <ReactIcons group="fa6" icon="FaTemperatureLow" className='mr-3' /><span className="text-green-500 font-medium">17,5</span> <span className="text-500">°C Tb</span>
+
+                    {/* Date line */}
+                    <div className="card-text">
+                        <div className="vertical-align-middle">
+                            <ReactIcons group="fa" icon="FaClock" className='mr-3' />
+                            <label >13:10:15</label>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <Link className="text-decoration-none "
+                // disabled="#{cc.attrs.outcome == null}"
+                // outcome="#{cc.attrs.outcome}" 
+                href="./"
+            >
+
+                <div className="card card-raised border-start border-primary border-4 mb-2">
+                    <div className="card-body px-4  border-top">
+                        <div className="card-header">
+
+                            {/* <!-- COMPONENT TITLE --> */}
+                            <div className="display-6 card-body-number">
+                                <label>TOD ##</label>
+                                {/* <h:outputText value="#{cc.attrs.name}" rendered="#{!cc.attrs.name.matches('')}"/>
+                                <h:outputText value="#{cc.attrs.pressure.name}" rendered="#{cc.attrs.name.matches('')}"/> */}
+                                {/* <!-- Sub line --> */}
+                                <div className="d-inline-flex h6 card-text align-items-end #{cc.attrs.status.VInt==null?'collapse':(cc.attrs.subname_ico==null?'collapse':'')}">
+                                    <i className="#{cc.attrs.subname_ico} #{cc.attrs.subname_ico==null?'collapse':''}"></i>
+                                    <ReactIcons group="fa6" icon="FaTemperatureLow" className='mr-3' />
+                                    {/* <!--<div className="caption #{cc.attrs.status.VInt==null?'collapse':''}">&ensp;#{cc.attrs.status.VInt}</div>-->
+                                    <h:panelGroup id="#{cc.id}_state">
+                                        <h:outputText styleClass="#{cc.attrs.state==null?'collapse':''}"
+                                                      value="&ensp;#{cc.attrs.state}"/>
+                                    </h:panelGroup>*/}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/*
+                        <div className="d-flex justify-content align-items-start p-2">
+                            <!-- Icon -->
+                            <div className="#{cc.attrs.issvg ? '' : 'icon-circle bg-primary'} text-white">
+                                <h:panelGroup rendered="#{cc.attrs.issvg}">
+                                    <svg className="bi "  
+                                         width="#{cc.attrs.symbolWidth}"
+                                         height="#{cc.attrs.symbolHeight}"
+                                         >
+                                        <use href="#{cc.attrs.symbol}" />
+                                    </svg>
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{!cc.attrs.issvg}">
+                                    <i className="#{cc.attrs.symbol}"></i>
+                                </h:panelGroup>
+                            </div>
+
+
+
+                            <!-- Text -->&ensp;
+                            <div className="ms-2">
+                                <!-- VOLUME -->
+                                <div className="card-text ">
+                                    <h:panelGroup id="#{cc.id}_volume" layout="block">
+                                        <!--<i className="fa-solid fa-fill"></i>-->
+                                        <h:outputText value="#{cc.attrs.volume.VFloat}" styleClass="card-body-volume">
+                                            <f:convertNumber pattern="#,###.0 hl" locale="fr"  />
+                                        </h:outputText>
+                                    </h:panelGroup>
+                                </div>
+
+                                <!-- PRESSURE -->
+                                <div className="card-text">
+                                    <h:panelGroup id="#{cc.id}_pressure" layout="block">
+                                        <!--<i className="fa-solid fa-gauge-high"></i>-->
+                                        <h:outputText value="#{cc.attrs.pressure.VFloat}" styleClass="card-body-pressure">
+                                            <f:convertNumber pattern="#{cc.attrs.pattern} bar" locale="fr"  />
+                                        </h:outputText>
+                                    </h:panelGroup>
+                                </div>
+
+
+                                <!-- Temperatures -->
+                                <div className="card-text">
+                                    <div className="d-inline-flex align-items-center">
+                                        <i className="fa-solid fa-temperature-three-quarters"></i>
+                                        <h:outputText value="#{cc.attrs.temperature.VFloat}" styleClass="caption">
+                                            <f:convertNumber pattern="&ensp;##.# °C" locale="fr"  />
+                                        </h:outputText>
+                                        <h:outputLabel value="&ensp;(Tm)" />
+                                    </div>
+                                </div>
+                                <div className="card-text">
+                                    <div className="d-inline-flex align-items-center">
+                                        <i className="fa-solid fa-temperature-three-quarters"></i>
+                                        <h:outputText value="#{cc.attrs.temperatureB.VFloat}" styleClass="caption">
+                                            <f:convertNumber pattern="&ensp;##.# °C" locale="fr"  />
+                                        </h:outputText>
+                                        <h:outputLabel value="&ensp;(Tb)" />
+                                    </div>
+                                </div>
+
+
+                                <!-- Date line -->
+                                <div className="card-text">
+                                    <div className="d-inline-flex align-items-center">
+                                        <i className="fa-solid fa-clock"></i>
+                                        <h:outputText  id="#{cc.id}_stamp"  className="caption" value="#{cc.attrs.pressure.VStamp}">
+                                            <f:convertDateTime pattern="&ensp;#{cc.attrs.stampPattern}" />
+                                        </h:outputText>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>*/}
+                    </div>
+
+
+                </div>
+
+            </Link>
+
+
             <div className="col-12 lg:col-6 xl:col-3">
                 <div className="card mb-0">
                     <div className="flex justify-content-between mb-3">

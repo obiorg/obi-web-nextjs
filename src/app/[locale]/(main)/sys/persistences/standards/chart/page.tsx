@@ -1,46 +1,28 @@
 'use client';
-import React, { useState, useEffect, useRef } from 'react';
-import { FilterMatchMode, FilterOperator } from 'primereact/api';
-import { DataTable, DataTableFilterMeta } from 'primereact/datatable';
-import { Column } from 'primereact/column';
-import { InputText } from 'primereact/inputtext';
-import { Dropdown } from 'primereact/dropdown';
-import { InputNumber } from 'primereact/inputnumber';
-import { Button } from 'primereact/button';
-import { ProgressBar } from 'primereact/progressbar';
+import { FilterMatchMode } from 'primereact/api';
 import { Calendar } from 'primereact/calendar';
-import { MultiSelect } from 'primereact/multiselect';
-import { Slider } from 'primereact/slider';
+import { DataTableFilterMeta } from 'primereact/datatable';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { OBI } from '@/src/types/obi';
 
 
 
-import { ChartData, ChartOptions } from 'chart.js';
-import { Chart } from 'primereact/chart';
-import type { ChartDataState, ChartOptionsState } from '@/src/types';
-import { LayoutContext } from '@/src/layout/context/layoutcontext';
-import { PersistenceStandardService } from '@/src/obi/service/persistences/PersistenceStandardService copy';
-import { PersistencesService } from '@/src/obi/service/persistences/PersistencesService copy';
-import { Skeleton } from 'primereact/skeleton';
-import { TagsModel } from '@/src/obi/models/tags/TagsModel';
-import { TagsService } from '@/src/obi/service/tags/TagsService copy';
-import { Model } from '@/src/obi/models/model';
-import HighchartsReact from 'highcharts-react-official';
-import OutputRecord from '@/src/obi/components/Output/OutputRecord';
-import { BlockUI } from 'primereact/blockui';
-import { Toast } from 'primereact/toast';
-import { Messages } from 'primereact/messages';
-import PersistencesDropDown from '../../components/PersistencesDropDown';
 import FieldInputNumber from '@/src/obi/components/Inputs/FieldInputNumber';
-import { FloatLabel } from 'primereact/floatlabel';
 import ButtonSave from '@/src/obi/components/Validations/ButtonSave';
+import { PersistencesStandardsService } from '@/src/obi/service/persistences/PersistencesStandardsService';
+import HighchartsReact from 'highcharts-react-official';
+import { BlockUI } from 'primereact/blockui';
+import { Messages } from 'primereact/messages';
+import { Toast } from 'primereact/toast';
 import { useFormState } from 'react-dom';
-import { PersistenceStandardModel } from '@/src/obi/models/persistences/PersistencesStandardsModel';
+import PersistencesDropDown from '../../components/PersistencesDropDown';
+import { PersistencesStandardsModel } from '@/src/obi/models/persistences/PersistencesStandardsModel';
+import FieldDropDown from '@/src/obi/components/Inputs/FieldDropDown';
 
 
 // Define an interface for the form state
-interface PersistenceStandardChartFormState {
+interface PersistencesStandardsChartFormState {
     errors: {
 
         id?: string[];
@@ -63,7 +45,7 @@ interface PersistenceStandardChartFormState {
     };
 }
 
-const PersistanceStandard = () => {
+const PersistencesStandardsChart = () => {
 
     /**
      * Messages system
@@ -191,8 +173,8 @@ const PersistanceStandard = () => {
     // Managing long request wating
     const [lazyLoading, setLazyLoading] = useState<any>(false);
     let loadLazyTimeout = useRef(null);
-    const persistencesStandardModel = new PersistenceStandardModel();
-    const defaultFilters: Array<DataTableFilterMeta> = PersistenceStandardService.defaultFilters();
+    const persistencesStandardModel = new PersistencesStandardsModel();
+    const defaultFilters: Array<DataTableFilterMeta> = PersistencesStandardsService.defaultFilters();
     const [lazyParams, setLazyParams] = useState(
         persistencesStandardModel.
             getStandardParam([{ field: 'company', order: 1 }, { field: 'tag', order: 1 }, { field: 'created', order: -1 }], defaultFilters));
@@ -202,6 +184,7 @@ const PersistanceStandard = () => {
      */
     useEffect(() => {
         let _options = options;
+        console.log('selectedPersistence', selectedPersistence);
         _options.title.text = selectedPersistence !== 0 ?
             "Persistence for " + selectedPersistence?.tags.comment + " charts" : 'Selectionner une donnée persistente';
         setOptions(() => { return { ..._options } });
@@ -217,7 +200,7 @@ const PersistanceStandard = () => {
         console.log('Loading chart');
     }
 
-    const [formState] = useFormState<PersistenceStandardChartFormState>(loadChart, { errors: {} })
+    const [formState] = useFormState<PersistencesStandardsChartFormState>(loadChart, { errors: {} })
 
     const controlForm = (): number => {
         let errCnt = 0;
@@ -260,7 +243,7 @@ const PersistanceStandard = () => {
         _lazyParams.rows = rowAmount;
         _lazyParams.filters.created.constraints[0].value = dateFrom;
         _lazyParams.filters.created.constraints[0].matchMode = FilterMatchMode.DATE_AFTER;
-        if(!_lazyParams.filters.created.constraints[1]){
+        if (!_lazyParams.filters.created.constraints[1]) {
             _lazyParams.filters.created.constraints.push({ value: null, matchMode: FilterMatchMode.DATE_BEFORE });
         }
         _lazyParams.filters.created.constraints[1].value = dateTo;
@@ -279,7 +262,7 @@ const PersistanceStandard = () => {
             const lazyEventSet = { lazyEvent: JSON.stringify(lazyParams) };
 
             // Get Lazy Data
-            PersistenceStandardService.getLazy(lazyEventSet).then((pers_standard: any) => {
+            PersistencesStandardsService.getLazy(lazyEventSet).then((pers_standard: any) => {
                 console.log(pers_standard);
                 let _options = options;
                 _options.series[0].data = pers_standard.map((p: OBI.pers_standard) => { return [Date.parse(p.created), p.vFloat]; });
@@ -329,16 +312,24 @@ const PersistanceStandard = () => {
 
 
                             {/** Persistence dropdown */}
-                            <PersistencesDropDown
-                                id='tag'
-                                name='tag'
-                                title='Persistence - Tag'
-                                value={selectedPersistence?.id}
-                                onChanged={(e: any) => {
-                                    setSelectedPersistence(e.value);
-                                }}
-                                error={formState.errors?.tag}
-                            />
+                            <div className='col-12 grid'>
+
+                                <label className='md:col-2' htmlFor="tags">
+                                    Tag :
+                                </label>
+
+
+                                <PersistencesDropDown
+                                    id='tag_select'
+                                    name='tag_select'
+                                    value={selectedPersistence?.index}
+                                    onChanged={(e: any) => {
+                                        setSelectedPersistence(e.value);
+                                    }}
+                                />
+                            </div>
+
+
 
                             {/** Row Amount */}
                             <FieldInputNumber
@@ -454,4 +445,4 @@ const PersistanceStandard = () => {
     );
 };
 
-export default PersistanceStandard;
+export default PersistencesStandardsChart;

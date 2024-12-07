@@ -33,7 +33,7 @@ export class EquipementsExternalProvidersModel extends Model {
             bddServer: '',
             bddUser: '',
             bddPassword: '',
-            port: 0,
+            bddPort: 0,
 
             paramBool1: false,
             paramBool2: false,
@@ -80,7 +80,7 @@ export class EquipementsExternalProvidersModel extends Model {
         this.map.set('bddServer', 'text');
         this.map.set('bddUser', 'text');
         this.map.set('bddPassword', 'text');
-        this.map.set('port', 'numeric');
+        this.map.set('bddPort', 'numeric');
 
         this.map.set('paramBool1', 'boolean');
         this.map.set('paramBool2', 'boolean');
@@ -120,7 +120,7 @@ export class EquipementsExternalProvidersModel extends Model {
             bddServer: String,
             bddUser: String,
             bddPassword: String,
-            port: Number,
+            bddPort: Number,
             paramBool1: Boolean,
             paramBool2: Boolean,
             paramBool3: Boolean,

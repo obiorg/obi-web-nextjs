@@ -78,7 +78,7 @@ export const PersistencesStandardsLimitsService = {
      * @returns catalogs table.
      */
     async getLazy(lazy: any): Promise<any> {
-        const url = process.env.httpPath + '/persistencesstandardslimits/lazy/' + lazy.lazyEvent;
+        const url = process.env.httpPath + '/persistences/standardslimits/lazy/' + lazy.lazyEvent;
         // console.log(JSON.parse(lazy.lazyEvent))
         // console.log(url)
         try {
@@ -121,7 +121,7 @@ export const PersistencesStandardsLimitsService = {
      * @returns number of catalogs
      */
     async getLazyCount(lazy: any) {
-        const url = process.env.httpPath + '/persistencesstandardslimits/lazy/count/' + lazy.lazyEvent;
+        const url = process.env.httpPath + '/persistences/standardslimits/lazy/count/' + lazy.lazyEvent;
         try {
             const res = await fetch(url, { headers: { 'Cache-Control': 'no-cache' } })
             if (res.ok) {
@@ -146,7 +146,7 @@ export const PersistencesStandardsLimitsService = {
     },
 
     async getById(id: any) {
-        const url = process.env.httpPath + '/persistencesstandardslimits/' + id;
+        const url = process.env.httpPath + '/persistences/standardslimits/' + id;
         try {
             const res = await fetch(url, { headers: { 'Cache-Control': 'no-cache' } })
             if (res.ok) {
@@ -224,7 +224,7 @@ export const PersistencesStandardsLimitsService = {
         // console.log(formState);
 
 
-        const url = process.env.httpPath + '/persistencesstandardslimits';
+        const url = process.env.httpPath + '/persistences/standardslimits';
 
 
         const res = await fetch(
@@ -261,7 +261,7 @@ export const PersistencesStandardsLimitsService = {
 
     async createMany(data: any[]): Promise<any[]> {
 
-        const url = process.env.httpPath + '/persistencesstandardslimits/create';
+        const url = process.env.httpPath + '/persistences/standardslimits/create';
 
         const res = await fetch(
             url,
@@ -311,7 +311,7 @@ export const PersistencesStandardsLimitsService = {
         // console.log(formState);
 
 
-        const url = process.env.httpPath + '/persistencesstandardslimits/' + data.id;
+        const url = process.env.httpPath + '/persistences/standardslimits/' + data.id;
 
 
         const res = await fetch(
@@ -338,7 +338,7 @@ export const PersistencesStandardsLimitsService = {
     async updateMany(
         data: any[]): Promise<any[]> {
 
-        const url = process.env.httpPath + '/persistencesstandardslimits/update';
+        const url = process.env.httpPath + '/persistences/standardslimits/update';
         // console.log(data);
         const res = await fetch(
             url,
@@ -364,7 +364,7 @@ export const PersistencesStandardsLimitsService = {
     async delete(id: any): Promise<PersistencesStandardsLimitsFormState> {
 
 
-        const url = process.env.httpPath + '/persistencesstandardslimits/' + id;
+        const url = process.env.httpPath + '/persistences/standardslimits/' + id;
 
         const res = await fetch(
             url,
@@ -388,7 +388,7 @@ export const PersistencesStandardsLimitsService = {
     async deleteMany(
         data: any[]): Promise<any[]> {
 
-        const url = process.env.httpPath + '/persistencesstandardslimits/delete';
+        const url = process.env.httpPath + '/persistences/standardslimits/delete';
         // console.log(data);
         const res = await fetch(
             url,
@@ -410,7 +410,7 @@ export const PersistencesStandardsLimitsService = {
     },
 
     async download(lazy: any): Promise<any[]> {
-        const url = process.env.httpPath + '/persistencesstandardslimits/download/' + lazy.lazyEvent;
+        const url = process.env.httpPath + '/persistences/standardslimits/download/' + lazy.lazyEvent;
         const res = await fetch(url, { headers: { 'Cache-Control': 'no-cache' } })
         const dataset: any[] = await res.json();
         return dataset;

@@ -78,7 +78,7 @@ export const PersistencesStandardsService = {
      * @returns catalogs table.
      */
     async getLazy(lazy: any): Promise<any> {
-        const url = process.env.httpPath + '/persistencesstandards/lazy/' + lazy.lazyEvent;
+        const url = process.env.httpPath + '/persistences/standards/lazy/' + lazy.lazyEvent;
         // console.log(JSON.parse(lazy.lazyEvent))
         // console.log(url)
         try {
@@ -121,7 +121,7 @@ export const PersistencesStandardsService = {
      * @returns number of catalogs
      */
     async getLazyCount(lazy: any) {
-        const url = process.env.httpPath + '/persistencesstandards/lazy/count/' + lazy.lazyEvent;
+        const url = process.env.httpPath + '/persistences/standards/lazy/count/' + lazy.lazyEvent;
         try {
             const res = await fetch(url, { headers: { 'Cache-Control': 'no-cache' } })
             if (res.ok) {
@@ -146,7 +146,7 @@ export const PersistencesStandardsService = {
     },
 
     async getById(id: any) {
-        const url = process.env.httpPath + '/persistencesstandards/' + id;
+        const url = process.env.httpPath + '/persistences/standards/' + id;
         try {
             const res = await fetch(url, { headers: { 'Cache-Control': 'no-cache' } })
             if (res.ok) {
@@ -224,7 +224,7 @@ export const PersistencesStandardsService = {
         // console.log(formState);
 
 
-        const url = process.env.httpPath + '/persistencesstandards';
+        const url = process.env.httpPath + '/persistences/standards';
 
 
         const res = await fetch(
@@ -261,7 +261,7 @@ export const PersistencesStandardsService = {
 
     async createMany(data: any[]): Promise<any[]> {
 
-        const url = process.env.httpPath + '/persistencesstandards/create';
+        const url = process.env.httpPath + '/persistences/standards/create';
 
         const res = await fetch(
             url,
@@ -311,7 +311,7 @@ export const PersistencesStandardsService = {
         // console.log(formState);
 
 
-        const url = process.env.httpPath + '/persistencesstandards/' + data.id;
+        const url = process.env.httpPath + '/persistences/standards/' + data.id;
 
 
         const res = await fetch(
@@ -338,7 +338,7 @@ export const PersistencesStandardsService = {
     async updateMany(
         data: any[]): Promise<any[]> {
 
-        const url = process.env.httpPath + '/persistencesstandards/update';
+        const url = process.env.httpPath + '/persistences/standards/update';
         // console.log(data);
         const res = await fetch(
             url,
@@ -364,7 +364,7 @@ export const PersistencesStandardsService = {
     async delete(id: any): Promise<PersistencesStandardsFormState> {
 
 
-        const url = process.env.httpPath + '/persistencesstandards/' + id;
+        const url = process.env.httpPath + '/persistences/standards/' + id;
 
         const res = await fetch(
             url,
@@ -388,7 +388,7 @@ export const PersistencesStandardsService = {
     async deleteMany(
         data: any[]): Promise<any[]> {
 
-        const url = process.env.httpPath + '/persistencesstandards/delete';
+        const url = process.env.httpPath + '/persistences/standards/delete';
         // console.log(data);
         const res = await fetch(
             url,
@@ -410,7 +410,7 @@ export const PersistencesStandardsService = {
     },
 
     async download(lazy: any): Promise<any[]> {
-        const url = process.env.httpPath + '/persistencesstandards/download/' + lazy.lazyEvent;
+        const url = process.env.httpPath + '/persistences/standards/download/' + lazy.lazyEvent;
         const res = await fetch(url, { headers: { 'Cache-Control': 'no-cache' } })
         const dataset: any[] = await res.json();
         return dataset;

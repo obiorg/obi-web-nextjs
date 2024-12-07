@@ -10,6 +10,7 @@ import { Model } from '../model'
 export class TagsTypesModel extends Model {
 
 
+
     constructor(attributes = {}) {
         super(attributes);
         this.init();
@@ -22,13 +23,13 @@ export class TagsTypesModel extends Model {
             created: 0,
             changed: 0,
 
-            company: 0,
-            table: '',
+            type: '',
             designation: '',
-            comment: '',
-            
-            companies: {},
-        };
+            bit: 0,
+            byte: 0,
+            word: 0,
+            group: '',
+        }
     }
 
 
@@ -41,11 +42,13 @@ export class TagsTypesModel extends Model {
         this.map.set('deleted', 'boolean');
         this.map.set('created', 'datetime');
         this.map.set('changed', 'datetime');
-        
-        this.map.set('company', 'numeric');
-        this.map.set('table', 'text');
+
+        this.map.set('type', 'text');
         this.map.set('designation', 'text');
-        this.map.set('comment', 'text');
+        this.map.set('bit', 'numeric');
+        this.map.set('byte', 'numeric');
+        this.map.set('word', 'numeric');
+        this.map.set('group', 'text');
 
     }
 
@@ -55,11 +58,13 @@ export class TagsTypesModel extends Model {
             deleted: Boolean,
             created: Date,
             changed: Date,
-            
-            company: Number,
-            table: String,
+
+            type: String,
             designation: String,
-            comment: String,
+            bit: Number,
+            byte: Number,
+            word: Number,
+            group: String,
         };
     }
 }

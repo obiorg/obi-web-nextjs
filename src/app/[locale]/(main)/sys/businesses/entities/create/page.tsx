@@ -37,7 +37,7 @@ import { MachinesService } from '@/src/obi/service/connexions/MachinesService';
 
 
 import { useFormState } from "react-dom"
-import PostForm from '../components/post-form';
+import PostForm from '../components/post-form-old';
 import { EntitiesService } from '@/src/obi/service/businesses/EntitiesService';
 import { EntitiesModel } from '@/src/obi/models/businesses/EntitiesModel';
 

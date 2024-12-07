@@ -1,4 +1,5 @@
 
+import { OBI } from "@/src/types/obi";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
@@ -78,7 +79,8 @@ export const ExportsService = {
      */
     JSONToArray(json: any[]): any[] {
         var result: any = [];
-        json.forEach(function (row) {
+        
+        json.forEach(function (row:any) {
             let newRow: any = [];
             let rowkey = Object.keys(row);
             rowkey.forEach(function (key) {
@@ -359,5 +361,37 @@ export const ExportsService = {
             reader.readAsArrayBuffer(file);
         });
         console.log('Ending to import')
-    }
+    },
+
+
+    pdfGetStyleColumn(columnType: string): any {
+
+        switch (columnType) {
+            case 'date':
+                return { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 20, cellWidth: 'auto' };
+            case 'text':
+                return { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 20, cellWidth: 'auto' };
+            case 'numeric':
+                return { halign: 'right', valign: 'middle', fontSize: 8, cellPadding: 1, minCellWidth: 20, cellWidth: 'auto' };
+            case 'boolean':
+                return { halign: 'center', valign: 'middle', fontSize: 8, cellPadding: 1, minCellWidth: 20, cellWidth: 'auto' };
+
+            default:
+                return { halign: 'center', valign: 'middle', fontSize: 8, cellPadding: 1, minCellWidth: 20, cellWidth: 'wrap' };
+        }
+    },
+
+    pdfColumnsStyle(columns: OBI.ColumnMeta[]): any {
+        let seq = columns.map(column => { return column.dataType; });
+        let columnStyles = {};
+        seq.forEach((column, index) => {
+            Object.defineProperty(
+                columnStyles,
+                index,
+                ExportsService.pdfGetStyleColumn(column)
+            );
+        });
+
+        return columnStyles;
+    },
 };

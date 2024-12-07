@@ -1,22 +1,11 @@
 'use client';
-import React, { useState, useEffect, useRef } from 'react';
-import { DataTable, DataTableFilterMeta, DataTableSortMeta } from 'primereact/datatable';
-import { Column, ColumnFilterClearTemplateOptions } from 'primereact/column';
-import { Button } from 'primereact/button';
 
-import { Admin, OBI } from '@/src/types/index';
-
-import { MachinesService } from '@/src/obi/service/connexions/MachinesService';
-import { MachinesModel } from '@/src/obi/models/connexions/MachinesModel';
-import TableHeader from '@/src/obi/components/Tables/TableHeader';
-import { ExportsService } from '@/src/obi/utilities/export/ExportsService';
-import TableToolbar from '@/src/obi/components/Tables/TableToolbar';
-
-
-import DialogError from '@/src/obi/components/Dialog/DialogError';
-import { ContextMenu } from 'primereact/contextmenu';
-import { useRouter } from 'next/navigation';
 import Table from '@/src/obi/components/Tables/Table';
+import { MachinesModel } from '@/src/obi/models/connexions/MachinesModel';
+import { MachinesService } from '@/src/obi/service/connexions/MachinesService';
+import { ExportsService } from '@/src/obi/utilities/export/ExportsService';
+import { OBI } from '@/src/types/obi';
+import { useState } from 'react';
 
 
 
@@ -41,9 +30,7 @@ const Machines = () => {
     }
 
 
-    
-    // Manage columns
-    const [columns, setColumns]: OBI.ColumnMeta[] = useState([
+    const [columns, setColumns] = useState<OBI.ColumnMeta[]>([
         { field: 'id', header: 'ID', dataType: 'numeric', sortable: true, filter: true, filterElement: templateHelper.integerFilterTemplate, style: { textAlign: 'right' } },
         { field: 'deleted', header: 'Supp.', dataType: "boolean", body: templateHelper.bool, sortable: true, filter: true, filterElement: templateHelper.booleanFilterTemplate, style: { textAlign: 'center', minWidth: '6rem' } },
         { field: 'created', header: 'Créé', dataType: 'date', bodyTemplate: templateHelper.datetime, sortable: true, filter: true, filterField: "date", filterPlaceholder: 'Insérer une date', filterElement: templateHelper.dateFilterTemplate, style: { textAlign: 'center' } },
@@ -69,36 +56,16 @@ const Machines = () => {
 
     ]);
 
-    const exportColumnsStyle = {
-        0: { halign: 'right', valign: 'middle', fontSize: 8, cellPadding: 1, minCellWidth: 20, cellWidth: 'wrap' }, // id //fillColor: [0, 255, 0]
-        1: { halign: 'center', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
-        2: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'wrap' },
-        3: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'wrap' },
-        4: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' }, // localisation
-        5: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
-        6: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
-        7: { halign: 'right', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },   // country
-        8: { halign: 'right', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
-        9: { halign: 'right', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'wrap' }, // ville
-        10: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
-        11: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
-        12: { halign: 'left', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
-        13: { halign: 'center', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
-        14: { halign: 'center', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' },
-        15: { halign: 'center', valign: 'top', fontSize: 8, cellPadding: 1, minCellWidth: 10, cellWidth: 'auto' }
-    }
 
-
-    
 
     return (<>
 
         <Table
-            title='Machines'
+            title='Connexions - MACHINES'
             prefix='machines'
-            defaultParams={new MachinesModel().getStandardParam({ field: 'address', order: 1 }, MachinesService.defaultFilters())}
+            defaultParams={new MachinesModel().getStandardParam([{ field: 'company', order: 1 }, { field: 'driver', order: 1 }, { field: 'name', order: 1 }, { field: 'address', order: 1 }], MachinesService.defaultFilters())}
             columns={columns}
-            exportColumnsStyle={exportColumnsStyle}
+            exportColumnsStyle={ExportsService.pdfColumnsStyle(columns)}
             services={MachinesService}
         />
 

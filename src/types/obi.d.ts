@@ -19,8 +19,13 @@ declare namespace OBI {
         bodyTemplate?: any;
         sortable?: any;
         filter?: any;
+        filterElement?:any
         filterPlaceholder?: any;
         dataType?: any;
+        body?:any;
+        filterField?:any;
+        style?:any;
+        showFilterMatchModes?:boolean;
     }
 
     interface SizeOption {

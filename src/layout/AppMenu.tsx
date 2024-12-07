@@ -21,6 +21,17 @@ const AppMenu = () => {
             label: 'Applications', icon: 'pi pi-fw pi-building-columns',
             items: [
                 {
+                    label: 'Localisations', icon: 'pi pi-fw pi-map',
+                    items: [
+                        { label: 'Continent', group: 'fa6', icon: 'FaGlobe', to: '/obi/sys/localisations/regions' },
+                        { label: 'Sous-continent', group: 'fa', icon: 'FaGlobeEurope', to: '/obi/sys/localisations/subregions' },
+                        { label: 'Pays', group: 'fa', icon: 'FaCity', to: '/obi/sys/localisations/countries' },
+                        { label: 'États', group: 'fa6', icon: 'FaMountainCity', to: '/obi/sys/localisations/states' },
+                        { label: 'Villes', group: 'fa', icon: 'FaCity', to: '/obi/sys/localisations/cities' },
+                        { label: 'Localisation', group: 'fa6', icon: 'FaMapLocationDot', to: '/obi/sys/localisations/locations' },
+                    ]
+                },
+                {
                     label: 'Businesses', icon: 'pi pi-fw pi-briefcase',
                     items: [
                         { label: 'Entités', icon: 'pi pi-fw pi-building', to: '/obi/sys/businesses/entities' },
@@ -29,24 +40,26 @@ const AppMenu = () => {
                     ]
                 },
                 {
-                    label: 'Localisations', icon: 'pi pi-fw pi-map',
+                    label: 'Gestion alarmes', icon: 'pi pi-fw pi-bell',
                     items: [
-                        { label: 'Continent', group: 'fa6', icon: 'FaGlobe',  to: '/obi/sys/localisations/regions' },
-                        { label: 'Sous-continent', group: 'fa', icon: 'FaGlobeEurope', to: '/obi/sys/localisations/subregions' },
-                        { label: 'Pays',  group: 'fa', icon: 'FaCity', to: '/obi/sys/localisations/countries' },
-                        { label: 'États',  group: 'fa6', icon: 'FaMountainCity', to: '/obi/sys/localisations/states' },
-                        { label: 'Villes',  group: 'fa', icon: 'FaCity', to: '/obi/sys/localisations/cities' },
-                        { label: 'Localisation',  group: 'fa6', icon: 'FaMapLocationDot', to: '/obi/sys/localisations/locations' },
+                        { label: 'Groupes', group: 'lia', icon: 'LiaLayerGroupSolid', to: '/obi/sys/alarms/groups' },
+                        { label: 'Classes', group: 'vsc', icon: 'VscSymbolClass', to: '/obi/sys/alarms/classes' },
+                        { label: 'Rendus', group: 'si', icon: 'SiOctanerender', to: '/obi/sys/alarms/renders' },
+                        { label: 'Alarmes', group: 'fc', icon: 'FcAlarmClock', to: '/obi/sys/alarms' },
                     ]
                 },
                 {
-                    label: 'Gestion alarmes', icon: 'pi pi-fw pi-bell',
+
+                    label: 'Analyses', group: 'fa6', icon: 'FaCreativeCommonsSampling',
                     items: [
-                        { label: 'Pays', icon: 'pi pi-fw pi-globe', to: '/business/entities' },
-                        { label: 'Businesses', icon: 'pi pi-fw pi-briefcase', to: '/business/business' },
-                        { label: 'Sociétées', icon: 'pi pi-fw pi-building-columns', to: '/business/companies' },
+                        { label: 'Autorisées', group: 'lia', icon: 'LiaObjectGroupSolid', to: '/obi/sys/analyses/allowed' },
+                        { label: 'Catégories', group: 'md', icon: 'MdOutlineCategory', to: '/obi/sys/analyses/categories' },
+                        { label: 'Methodes', group: 'ri', icon: 'RiInputMethodLine', to: '/obi/sys/analyses/methods' },
+                        { label: 'Points', group: 'gi', icon: 'GiImpactPoint', to: '/obi/sys/analyses/points' },
+                        { label: 'Types', group: 'md', icon: 'MdOutlineTypeSpecimen', to: '/obi/sys/analyses/types' },
+
                     ]
-                }
+                },
             ]
         },
 
@@ -56,19 +69,12 @@ const AppMenu = () => {
             items: [
                 {
 
-                    label: 'Analyses', icon: 'pi pi-fw pi-sitemap',
+                    label: 'Mesures', group: 'tb', icon: 'TbRulerMeasure', 
                     items: [
-                        { label: 'Drivers', icon: 'pi pi-fw pi-arrows-h', to: '/obi/sys/connexions/drivers' },
-                        { label: 'Machines', icon: 'pi pi-fw pi-sitemap', to: '/obi/sys/connexions/machines/' },
-
-                    ]
-                },
-                {
-
-                    label: 'Mesures', icon: 'pi pi-fw pi-server',
-                    items: [
-                        { label: 'Persistences', icon: 'pi pi-fw pi-database', to: '/obi/sys/persistences' },
-                        { label: 'Standard', icon: 'pi pi-fw pi-star', to: '/obi/sys/persistences/pers_standard' },
+                        { label: 'Comparateurs', group: 'fa', icon: 'FaDraftingCompass', to: '/obi/sys/measures/comparators' },
+                        { label: 'Limite Groupe', group: 'lu', icon: 'LuGroup', to: '/obi/sys/measures/limitsgroups' },
+                        { label: 'Limites', group: 'md', icon: 'MdProductionQuantityLimits', to: '/obi/sys/measures/limits' },
+                        { label: 'Unités', group: 'si', icon: 'SiJunit5', to: '/obi/sys/measures/units' },
 
                     ]
                 },
@@ -82,10 +88,11 @@ const AppMenu = () => {
             items: [
                 {
 
-                    label: 'Maintenance', icon: 'pi pi-fw pi-flag-fill',
+                    label: 'Maintenance', group: 'bi', icon: 'BiSolidCarMechanic', 
                     items: [
-                        { label: 'Drivers', icon: 'pi pi-fw pi-arrows-h', to: '/connexion/drivers' },
-                        { label: 'Machines', icon: 'pi pi-fw pi-sitemap', to: '/connexion/machines' },
+                        { label: 'Equipements', group: 'gi', icon: 'GiMechanicGarage', to: '/obi/sys/maintenance/equipements' },
+                        { label: 'Providers', group: 'sl', icon: 'SlSupport', to: '/obi/sys/maintenance/equipements/externalproviders' },
+                        { label: 'Data Externe', group: 'bs', icon: 'BsDatabaseExclamation', to: '/obi/sys/maintenance/equipements/dataexternal' },
 
                     ]
                 }
@@ -120,7 +127,9 @@ const AppMenu = () => {
                     label: 'Archivage', icon: 'pi pi-fw pi-database',
                     items: [
                         { label: 'Persistences', icon: 'pi pi-fw pi-database', to: '/obi/sys/persistences' },
+                        { label: 'Méthodes', icon: 'pi pi-fw pi-star', to: '/obi/sys/persistences/methods' },
                         { label: 'Standards', icon: 'pi pi-fw pi-star', to: '/obi/sys/persistences/standards' },
+                        { label: 'Limites Standards', icon: 'pi pi-fw pi-star', to: '/obi/sys/persistences/standardslimits' },
 
                     ]
                 }

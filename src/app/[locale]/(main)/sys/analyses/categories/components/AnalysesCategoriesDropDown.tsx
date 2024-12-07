@@ -2,23 +2,17 @@
 'use client'
 
 
-import { Toast } from "primereact/toast"
 import { useEffect, useRef, useState } from "react"
 
 
-import { OBI } from "@/src/types"
+import { AnalysesCategoriesModel } from "@/src/obi/models/analyses/AnalysesCategoriesModel"
+import { AnalysesCategoriesService } from "@/src/obi/service/analyses/AnalysesCategoriesService"
 import { Dropdown } from "primereact/dropdown"
-import { LocationsSubRegionsService } from "@/src/obi/service/localisations/LocationsSubRegionsService"
 import { Skeleton } from "primereact/skeleton"
-import { LocationsSubRegionsModel } from "@/src/obi/models/localisations/LocactionsSubRegionsModel"
-import { DataTableFilterMeta } from "primereact/datatable"
 
 
 // Define the props that the PostForm component expects
-interface SubRegionsDropDownProps {
-    // id: string;                         // ID of the component
-    // name: string;                       // Name of the component
-    // title: string;                      // preceding title of dropdown
+interface AnalysesCategoriesDropDownProps {
     value: any;
     onChanged?: (e: any) => void;       // The callback function to be called when the value changes
 
@@ -29,18 +23,17 @@ interface SubRegionsDropDownProps {
 
 
 
-export default function SubRegionsDropDown({
-    // id, name, title, 
+export default function AnalysesCategoriesDropDown({
     value,
     onChanged,
     placeholder, tooltip, tooltipOptions
-}: SubRegionsDropDownProps) {
+}: AnalysesCategoriesDropDownProps) {
 
 
 
     const [lazyParams, setLazyParams] = useState(
-        new LocationsSubRegionsModel().
-            getStandardParam({ field: 'name', order: 1 }, LocationsSubRegionsService.defaultFilters()));
+        new AnalysesCategoriesModel().
+            getStandardParam([{ field: 'business', order: 1 }, { field: 'company', order: 1 }, { field: 'category', order: 1 }], AnalysesCategoriesService.defaultFilters()));
 
     /**
      * Managing catlog
@@ -63,10 +56,10 @@ export default function SubRegionsDropDown({
             const _catalogs = Array.from({ length: 100000 });
             const lazyEventSet = { lazyEvent: JSON.stringify(lazyParams) };
             // Get Lazy Data
-            LocationsSubRegionsService.getLazy(lazyEventSet).then((data: any) => {
+            AnalysesCategoriesService.getLazy(lazyEventSet).then((data: any) => {
                 for (let i = lazyParams.first; i < lazyParams.rows; i++) {
                     _catalogs[i] = {
-                        label: data[i].name + '(' + data[i].wikiDataId + ' - ' + data[i].region_id + ') [' + data[i].id + ']',
+                        label: data[i].category + ' - ' + data[i].designation + '(' + data[i].business + '/' + data[i].company + ') [' + data[i].id + ']',
                         value: data[i].id,
                         catalogs: data[i]
                     };
@@ -126,12 +119,12 @@ export default function SubRegionsDropDown({
             const lazyEventSet = { lazyEvent: JSON.stringify(lazyParams) };
 
             // Get Lazy Data
-            LocationsSubRegionsService.getLazy(lazyEventSet).then((data: any) => {
+            AnalysesCategoriesService.getLazy(lazyEventSet).then((data: any) => {
                 // console.log(lazyParams.rows, data, catalogs);
                 for (let i = lazyParams.first; (i < lazyParams.rows && i < data.length); i++) {
                     // console.log('for i', i, data[i])
                     _catalogs[i] = {
-                        label: data[i].name + '(' + data[i].wikiDataId + ' - ' + data[i].region_id + ') [' + data[i].id + ']',
+                        label: data[i].category + ' - ' + data[i].designation + '(' + data[i].business + '/' + data[i].company + ') [' + data[i].id + ']',
                         value: data[i].id,
                         catalogs: data[i]
                     };
@@ -164,7 +157,7 @@ export default function SubRegionsDropDown({
 
             options={catalogs}
             onChange={onChangeCatalog}
-            placeholder="Continent sous régions..."
+            placeholder="Analyses Catégorie..."
             showClear
             filter
             onFilter={onChangedFilter}

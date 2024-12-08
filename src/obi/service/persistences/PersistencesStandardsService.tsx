@@ -6,8 +6,50 @@ import { PersistencesStandardsModel } from "../../models/persistences/Persistenc
 
 
 
-    // Define the shape of the form errors PersistencesStandards
-    interface PersistencesStandardsFormErrors {
+// Define the shape of the form errors PersistencesStandards
+interface PersistencesStandardsFormErrors {
+    id?: string[];
+    deleted?: string[];
+    created?: string[];
+    changed?: string[];
+    entity?: string[];
+    designation?: string[];
+    builded?: string[];
+    main?: string[];
+    activated?: string[];
+    logoPath?: string[];
+    location?: string[];
+}
+
+// Define the shape of the form state
+interface PersistencesStandardsFormState {
+    errors: PersistencesStandardsFormErrors;
+}
+
+// Define the props that the PostForm component expects
+interface PersistencesStandardsPostFormProps {
+    formAction: any; // The action to perform when the form is submitted
+    type: number; // 0: create, 1: update, 2: destroy (delete), 3: read
+    initialData: {
+        // The initial data for the form fields
+        id: number;
+        deleted: boolean;
+        created: Date;
+        changed: Date;
+
+        entity: string;
+        designation: string;
+        builded: boolean;
+        main: number;
+        activated: boolean;
+        logoPath: string;
+        location: number;
+    };
+}
+
+// Define an interface for the form state
+interface PersistencesStandardsPostFormState {
+    errors: {
         id?: string[];
         deleted?: string[];
         created?: string[];
@@ -19,51 +61,9 @@ import { PersistencesStandardsModel } from "../../models/persistences/Persistenc
         activated?: string[];
         logoPath?: string[];
         location?: string[];
-    }
-
-    // Define the shape of the form state
-    interface PersistencesStandardsFormState {
-        errors: PersistencesStandardsFormErrors;
-    }
-
-    // Define the props that the PostForm component expects
-    interface PersistencesStandardsPostFormProps {
-        formAction: any; // The action to perform when the form is submitted
-        type: number; // 0: create, 1: update, 2: destroy (delete), 3: read
-        initialData: {
-            // The initial data for the form fields
-            id: number;
-            deleted: boolean;
-            created: Date;
-            changed: Date;
-
-            entity: string;
-            designation: string;
-            builded: boolean;
-            main: number;
-            activated: boolean;
-            logoPath: string;
-            location: number;
-        };
-    }
-
-    // Define an interface for the form state
-    interface PersistencesStandardsPostFormState {
-        errors: {
-            id?: string[];
-            deleted?: string[];
-            created?: string[];
-            changed?: string[];
-            entity?: string[];
-            designation?: string[];
-            builded?: string[];
-            main?: string[];
-            activated?: string[];
-            logoPath?: string[];
-            location?: string[];
-            _form?: string[];
-        };
-    }
+        _form?: string[];
+    };
+}
 
 
 
@@ -169,6 +169,15 @@ export const PersistencesStandardsService = {
                 return JSON.stringify({ error: error });
             }
         }
+    },
+
+
+    async getDedicatedByTag(tag: number, from: number, to: number, sortField: string, sort: string) {
+        const res =
+            await fetch(process.env.httpPath + '/persistences/standards/tag/' + tag + '/from/' + from + '/to/' + to + '/sortField/' + sortField + '/order/' + sort
+                , { headers: { 'Cache-Control': 'no-cache' } }
+            );
+        return await res.json();
     },
 
 

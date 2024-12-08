@@ -172,6 +172,33 @@ export const TagsService = {
     },
 
 
+    async getByIds(ids: any) {
+        const url = process.env.httpPath + '/tags/in/' + ids;
+        try {
+            const res = await fetch(url, { headers: { 'Cache-Control': 'no-cache' } })
+            if (res.ok) {
+                const val = await res.json();
+                const dataset: any = val;
+                return val;
+            } else {
+                if (res.status === 404) throw new Error('404, Not found');
+                if (res.status === 500) throw new Error('500, internal server error');
+                // For any other server error
+                throw new Error(res.status);
+            }
+        } catch (error) {
+            if (error instanceof SyntaxError) {
+                console.log('There was a SyntaxError', error);
+            } else {
+                // console.log('There was an error', error);
+                // Promise.reject(error);
+
+                return JSON.stringify({ error: error });
+            }
+        }
+    },
+
+
     defaultMultiSortMeta(): any {
         const model = new TagsModel();
         return model.toMultiSortMeta();

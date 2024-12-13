@@ -461,21 +461,21 @@ const Dashboard = ({ params: { locale } }: HomeProps) => {
             {
                 id: 'TANK01',
                 name: 'TANK 01',
-                tags: [34, 1, 72, 56, 17], // Tons, Pressure, MaxCapacityTons, 
+                tags: [34], // Tons, Pressure, MaxCapacityTons, 
                 icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
             },
-            {
-                id: 'TANK02',
-                name: 'TANK 02',
-                tags: [35, 2, 73, 57, 18], // Tons, Pressure, MaxCapacityTons, 
-                icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
-            },
-            {
-                id: 'TANK03',
-                name: 'TANK 03',
-                tags: [33, 3, 74, 58, 19], // Tons, Pressure, MaxCapacityTons, 
-                icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
-            },
+            // {
+            //     id: 'TANK02',
+            //     name: 'TANK 02',
+            //     tags: [35, 2, 73, 57, 18], // Tons, Pressure, MaxCapacityTons, 
+            //     icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
+            // },
+            // {
+            //     id: 'TANK03',
+            //     name: 'TANK 03',
+            //     tags: [33, 3, 74, 58, 19], // Tons, Pressure, MaxCapacityTons, 
+            //     icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
+            // },
            
 
 
@@ -514,7 +514,7 @@ const Dashboard = ({ params: { locale } }: HomeProps) => {
             <h1>TODs</h1>
 
             <div className="grid">
-                {CCTs()}
+                {/* {CCTs()} */}
             </div>
 
             <hr />
@@ -529,7 +529,7 @@ const Dashboard = ({ params: { locale } }: HomeProps) => {
             <h1>Stock CO2</h1>
 
             <div className="grid">
-                {CO2_Tanks()}
+                {CO2_Tanks()} 
             </div>
         </>
     );

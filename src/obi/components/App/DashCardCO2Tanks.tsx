@@ -59,27 +59,20 @@ export default function DashCardCO2Tanks(
 
 
     const [volume, setVolume] = useState(0);
-    const [pressure, setPressure] = useState(0);
-    const [temperatureMiddle, setTemperatureMiddle] = useState(0);
-    const [temperatureBottom, setTemperatureBottom] = useState(0);
     const [state, setState] = useState('???');
-    const [stateDisplayed, setStateDisplayed] = useState('???');
     const [updated, setUpdated] = useState(new Date(0));
 
-    const [loading, setLoading] = useState(false);
-    let loadLazyTimeout = useRef(null);
-    const [lazyParams, setlazyParmas] =
-        useState(
-            new PersistencesStandardsModel().getStandardParam({ field: 'changed', order: -1 }, PersistencesStandardsService.defaultFilters()));
+     let loadLazyTimeout = useRef(null);
 
-
+    const [changing, setChanging] = useState(false);
+    const [changed, setChanged] = useState(false);
 
     /**
      * Get value listed by tags
      */
     const getValue = () => {
 
-        setLoading(true);
+        // setLoading(true);
 
         if (loadLazyTimeout) {
             clearTimeout(loadLazyTimeout);
@@ -107,37 +100,7 @@ export default function DashCardCO2Tanks(
                                         if (updated === undefined || updated > data.vStamp) {
                                             setUpdated(data.vStamp);
                                         }
-                                        break;
-                                    case 1:
-                                        setPressure(tag.vFloat);
-                                        if (updated === undefined || updated > data.vStamp) {
-                                            setUpdated(data.vStamp);
-                                        }
-                                        break;
-                                    case 2:
-                                        setTemperatureMiddle(tag.vFloat);
-                                        if (updated === undefined || updated > data.vStamp) {
-                                            setUpdated(data.vStamp);
-                                        }
-                                        break;
-                                    case 3:
-                                        setTemperatureBottom(tag.vFloat);
-                                        if (updated === undefined || updated > data.vStamp) {
-                                            setUpdated(data.vStamp);
-                                        }
-                                        break;
-                                    case 4:
-                                        setState(tag.vInt);
-                                        TagsListContentsService.getByTag(tag).then((tagListContents: any) => {
-                                            // console.log('find data is ', tagListContents, tagListContents[0]);
-                                            if (tagListContents.length > 0) {
-                                                setStateDisplayed(tagListContents[0].value);
-                                            }
-                                        });
-
-                                        if (updated === undefined || updated > data.vStamp) {
-                                            setUpdated(data.vStamp);
-                                        }
+                                        setChanging(!changing);
                                         break;
                                 }
                             }
@@ -167,13 +130,22 @@ export default function DashCardCO2Tanks(
 
 
 
+    let time: number = new Date().getTime();
     useEffect(() => {
+
         const interval = setInterval(() => {
+            console.log('Call from interval : ' + new Date().toLocaleTimeString() +
+                ' delta = ' + (new Date().getTime() - time));
+            time = new Date().getTime();
+
+
+            setChanged(changing);
             getValue();
+            while (changed === changing);
         }, 5000); //set your time here. repeat every 5 seconds
 
         return () => clearInterval(interval);
-    }, []);
+    }, [state]);
 
 
     return (

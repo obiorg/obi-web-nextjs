@@ -2,6 +2,7 @@
 
 const nextConfig = {
     env: {
+        // PC
         httpPath: 'http://[::1]:7022/obi/api/v1',
         httpsPath: 'https://[::1]:7023/obi/api/v1',
 
@@ -15,6 +16,10 @@ const nextConfig = {
 
         // httpPath: 'http://[::1]:7022/api',
         // httpsPath: 'https://[::1]:7023/api',
+
+        // Server
+        // httpPath: 'http://10.242.14.3:7022/obi/api/v1',
+        // httpsPath: 'https://10.242.14.3:7023/obi/api/v1',
     },
 
     trailingSlash: true,

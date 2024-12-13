@@ -434,13 +434,13 @@ const PersistencesStandardsChart = () => {
                     </form>
                 </BlockUI>
 
-
+                <div className="card p-2">
+                    <HighchartsReact highcharts={Highcharts} options={options} />
+                </div>
 
             </div>
 
-            <div className="card p-2">
-                <HighchartsReact highcharts={Highcharts} options={options} />
-            </div>
+
         </>
     );
 };

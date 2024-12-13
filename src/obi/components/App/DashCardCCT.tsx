@@ -167,13 +167,13 @@ export default function DashCardCCT(
 
 
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            getValue();
-        }, 5000); //set your time here. repeat every 5 seconds
+    // useEffect(() => {
+    //     const interval = setInterval(() => {
+    //         getValue();
+    //     }, 15000); //set your time here. repeat every 5 seconds
 
-        return () => clearInterval(interval);
-    }, []);
+    //     return () => clearInterval(interval);
+    // }, []);
 
 
     return (

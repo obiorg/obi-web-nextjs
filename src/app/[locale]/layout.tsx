@@ -14,19 +14,20 @@ import 'primeflex/primeflex.css';
 import 'primeicons/primeicons.css';
 import '@/src/styles/layout/layout.scss';
 import '@/src/styles/demo/Demos.scss';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Button } from "primereact/button";
 
 
 type RootLayoutProps = {
-    params: { locale: string };
+    params: { lang: string };
     children: React.ReactNode;
 };
 
 
 export default function RootLayout({ params, children }: RootLayoutProps) {
     /** Manage locale properties */
-    const { locale } = params;
+    const { lang } = params;
+    const [locale, setLocale] = useState<any>(lang);
 
     /** Prime react */
     const { layoutConfig } = useContext(LayoutContext);
@@ -497,11 +498,11 @@ export default function RootLayout({ params, children }: RootLayoutProps) {
 
     useEffect(() => {
         // Set up the locale
-        // locale = 'fr';
+        setLocale('fr');
     }, []);
     // locale('fr');
     // locale('fr')
-    
+
     const dir = getDirection(locale);
 
     return (

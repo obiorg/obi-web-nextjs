@@ -58,8 +58,7 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
                         <span>Settings</span>
                     </button>
                 </Link>
-                <Header  /> 
-                {/* params={localeRef.locale} */}
+                <Header  locale='fr' /> 
             </div>
         </div>
     );

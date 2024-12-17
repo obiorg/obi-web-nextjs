@@ -343,85 +343,85 @@ const Dashboard = ({ params: { locale } }: HomeProps) => {
 
 
 
-            {
-                id: 'TOD39',
-                name: 'TOD 39',
-                tags: [44, 5, 76, 60, 21], // Volume, Pression, T°milieu, T°basse, état
-                icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
-            },
-            {
-                id: 'TOD40',
-                name: 'TOD 40',
-                tags: [45, 6, 77, 61, 22], // Volume, Pression, T°milieu, T°basse, état
-                icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
-            },
-            {
-                id: 'TOD41',
-                name: 'TOD 41',
-                tags: [46, 7, 78, 62, 23], // Volume, Pression, T°milieu, T°basse, état
-                icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
-            },
-            {
-                id: 'TOD42',
-                name: 'TOD 42',
-                tags: [47, 8, 79, 63, 24], // Volume, Pression, T°milieu, T°basse, état
-                icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
-            },
+            // {
+            //     id: 'TOD39',
+            //     name: 'TOD 39',
+            //     tags: [44, 5, 76, 60, 21], // Volume, Pression, T°milieu, T°basse, état
+            //     icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
+            // },
+            // {
+            //     id: 'TOD40',
+            //     name: 'TOD 40',
+            //     tags: [45, 6, 77, 61, 22], // Volume, Pression, T°milieu, T°basse, état
+            //     icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
+            // },
+            // {
+            //     id: 'TOD41',
+            //     name: 'TOD 41',
+            //     tags: [46, 7, 78, 62, 23], // Volume, Pression, T°milieu, T°basse, état
+            //     icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
+            // },
+            // {
+            //     id: 'TOD42',
+            //     name: 'TOD 42',
+            //     tags: [47, 8, 79, 63, 24], // Volume, Pression, T°milieu, T°basse, état
+            //     icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
+            // },
 
 
 
 
-            {
-                id: 'TOD43',
-                name: 'TOD 43',
-                tags: [48, 9, 80, 64, 25], // Volume, Pression, T°milieu, T°basse, état
-                icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
-            },
-            {
-                id: 'TOD44',
-                name: 'TOD 44',
-                tags: [49, 10, 81, 65, 26], // Volume, Pression, T°milieu, T°basse, état
-                icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
-            },
-            {
-                id: 'TOD45',
-                name: 'TOD 45',
-                tags: [50, 11, 82, 66, 27], // Volume, Pression, T°milieu, T°basse, état
-                icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
-            },
-            {
-                id: 'TOD46',
-                name: 'TOD 46',
-                tags: [51, 12, 83, 67, 28], // Volume, Pression, T°milieu, T°basse, état
-                icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
-            },
+            // {
+            //     id: 'TOD43',
+            //     name: 'TOD 43',
+            //     tags: [48, 9, 80, 64, 25], // Volume, Pression, T°milieu, T°basse, état
+            //     icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
+            // },
+            // {
+            //     id: 'TOD44',
+            //     name: 'TOD 44',
+            //     tags: [49, 10, 81, 65, 26], // Volume, Pression, T°milieu, T°basse, état
+            //     icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
+            // },
+            // {
+            //     id: 'TOD45',
+            //     name: 'TOD 45',
+            //     tags: [50, 11, 82, 66, 27], // Volume, Pression, T°milieu, T°basse, état
+            //     icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
+            // },
+            // {
+            //     id: 'TOD46',
+            //     name: 'TOD 46',
+            //     tags: [51, 12, 83, 67, 28], // Volume, Pression, T°milieu, T°basse, état
+            //     icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
+            // },
 
 
 
-            {
-                id: 'TOD47',
-                name: 'TOD 47',
-                tags: [52, 13, 84, 68, 29], // Volume, Pression, T°milieu, T°basse, état
-                icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
-            },
-            {
-                id: 'TOD48',
-                name: 'TOD 48',
-                tags: [53, 14, 85, 69, 30], // Volume, Pression, T°milieu, T°basse, état
-                icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
-            },
-            {
-                id: 'TOD17',
-                name: 'TOD 17',
-                tags: [54, 15, 86, 70, 31], // Volume, Pression, T°milieu, T°basse, état
-                icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
-            },
-            {
-                id: 'TOD18',
-                name: 'TOD 18',
-                tags: [55, 16, 87, 71, 32], // Volume, Pression, T°milieu, T°basse, état
-                icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
-            }
+            // {
+            //     id: 'TOD47',
+            //     name: 'TOD 47',
+            //     tags: [52, 13, 84, 68, 29], // Volume, Pression, T°milieu, T°basse, état
+            //     icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
+            // },
+            // {
+            //     id: 'TOD48',
+            //     name: 'TOD 48',
+            //     tags: [53, 14, 85, 69, 30], // Volume, Pression, T°milieu, T°basse, état
+            //     icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
+            // },
+            // {
+            //     id: 'TOD17',
+            //     name: 'TOD 17',
+            //     tags: [54, 15, 86, 70, 31], // Volume, Pression, T°milieu, T°basse, état
+            //     icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
+            // },
+            // {
+            //     id: 'TOD18',
+            //     name: 'TOD 18',
+            //     tags: [55, 16, 87, 71, 32], // Volume, Pression, T°milieu, T°basse, état
+            //     icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
+            // }
 
 
 

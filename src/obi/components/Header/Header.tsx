@@ -10,13 +10,12 @@ import { OverlayPanel } from "primereact/overlaypanel";
 
 
 interface HeaderProps {
-  label?: string;
+
   locale?: string;
 }
 
 export default function Header(
   {
-    label,
     locale,
 
   }: HeaderProps) {
@@ -85,7 +84,7 @@ export default function Header(
         <i className="pi pi-language" />
       </Button>
 
-      <OverlayPanel
+      {/* <OverlayPanel
         ref={op}
         showCloseIcon
         id="overlay_panel"
@@ -98,15 +97,15 @@ export default function Header(
 
             <Link key={l}
               href={l === defaultLocale ? "/obi" : `/${l}`}
-            >
+            > */}
               {/* <button type="button" className="p-link layout-topbar-button"> */}
-              {formatLanguage(l)}
+              {/* {formatLanguage(l)} */}
               {/* </button> */}
 
-            </Link>
+            {/* </Link>
           ))}
         </>
-      </OverlayPanel>
+      </OverlayPanel> */}
 
       {/* w:{windowWidth} */}
 

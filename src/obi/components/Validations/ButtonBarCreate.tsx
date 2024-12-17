@@ -49,7 +49,7 @@ export default function ButtonBarCreate({
     const [mode, setMode] = useState(0); // see modes
 
     // Simulate click event
-    const inputCancelElement = React.useRef()
+    const inputCancelElement = React.useRef<any>()
 
  
 
@@ -61,7 +61,7 @@ export default function ButtonBarCreate({
         e.preventDefault();
         // console.log('ButtonBarCreate > doCancel', e)
         inputCancelElement.current.click();
-        onCancelClick(e);
+        onCancelClick ? onCancelClick(e):false;
         window.location.reload();
     }
 

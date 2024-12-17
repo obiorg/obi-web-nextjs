@@ -12,10 +12,11 @@ import React, { useEffect, useRef, useState } from "react";
 interface ErrorProps {
     error: {
         message: string,
-        stack: string
+        stack: string,
     };
     message: string,
-    name: string
+    name: string,
+    url:string
 }
 
 // Define the props that the PostForm component expects

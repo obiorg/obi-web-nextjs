@@ -112,10 +112,11 @@ export const ExportsService = {
             keywords: 'generated, javascript, web 2.0, ajax',
             creator: 'Creator Name'
         });
-        var pageCount = doc.internal.getNumberOfPages(); //Total Page Number
+        let docInternal:any = doc.internal;
+        var pageCount = docInternal.getNumberOfPages(); //Total Page Number
         for (let i = 0; i < pageCount; i++) {
             doc.setPage(i);
-            let pageCurrent = doc.internal.getCurrentPageInfo().pageNumber; //Current Page
+            let pageCurrent = docInternal.getCurrentPageInfo().pageNumber; //Current Page
             doc.setFontSize(12);
             doc.text('page: ' + pageCurrent + '/' + pageCount, 10, doc.internal.pageSize.height - 10);
         }
@@ -307,10 +308,10 @@ export const ExportsService = {
             const cols = data[0].replace(/['"]+/g, '').split(',');
             data.shift();
 
-            let _importedCols = cols.map(col => ({ field: col, header: this.toCapitalize(col.replace(/['"]+/g, '')) }));
-            let _importedData = data.map(d => {
+            let _importedCols = cols.map((col:any) => ({ field: col, header: this.toCapitalize(col.replace(/['"]+/g, '')) }));
+            let _importedData = data.map((d:any) => {
                 d = d.split(',');
-                return cols.reduce((obj, c, i) => {
+                return cols.reduce((obj:any, c:any, i:any) => {
                     obj[c] = d[i].replace(/['"]+/g, '');
                     return obj;
                 }, {});
@@ -338,19 +339,20 @@ export const ExportsService = {
                 const data = xlsx.utils.sheet_to_json(ws, { header: 1 });
 
                 // Prepare DataTable
-                const cols = data[0];
+                const cols:any = data[0];
                 data.shift();
 
-                let _importedCols = cols.map(col => ({ field: col, header: this.toCapitalize(col) }));
-                let _importedData = data.map(d => {
-                    return cols.reduce((obj, c, i) => {
+                let _importedCols = cols.map((col:any) => ({ field: col, header: this.toCapitalize(col) }));
+                let _importedData = data.map((d:any) => {
+                    return cols.reduce((obj:any, c:any, i:any) => {
                         obj[c] = d[i];
                         return obj;
                     }, {});
                 });
 
                 result.headers = _importedCols;
-                result.data = _importedData;
+                let _idata:any = _importedData;
+                result.data = _idata;
 
 
                 console.log('result', result);

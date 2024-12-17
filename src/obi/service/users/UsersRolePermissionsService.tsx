@@ -93,7 +93,7 @@ export const UsersRolePermissionsService = {
                 if (res.status === 404) throw new Error('404, Not found');
                 if (res.status === 500) throw new Error('500, internal server error');
                 // For any other server error
-                throw new Error(res.status);
+                throw new Error(`HTTP status ${res.status} error`);
             }
         } catch (error) {
             if (error instanceof SyntaxError) {
@@ -132,7 +132,7 @@ export const UsersRolePermissionsService = {
                 if (res.status === 404) throw new Error('404, Not found');
                 if (res.status === 500) throw new Error('500, internal server error');
                 // For any other server error
-                throw new Error(res.status);
+                throw new Error(`HTTP status ${res.status} error`);
             }
         } catch (error) {
             if (error instanceof SyntaxError) {
@@ -157,7 +157,7 @@ export const UsersRolePermissionsService = {
                 if (res.status === 404) throw new Error('404, Not found');
                 if (res.status === 500) throw new Error('500, internal server error');
                 // For any other server error
-                throw new Error(res.status);
+                throw new Error(`HTTP status ${res.status} error`);
             }
         } catch (error) {
             if (error instanceof SyntaxError) {
@@ -192,7 +192,7 @@ export const UsersRolePermissionsService = {
      */
     async create(
         formState: UsersRolePermissionsFormState,
-        formData: FormData): Promise<UsersRolePermissionsFormState> {
+        formData: FormData | any): Promise<UsersRolePermissionsFormState> {
 
         // console.log('formData', formData);
         let data: any;
@@ -248,7 +248,7 @@ export const UsersRolePermissionsService = {
 
     async processAll(formState: any, datas: any): Promise<any> {
         let res: any = [];
-        datas.forEach((row, index) => {
+        datas.forEach((row:any, index:any) => {
             UsersRolePermissionsService.create(formState, row).then((res_row) => {
                 console.log('res_row', res_row, 'res', res);
                 res.push(res_row);
@@ -277,7 +277,7 @@ export const UsersRolePermissionsService = {
                 body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
             }
         )
-        const dataset: UsersRolePermissionsFormState = await res.json();
+        const dataset: UsersRolePermissionsFormState[] = await res.json();
         return dataset;
 
     },
@@ -285,7 +285,7 @@ export const UsersRolePermissionsService = {
 
     async update(
         formState: UsersRolePermissionsFormState,
-        formData: FormData): Promise<UsersRolePermissionsFormState> {
+        formData: FormData | any): Promise<UsersRolePermissionsFormState> {
 
 
         let data = {

@@ -46,7 +46,7 @@ const ChartDemo = () => {
                     ticks: {
                         color: textColorSecondary,
                         font: {
-                            weight: '500'
+                            weight: "bold"
                         }
                     },
                     grid: {

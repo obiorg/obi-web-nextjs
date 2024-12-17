@@ -67,7 +67,7 @@ export default function DashCardCCT(
     const [updated, setUpdated] = useState(new Date(0));
 
     const [loading, setLoading] = useState(false);
-    let loadLazyTimeout = useRef(null);
+    let loadLazyTimeout:any = undefined;
     const [lazyParams, setlazyParmas] =
         useState(
             new PersistencesStandardsModel().getStandardParam({ field: 'changed', order: -1 }, PersistencesStandardsService.defaultFilters()));
@@ -98,7 +98,7 @@ export default function DashCardCCT(
                 } else {
                     // console.log('DashCardCCT >> success', data);
 
-                    data.forEach(tag => {
+                    data.forEach((tag:any) => {
                         tags.forEach(tagId => {
                             if (tagId === tag.id) {
                                 switch (tags.indexOf(tagId)) {
@@ -147,10 +147,11 @@ export default function DashCardCCT(
                     
                     // let dates = data.map((d: any) => { return [d.vStamp.replace('Z','')]; });
                     // console.log('date', dates);
-                    let update: Date[] = data.map((d: any) => { return [Date.parse(d.vStamp.replace('Z',''))]; });
+                    let update: any[] = data.map((d: any) => { return [Date.parse(d.vStamp.replace('Z',''))]; });
                     // console.log('update', update);
                     // console.log('Min', Math.min(...update))
-                    setUpdated(Math.min(...update));
+                    // setUpdated(Math.min(...update));
+                    setUpdated(new Date(Math.min.apply(null,update)));
                     
 
                 }

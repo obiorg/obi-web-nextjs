@@ -100,8 +100,8 @@ export const PersistencesService = {
      * @returns 
      */
     async create(
-        formState: OBI.PersistencesFormState,
-        formData: FormData): Promise<OBI.PersistencesFormState> {
+        formState: any,
+        formData: FormData | any): Promise<any> {
 
 
         let data = {
@@ -145,7 +145,7 @@ export const PersistencesService = {
             }
         )
         // console.log("PersistencesService response", res);
-        const dataset: OBI.PersistencesFormState = await res.json();
+        const dataset: any= await res.json();
         // console.log('PersistencesService >> result from api persistences ', dataset);
         return dataset;
 
@@ -153,8 +153,8 @@ export const PersistencesService = {
 
 
     async update(
-        formState: OBI.PersistencesFormState,
-        formData: FormData): Promise<OBI.PersistencesFormState> {
+        formState: any,
+        formData: FormData | any): Promise<any> {
 
 
         let data = {
@@ -198,7 +198,7 @@ export const PersistencesService = {
             }
         )
         // console.log("PersistencesService response", res);
-        const dataset: OBI.PersistencesFormState = await res.json();
+        const dataset: any = await res.json();
         // console.log('PersistencesService >> result from api persistences ', dataset);
         return dataset;
 
@@ -206,7 +206,7 @@ export const PersistencesService = {
     },
 
 
-    async delete(id: any): Promise<OBI.PersistencesFormState> {
+    async delete(id: any): Promise<any> {
 
 
         const url = process.env.httpPath + '/persistences/' + id;
@@ -225,7 +225,7 @@ export const PersistencesService = {
             }
         )
         console.log("PersistencesService response", res);
-        const dataset: OBI.PersistencesFormState = await res.json();
+        const dataset: any = await res.json();
         // console.log('PersistencesService >> result from api persistences ', dataset);
         return dataset;
 

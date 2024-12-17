@@ -36,7 +36,7 @@ export const CountriesService = {
                 // if (res.status === 404) throw new Error('404, Not found');
                 // if (res.status === 500) throw new Error('500, internal server error');
                 // // For any other server error
-                // throw new Error(res.status);
+                // throw new Error(`HTTP status ${res.status} error`);
                 return err;
             }
         } catch {
@@ -98,8 +98,8 @@ export const CountriesService = {
      * @returns 
      */
     async createPost(
-        formState: OBI.CountriesPostFormState,
-        formData: FormData): Promise<OBI.CountriesPostFormState> {
+        formState: any,
+        formData: FormData | any): Promise<any> {
 
 
         // Validate the form data against the post schema
@@ -167,7 +167,7 @@ export const CountriesService = {
             }
         )
         console.log("CountriesService response", res);
-        const dataset: OBI.CountriesPostFormState = await res.json();
+        const dataset: any = await res.json();
         console.log('CountriesService >> result from api entities ', dataset);
         return dataset;
 

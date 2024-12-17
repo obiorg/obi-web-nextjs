@@ -61,7 +61,7 @@ export default function MachinesDropDown({
     const [initCatalog, setInitCatalog] = useState(false);
 
 
-    let loadLazyTimeout = useRef(null);
+    let loadLazyTimeout:any = undefined;
 
 
 

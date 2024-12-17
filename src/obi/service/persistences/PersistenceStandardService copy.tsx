@@ -104,8 +104,8 @@ export const PersistenceStandardService = {
      * @returns 
      */
     async create(
-        formState: OBI.PersistencesStandardsFormState,
-        formData: FormData): Promise<OBI.PersistencesStandardsFormState> {
+        formState: any,
+        formData: FormData | any): Promise<any> {
 
 
         let data = {
@@ -149,7 +149,7 @@ export const PersistenceStandardService = {
             }
         )
         // console.log("LocationsService response", res);
-        const dataset: OBI.PersistencesStandardsFormState = await res.json();
+        const dataset: any = await res.json();
         // console.log('LocationsService >> result from api persistences standard ', dataset);
         return dataset;
 
@@ -157,8 +157,8 @@ export const PersistenceStandardService = {
 
 
     async update(
-        formState: OBI.PersistencessStandardsFormState,
-        formData: FormData): Promise<OBI.PersistencesStandardsFormState> {
+        formState: any,
+        formData: FormData | any): Promise<any> {
 
 
         let data = {
@@ -202,7 +202,7 @@ export const PersistenceStandardService = {
             }
         )
         // console.log("LocationsService response", res);
-        const dataset: OBI.PersistencesStandardsFormState = await res.json();
+        const dataset: any = await res.json();
         // console.log('LocationsService >> result from api persistences standard ', dataset);
         return dataset;
 
@@ -210,7 +210,7 @@ export const PersistenceStandardService = {
     },
 
 
-    async delete(id: any): Promise<OBI.PersistencesStandardsFormState> {
+    async delete(id: any): Promise<any> {
 
 
         const url = process.env.httpPath + '/persistences/standards//' + id;
@@ -229,7 +229,7 @@ export const PersistenceStandardService = {
             }
         )
         console.log("LocationsService response", res);
-        const dataset: OBI.PersistencesStandardsFormState = await res.json();
+        const dataset: any = await res.json();
         // console.log('LocationsService >> result from api persistences standard ', dataset);
         return dataset;
 

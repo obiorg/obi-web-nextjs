@@ -9,18 +9,24 @@ import { useEffect, useRef, useState } from "react";
 import { OverlayPanel } from "primereact/overlaypanel";
 
 
-type LanguageItem = {
+interface HeaderProps {
   label?: string;
   locale?: string;
 }
 
-function Header() {
+export default function Header(
+  {
+    label,
+    locale,
+
+  }: HeaderProps) {
+
   const { locales, defaultLocale, languages } = i18n;
 
-  const toast = useRef(null);
+  const toast = useRef<Toast>(null);
 
-  const [langs, setLangs] = useState<LanguageItem[] | null>(null);
-  const [selectedLanguage, setSelectedLanguage] = useState<LanguageItem | null>(null);
+  const [langs, setLangs] = useState<HeaderProps[] | null>(null);
+  const [selectedLanguage, setSelectedLanguage] = useState<HeaderProps | null>(null);
   const op = useRef<OverlayPanel>(null);
   const isMounted = useRef(false);
 
@@ -30,7 +36,7 @@ function Header() {
       toast.current?.show({
         severity: "info",
         summary: "Selected Language " + langs,
-        detail: selectedLanguage,
+        detail: selectedLanguage.locale,
         life: 3000
       });
     }
@@ -111,7 +117,7 @@ function Header() {
   );
 }
 
-export default Header;
+
 {/* <Link key={locale}
 href={locale === defaultLocale ? "/" : `/${locale}`}
 >

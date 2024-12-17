@@ -37,7 +37,7 @@ export const MachinesService = {
                 if (res.status === 404) throw new Error('404, Not found');
                 if (res.status === 500) throw new Error('500, internal server error');
                 // For any other server error
-                throw new Error(res.status);
+                throw new Error(`HTTP status ${res.status} error`);
             }
         } catch (error) {
             if (error instanceof SyntaxError) {
@@ -76,7 +76,7 @@ export const MachinesService = {
                 if (res.status === 404) throw new Error('404, Not found');
                 if (res.status === 500) throw new Error('500, internal server error');
                 // For any other server error
-                throw new Error(res.status);
+                throw new Error(`HTTP status ${res.status} error`);
             }
         } catch (error) {
             if (error instanceof SyntaxError) {
@@ -101,7 +101,7 @@ export const MachinesService = {
                 if (res.status === 404) throw new Error('404, Not found');
                 if (res.status === 500) throw new Error('500, internal server error');
                 // For any other server error
-                throw new Error(res.status);
+                throw new Error(`HTTP status ${res.status} error`);
             }
         } catch (error) {
             if (error instanceof SyntaxError) {
@@ -135,8 +135,8 @@ export const MachinesService = {
      * @returns 
      */
     async create(
-        formState: OBI.MachinesFormState,
-        formData: FormData): Promise<OBI.MachinesFormState> {
+        formState:any,
+        formData: FormData | any): Promise<any> {
 
         // console.log('formData', formData);
         let data: any;
@@ -186,7 +186,7 @@ export const MachinesService = {
             }
         )
         // console.log("MachinesService response", res);
-        const dataset: OBI.MachinesFormState = await res.json();
+        const dataset: any = await res.json();
         // console.log('MachinesService >> result from api machines ', dataset);
         return dataset;
 
@@ -194,7 +194,7 @@ export const MachinesService = {
 
     async processAll(formState: any, datas: any): Promise<any> {
         let res: any = [];
-        datas.forEach((row, index) => {
+        datas.forEach((row:any, index:any) => {
             MachinesService.create(formState, row).then((res_row) => {
                 console.log('res_row', res_row, 'res', res);
                 res.push(res_row);
@@ -224,7 +224,7 @@ export const MachinesService = {
             }
         )
         // console.log("MachinesService response", res);
-        const dataset: OBI.MachinesFormState = await res.json();
+        const dataset: any = await res.json();
         console.log('MachinesService >> result from api machines ', dataset);
         return dataset;
 
@@ -232,8 +232,8 @@ export const MachinesService = {
 
 
     async update(
-        formState: OBI.MachinesFormState,
-        formData: FormData): Promise<OBI.MachinesFormState> {
+        formState: any,
+        formData: FormData | any): Promise<any> {
 
 
         let data = {
@@ -277,7 +277,7 @@ export const MachinesService = {
             }
         )
         // console.log("MachinesService response", res);
-        const dataset: OBI.MachinesFormState = await res.json();
+        const dataset: any = await res.json();
         // console.log('MachinesService >> result from api machines ', dataset);
         return dataset;
 
@@ -313,7 +313,7 @@ export const MachinesService = {
 
 
 
-    async delete(id: any): Promise<OBI.MachinesFormState> {
+    async delete(id: any): Promise<any> {
 
 
         const url = process.env.httpPath + '/connexions/machines/' + id;
@@ -332,7 +332,7 @@ export const MachinesService = {
             }
         )
         console.log("MachinesService response", res);
-        const dataset: OBI.MachinesFormState = await res.json();
+        const dataset: any = await res.json();
         // console.log('MachinesService >> result from api machines ', dataset);
         return dataset;
 

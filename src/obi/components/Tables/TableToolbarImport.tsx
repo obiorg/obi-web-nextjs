@@ -146,10 +146,10 @@ export default function TableToolbarImport({ id, name,
 
 
     // Options
-    const menu = useRef(null);
-    const toast = useRef(null);
-    const refFileUploadCSV = useRef(null);
-    const refFileUploadExcel = useRef(null);
+    const menu = useRef<any>(null);
+    const toast = useRef<any>(null);
+    const refFileUploadCSV = useRef<any>(null);
+    const refFileUploadExcel = useRef<any>(null);
     const items = [
         {
             label: 'Taille',
@@ -280,7 +280,7 @@ export default function TableToolbarImport({ id, name,
                 name="demo[]"
                 accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
                 customUpload={true}
-                uploadHandler={(e) => { e.ref = refFileUploadExcel; onImportExcel && onImportExcel(e); }}
+                uploadHandler={(e:any) => { e.ref = refFileUploadExcel; onImportExcel && onImportExcel(e); }}
                 mode="basic"
                 auto={true}
                 className='mr-2 w-full sm:hidden '
@@ -291,7 +291,7 @@ export default function TableToolbarImport({ id, name,
                 name="demo[]"
                 accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
                 customUpload={true}
-                uploadHandler={(e) => { e.ref = refFileUploadExcel; onImportExcel && onImportExcel(e); }}
+                uploadHandler={(e:any) => { e.ref = refFileUploadExcel; onImportExcel && onImportExcel(e); }}
                 mode="basic"
                 auto={true}
                 className='mr-2 w-full hidden sm:block '

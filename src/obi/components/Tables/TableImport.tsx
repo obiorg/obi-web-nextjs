@@ -1,7 +1,7 @@
 'use client'
 
 
-import React, { useState, useRef} from 'react';
+import React, { useState, useRef } from 'react';
 import { DataTable, DataTableFilterMeta } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Toast } from 'primereact/toast';
@@ -24,7 +24,7 @@ interface TableImportProps {
 
 
 
-export default function TableImport ({
+export default function TableImport({
     params,
     services,
 }: TableImportProps) {
@@ -35,16 +35,16 @@ export default function TableImport ({
     const [importedCols, setImportedCols] = useState([{ field: '', header: 'Header' }]);
 
     const dt = useRef(null);
-    const toast = useRef(null);
+    const toast = useRef<any>(null);
 
     const [loading, setLoading] = useState(false);
-    const [size, setSize] = useState<string>('small');
-    const [filterDisplay, setFilterDisplay] = useState('menu');
-    const [stateStorage, setStateStorage] = useState('session');
-    const [dlgError, setDlgError] = useState();
+    const [size, setSize] = useState<any>('small');
+    const [filterDisplay, setFilterDisplay] = useState<any>('menu');
+    const [stateStorage, setStateStorage] = useState<any>('session');
+    const [dlgError, setDlgError] = useState<any>();
 
-    const [selectionMode, setSelectionMode] = useState("multiple");
-    const [tableEditMode, setTableEditMode] = useState();
+    const [selectionMode, setSelectionMode] = useState<any>("multiple");
+    const [tableEditMode, setTableEditMode] = useState<any>();
 
     const [lazyParams, setLazyParams] = useState(params);
 
@@ -64,10 +64,10 @@ export default function TableImport ({
             const cols = data[0].replace(/['"]+/g, '').split(',');
             data.shift();
 
-            let _importedCols = cols.map(col => ({ field: col, header: toCapitalize(col.replace(/['"]+/g, '')) }));
-            let _importedData = data.map(d => {
+            let _importedCols = cols.map((col: any) => ({ field: col, header: toCapitalize(col.replace(/['"]+/g, '')) }));
+            let _importedData = data.map((d: any) => {
                 d = d.split(',');
-                return cols.reduce((obj, c, i) => {
+                return cols.reduce((obj: any, c: any, i: any) => {
                     obj[c] = d[i].replace(/['"]+/g, '');
                     return obj;
                 }, {});
@@ -98,12 +98,12 @@ export default function TableImport ({
                 const data = xlsx.utils.sheet_to_json(ws, { header: 1 });
 
                 // Prepare DataTable
-                const cols = data[0];
+                const cols: any = data[0];
                 data.shift();
 
-                let _importedCols = cols.map(col => ({ field: col, header: toCapitalize(col) }));
-                let _importedData = data.map(d => {
-                    return cols.reduce((obj, c, i) => {
+                let _importedCols: any = cols.map((col: any) => ({ field: col, header: toCapitalize(col) }));
+                let _importedData: any = data.map((d: any) => {
+                    return cols.reduce((obj: any, c: any, i: any) => {
                         obj[c] = d[i];
                         return obj;
                     }, {});
@@ -114,7 +114,7 @@ export default function TableImport ({
                 }); Array
 
                 setImportedCols(_importedCols);
-                setImportedData(_importedData); 7
+                setImportedData(_importedData);
                 setLoading(false);
             };
 
@@ -124,12 +124,13 @@ export default function TableImport ({
     }
 
 
-    const toCapitalize = (s:any) => {
+    const toCapitalize = (s: any) => {
         return s.charAt(0).toUpperCase() + s.slice(1);
     }
 
     const clear = () => {
-        setImportedData([]);
+        let dv: any = [];
+        setImportedData(dv);
         setSelectedImportedData([]);
         setImportedCols([{ field: '', header: 'Header' }]);
     }
@@ -153,21 +154,21 @@ export default function TableImport ({
     const onDelete = (id: number) => {
 
         setLoading(true);
-        let _importedData = importedData;
+        let _importedData: any = importedData;
         let _selectedImportedData = selectedImportedData;
 
         //console.log(selectedImportedData);
-        let _row:any = [];
+        let _row: any = [];
         selectedImportedData.forEach((data: any) => {
             if (data && _importedData) {
-                const index = _importedData.findIndex(({ id }) => id === data?.id);
+                const index = _importedData.findIndex((id: any) => id === data?.id);
                 _row.push(index);
                 // console.log('result for id = ' + data.id, index);
             }
         });
         _row.sort();
         // console.log('_row', _row);
-        for(let i = _row.length-1; i>= 0; i--){
+        for (let i = _row.length - 1; i >= 0; i--) {
             _importedData.splice(_row[i], 1);
             _selectedImportedData.splice(i, 1);
         }
@@ -193,19 +194,11 @@ export default function TableImport ({
         )
     }
 
-    const paginatorLeft = () => {
-        return (
-            <div className="flex justify-content-between align-items-center">
-            </div>
-        )
-    }
-    const paginatorRight = () => {
-        //const paginatorRight = <Button type="button" icon="pi pi-download" text />;
-        return (
-            <div className="flex justify-content-between align-items-center">
-            </div>
-        )
-    }
+    const paginatorLeft =
+        <div className="flex justify-content-between align-items-center">
+        </div>;
+    const paginatorRight = <div className="flex justify-content-between align-items-center">
+    </div>;
 
 
     const onCellEditComplete = (e: any) => {
@@ -217,13 +210,13 @@ export default function TableImport ({
             event.preventDefault();
     }
 
-    const cellEditor = (options) => {
+    const cellEditor = (options: any) => {
         // if (options.field === 'price')
         //     return priceEditor(options);
         // else
         return textEditor(options);
     }
-    const textEditor = (options) => {
+    const textEditor = (options: any) => {
         return <InputText type="text"
             value={options.value}
             onChange={(e) => options.editorCallback(e.target.value)} />;
@@ -268,8 +261,9 @@ export default function TableImport ({
                         const firstKey = Object.keys(err.errors)[0]; // Get first key
                         //console.log('catalog index', catalog.index, 'err index', err.index);
                         if (catalog.index === err.index && importedData) {
-                            importedData[catalog.index].transaction = -1;
-                            importedData[catalog.index].comment = '' + firstKey + ' > ' + err.errors[firstKey];
+                            let dv: any = importedData[catalog.index];
+                            dv.transaction = -1;
+                            dv.comment = '' + firstKey + ' > ' + err.errors[firstKey];
                         }
                     })
                 });
@@ -278,8 +272,9 @@ export default function TableImport ({
                 //console.log('createMany - process success !');
                 e.create.forEach((catalog: any) => {
                     if (importedData) {
-                        importedData[catalog.index].transaction = '';
-                        importedData[catalog.index].comment = 'success';
+                        let dv: any = importedData[catalog.index];
+                        dv.transaction = '';
+                        dv.comment = 'success';
                     }
                 });
             }
@@ -300,12 +295,16 @@ export default function TableImport ({
                             // console.log('Error: ', err);
                             const firstKey = Object.keys(err.errors)[0]; // Get first key
                             // console.log('catalog index', catalog.index, 'err index', err.index);
-                            if (catalog.index === err.index  && err.errors[firstKey] && importedData) {
-                                importedData[catalog.index].transaction = -1;
-                                importedData[catalog.index].comment = '' + firstKey + ' > ' + err.errors[firstKey];
-                            }else{
-                                // importedData[catalog.index].transaction = -1;
-                                importedData[catalog.index].comment = 'pending...';
+                            if (catalog.index === err.index && err.errors[firstKey] && importedData) {
+                                let dv: any = importedData[catalog.index];
+                                dv.transaction = -1;
+                                dv.comment = '' + firstKey + ' > ' + err.errors[firstKey];
+                            } else {
+                                if (importedData) {
+                                    // importedData[catalog.index].transaction = -1;
+                                    let dv: any = importedData[catalog.index];
+                                    dv.comment = 'pending...';
+                                }
                             }
                         })
                     }
@@ -315,8 +314,9 @@ export default function TableImport ({
                 //console.log('updateMany - process success !');
                 e.update.forEach((catalog: any) => {
                     if (importedData) {
-                        importedData[catalog.index].transaction = '';
-                        importedData[catalog.index].comment = 'success';
+                        let dv: any = importedData[catalog.index];
+                        dv.transaction = '';
+                        dv.comment = 'success';
                     }
                 });
             }
@@ -335,14 +335,16 @@ export default function TableImport ({
                     if (datas.errors.items.length > 0) {
                         datas.errors.items.forEach((item: any) => {
                             if (catalog.location === item.location && importedData) {
-                                importedData[catalog.index].transaction = -1;
-                                importedData[catalog.index].comment = datas?.errors.message;
+                                let dv: any = importedData[catalog.index];
+                                dv.transaction = -1;
+                                dv.comment = datas?.errors.message;
                             }
                         })
                     } else {
                         if (importedData) {
-                            importedData[catalog.index].transaction = -1;
-                            importedData[catalog.index].comment = datas?.errors.message;
+                            let dv: any = importedData[catalog.index];
+                            dv.transaction = -1;
+                            dv.comment = datas?.errors.message;
                         }
                     }
                 });
@@ -351,8 +353,9 @@ export default function TableImport ({
                 //console.log('deleteMany - process success !');
                 e.delete.forEach((catalog: any) => {
                     if (importedData) {
-                        importedData[catalog.index].transaction = '';
-                        importedData[catalog.index].comment = 'success';
+                        let dv: any = importedData[catalog.index];
+                        dv.transaction = '';
+                        dv.comment = 'success';
                     }
                 });
             }
@@ -363,54 +366,56 @@ export default function TableImport ({
 
     const onUpload = (e: any) => {
         // Get data to process
-        if (importedData && importedData?.length > 0) {
-            let toCreate: any = [];
-            let toUpdate: any = [];
-            let toDelete: any = [];
-            importedData?.forEach((row: any, index: number) => {
-                let id = row.id;
-                let trans = row.transaction;
-                let r = row;
-                r.index = index;
-                if (row.transaction === null || row.transaction === 0 || row.transaction === '0' || row.transaction === undefined) { // to create
-                    r.id = null;
-                    delete r.transaction;
-                    toCreate.push(r);
-                } else if (row.transaction === 1 || row.transaction === '1') { // update
-                    delete r.transaction;
-                    toUpdate.push(r);
-                } else if (row.transaction === 2 || row.transaction === '2') { // to remove
-                    delete r.transaction;
-                    toDelete.push(r);
-                }
-                row.id = id;
-                row.transaction = trans;
-            });
-            //console.log('toCreate', toCreate, 'toUpdate', toUpdate, 'toRemove', toDelete);
+        if (importedData) {
+            let dv: any = importedData;
+            if (dv.length > 0) {
+                let toCreate: any = [];
+                let toUpdate: any = [];
+                let toDelete: any = [];
+                dv.forEach((row: any, index: number) => {
+                    let id = row.id;
+                    let trans = row.transaction;
+                    let r = row;
+                    r.index = index;
+                    if (row.transaction === null || row.transaction === 0 || row.transaction === '0' || row.transaction === undefined) { // to create
+                        r.id = null;
+                        delete r.transaction;
+                        toCreate.push(r);
+                    } else if (row.transaction === 1 || row.transaction === '1') { // update
+                        delete r.transaction;
+                        toUpdate.push(r);
+                    } else if (row.transaction === 2 || row.transaction === '2') { // to remove
+                        delete r.transaction;
+                        toDelete.push(r);
+                    }
+                    row.id = id;
+                    row.transaction = trans;
+                });
+                //console.log('toCreate', toCreate, 'toUpdate', toUpdate, 'toRemove', toDelete);
 
-            setLazyParams((lazyParams: any) => { return { ...lazyParams } });
+                setLazyParams((lazyParams: any) => { return { ...lazyParams } });
 
 
-            setLoading(true);
-            e.create = toCreate;
-            e.update = toUpdate;
-            e.delete = toDelete;
+                setLoading(true);
+                e.create = toCreate;
+                e.update = toUpdate;
+                e.delete = toDelete;
 
-            doProcessCreate(e).then(() => {
-                //console.log('now process update');
-                doProcessUpdate(e).then(() => {
-                    //console.log('now process delete');
-                    doProcessDelete(e).then(() => {
-                        //console.log('now process actualisation');
-                        setLoading(false);
+                doProcessCreate(e).then(() => {
+                    //console.log('now process update');
+                    doProcessUpdate(e).then(() => {
+                        //console.log('now process delete');
+                        doProcessDelete(e).then(() => {
+                            //console.log('now process actualisation');
+                            setLoading(false);
 
-                        let _importedData = importedData;
-                        setImportedData(_importedData);
-                    });
+                            let _importedData = importedData;
+                            setImportedData(_importedData);
+                        });
+                    })
                 })
-            })
 
-
+            }
         } else {
             toast.current.show({ severity: 'error', summary: 'Erreur', detail: 'Aucune donnée à importer', life: 3000 });
         }

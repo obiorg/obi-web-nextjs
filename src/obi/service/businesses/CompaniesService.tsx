@@ -97,7 +97,7 @@ export const CompaniesService = {
                 if (res.status === 404) throw new Error('404, Not found');
                 if (res.status === 500) throw new Error('500, internal server error');
                 // For any other server error
-                throw new Error(res.status);
+                throw new Error(`HTTP status ${res.status} error`);
             }
         } catch (error) {
             if (error instanceof SyntaxError) {
@@ -136,7 +136,7 @@ export const CompaniesService = {
                 if (res.status === 404) throw new Error('404, Not found');
                 if (res.status === 500) throw new Error('500, internal server error');
                 // For any other server error
-                throw new Error(res.status);
+                throw new Error(`HTTP status ${res.status} error`);
             }
         } catch (error) {
             if (error instanceof SyntaxError) {
@@ -161,7 +161,7 @@ export const CompaniesService = {
                 if (res.status === 404) throw new Error('404, Not found');
                 if (res.status === 500) throw new Error('500, internal server error');
                 // For any other server error
-                throw new Error(res.status);
+                throw new Error(`HTTP status ${res.status} error`);
             }
         } catch (error) {
             if (error instanceof SyntaxError) {
@@ -196,7 +196,7 @@ export const CompaniesService = {
      */
     async create(
         formState: CompaniesFormState,
-        formData: FormData): Promise<CompaniesFormState> {
+        formData: FormData | any): Promise<CompaniesFormState> {
 
         // console.log('formData', formData);
         let data: any;
@@ -254,7 +254,7 @@ export const CompaniesService = {
 
     async processAll(formState: any, datas: any): Promise<any> {
         let res: any = [];
-        datas.forEach((row, index) => {
+        datas.forEach((row:any, index:any) => {
             CompaniesService.create(formState, row).then((res_row) => {
                 console.log('res_row', res_row, 'res', res);
                 res.push(res_row);
@@ -284,7 +284,7 @@ export const CompaniesService = {
             }
         )
         // console.log("CompaniesService response", res);
-        const dataset: CompaniesFormState = await res.json();
+        const dataset: CompaniesFormState[]  = await res.json();
         console.log('CompaniesService >> result from api companies ', dataset);
         return dataset;
 
@@ -293,7 +293,7 @@ export const CompaniesService = {
 
     async update(
         formState: CompaniesFormState,
-        formData: FormData): Promise<CompaniesFormState> {
+        formData: FormData | any): Promise<CompaniesFormState> {
 
 
         let data = {

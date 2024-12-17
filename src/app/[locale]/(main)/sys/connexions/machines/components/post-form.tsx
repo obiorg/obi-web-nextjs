@@ -45,12 +45,12 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
     })
 
     // Used for toast
-    const toast = useRef<Toast>(null);
-    const msg = useRef(null);
+    const toast = useRef<any>(null);
+    const msg = useRef<any>();
 
     // Managing long request wating
     const [lazyLoading, setLazyLoading] = useState<any>(false);
-    let loadLazyTimeout = useRef(null);
+    let loadLazyTimeout:any = undefined;
 
 
     // state management
@@ -67,7 +67,7 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
 
     // To manage validation
     const [saveMode, setSaveMode] = useState(0); // 0: save and reset; 1: save
-    const formRef = React.useRef();
+    const formRef = React.useRef(document.createElement('form'));
     const [enableOnupdate, setEnableOnupdate] = useState(true); //
 
 
@@ -265,7 +265,7 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
 
 
 
-    const [dlgError, setDlgError] = useState();
+    const [dlgError, setDlgError] = useState<any>();
 
 
 
@@ -292,7 +292,7 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
 
 
 
-            <h3>{type === 0 ? 'Création' : 'Modification'} d'une machine</h3>
+            <h3>{type === 0 ? 'Création' : 'Modification'} d une machine</h3>
             <hr />
 
             <BlockUI blocked={blockedFrom}>

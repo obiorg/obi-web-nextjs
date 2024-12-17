@@ -37,7 +37,7 @@ export const TagsService = {
                 if (res.status === 404) throw new Error('404, Not found');
                 if (res.status === 500) throw new Error('500, internal server error');
                 // For any other server error
-                throw new Error(res.status);
+                throw new Error(`HTTP status ${res.status} error`);
             }
         } catch (error) {
             if (error instanceof SyntaxError) {
@@ -75,7 +75,7 @@ export const TagsService = {
                 if (res.status === 404) throw new Error('404, Not found');
                 if (res.status === 500) throw new Error('500, internal server error');
                 // For any other server error
-                throw new Error(res.status);
+                throw new Error(`HTTP status ${res.status} error`);
             }
         } catch (error) {
             if (error instanceof SyntaxError) {
@@ -100,7 +100,7 @@ export const TagsService = {
                 if (res.status === 404) throw new Error('404, Not found');
                 if (res.status === 500) throw new Error('500, internal server error');
                 // For any other server error
-                throw new Error(res.status);
+                throw new Error(`HTTP status ${res.status} error`);
             }
         } catch (error) {
             if (error instanceof SyntaxError) {
@@ -134,8 +134,8 @@ export const TagsService = {
      * @returns 
      */
     async create(
-        formState: OBI.TagsFormState,
-        formData: FormData): Promise<OBI.TagsFormState> {
+        formState: any,
+        formData: FormData | any): Promise<any> {
 
         // console.log('formData', formData);
         let data: any;
@@ -185,7 +185,7 @@ export const TagsService = {
             }
         )
         // console.log("TagsService response", res);
-        const dataset: OBI.TagsFormState = await res.json();
+        const dataset: any = await res.json();
         // console.log('TagsService >> result from api tags ', dataset);
         return dataset;
 
@@ -193,7 +193,7 @@ export const TagsService = {
 
     async processAll(formState: any, datas: any): Promise<any> {
         let res: any = [];
-        datas.forEach((row, index) => {
+        datas.forEach((row:any, index:any) => {
             TagsService.create(formState, row).then((res_row) => {
                 console.log('res_row', res_row, 'res', res);
                 res.push(res_row);
@@ -205,7 +205,7 @@ export const TagsService = {
     },
 
     async createMany(
-        formState: OBI.TagsFormState[],
+        formState: any[],
         data: any[]): Promise<any[]> {
         
             console.log('TagsService createMany', data, formState);
@@ -226,7 +226,7 @@ export const TagsService = {
             }
         )
         // console.log("TagsService response", res);
-        const dataset: OBI.TagsFormState = await res.json();
+        const dataset: any = await res.json();
         console.log('TagsService >> result from api tags ', dataset);
         return dataset;
 
@@ -234,8 +234,8 @@ export const TagsService = {
 
 
     async update(
-        formState: OBI.TagsFormState,
-        formData: FormData): Promise<OBI.TagsFormState> {
+        formState: any,
+        formData: FormData | any): Promise<any> {
 
 
         let data = {
@@ -279,7 +279,7 @@ export const TagsService = {
             }
         )
         // console.log("TagsService response", res);
-        const dataset: OBI.TagsFormState = await res.json();
+        const dataset: any = await res.json();
         // console.log('TagsService >> result from api tags ', dataset);
         return dataset;
 
@@ -287,7 +287,7 @@ export const TagsService = {
     },
 
 
-    async delete(id: any): Promise<OBI.TagsFormState> {
+    async delete(id: any): Promise<any> {
 
 
         const url = process.env.httpPath + '/tags/' + id;
@@ -306,7 +306,7 @@ export const TagsService = {
             }
         )
         console.log("TagsService response", res);
-        const dataset: OBI.TagsFormState = await res.json();
+        const dataset: any = await res.json();
         // console.log('TagsService >> result from api tags ', dataset);
         return dataset;
 

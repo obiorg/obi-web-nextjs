@@ -93,7 +93,7 @@ export const TagsService = {
                 if (res.status === 404) throw new Error('404, Not found');
                 if (res.status === 500) throw new Error('500, internal server error');
                 // For any other server error
-                throw new Error(res.status);
+                throw new Error(`HTTP status ${res.status} error`);
             }
         } catch (error) {
             if (error instanceof SyntaxError) {
@@ -132,7 +132,7 @@ export const TagsService = {
                 if (res.status === 404) throw new Error('404, Not found');
                 if (res.status === 500) throw new Error('500, internal server error');
                 // For any other server error
-                throw new Error(res.status);
+                throw new Error(`HTTP status ${res.status} error`);
             }
         } catch (error) {
             if (error instanceof SyntaxError) {
@@ -157,7 +157,7 @@ export const TagsService = {
                 if (res.status === 404) throw new Error('404, Not found');
                 if (res.status === 500) throw new Error('500, internal server error');
                 // For any other server error
-                throw new Error(res.status);
+                throw new Error(`HTTP status ${res.status} error`);
             }
         } catch (error) {
             if (error instanceof SyntaxError) {
@@ -184,7 +184,7 @@ export const TagsService = {
                 if (res.status === 404) throw new Error('404, Not found');
                 if (res.status === 500) throw new Error('500, internal server error');
                 // For any other server error
-                throw new Error(res.status);
+                throw new Error(`HTTP status ${res.status} error`);
             }
         } catch (error) {
             if (error instanceof SyntaxError) {
@@ -219,7 +219,7 @@ export const TagsService = {
      */
     async create(
         formState: TagsFormState,
-        formData: FormData): Promise<TagsFormState> {
+        formData: FormData | any): Promise<TagsFormState> {
 
         // console.log('formData', formData);
         let data: any;
@@ -275,7 +275,7 @@ export const TagsService = {
 
     async processAll(formState: any, datas: any): Promise<any> {
         let res: any = [];
-        datas.forEach((row, index) => {
+        datas.forEach((row:any, index:any) => {
             TagsService.create(formState, row).then((res_row) => {
                 console.log('res_row', res_row, 'res', res);
                 res.push(res_row);
@@ -304,7 +304,7 @@ export const TagsService = {
                 body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
             }
         )
-        const dataset: TagsFormState = await res.json();
+        const dataset: TagsFormState[] = await res.json();
         return dataset;
 
     },
@@ -312,7 +312,7 @@ export const TagsService = {
 
     async update(
         formState: TagsFormState,
-        formData: FormData): Promise<TagsFormState> {
+        formData: FormData | any): Promise<TagsFormState> {
 
 
         let data = {

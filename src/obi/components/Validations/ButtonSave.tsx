@@ -39,19 +39,19 @@ export default function ButtonSave(
     const { pending } = useFormStatus();
 
     // Used for toast
-    const toast = useRef<Toast>(null);
+    const toast = useRef<any>(null);
 
     // managing mode 
     const [mode, setMode] = useState(0); // see modes
 
     // Simulate click event
-    const inputElement = React.useRef()
+    const inputElement = React.useRef<any>()
 
     const modes = [
         {
             label: type === 0 ? labelsType0[0] : type === 1 ? labelsType1[0] : labelsType2[0],
             icon: icons[0],
-            command: (e) => {
+            command: (e:any) => {
                 toast.current.show({ severity: 'success', summary: 'Mode Sauvegarde', detail: 'Mode sauvegarde et reset activé' });
                 setMode(0);
                 { onModeChanged ? onModeChanged(0) : null }
@@ -60,7 +60,7 @@ export default function ButtonSave(
         {
             label: type === 0 ? labelsType0[1] : type === 1 ? labelsType1[1] : labelsType2[1],
             icon: icons[1],
-            command: (e) => {
+            command: (e:any) => {
                 toast.current.show({ severity: 'success', summary: 'Mode Sauvegarde', detail: 'Mode sauvegarde seul activé' });
                 setMode(1);
                 { onModeChanged ? onModeChanged(1) : null }

@@ -1,20 +1,20 @@
 'use client'
 
 
-import React, { useState, useEffect, useRef } from 'react';
-import { DataTable, DataTableFilterMeta, DataTableSortMeta } from 'primereact/datatable';
-import { Column, ColumnFilterClearTemplateOptions } from 'primereact/column';
 import { Button } from 'primereact/button';
+import { Column } from 'primereact/column';
+import { DataTable } from 'primereact/datatable';
+import React, { useEffect, useRef, useState } from 'react';
 
-import { Admin, OBI } from '@/src/types/index';
 import TableHeader from '@/src/obi/components/Tables/TableHeader';
-import { ExportsService } from '@/src/obi/utilities/export/ExportsService';
 import TableToolbar from '@/src/obi/components/Tables/TableToolbar';
+import { ExportsService } from '@/src/obi/utilities/export/ExportsService';
+import { Admin } from '@/src/types/index';
 
 
 import DialogError from '@/src/obi/components/Dialog/DialogError';
-import { ContextMenu } from 'primereact/contextmenu';
 import { useRouter } from 'next/navigation';
+import { ContextMenu } from 'primereact/contextmenu';
 
 
 const templateHelper = require('@/src/obi/components/Tables/TemplateHelper');
@@ -45,11 +45,11 @@ export default function Table({
 
     const [loading, setLoading] = useState(false);
     const [totalRecords, setTotalRecords] = useState(0);
-    const [selectedCatalog, setSelectedCatalog] = useState(null);
-    const [size, setSize] = useState<string>('small');
-    const [filterDisplay, setFilterDisplay] = useState('menu');
-    const [stateStorage, setStateStorage] = useState('session');
-    const [dlgError, setDlgError] = useState();
+    const [selectedCatalog, setSelectedCatalog] = useState<any>(null);
+    const [size, setSize] = useState<any>('small');
+    const [filterDisplay, setFilterDisplay] = useState<any>('menu');
+    const [stateStorage, setStateStorage] = useState<any>('session');
+    const [dlgError, setDlgError] = useState<any>();
 
 
     // DataTable columns toggle
@@ -72,7 +72,7 @@ export default function Table({
 
 
 
-    const cm = useRef(null);
+    const cm = useRef<any>(null);
     const router = useRouter()
     const menuModel = [
         { label: 'Nouveau', icon: 'pi pi-fw pi-plus', url: './create' },
@@ -92,7 +92,7 @@ export default function Table({
         },
     ];
 
-    let loadLazyTimeout = useRef(null);
+    let loadLazyTimeout: any = undefined;
     /**
     * Loading data with lazy loading
     */
@@ -244,23 +244,19 @@ export default function Table({
         }
         // return renderGlobalFilter();
     }
-    const paginatorLeft = () => {
-        //const paginatorLeft = <Button type="button" icon="pi pi-refresh" text />;
-        return (
-            <div className="flex justify-content-between align-items-center">
-            </div>
-        )
-    }
-    const paginatorRight = () => {
-        //const paginatorRight = <Button type="button" icon="pi pi-download" text />;
-        return (
-            <div className="flex justify-content-between align-items-center">
-                <Button type="button" label='CSV' icon="pi pi-file" onClick={() => ExportsService.exportToCSV(services, lazyParams, prefix)} className="mr-2" data-pr-tooltip="CSV" />
-                <Button type="button" label='XLSX' icon="pi pi-file-excel" onClick={() => ExportsService.exportToExcel(services, lazyParams, prefix)} className="p-button-success mr-2" data-pr-tooltip="XLS" />
-                <Button type="button" label='PDF' icon="pi pi-file-pdf" onClick={() => ExportsService.exportToPDF(services, lazyParams, prefix, columns, exportColumnsStyle)} className="p-button-warning mr-2" data-pr-tooltip="PDF" />
-            </div>
-        )
-    }
+    const paginatorLeft = <React.Fragment>
+
+        <div className="flex justify-content-between align-items-center">
+        </div>
+    </React.Fragment>;
+    const paginatorRight = <React.Fragment>
+
+        <div className="flex justify-content-between align-items-center">
+            <Button type="button" label='CSV' icon="pi pi-file" onClick={() => ExportsService.exportToCSV(services, lazyParams, prefix)} className="mr-2" data-pr-tooltip="CSV" />
+            <Button type="button" label='XLSX' icon="pi pi-file-excel" onClick={() => ExportsService.exportToExcel(services, lazyParams, prefix)} className="p-button-success mr-2" data-pr-tooltip="XLS" />
+            <Button type="button" label='PDF' icon="pi pi-file-pdf" onClick={() => ExportsService.exportToPDF(services, lazyParams, prefix, columns, exportColumnsStyle)} className="p-button-warning mr-2" data-pr-tooltip="PDF" />
+        </div>
+    </React.Fragment>;
 
 
     // Export / Import

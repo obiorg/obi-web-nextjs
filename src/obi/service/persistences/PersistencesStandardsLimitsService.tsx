@@ -93,7 +93,7 @@ export const PersistencesStandardsLimitsService = {
                 if (res.status === 404) throw new Error('404, Not found');
                 if (res.status === 500) throw new Error('500, internal server error');
                 // For any other server error
-                throw new Error(res.status);
+                throw new Error(`HTTP status ${res.status} error`);
             }
         } catch (error) {
             if (error instanceof SyntaxError) {
@@ -132,7 +132,7 @@ export const PersistencesStandardsLimitsService = {
                 if (res.status === 404) throw new Error('404, Not found');
                 if (res.status === 500) throw new Error('500, internal server error');
                 // For any other server error
-                throw new Error(res.status);
+                throw new Error(`HTTP status ${res.status} error`);
             }
         } catch (error) {
             if (error instanceof SyntaxError) {
@@ -157,7 +157,7 @@ export const PersistencesStandardsLimitsService = {
                 if (res.status === 404) throw new Error('404, Not found');
                 if (res.status === 500) throw new Error('500, internal server error');
                 // For any other server error
-                throw new Error(res.status);
+                throw new Error(`HTTP status ${res.status} error`);
             }
         } catch (error) {
             if (error instanceof SyntaxError) {
@@ -192,7 +192,7 @@ export const PersistencesStandardsLimitsService = {
      */
     async create(
         formState: PersistencesStandardsLimitsFormState,
-        formData: FormData): Promise<PersistencesStandardsLimitsFormState> {
+        formData: FormData | any): Promise<PersistencesStandardsLimitsFormState> {
 
         // console.log('formData', formData);
         let data: any;
@@ -248,7 +248,7 @@ export const PersistencesStandardsLimitsService = {
 
     async processAll(formState: any, datas: any): Promise<any> {
         let res: any = [];
-        datas.forEach((row, index) => {
+        datas.forEach((row:any, index:any) => {
             PersistencesStandardsLimitsService.create(formState, row).then((res_row) => {
                 console.log('res_row', res_row, 'res', res);
                 res.push(res_row);
@@ -277,7 +277,7 @@ export const PersistencesStandardsLimitsService = {
                 body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
             }
         )
-        const dataset: PersistencesStandardsLimitsFormState = await res.json();
+        const dataset: PersistencesStandardsLimitsFormState[] = await res.json();
         return dataset;
 
     },
@@ -285,7 +285,7 @@ export const PersistencesStandardsLimitsService = {
 
     async update(
         formState: PersistencesStandardsLimitsFormState,
-        formData: FormData): Promise<PersistencesStandardsLimitsFormState> {
+        formData: FormData | any): Promise<PersistencesStandardsLimitsFormState> {
 
 
         let data = {

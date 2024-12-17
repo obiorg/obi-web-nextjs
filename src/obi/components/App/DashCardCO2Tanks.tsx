@@ -62,7 +62,7 @@ export default function DashCardCO2Tanks(
     const [state, setState] = useState('???');
     const [updated, setUpdated] = useState(new Date(0));
 
-     let loadLazyTimeout = useRef(null);
+     let loadLazyTimeout:any = undefined
 
     const [changing, setChanging] = useState(false);
     const [changed, setChanged] = useState(false);
@@ -91,7 +91,7 @@ export default function DashCardCO2Tanks(
                 } else {
                     // console.log('DashCardCO2Tanks >> success', data);
 
-                    data.forEach(tag => {
+                    data.forEach((tag:any) => {
                         tags.forEach(tagId => {
                             if (tagId === tag.id) {
                                 switch (tags.indexOf(tagId)) {
@@ -110,10 +110,10 @@ export default function DashCardCO2Tanks(
 
                     // let dates = data.map((d: any) => { return [d.vStamp.replace('Z','')]; });
                     // console.log('date', dates);
-                    let update: Date[] = data.map((d: any) => { return [Date.parse(d.vStamp.replace('Z', ''))]; });
+                    let update: any[] = data.map((d: any) => { return [Date.parse(d.vStamp.replace('Z', ''))]; });
                     // console.log('update', update);
                     // console.log('Min', Math.min(...update))
-                    setUpdated(Math.min(...update));
+                    setUpdated(new Date(Math.min.apply(null,update)));
 
 
                 }

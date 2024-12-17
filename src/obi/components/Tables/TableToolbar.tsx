@@ -135,8 +135,8 @@ export default function TableToolbar({ id, name,
 
 
     // Options
-    const menu = useRef(null);
-    const toast = useRef(null);
+    const menu = useRef<any>(null);
+    const toast = useRef<any>(null);
     const items = [
         {
             label: 'Taille',
@@ -225,7 +225,7 @@ export default function TableToolbar({ id, name,
         }
     ];
 
-    const menuImportExport = useRef(null);
+    const menuImportExport = useRef<any>(null);
     const modelImportExport = [
         {
             label: importLabel,

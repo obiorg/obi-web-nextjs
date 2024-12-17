@@ -37,7 +37,7 @@ export const LocationsService = {
                 if (res.status === 404) throw new Error('404, Not found');
                 if (res.status === 500) throw new Error('500, internal server error');
                 // For any other server error
-                throw new Error(res.status);
+                throw new Error(`HTTP status ${res.status} error`);
             }
         } catch (error) {
             if (error instanceof SyntaxError) {
@@ -76,7 +76,7 @@ export const LocationsService = {
                 if (res.status === 404) throw new Error('404, Not found');
                 if (res.status === 500) throw new Error('500, internal server error');
                 // For any other server error
-                throw new Error(res.status);
+                throw new Error(`HTTP status ${res.status} error`);
             }
         } catch (error) {
             if (error instanceof SyntaxError) {
@@ -101,7 +101,7 @@ export const LocationsService = {
                 if (res.status === 404) throw new Error('404, Not found');
                 if (res.status === 500) throw new Error('500, internal server error');
                 // For any other server error
-                throw new Error(res.status);
+                throw new Error(`HTTP status ${res.status} error`);
             }
         } catch (error) {
             if (error instanceof SyntaxError) {
@@ -136,7 +136,7 @@ export const LocationsService = {
      */
     async create(
         formState: OBI.LocationsFormState,
-        formData: FormData): Promise<OBI.LocationsFormState> {
+        formData: FormData | any): Promise<OBI.LocationsFormState> {
 
         // console.log('formData', formData);
         let data: any;
@@ -194,7 +194,7 @@ export const LocationsService = {
 
     async processAll(formState: any, datas: any): Promise<any> {
         let res: any = [];
-        datas.forEach((row, index) => {
+        datas.forEach((row:any, index:any) => {
             LocationsService.create(formState, row).then((res_row) => {
                 console.log('res_row', res_row, 'res', res);
                 res.push(res_row);
@@ -224,7 +224,7 @@ export const LocationsService = {
             }
         )
         // console.log("LocationsService response", res);
-        const dataset: OBI.LocationsFormState = await res.json();
+        const dataset: OBI.LocationsFormState[] = await res.json();
         console.log('LocationsService >> result from api locations ', dataset);
         return dataset;
 
@@ -233,7 +233,7 @@ export const LocationsService = {
 
     async update(
         formState: OBI.LocationsFormState,
-        formData: FormData): Promise<OBI.LocationsFormState> {
+        formData: FormData | any): Promise<OBI.LocationsFormState> {
 
 
         let data = {

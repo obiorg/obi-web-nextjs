@@ -64,7 +64,7 @@ export default function CompaniesDropDown({
     const [initCatalog, setInitCatalog] = useState(false);
 
 
-    let loadLazyTimeout = useRef(null);
+    let loadLazyTimeout:any = undefined;
 
 
 

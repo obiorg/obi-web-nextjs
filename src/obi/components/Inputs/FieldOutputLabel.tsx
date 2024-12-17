@@ -69,9 +69,9 @@ export default function FieldOutputLabel(
         } else if (type === 'date') {
 
         } else if (type === 'time') {
-            setDisplayValue(new Date(value).toLocaleTimeString());
+            setDisplayValue(new Date(value?value:new Date()).toLocaleTimeString());
         } else if (type === 'number') {
-            setDisplayValue(value?.toFixed(2));
+            setDisplayValue(value ? String(Number(value).toFixed(2)):'0');
         } else if (type === 'password') {
             setDisplayValue('*****');
         }

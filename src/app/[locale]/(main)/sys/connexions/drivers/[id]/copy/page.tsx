@@ -16,7 +16,7 @@ import { OBI } from '@/src/types/obi';
 const model = new LocationsModel();
 
 interface LocationUpdateProps {
-    params: model.defaults
+    params: any,
     // updatePost: (id: string, data: OBI.Localisations.Location) => void;
 }
 

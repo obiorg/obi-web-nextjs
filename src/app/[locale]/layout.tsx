@@ -14,7 +14,7 @@ import 'primeflex/primeflex.css';
 import 'primeicons/primeicons.css';
 import '@/src/styles/layout/layout.scss';
 import '@/src/styles/demo/Demos.scss';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { Button } from "primereact/button";
 
 
@@ -26,7 +26,7 @@ type RootLayoutProps = {
 
 export default function RootLayout({ params, children }: RootLayoutProps) {
     /** Manage locale properties */
-    const { local } = params;
+    const { locale } = params;
 
     /** Prime react */
     const { layoutConfig } = useContext(LayoutContext);
@@ -494,17 +494,23 @@ export default function RootLayout({ params, children }: RootLayoutProps) {
         }
 
     });
-    locale('fr')
+
+    useEffect(() => {
+        // Set up the locale
+        // locale = 'fr';
+    }, []);
+    // locale('fr');
+    // locale('fr')
     
-    const dir = getDirection();
+    const dir = getDirection(locale);
 
     return (
-        <html lang={local} dir={dir} suppressHydrationWarning>
+        <html lang={locale} dir={dir} suppressHydrationWarning>
             <head>
                 <link id="theme-css" href={`/themes/lara-dark-teal/theme.css`} rel="stylesheet"></link>
             </head>
             <body>
-                <PrimeReactProvider value={local}>
+                <PrimeReactProvider value={params}>
                     <LayoutProvider>{children}</LayoutProvider>
 
                 </PrimeReactProvider>

@@ -37,8 +37,8 @@ interface EntitiesPostFormProps {
         // The initial data for the form fields
         id: number;
         deleted: boolean;
-        created: date;
-        changed: date;
+        created: Date;
+        changed: Date;
 
         entity: string;
         designation: string;
@@ -95,7 +95,7 @@ export const EntitiesService = {
                 if (res.status === 404) throw new Error('404, Not found');
                 if (res.status === 500) throw new Error('500, internal server error');
                 // For any other server error
-                throw new Error(res.status);
+                throw new Error(`HTTP status ${res.status} error`);
             }
         } catch (error) {
             if (error instanceof SyntaxError) {
@@ -134,7 +134,7 @@ export const EntitiesService = {
                 if (res.status === 404) throw new Error('404, Not found');
                 if (res.status === 500) throw new Error('500, internal server error');
                 // For any other server error
-                throw new Error(res.status);
+                throw new Error(`HTTP status ${res.status} error`);
             }
         } catch (error) {
             if (error instanceof SyntaxError) {
@@ -159,7 +159,7 @@ export const EntitiesService = {
                 if (res.status === 404) throw new Error('404, Not found');
                 if (res.status === 500) throw new Error('500, internal server error');
                 // For any other server error
-                throw new Error(res.status);
+                throw new Error(`HTTP status ${res.status} error`);
             }
         } catch (error) {
             if (error instanceof SyntaxError) {
@@ -194,7 +194,7 @@ export const EntitiesService = {
      */
     async create(
         formState: EntitiesFormState,
-        formData: FormData): Promise<EntitiesFormState> {
+        formData: FormData | any): Promise<EntitiesFormState> {
 
         // console.log('formData', formData);
         let data: any;
@@ -250,7 +250,7 @@ export const EntitiesService = {
 
     async processAll(formState: any, datas: any): Promise<any> {
         let res: any = [];
-        datas.forEach((row, index) => {
+        datas.forEach((row:any, index:any) => {
             EntitiesService.create(formState, row).then((res_row) => {
                 console.log('res_row', res_row, 'res', res);
                 res.push(res_row);
@@ -280,7 +280,7 @@ export const EntitiesService = {
             }
         )
         // console.log("EntitiesService response", res);
-        const dataset: EntitiesFormState = await res.json();
+        const dataset: EntitiesFormState[]  = await res.json();
         return dataset;
 
     },
@@ -288,7 +288,7 @@ export const EntitiesService = {
 
     async update(
         formState: EntitiesFormState,
-        formData: FormData): Promise<EntitiesFormState> {
+        formData: FormData | any): Promise<EntitiesFormState> {
 
 
         let data = {

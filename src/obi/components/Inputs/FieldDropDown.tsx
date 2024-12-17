@@ -50,7 +50,7 @@ export default function FieldDropDown(
 
 
     // Used for toast
-    const toast = useRef<Toast>(null);
+    const toast = useRef<any>(null);
     const showError = (title: string, message: string) => {
         toast.current.show({ severity: 'error', summary: title, detail: message, sticky: true, closable: false });
     }
@@ -75,7 +75,7 @@ export default function FieldDropDown(
      * @param e 
      */
     const onChangeCatalog = (e: any) => {
-        onChange(e);
+        onChange ? onChange(e):false;
         setSelectedCatalog(e.value);
     }
 

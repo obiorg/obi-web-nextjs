@@ -37,7 +37,7 @@ export default function FieldInputCheckbox(
     const onCheck = (e: any) => {
         console.log('onCheck', e);
         setChecked(e.target.checked);
-        onChange(e.target.checked);
+        onChange ? onChange(e.target.checked): false;
     }
 
 

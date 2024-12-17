@@ -19,17 +19,18 @@ import OutputRecord from "@/src/obi/components/Output/OutputRecord"
 import ButtonBarCreate from "@/src/obi/components/Validations/ButtonBarCreate"
 import FieldInputText from "@/src/obi/components/Inputs/FieldInputText"
 import FieldDropDown from "@/src/obi/components/Inputs/FieldDropDown"
-import { CountriesService } from "@/src/obi/service/localisations/LocationsCountriesService"
-import { StatesService } from "@/src/obi/service/localisations/LocationsStatesService"
+import { LocationsCountriesService } from "@/src/obi/service/localisations/LocationsCountriesService"
+import { LocationsStatesService } from "@/src/obi/service/localisations/LocationsStatesService"
 import { LocationsStatesModel } from "@/src/obi/models/localisations/LocationsStatesModel"
 import { LocationsCitiesModel } from "@/src/obi/models/localisations/LocationsCitiesModel"
-import { CitiesService } from "@/src/obi/service/localisations/LocationsCitiesService"
+import { LocationsCitiesService } from "@/src/obi/service/localisations/LocationsCitiesService"
 import FieldInputNumber from "@/src/obi/components/Inputs/FieldInputNumber"
 import FieldInputCheckbox from "@/src/obi/components/Inputs/FieldInputCheckbox"
 import FieldLabel from "@/src/obi/components/Inputs/FieldOutputLabel"
 import FieldOutputLabel from "@/src/obi/components/Inputs/FieldOutputLabel"
 import { useRouter } from "next/navigation"
 import DialogError from "@/src/obi/components/Dialog/DialogError"
+import { DataTableFilterMeta } from "primereact/datatable"
 
 
 // Define the shape of the form errors locations
@@ -67,8 +68,8 @@ interface LocationsPostFormProps {
         // The initial data for the form fields
         id: number;
         deleted: boolean;
-        created: date;
-        changed: date;
+        created: Date;
+        changed: Date;
 
         location: string;
         designation: string;
@@ -105,12 +106,12 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
     })
 
     // Used for toast
-    const toast = useRef<Toast>(null);
-    const msg = useRef(null);
+    const toast = useRef<any>(null);
+    const msg = useRef<any>();
 
     // Managing long request wating
     const [lazyLoading, setLazyLoading] = useState<any>(false);
-    let loadLazyTimeout = useRef(null);
+    let loadLazyTimeout:any = undefined;
 
 
     // Sub state dropdown selection
@@ -131,7 +132,7 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
 
     // To manage validation
     const [saveMode, setSaveMode] = useState(0); // 0: save and reset; 1: save
-    const formRef = React.useRef();
+    const formRef = React.useRef(document.createElement('form'));
     const [enableOnupdate, setEnableOnupdate] = useState(true); //
 
 
@@ -154,59 +155,59 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
 
 
     const onChangedCountry = (e: any) => {
-        initialData.country = e.value
-        if (initialData?.country !== undefined) {
-            setCountryOn(true);
-            StatesService.count().then((count: any) => {
-                setLazyParamsStates(
-                    () => {
-                        return {
-                            ...lazyParamsStates,
-                            filters: {
-                                "global": { value: null, matchMode: 'contains' },
-                                "country_id": { operator: 'and', constraints: [{ value: e.value, matchMode: 'equals' }] }
-                            },
-                            rows: count,
-                        }
-                    }
-                );
-            });
-        } else {
-            setCountryOn(false);
-        }
+        // initialData.country = e.value
+        // if (initialData?.country !== undefined) {
+        //     setCountryOn(true);
+        //     LocationsStatesService.count().then((count: any) => {
+        //         setLazyParamsStates(
+        //             () => {
+        //                 return {
+        //                     ...lazyParamsStates,
+        //                     filters: {
+        //                         "global": { value: null, matchMode: 'contains' },
+        //                         "country_id": { operator: 'and', constraints: [{ value: e.value, matchMode: 'equals' }] }
+        //                     },
+        //                     rows: count,
+        //                 }
+        //             }
+        //         );
+        //     });
+        // } else {
+        //     setCountryOn(false);
+        // }
     }
 
     const onChangedState = (e: any) => {
-        initialData.state = e.value
-        if (initialData?.state !== undefined) {
-            setStateOn(true);
-            CitiesService.count().then((count: any) => {
-                setLazyParamsCities(
-                    () => {
-                        return {
-                            ...lazyParamsCities,
-                            filters: {
-                                "global": { value: null, matchMode: 'contains' },
-                                "country_id": { operator: 'and', constraints: [{ value: initialData?.country, matchMode: 'equals' }] },
-                                "state_id": { operator: 'and', constraints: [{ value: e.value, matchMode: 'equals' }] }
-                            },
-                            rows: count,
-                        }
-                    }
-                );
-            });
-        } else {
-            setStateOn(false);
-        }
+        // initialData.state = e.value
+        // if (initialData?.state !== undefined) {
+        //     setStateOn(true);
+        //     LocationsCitiesService.count().then((count: any) => {
+        //         setLazyParamsCities(
+        //             () => {
+        //                 return {
+        //                     ...lazyParamsCities,
+        //                     filters: {
+        //                         "global": { value: null, matchMode: 'contains' },
+        //                         "country_id": { operator: 'and', constraints: [{ value: initialData?.country, matchMode: 'equals' }] },
+        //                         "state_id": { operator: 'and', constraints: [{ value: e.value, matchMode: 'equals' }] }
+        //                     },
+        //                     rows: count,
+        //                 }
+        //             }
+        //         );
+        //     });
+        // } else {
+        //     setStateOn(false);
+        // }
     }
 
     const onChangedCity = (e: any) => {
-        initialData.city = e.value
-        if (initialData?.city !== undefined) {
-            // setStateOn(true);
-        } else {
-            // setStateOn(false);
-        }
+        // initialData.city = e.value
+        // if (initialData?.city !== undefined) {
+        //     // setStateOn(true);
+        // } else {
+        //     // setStateOn(false);
+        // }
     }
 
     const doMsgPrompt = (severity: string, summary: string, message: string, sticky?: boolean) => {
@@ -222,8 +223,8 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
 
     useEffect(() => {
         {
-            onMessage ?
-                msg?.current?.show([
+            onMessage  && msg.current!=null ?
+                msg.current.show([
                     { sticky: msgSticky, life: 5000, severity: msgSeverity, summary: msgSummary, detail: msgDetail },
                 ])
                 : ''
@@ -374,19 +375,19 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
     const [reload, setReload] = useState(false);
     useEffect(() => {
         // Get full data list
-        CountriesService.list().then((data: any) => {
-            if (data.status) {
-                showError(data.status, data.message);
-            } else {
-                setCountries(() => {
-                    return data.map((item: any) => ({
-                        label: item.name + ' - ' + item.iso3 + ' (' + item.numeric_code + ') ' + ' -  [' + item.id + ']',
-                        value: item.id,
-                        catalog: item
-                    }));
-                });
-            }
-        });
+        // CountriesService.list().then((data: any) => {
+        //     if (data.status) {
+        //         showError(data.status, data.message);
+        //     } else {
+        //         setCountries(() => {
+        //             return data.map((item: any) => ({
+        //                 label: item.name + ' - ' + item.iso3 + ' (' + item.numeric_code + ') ' + ' -  [' + item.id + ']',
+        //                 value: item.id,
+        //                 catalog: item
+        //             }));
+        //         });
+        //     }
+        // });
     }, [reload]); // eslint-disable-line react-hooks/exhaustive-deps
 
 
@@ -395,7 +396,7 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
      */
     const [states, setStates] = useState<any>([]);
     const stateModel = new LocationsStatesModel();
-    const defaultFiltersStates: Array<DataTableFilterMeta> = StatesService.defaultFilters();
+    const defaultFiltersStates: Array<DataTableFilterMeta> = LocationsStatesService.defaultFilters();
     const [lazyParamsStates, setLazyParamsStates] = useState(
         stateModel.getStandardParam({ field: 'name', order: 1 },
             {
@@ -406,12 +407,12 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
         ));
 
 
-    const [dlgError, setDlgError] = useState();
+        const [dlgError, setDlgError] = useState<any>();
     useEffect(() => {
         const lazyEventSet = { lazyEvent: JSON.stringify(lazyParamsStates) };
         console.log(lazyParamsStates);
         // Get full data list
-        StatesService.getLazy(lazyEventSet).then((data: any) => {
+        LocationsStatesService.getLazy(lazyEventSet).then((data: any) => {
             if (data.status && data.status !== 200) {
                 setDlgError(data);
                 return;
@@ -433,7 +434,7 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
      */
     const [cities, setCities] = useState<any>([]);
     const cityModel = new LocationsCitiesModel();
-    const defaultFiltersCities: Array<DataTableFilterMeta> = CitiesService.defaultFilters();
+    const defaultFiltersCities: Array<DataTableFilterMeta> = LocationsCitiesService.defaultFilters();
     const [lazyParamsCities, setLazyParamsCities] = useState(
         cityModel.getStandardParam({ field: 'name', order: 1 },
             {
@@ -446,7 +447,7 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
         const lazyEventSet = { lazyEvent: JSON.stringify(lazyParamsCities) };
 
         // Get full data list
-        CitiesService.getLazy(lazyEventSet).then((data: any) => {
+        LocationsCitiesService.getLazy(lazyEventSet).then((data: any) => {
             if (data.status) {
                 showError(data.status, data.message);
             } else {
@@ -487,7 +488,7 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
 
 
 
-            <h3>{type === 0 ? 'Création' : 'Modification'} d'une Localisation</h3>
+            <h3>{type === 0 ? 'Création' : 'Modification'} d une Localisation</h3>
             <hr />
 
             <BlockUI blocked={blockedFrom}>

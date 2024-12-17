@@ -23,7 +23,7 @@ export default function Header(
 
   const { locales, defaultLocale, languages } = i18n;
 
-  const toast = useRef<Toast>(null);
+  const toast = useRef<any>(null);
 
   const [langs, setLangs] = useState<HeaderProps[] | null>(null);
   const [selectedLanguage, setSelectedLanguage] = useState<HeaderProps | null>(null);

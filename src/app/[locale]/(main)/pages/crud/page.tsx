@@ -39,7 +39,7 @@ const Crud = () => {
     const [selectedProducts, setSelectedProducts] = useState(null);
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState('');
-    const toast = useRef<Toast>(null);
+    const toast = useRef<any>(null);
     const dt = useRef<DataTable<any>>(null);
 
     useEffect(() => {

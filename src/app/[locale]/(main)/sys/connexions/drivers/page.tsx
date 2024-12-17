@@ -15,7 +15,7 @@ const sysComponentsHelper = require('@/src/app/[locale]/(main)/sys/SysComponents
 const MachinesDrivers = () => {
 
 
-    const [columns, setColumns] = useState<OBI.ColumnMeta[]>([
+    const [columns, setColumns] = useState<any[]>([
         { field: 'id', header: 'ID', dataType: 'numeric', sortable: true, filter: true, filterElement: templateHelper.integerFilterTemplate, style: { textAlign: 'right' } },
         { field: 'deleted', header: 'Supp.', dataType: "boolean", body: templateHelper.bool, sortable: true, filter: true, filterElement: templateHelper.booleanFilterTemplate, style: { textAlign: 'center', minWidth: '6rem' } },
         { field: 'created', header: 'Créé', dataType: 'date', bodyTemplate: templateHelper.datetime, sortable: true, filter: true, filterField: "date", filterPlaceholder: 'Insérer une date', filterElement: templateHelper.dateFilterTemplate, style: { textAlign: 'center' } },

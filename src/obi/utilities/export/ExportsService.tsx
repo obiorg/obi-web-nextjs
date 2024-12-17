@@ -383,7 +383,7 @@ export const ExportsService = {
         }
     },
 
-    pdfColumnsStyle(columns: OBI.ColumnMeta[]): any {
+    pdfColumnsStyle(columns: any[]): any {
         let seq = columns.map(column => { return column.dataType; });
         let columnStyles = {};
         seq.forEach((column, index) => {

@@ -43,7 +43,7 @@ export default function ButtonBarCreate({
     const { pending } = useFormStatus();
 
     // Used for toast
-    const toast = useRef<Toast>(null);
+    const toast = useRef<any>(null);
 
     // managing mode 
     const [mode, setMode] = useState(0); // see modes

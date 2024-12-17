@@ -11,7 +11,7 @@ import { LocationsStatesModel } from "../../models/localisations/LocationsStates
 
 
 
-export const StatesService = {
+export const LocationsStatesService = {
 
     async count(): Promise<number> {
         const url = process.env.httpPath + '/localisations/states/count';
@@ -111,8 +111,8 @@ export const StatesService = {
 
 
         // console.log("result", result.error);
-        // console.log('StatesService : createPost >> formData : ', formData);
-        // console.log('StatesService : createPost >> formState : ', formState);
+        // console.log('LocationsStatesService : createPost >> formData : ', formData);
+        // console.log('LocationsStatesService : createPost >> formState : ', formState);
 
 
         // // If validation fails, return the errors
@@ -163,9 +163,9 @@ export const StatesService = {
                 body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
             }
         )
-        console.log("StatesService response", res);
+        console.log("LocationsStatesService response", res);
         const dataset: any[] = await res.json();
-        console.log('StatesService >> result from api entities ', dataset);
+        console.log('LocationsStatesService >> result from api entities ', dataset);
         return dataset;
 
 

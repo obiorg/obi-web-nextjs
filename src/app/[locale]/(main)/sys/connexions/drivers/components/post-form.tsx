@@ -20,7 +20,6 @@ import ButtonBarCreate from "@/src/obi/components/Validations/ButtonBarCreate"
 import FieldInputText from "@/src/obi/components/Inputs/FieldInputText"
 import FieldDropDown from "@/src/obi/components/Inputs/FieldDropDown"
 import { LocationsCountriesService } from "@/src/obi/service/localisations/LocationsCountriesService"
-import { LocationsStatesService } from "@/src/obi/service/localisations/LocationsStatesService"
 import { LocationsStatesModel } from "@/src/obi/models/localisations/LocationsStatesModel"
 import { LocationsCitiesModel } from "@/src/obi/models/localisations/LocationsCitiesModel"
 import { LocationsCitiesService } from "@/src/obi/service/localisations/LocationsCitiesService"
@@ -31,6 +30,7 @@ import FieldOutputLabel from "@/src/obi/components/Inputs/FieldOutputLabel"
 import { useRouter } from "next/navigation"
 import DialogError from "@/src/obi/components/Dialog/DialogError"
 import { DataTableFilterMeta } from "primereact/datatable"
+import { LocationsStatesService } from "@/src/obi/service/localisations/StatesService copy"
 
 
 // Define the shape of the form errors locations

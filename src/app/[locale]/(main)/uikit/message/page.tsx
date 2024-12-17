@@ -9,7 +9,7 @@ import { Button } from 'primereact/button';
 const MessagesDemo = () => {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
-    const toast = useRef<Toast>(null);
+    const toast = useRef<any>(null);
     const message = useRef<Messages>(null);
 
     const addSuccessMessage = () => {

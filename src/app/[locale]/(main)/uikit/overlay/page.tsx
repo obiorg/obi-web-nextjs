@@ -26,7 +26,7 @@ const OverlayDemo = () => {
     const [selectedProduct, setSelectedProduct] = useState<Demo.Product | null>(null);
     const op = useRef<OverlayPanel>(null);
     const op2 = useRef<OverlayPanel>(null);
-    const toast = useRef<Toast>(null);
+    const toast = useRef<any>(null);
 
     const accept = () => {
         toast.current?.show({

@@ -132,6 +132,7 @@ export default function Table({
 
 
     useEffect(() => {
+        lazyParams;
         loadLazyData();
     }, [lazyParams]);
 

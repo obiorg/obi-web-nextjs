@@ -1,13 +1,13 @@
 
 
 import { OBI } from "@/src/types/obi";
-import { TagsListContentsModel } from "../../models/tags/TagsListContentsModel";
+import { TagsListModel } from "../../models/tags/TagsListModel";
 
 
 
 
-    // Define the shape of the form errors TagsListContents
-    interface TagsListContentsFormErrors {
+    // Define the shape of the form errors TagsLists
+    interface TagsListsFormErrors {
         id?: string[];
         deleted?: string[];
         created?: string[];
@@ -22,12 +22,12 @@ import { TagsListContentsModel } from "../../models/tags/TagsListContentsModel";
     }
 
     // Define the shape of the form state
-    interface TagsListContentsFormState {
-        errors: TagsListContentsFormErrors;
+    interface TagsListsFormState {
+        errors: TagsListsFormErrors;
     }
 
     // Define the props that the PostForm component expects
-    interface TagsListContentsPostFormProps {
+    interface TagsListsPostFormProps {
         formAction: any; // The action to perform when the form is submitted
         type: number; // 0: create, 1: update, 2: destroy (delete), 3: read
         initialData: {
@@ -48,7 +48,7 @@ import { TagsListContentsModel } from "../../models/tags/TagsListContentsModel";
     }
 
     // Define an interface for the form state
-    interface TagsListContentsPostFormState {
+    interface TagsListsPostFormState {
         errors: {
             id?: string[];
             deleted?: string[];
@@ -68,7 +68,7 @@ import { TagsListContentsModel } from "../../models/tags/TagsListContentsModel";
 
 
 
-export const TagsListContentsService = {
+export const TagsListsService = {
 
     /**
      * Find catalogs specified by lazy parameters
@@ -173,12 +173,12 @@ export const TagsListContentsService = {
 
 
     defaultMultiSortMeta(): any {
-        const model = new TagsListContentsModel();
+        const model = new TagsListModel();
         return model.toMultiSortMeta();
     },
 
     defaultFilters(): any {
-        const model = new TagsListContentsModel();
+        const model = new TagsListModel();
         return model.toDefaultFilters();
     },
 
@@ -191,8 +191,8 @@ export const TagsListContentsService = {
      * @returns 
      */
     async create(
-        formState: TagsListContentsFormState,
-        formData: FormData | any): Promise<TagsListContentsFormState> {
+        formState: TagsListsFormState,
+        formData: FormData | any): Promise<TagsListsFormState> {
 
         // console.log('formData', formData);
         let data: any;
@@ -241,7 +241,7 @@ export const TagsListContentsService = {
                 body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
             }
         )
-        const dataset: TagsListContentsFormState = await res.json();
+        const dataset: TagsListsFormState = await res.json();
         return dataset;
 
     },
@@ -249,7 +249,7 @@ export const TagsListContentsService = {
     async processAll(formState: any, datas: any): Promise<any> {
         let res: any = [];
         datas.forEach((row:any, index:any) => {
-            TagsListContentsService.create(formState, row).then((res_row) => {
+            TagsListsService.create(formState, row).then((res_row) => {
                 console.log('res_row', res_row, 'res', res);
                 res.push(res_row);
                 console.log('res_row', res_row, 'res', res);
@@ -277,15 +277,15 @@ export const TagsListContentsService = {
                 body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
             }
         )
-        const dataset: TagsListContentsFormState[] = await res.json();
+        const dataset: TagsListsFormState[] = await res.json();
         return dataset;
 
     },
 
 
     async update(
-        formState: TagsListContentsFormState,
-        formData: FormData | any): Promise<TagsListContentsFormState> {
+        formState: TagsListsFormState,
+        formData: FormData | any): Promise<TagsListsFormState> {
 
 
         let data = {
@@ -328,7 +328,7 @@ export const TagsListContentsService = {
                 body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
             }
         )
-        const dataset: TagsListContentsFormState = await res.json();
+        const dataset: TagsListsFormState = await res.json();
         return dataset;
 
 
@@ -361,7 +361,7 @@ export const TagsListContentsService = {
 
 
 
-    async delete(id: any): Promise<TagsListContentsFormState> {
+    async delete(id: any): Promise<TagsListsFormState> {
 
 
         const url = process.env.httpPath + '/tags/listcontents/' + id;
@@ -379,7 +379,7 @@ export const TagsListContentsService = {
                 },
             }
         )
-        const dataset: TagsListContentsFormState = await res.json();
+        const dataset: TagsListsFormState = await res.json();
         return dataset;
 
 

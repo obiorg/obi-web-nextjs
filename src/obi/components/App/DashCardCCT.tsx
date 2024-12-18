@@ -66,115 +66,113 @@ export default function DashCardCCT(
     const [stateDisplayed, setStateDisplayed] = useState('???');
     const [updated, setUpdated] = useState(new Date(0));
 
-    const [loading, setLoading] = useState(false);
-    let loadLazyTimeout:any = undefined;
-    const [lazyParams, setlazyParmas] =
-        useState(
-            new PersistencesStandardsModel().getStandardParam({ field: 'changed', order: -1 }, PersistencesStandardsService.defaultFilters()));
+    const [_tags, set_tags]: any[] = tags;
+
+
+    const dataUpdate = (_tags: any[]) => {
+
+        // setLoading(true);
+
+        // if (loadLazyTimeout) {
+        //     clearTimeout(loadLazyTimeout);
+        // }
+
+
+        // //initiate delay of a backend call
+        // loadLazyTimeout = setTimeout(() => {
+        // Get Lazy Data
+        TagsService.getByIds(_tags).then((data: any) => {
+            // console.log('tag : ' + _tags[cursor] + ' cursor : ' + cursor + ' = ', data)
+            if (data.status && data.status !== 200) {
+                // console.log(data.status + ' in DashCardCCT reading tag ' + tags[cursor]);
+                console.log('DashCardCCT >> Error', data);
+                return 0;
+            } else {
+                // console.log('DashCardCCT >> success', data);
+
+                data.forEach((tag: any) => {
+                    _tags.forEach((tagId: any) => {
+                        if (tagId === tag.id) {
+                            switch (_tags.indexOf(tagId)) {
+                                case 0:
+                                    setVolume(tag.vFloat);
+                                    if (updated === undefined || updated > data.vStamp) {
+                                        setUpdated(data.vStamp);
+                                    }
+                                    break;
+                                case 1:
+                                    setPressure(tag.vFloat);
+                                    if (updated === undefined || updated > data.vStamp) {
+                                        setUpdated(data.vStamp);
+                                    }
+                                    break;
+                                case 2:
+                                    setTemperatureMiddle(tag.vFloat);
+                                    if (updated === undefined || updated > data.vStamp) {
+                                        setUpdated(data.vStamp);
+                                    }
+                                    break;
+                                case 3:
+                                    setTemperatureBottom(tag.vFloat);
+                                    if (updated === undefined || updated > data.vStamp) {
+                                        setUpdated(data.vStamp);
+                                    }
+                                    break;
+                                case 4:
+                                    setState(tag.vInt);
+                                    TagsListContentsService.getByTag(tag).then((tagListContents: any) => {
+                                        // console.log('find data is ', tagListContents, tagListContents[0]);
+                                        if (tagListContents.length > 0) {
+                                            setStateDisplayed(tagListContents[0].value);
+                                        }
+                                    });
+
+                                    if (updated === undefined || updated > data.vStamp) {
+                                        setUpdated(data.vStamp);
+                                    }
+                                    break;
+                            }
+                        }
+                    });
+                });
+
+
+                // let dates = data.map((d: any) => { return [d.vStamp.replace('Z','')]; });
+                // console.log('date', dates);
+                let update: any[] = data.map((d: any) => { return [Date.parse(d.vStamp.replace('Z', ''))]; });
+                // console.log('update', update);
+                // console.log('Min', Math.min(...update))
+                // setUpdated(Math.min(...update));
+                setUpdated(new Date(Math.min.apply(null, update)));
+
+
+            }
+        });
+        // }, Math.random() * 1000 + 500) as unknown as number;
+
+    };
 
 
 
     /**
      * Get value listed by tags
      */
-    const getValue = () => {
-
-        setLoading(true);
-
-        if (loadLazyTimeout) {
-            clearTimeout(loadLazyTimeout);
-        }
-
-
-        //initiate delay of a backend call
-        loadLazyTimeout = setTimeout(() => {
-            // Get Lazy Data
-            TagsService.getByIds(tags).then((data: any) => {
-                // console.log('tag : ' + tags[cursor] + ' cursor : ' + cursor + ' = ', data)
-                if (data.status && data.status !== 200) {
-                    // console.log(data.status + ' in DashCardCCT reading tag ' + tags[cursor]);
-                    console.log('DashCardCCT >> Error', data);
-                    return 0;
-                } else {
-                    // console.log('DashCardCCT >> success', data);
-
-                    data.forEach((tag:any) => {
-                        tags.forEach(tagId => {
-                            if (tagId === tag.id) {
-                                switch (tags.indexOf(tagId)) {
-                                    case 0:
-                                        setVolume(tag.vFloat);
-                                        if (updated === undefined || updated > data.vStamp) {
-                                            setUpdated(data.vStamp);
-                                        }
-                                        break;
-                                    case 1:
-                                        setPressure(tag.vFloat);
-                                        if (updated === undefined || updated > data.vStamp) {
-                                            setUpdated(data.vStamp);
-                                        }
-                                        break;
-                                    case 2:
-                                        setTemperatureMiddle(tag.vFloat);
-                                        if (updated === undefined || updated > data.vStamp) {
-                                            setUpdated(data.vStamp);
-                                        }
-                                        break;
-                                    case 3:
-                                        setTemperatureBottom(tag.vFloat);
-                                        if (updated === undefined || updated > data.vStamp) {
-                                            setUpdated(data.vStamp);
-                                        }
-                                        break;
-                                    case 4:
-                                        setState(tag.vInt);
-                                        TagsListContentsService.getByTag(tag).then((tagListContents: any) => {
-                                            // console.log('find data is ', tagListContents, tagListContents[0]);
-                                            if (tagListContents.length > 0) {
-                                                setStateDisplayed(tagListContents[0].value);
-                                            }
-                                        });
-
-                                        if (updated === undefined || updated > data.vStamp) {
-                                            setUpdated(data.vStamp);
-                                        }
-                                        break;
-                                }
-                            }
-                        });
-                    });
-
-                    
-                    // let dates = data.map((d: any) => { return [d.vStamp.replace('Z','')]; });
-                    // console.log('date', dates);
-                    let update: any[] = data.map((d: any) => { return [Date.parse(d.vStamp.replace('Z',''))]; });
-                    // console.log('update', update);
-                    // console.log('Min', Math.min(...update))
-                    // setUpdated(Math.min(...update));
-                    setUpdated(new Date(Math.min.apply(null,update)));
-                    
-
-                }
-            });
-        }, Math.random() * 1000 + 500) as unknown as number;
-    }
-
     useEffect(() => {
-        // Update volume
-        // readLast(0);
-        getValue();
+
+        dataUpdate(_tags);
 
     }, [tags]);
 
 
 
-    // useEffect(() => {
-    //     const interval = setInterval(() => {
-    //         getValue();
-    //     }, 15000); //set your time here. repeat every 5 seconds
+    useEffect(() => {
+        const interval = setInterval(() => {
+            console.log('interval update', interval);
+            dataUpdate(_tags);
+        }, 15000); //set your time here. repeat every 5 seconds
 
-    //     return () => clearInterval(interval);
-    // }, []);
+        return () => clearInterval(interval);
+    }, []);
 
 
     return (
@@ -245,9 +243,9 @@ export default function DashCardCCT(
                                 </label> */}
                                 <Moment date={updated}
                                     format='HH:mm:ss'
-                                    // add={{minutes: (updated?(new Date(updated)).getTimezoneOffset():0)}}
-                                    // locale='fr'
-                                    // tz='Africa/Sao_Tome'
+                                // add={{minutes: (updated?(new Date(updated)).getTimezoneOffset():0)}}
+                                // locale='fr'
+                                // tz='Africa/Sao_Tome'
                                 />
 
                             </div>

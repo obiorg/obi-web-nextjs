@@ -26,7 +26,7 @@ type RootLayoutProps = {
 
 export default function RootLayout({ params, children }: RootLayoutProps) {
     /** Manage locale properties */
-    const { lang } = params;
+    const { lang } = params || {lang:'fr'};
     const [locale, setLocale] = useState<any>(lang);
 
     /** Prime react */
@@ -504,7 +504,7 @@ export default function RootLayout({ params, children }: RootLayoutProps) {
     // locale('fr')
 
     const dir = getDirection(locale);
-
+    console.log('Locale : ' + locale);
     return (
         <html lang={locale} dir={dir} suppressHydrationWarning>
             <head>

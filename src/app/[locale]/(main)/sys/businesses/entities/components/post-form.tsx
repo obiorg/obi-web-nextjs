@@ -28,7 +28,6 @@ import FieldOutputLabel from "@/src/obi/components/Inputs/FieldOutputLabel"
 import { useRouter } from "next/navigation"
 import DialogError from "@/src/obi/components/Dialog/DialogError"
 import { DataTableFilterMeta } from "primereact/datatable"
-import { LocationsStatesService } from "@/src/obi/service/localisations/StatesService copy"
 import { LocationsCitiesService } from "@/src/obi/service/localisations/LocationsCitiesService"
 
 

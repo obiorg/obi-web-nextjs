@@ -1,21 +1,18 @@
 'use client';
 
 /** langue */
-import Header from "../../obi/components/Header/Header";
-import Footer from "../../obi/components/Footer/Footer";
 import { getDirection } from "../../lib/intl";
 
 /** Primereact */
 import { LayoutContext, LayoutProvider } from '@/src/layout/context/layoutcontext';
 
-import { addLocale, locale, PrimeReactProvider } from 'primereact/api';
-import 'primereact/resources/primereact.css';
+import '@/src/styles/demo/Demos.scss';
+import '@/src/styles/layout/layout.scss';
 import 'primeflex/primeflex.css';
 import 'primeicons/primeicons.css';
-import '@/src/styles/layout/layout.scss';
-import '@/src/styles/demo/Demos.scss';
+import { addLocale, PrimeReactProvider } from 'primereact/api';
+import 'primereact/resources/primereact.css';
 import { useContext, useEffect, useState } from 'react';
-import { Button } from "primereact/button";
 
 
 type RootLayoutProps = {
@@ -27,7 +24,7 @@ type RootLayoutProps = {
 export default function RootLayout({ params, children }: RootLayoutProps) {
     /** Manage locale properties */
     const { lang:any } = params || {lang:'fr'};
-    const [locale, setLocale] = useState<any>(params.lang);
+    const [locale, setLocale] = useState<any>(params.lang || {lang:'fr'});
 
     /** Prime react */
     const { layoutConfig } = useContext(LayoutContext);

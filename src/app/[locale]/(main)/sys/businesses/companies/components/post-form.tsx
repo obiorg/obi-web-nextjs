@@ -29,6 +29,7 @@ import { useRouter } from "next/navigation"
 import DialogError from "@/src/obi/components/Dialog/DialogError"
 import { DataTableFilterMeta } from "primereact/datatable"
 import { LocationsCitiesService } from "@/src/obi/service/localisations/LocationsCitiesService"
+import { LocationsStatesService } from "@/src/obi/service/localisations/LocationsStatesService"
 
 
 // Define the shape of the form errors locations

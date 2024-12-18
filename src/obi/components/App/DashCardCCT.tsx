@@ -66,7 +66,7 @@ export default function DashCardCCT(
     const [stateDisplayed, setStateDisplayed] = useState('???');
     const [updated, setUpdated] = useState(new Date(0));
 
-    const [_tags, set_tags]: any[] = tags;
+
 
 
     const dataUpdate = (_tags: any[]) => {
@@ -159,7 +159,7 @@ export default function DashCardCCT(
      */
     useEffect(() => {
 
-        dataUpdate(_tags);
+        dataUpdate(tags);
 
     }, [tags]);
 
@@ -168,7 +168,7 @@ export default function DashCardCCT(
     useEffect(() => {
         const interval = setInterval(() => {
             console.log('interval update', interval);
-            dataUpdate(_tags);
+            dataUpdate(tags);
         }, 15000); //set your time here. repeat every 5 seconds
 
         return () => clearInterval(interval);

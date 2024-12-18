@@ -26,8 +26,8 @@ type RootLayoutProps = {
 
 export default function RootLayout({ params, children }: RootLayoutProps) {
     /** Manage locale properties */
-    const { lang } = params || {lang:'fr'};
-    const [locale, setLocale] = useState<any>(lang);
+    const { lang:any } = params || {lang:'fr'};
+    const [locale, setLocale] = useState<any>(params.lang);
 
     /** Prime react */
     const { layoutConfig } = useContext(LayoutContext);
@@ -511,7 +511,7 @@ export default function RootLayout({ params, children }: RootLayoutProps) {
                 <link id="theme-css" href={`/themes/lara-dark-teal/theme.css`} rel="stylesheet"></link>
             </head>
             <body>
-                <PrimeReactProvider value={params}>
+                <PrimeReactProvider >
                     <LayoutProvider>{children}</LayoutProvider>
 
                 </PrimeReactProvider>

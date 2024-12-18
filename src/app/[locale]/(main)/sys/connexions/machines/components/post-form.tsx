@@ -14,7 +14,7 @@ import { OBI } from "@/src/types"
 
 import DialogError from "@/src/obi/components/Dialog/DialogError"
 import FieldInputCheckbox from "@/src/obi/components/Inputs/FieldInputCheckbox"
-import FieldInputIP from "@/src/obi/components/Inputs/FieldInputIP"
+import FieldInputMask from "@/src/obi/components/Inputs/FieldInputMask"
 import FieldInputNumber from "@/src/obi/components/Inputs/FieldInputNumber"
 import FieldInputText from "@/src/obi/components/Inputs/FieldInputText"
 import FieldOutputLabel from "@/src/obi/components/Inputs/FieldOutputLabel"
@@ -25,7 +25,6 @@ import { useRouter } from "next/navigation"
 import { BlockUI } from "primereact/blockui"
 import { Messages } from "primereact/messages"
 import CompaniesDropDown from "../../../businesses/companies/components/CompaniesDropDown"
-import FieldInputMask from "@/src/obi/components/Inputs/FieldInputMask"
 
 
 

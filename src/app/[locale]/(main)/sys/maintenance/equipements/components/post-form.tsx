@@ -3,36 +3,32 @@
 // this is a client component
 'use client'
 
-import { useFormState } from "react-dom"
 import { LocationsModel } from "@/src/obi/models/localisations/LocationsModel"
 import { Toast } from "primereact/toast"
 import React, { useEffect, useRef, useState } from "react"
+import { useFormState } from "react-dom"
 
 import { OBI } from "@/src/types"
 
 
 
-import { Messages } from "primereact/messages"
-import { LocationsService } from "@/src/obi/service/localisations/LocationsService"
-import { BlockUI } from "primereact/blockui"
+import DialogError from "@/src/obi/components/Dialog/DialogError"
+import FieldDropDown from "@/src/obi/components/Inputs/FieldDropDown"
+import FieldInputCheckbox from "@/src/obi/components/Inputs/FieldInputCheckbox"
+import FieldInputNumber from "@/src/obi/components/Inputs/FieldInputNumber"
+import FieldInputText from "@/src/obi/components/Inputs/FieldInputText"
+import FieldOutputLabel from "@/src/obi/components/Inputs/FieldOutputLabel"
 import OutputRecord from "@/src/obi/components/Output/OutputRecord"
 import ButtonBarCreate from "@/src/obi/components/Validations/ButtonBarCreate"
-import FieldInputText from "@/src/obi/components/Inputs/FieldInputText"
-import FieldDropDown from "@/src/obi/components/Inputs/FieldDropDown"
-import { LocationsCountriesService } from "@/src/obi/service/localisations/LocationsCountriesService"
-import { LocationsStatesService } from "@/src/obi/service/localisations/LocationsStatesService"
-import { LocationsStatesModel } from "@/src/obi/models/localisations/LocationsStatesModel"
 import { LocationsCitiesModel } from "@/src/obi/models/localisations/LocationsCitiesModel"
+import { LocationsStatesModel } from "@/src/obi/models/localisations/LocationsStatesModel"
 import { LocationsCitiesService } from "@/src/obi/service/localisations/LocationsCitiesService"
-import FieldInputNumber from "@/src/obi/components/Inputs/FieldInputNumber"
-import FieldInputCheckbox from "@/src/obi/components/Inputs/FieldInputCheckbox"
-import FieldLabel from "@/src/obi/components/Inputs/FieldOutputLabel"
-import FieldOutputLabel from "@/src/obi/components/Inputs/FieldOutputLabel"
+import { LocationsService } from "@/src/obi/service/localisations/LocationsService"
+import { LocationsStatesService } from "@/src/obi/service/localisations/LocationsStatesService"
 import { useRouter } from "next/navigation"
-import DialogError from "@/src/obi/components/Dialog/DialogError"
+import { BlockUI } from "primereact/blockui"
 import { DataTableFilterMeta } from "primereact/datatable"
-
-
+import { Messages } from "primereact/messages"
 // Define the shape of the form errors locations
 interface LocationsFormErrors {
     id?: string[];

@@ -28,6 +28,7 @@ import { BlockUI } from "primereact/blockui"
 import { Messages } from "primereact/messages"
 import { DataTableFilterMeta } from "primereact/datatable"
 import { LocationsCitiesService } from "@/src/obi/service/localisations/LocationsCitiesService"
+import { LocationsStatesService } from "@/src/obi/service/localisations/LocationsStatesService"
 
 
 // Define the shape of the form errors locations
@@ -155,20 +156,20 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
         initialData.country = e.value
         if (initialData?.country !== undefined) {
             setCountryOn(true);
-            LocationsStatesService.count().then((count: any) => {
-                setLazyParamsStates(
-                    () => {
-                        return {
-                            ...lazyParamsStates,
-                            filters: {
-                                "global": { value: null, matchMode: 'contains' },
-                                "country_id": { operator: 'and', constraints: [{ value: e.value, matchMode: 'equals' }] }
-                            },
-                            rows: count,
-                        }
-                    }
-                );
-            });
+            // LocationsStatesService.count().then((count: any) => {
+            //     setLazyParamsStates(
+            //         () => {
+            //             return {
+            //                 ...lazyParamsStates,
+            //                 filters: {
+            //                     "global": { value: null, matchMode: 'contains' },
+            //                     "country_id": { operator: 'and', constraints: [{ value: e.value, matchMode: 'equals' }] }
+            //                 },
+            //                 rows: count,
+            //             }
+            //         }
+            //     );
+            // });
         } else {
             setCountryOn(false);
         }
@@ -226,7 +227,7 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
                 ])
                 : ''
         }
-    }, [onMessage]);
+    }, [onMessage, msgSticky, msgSeverity, msgSummary, msgDetail]);
 
     useEffect(() => {
         if (saveMode === 0) {
@@ -236,7 +237,7 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
             setStateOn(false);
             setCountryOn(false);
         }
-    }, [catalog]);
+    }, [catalog, initialData, saveMode]);
 
 
     useEffect(() => {

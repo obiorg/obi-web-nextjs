@@ -1,25 +1,11 @@
 'use client';
 
-import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button } from "primereact/button";
-import { InputText } from "primereact/inputtext";
-import { SplitButton } from "primereact/splitbutton";
-import { Toast } from "primereact/toast";
-import React, { useEffect, useRef, useState } from "react";
-import { useFormStatus } from "react-dom";
-import ReactIcons from "../Icons/ReactIcons";
-import { PersistencesStandardsService } from "../../service/persistences/PersistencesStandardsService";
-import { PersistencesStandardsModel } from "../../models/persistences/PersistencesStandardsModel";
-import { FilterMatchMode, FilterOperator } from "primereact/api";
-import { TagsService } from "../../service/tags/TagsService";
-import { NumericFormat, PatternFormat } from "react-number-format";
-import FieldOutputLabel from "../Inputs/FieldOutputLabel";
-import { format, formatDate } from "date-fns";
-import { TagsListContentsService } from "../../service/tags/TagsListContentsService";
-import Moment from "react-moment";
 import 'moment-timezone';
-import moment from "moment-timezone";
+import { useEffect, useState } from "react";
+import Moment from "react-moment";
+import { NumericFormat } from "react-number-format";
+import { TagsService } from "../../service/tags/TagsService";
+import ReactIcons from "../Icons/ReactIcons";
 
 
 // Define the props that the PostForm component expects

@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 import Table from '@/src/obi/components/Tables/Table';
 import { LocationsCitiesModel } from '@/src/obi/models/localisations/LocationsCitiesModel';
-import { LocationsCitiesService } from '@/src/obi/service/localisat/LocationsCitiesService';
+import { LocationsCitiesService } from '@/src/obi/service/localisations/LocationsCitiesService';
 import { ExportsService } from '@/src/obi/utilities/export/ExportsService';
 
 

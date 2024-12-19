@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react"
 
 
 import { LocationsCountriesModel } from "@/src/obi/models/localisations/LocationsCountriesModel"
-import { LocationsCountriesService } from "@/src/obi/service/localisat/LocationsCountriesService"
+import { LocationsCountriesService } from "@/src/obi/service/localisations/LocationsCountriesService"
 import { DataTableFilterMeta } from "primereact/datatable"
 import { Dropdown } from "primereact/dropdown"
 import { Skeleton } from "primereact/skeleton"

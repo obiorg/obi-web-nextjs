@@ -6,7 +6,7 @@ import '@/src/styles/obi/obi.scss';
 
 
 import PostForm from '../components/post-form';
-import { LocationsService } from '@/src/obi/service/localisat/LocationsService';
+import { LocationsService } from '@/src/obi/service/localisations/LocationsService';
 import { LocationsModel } from '@/src/obi/models/localisations/LocationsModel';
 
 

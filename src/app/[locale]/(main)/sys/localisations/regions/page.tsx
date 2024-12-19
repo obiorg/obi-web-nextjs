@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 import Table from '@/src/obi/components/Tables/Table';
 import { LocationsRegionsModel } from '@/src/obi/models/localisations/LocationsRegionsModel';
-import { LocationsRegionsService } from '@/src/obi/service/localisat/LocationsRegionsService';
+import { LocationsRegionsService } from '@/src/obi/service/localisations/LocationsRegionsService';
 import { ExportsService } from '@/src/obi/utilities/export/ExportsService';
 import { OBI } from '@/src/types/obi';
 

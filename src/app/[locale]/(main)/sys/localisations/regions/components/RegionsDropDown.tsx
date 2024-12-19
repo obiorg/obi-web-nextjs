@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from "react"
 
 import { OBI } from "@/src/types"
 import { Dropdown } from "primereact/dropdown"
-import { LocationsRegionsService } from "@/src/obi/service/localisat/LocationsRegionsService"
+import { LocationsRegionsService } from "@/src/obi/service/localisations/LocationsRegionsService"
 import { Skeleton } from "primereact/skeleton"
 import { LocationsRegionsModel } from "@/src/obi/models/localisations/LocationsRegionsModel"
 import { DataTableFilterMeta } from "primereact/datatable"

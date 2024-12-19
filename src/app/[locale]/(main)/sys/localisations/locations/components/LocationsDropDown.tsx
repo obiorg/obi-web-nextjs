@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react"
 
 
 import { LocationsModel } from "@/src/obi/models/localisations/LocationsModel"
-import { LocationsService } from "@/src/obi/service/localisat/LocationsService"
+import { LocationsService } from "@/src/obi/service/localisations/LocationsService"
 import { Dropdown } from "primereact/dropdown"
 import { Skeleton } from "primereact/skeleton"
 

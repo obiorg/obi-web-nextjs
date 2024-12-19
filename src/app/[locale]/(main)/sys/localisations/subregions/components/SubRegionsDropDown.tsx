@@ -6,7 +6,7 @@ import { useEffect, useState } from "react"
 
 
 import { LocationsSubRegionsModel } from "@/src/obi/models/localisations/LocactionsSubRegionsModel"
-import { LocationsSubRegionsService } from "@/src/obi/service/localisat/LocationsSubRegionsService"
+import { LocationsSubRegionsService } from "@/src/obi/service/localisations/LocationsSubRegionsService"
 import { Dropdown } from "primereact/dropdown"
 import { Skeleton } from "primereact/skeleton"
 

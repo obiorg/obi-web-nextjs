@@ -7,7 +7,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import '@/src/styles/obi/obi.scss';
 
 
-import { LocationsService } from '@/src/obi/service/localisations/LocationsService';
+import { LocationsService } from '@/src/obi/service/localisat/LocationsService';
 import { LocationsModel } from '@/src/obi/models/localisations/LocationsModel';
 import PostForm from '../../components/post-form';
 import { OBI } from '@/src/types/obi';

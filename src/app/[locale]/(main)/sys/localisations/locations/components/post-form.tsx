@@ -23,7 +23,7 @@ import { LocationsCountriesService } from "@/src/obi/service/localisations/Locat
 import { LocationsStatesService } from "@/src/obi/service/localisations/LocationsStatesService"
 import { LocationsStatesModel } from "@/src/obi/models/localisations/LocationsStatesModel"
 import { LocationsCitiesModel } from "@/src/obi/models/localisations/LocationsCitiesModel"
-import { LocationsCitiesService } from "@/src/obi/service/localisations/LocationsCitiesService"
+import { LocationsCitiesService } from "@/src/obi/service/localisations/LocationsCitiesServicer"
 import FieldInputNumber from "@/src/obi/components/Inputs/FieldInputNumber"
 import FieldInputCheckbox from "@/src/obi/components/Inputs/FieldInputCheckbox"
 import FieldLabel from "@/src/obi/components/Inputs/FieldOutputLabel"

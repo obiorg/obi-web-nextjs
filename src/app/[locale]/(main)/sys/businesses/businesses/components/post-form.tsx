@@ -22,12 +22,13 @@ import OutputRecord from "@/src/obi/components/Output/OutputRecord"
 import ButtonBarCreate from "@/src/obi/components/Validations/ButtonBarCreate"
 import { LocationsCitiesModel } from "@/src/obi/models/localisations/LocationsCitiesModel"
 import { LocationsStatesModel } from "@/src/obi/models/localisations/LocationsStatesModel"
-import { LocationsCitiesService } from "@/src/obi/service/localisations/LocationsCitiesService"
+import { LocationsCitiesService } from "@/src/obi/service/localisations/LocationsCitiesServicer"
 import { LocationsService } from "@/src/obi/service/localisations/LocationsService"
 import { useRouter } from "next/navigation"
 import { BlockUI } from "primereact/blockui"
 import { DataTableFilterMeta } from "primereact/datatable"
 import { Messages } from "primereact/messages"
+import { LocationsStatesService } from "@/src/obi/service/localisations/LocationsStatesService"
 
 
 // Define the shape of the form errors locations

@@ -56,55 +56,43 @@ export default function DashCardCO2Tanks(
     /**
      * Get value listed by tags
      */
-    const timeOut = () => {
-        return setTimeout(() => {
-            // Get Lazy Data
-            TagsService.getByIds(tags).then((data: any) => {
-                // console.log('tag : ' + tags[cursor] + ' cursor : ' + cursor + ' = ', data)
-                if (data.status && data.status !== 200) {
-                    // console.log(data.status + ' in DashCardCO2Tanks reading tag ' + tags[cursor]);
-                    console.log('DashCardCO2Tanks >> Error', data);
-                    return 0;
-                } else {
-                    // console.log('DashCardCO2Tanks >> success', data);
-
-                    data.forEach((tag: any) => {
-                        tags.forEach((tagId: any) => {
-                            if (tagId === tag.id) {
-                                switch (tags.indexOf(tagId)) {
-                                    case 0:
-                                        setVolume(tag.vFloat);
-                                        if (updated === undefined || updated > data.vStamp) {
-                                            setUpdated(data.vStamp);
-                                        }
-                                        setChanging(!changing);
-                                        break;
-                                }
-                            }
-                        });
-                    });
-
-                    let update: any[] = data.map((d: any) => { return [Date.parse(d.vStamp.replace('Z', ''))]; });
-                    setUpdated(new Date(Math.min.apply(null, update)));
-
-
-                }
-            });
-        }, Math.random() * 1000 + 500) as unknown as number;
-
-    }
     const fetchData = useCallback(() => {
-        if (loadLazyTimeout) {
-            clearTimeout(loadLazyTimeout);
-        }
+        // Get Lazy Data
+        TagsService.getByIds(tags).then((data: any) => {
+            // console.log('tag : ' + tags[cursor] + ' cursor : ' + cursor + ' = ', data)
+            if (data.status && data.status !== 200) {
+                // console.log(data.status + ' in DashCardCO2Tanks reading tag ' + tags[cursor]);
+                console.log('DashCardCO2Tanks >> Error', data);
+                return 0;
+            } else {
+                // console.log('DashCardCO2Tanks >> success', data);
 
-        //initiate delay of a backend call
-        setLoadLazyTimeout(timeOut());
+                data.forEach((tag: any) => {
+                    tags.forEach((tagId: any) => {
+                        if (tagId === tag.id) {
+                            switch (tags.indexOf(tagId)) {
+                                case 0:
+                                    setVolume(tag.vFloat);
+                                    if (updated === undefined || updated > data.vStamp) {
+                                        setUpdated(data.vStamp);
+                                    }
+                                    setChanging(!changing);
+                                    break;
+                            }
+                        }
+                    });
+                });
 
-    }, [loadLazyTimeout])
+                let update: any[] = data.map((d: any) => { return [Date.parse(d.vStamp.replace('Z', ''))]; });
+                setUpdated(new Date(Math.min.apply(null, update)));
+
+
+            }
+        });
+
+    }, [changing, tags, updated])
 
     useEffect(() => {
-
         fetchData();
     }, [fetchData, tags]);
 

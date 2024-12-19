@@ -27,7 +27,7 @@ import { useRouter } from "next/navigation"
 import { BlockUI } from "primereact/blockui"
 import { DataTableFilterMeta } from "primereact/datatable"
 import { Messages } from "primereact/messages"
-import { LocationsCitiesService } from "@/src/obi/service/localisations/LocationsCitiesService"
+import { LocationsCitiesService } from "@/src/obi/service/localisations/LocationsCitiesServicer"
 import { LocationsStatesService } from "@/src/obi/service/localisations/LocationsStatesService"
 
 

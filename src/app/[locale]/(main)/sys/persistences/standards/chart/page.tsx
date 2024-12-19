@@ -111,7 +111,7 @@ const PersistencesStandardsChart = () => {
     const [dateTo, setDateTo] = useState(new Date());
 
     const [saveMode, setSaveMode] = useState(0); // 0: save and reset; 1: save
-    const formRef = React.useRef(document.createElement('form'));
+    const formRef = React.useRef<any>();
 
 
 

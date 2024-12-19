@@ -1,7 +1,7 @@
 'use client';
 
 import 'moment-timezone';
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Moment from "react-moment";
 import { NumericFormat } from "react-number-format";
 import { TagsService } from "../../service/tags/TagsService";
@@ -48,7 +48,7 @@ export default function DashCardCO2Tanks(
     const [state, setState] = useState('???');
     const [updated, setUpdated] = useState(new Date(0));
 
-     let loadLazyTimeout:any = undefined
+    const [loadLazyTimeout, setLoadLazyTimeout] = useState(0)
 
     const [changing, setChanging] = useState(false);
     const [changed, setChanged] = useState(false);
@@ -56,17 +56,8 @@ export default function DashCardCO2Tanks(
     /**
      * Get value listed by tags
      */
-    const getValue = () => {
-
-        // setLoading(true);
-
-        if (loadLazyTimeout) {
-            clearTimeout(loadLazyTimeout);
-        }
-
-
-        //initiate delay of a backend call
-        loadLazyTimeout = setTimeout(() => {
+    const timeOut = () => {
+        return setTimeout(() => {
             // Get Lazy Data
             TagsService.getByIds(tags).then((data: any) => {
                 // console.log('tag : ' + tags[cursor] + ' cursor : ' + cursor + ' = ', data)
@@ -77,8 +68,8 @@ export default function DashCardCO2Tanks(
                 } else {
                     // console.log('DashCardCO2Tanks >> success', data);
 
-                    data.forEach((tag:any) => {
-                        tags.forEach(tagId => {
+                    data.forEach((tag: any) => {
+                        tags.forEach((tagId: any) => {
                             if (tagId === tag.id) {
                                 switch (tags.indexOf(tagId)) {
                                     case 0:
@@ -93,41 +84,44 @@ export default function DashCardCO2Tanks(
                         });
                     });
 
-
-                    // let dates = data.map((d: any) => { return [d.vStamp.replace('Z','')]; });
-                    // console.log('date', dates);
                     let update: any[] = data.map((d: any) => { return [Date.parse(d.vStamp.replace('Z', ''))]; });
-                    // console.log('update', update);
-                    // console.log('Min', Math.min(...update))
-                    setUpdated(new Date(Math.min.apply(null,update)));
+                    setUpdated(new Date(Math.min.apply(null, update)));
 
 
                 }
             });
         }, Math.random() * 1000 + 500) as unknown as number;
+
     }
+    const fetchData = useCallback(() => {
+        if (loadLazyTimeout) {
+            clearTimeout(loadLazyTimeout);
+        }
+
+        //initiate delay of a backend call
+        setLoadLazyTimeout(timeOut());
+
+    }, [loadLazyTimeout])
 
     useEffect(() => {
-        // Update volume
-        // readLast(0);
-        getValue();
 
-    }, [tags]);
+        fetchData();
+    }, [fetchData, tags]);
 
 
 
-    let time: number = new Date().getTime();
+    const [time, setTime] = useState<number>(new Date().getTime());
     useEffect(() => {
-
         const interval = setInterval(() => {
             console.log('Call from interval : ' + new Date().toLocaleTimeString() +
                 ' delta = ' + (new Date().getTime() - time));
-            time = new Date().getTime();
+            setTime(new Date().getTime());
 
 
-            setChanged(changing);
-            getValue();
-            while (changed === changing);
+            if (changing != changed) {
+                fetchData();
+                changed === changing;
+            }
         }, 5000); //set your time here. repeat every 5 seconds
 
         return () => clearInterval(interval);
@@ -149,16 +143,11 @@ export default function DashCardCO2Tanks(
                             <span className="flex block text-500 font-medium text-3xl mb-2 justify-content-end">
                                 {name}
                             </span>
-                            {/* <div className="flex text-900 text-md justify-content-end align-content-center w-100">
-                                {stateDisplayed}
-                                <ReactIcons group="fa6" icon="FaArrowsTurnToDots" className='ml-3' />
-                            </div> */}
                         </div>
                     </span>
 
                     <div>
                         <div className='flex flex-column justify-content-between'>
-
                             {/* Volume  */}
                             <div className='flex flex-column align-content-center justify-content-center '>
                                 <div className="flex text-yellow-500 text-900 font-bold text-5xl justify-content-center mb-2">
@@ -176,18 +165,12 @@ export default function DashCardCO2Tanks(
                                     <Moment date={updated}
                                         format='HH:mm:ss'
                                     />
-
                                 </div>
                             </div>
-
                         </div>
                     </div>
-
-
-
                 </div>
             </div>
-
         </>
     );
 }

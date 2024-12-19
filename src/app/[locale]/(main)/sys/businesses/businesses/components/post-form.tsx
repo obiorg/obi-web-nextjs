@@ -24,7 +24,6 @@ import { LocationsCitiesModel } from "@/src/obi/models/localisations/LocationsCi
 import { LocationsStatesModel } from "@/src/obi/models/localisations/LocationsStatesModel"
 import { LocationsCitiesService } from "@/src/obi/service/localisations/LocationsCitiesService"
 import { LocationsService } from "@/src/obi/service/localisations/LocationsService"
-import { LocationsStatesService } from "@/src/obi/service/localisations/StatesService copy"
 import { useRouter } from "next/navigation"
 import { BlockUI } from "primereact/blockui"
 import { DataTableFilterMeta } from "primereact/datatable"

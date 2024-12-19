@@ -10,7 +10,7 @@ import { LocationsCitiesModel } from "@/src/obi/models/localisations/LocationsCi
 import { DataTableFilterMeta } from "primereact/datatable"
 import { Dropdown } from "primereact/dropdown"
 import { Skeleton } from "primereact/skeleton"
-import { LocationsCitiesService } from "@/src/obi/service/localisations/LocationsCitiesServicer"
+import { LocationsCitiesService } from "@/src/obi/service/localisations/LocationsCitiesService"
 
 
 // Define the props that the PostForm component expects

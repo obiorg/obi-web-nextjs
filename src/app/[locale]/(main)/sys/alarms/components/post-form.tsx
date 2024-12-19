@@ -28,7 +28,7 @@ import { BlockUI } from "primereact/blockui"
 import { Messages } from "primereact/messages"
 import { DataTableFilterMeta } from "primereact/datatable"
 import { LocationsStatesService } from "@/src/obi/service/localisations/LocationsStatesService"
-import { LocationsCitiesService } from "@/src/obi/service/localisations/LocationsCitiesServicer"
+import { LocationsCitiesService } from "@/src/obi/service/localisations/LocationsCitiesService"
 
 
 // Define the shape of the form errors locations

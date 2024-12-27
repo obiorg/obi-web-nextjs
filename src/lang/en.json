@@ -1,13 +1,49 @@
 {
-  "common.footer": "internationalization tutorial",
-  "page.home.head.title": "Next.js i18n example",
-  "page.home.head.meta.description": "Next.js i18n example - English",
-  "page.home.title": "Welcome to <b>Next.js i18n tutorial</b>",
-  "page.home.description": "You are currently viewing the homepage in English 🚀",
-  "page.nested.title": "Nested route example",
+    "common": {
+        "footer": "internationalization tutorial"
+    },
 
+    "page": {
+        "dashboard": {
+            "title": "Dashboard",
+            "description": "Welcome to your dashboard",
 
-  "header" : {
-    "lang.active" : "Active language"
-  }
+            "CCT": {
+                "short": "TOD",
+                "label": "Tank out doors",
+                "description": "Data of fermentation tank"
+            },
+            "BBT": {
+                "short": "BBT",
+                "label": "Brine beer tank",
+                "description": "Data of brine beer tanks"
+            },
+            "CO2": {
+                "Storage": {
+                    "title": "CO2 storage tanks",
+                    "description": "Show all volume of CO2 storage tank"
+                }
+            }
+        },
+
+        "home": {
+            "head": {
+                "title": "Next.js i18n example",
+                "meta": {
+                    "description": "Next.js i18n example - English"
+                }
+            },
+            "title": "Welcome to <b>Next.js i18n tutorial</b>",
+            "description": "You are currently viewing the homepage in English 🚀"
+        },
+        "nested": {
+            "title": "Nested route example"
+        }
+    },
+
+    "header": {
+        "lang": {
+            "active": "Active language"
+        }
+    }
 }

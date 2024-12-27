@@ -1,5 +1,7 @@
+'use client'
+
 import Link from "next/link";
-import { i18n } from "@/i18n-config";
+
 
 
 import { Menu } from 'primereact/menu';
@@ -7,6 +9,14 @@ import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
 import { useEffect, useRef, useState } from "react";
 import { OverlayPanel } from "primereact/overlaypanel";
+
+
+
+import { locales, defaultLocale, languages, Locale } from "@/src/config";
+import { usePathname } from "@/src/i18n/routing";
+import { useLocale } from "next-intl";
+
+import Flag from 'react-flagkit';
 
 
 interface HeaderProps {
@@ -20,7 +30,6 @@ export default function Header(
 
   }: HeaderProps) {
 
-  const { locales, defaultLocale, languages } = i18n;
 
   const toast = useRef<any>(null);
 
@@ -84,7 +93,7 @@ export default function Header(
         <i className="pi pi-language" />
       </Button>
 
-      {/* <OverlayPanel
+      <OverlayPanel
         ref={op}
         showCloseIcon
         id="overlay_panel"
@@ -93,21 +102,17 @@ export default function Header(
       >
         <>
           <span>Langue active</span>
+
           {[...locales].sort().map((l) => (
-
-            <Link key={l}
-              href={l === defaultLocale ? "/obi" : `/${l}`}
-            > */}
-              {/* <button type="button" className="p-link layout-topbar-button"> */}
-              {/* {formatLanguage(l)} */}
-              {/* </button> */}
-
-            {/* </Link>
+            <>
+              <LocaleLink key={l} locale={l} />
+            </>
           ))}
-        </>
-      </OverlayPanel> */}
 
-      {/* w:{windowWidth} */}
+        </>
+      </OverlayPanel>
+
+
 
 
 
@@ -117,11 +122,32 @@ export default function Header(
 }
 
 
-{/* <Link key={locale}
-href={locale === defaultLocale ? "/" : `/${locale}`}
->
-<button type="button" className="p-link layout-topbar-button">
-  {locale}
-</button>
 
-</Link> */}
+
+
+function LocaleLink({ locale }: { locale: Locale }) {
+  const pathname = usePathname();
+  const isActive = useLocale() === locale;
+
+  return (
+    <div>
+      <Link
+        className={isActive ? 'underline' : undefined}
+        href={pathname}
+        locale={locale}
+      >
+        <Flag country={locale.toUpperCase()} />
+      </Link>
+    </div>
+  );
+}
+
+function isLocale(locale: Locale) {
+  let loc: boolean = false;
+  languages.map((language) => {
+    if (language.locale === locale) {
+      return true;
+    }
+  });
+  return false;
+}

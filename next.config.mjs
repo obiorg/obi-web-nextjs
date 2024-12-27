@@ -1,3 +1,8 @@
+import createNextIntlPlugin from "next-intl/plugin";
+
+const withNextIntl = createNextIntlPlugin();
+
+
 /** @type {import('next').NextConfig} */
 
 const nextConfig = {
@@ -32,12 +37,12 @@ const nextConfig = {
     /**
      * Setup the basePath for application
      */
-    basePath: process.env.NODE_ENV === 'production' ? '/obi' : '',
+    basePath: process.env.NODE_ENV === 'production' ? '/obi' : '/obi',
 
-    publicRuntimeConfig: {
-        contextPath: process.env.NODE_ENV === 'production' ? '/obi' : '/obi',
-        uploadPath: process.env.NODE_ENV === 'production' ? '/obi/upload.php' : '/api/upload'
-    }
+    // publicRuntimeConfig: {
+    //     contextPath: process.env.NODE_ENV === 'production' ? '/obi' : '/obi',
+    //     uploadPath: process.env.NODE_ENV === 'production' ? '/obi/upload.php' : '/api/upload'
+    // }
 };
 
-module.exports = nextConfig;
+export default withNextIntl(nextConfig);

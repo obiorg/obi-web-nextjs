@@ -1,19 +1,20 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
-import { Button } from 'primereact/button';
-import { Chart } from 'primereact/chart';
-import { Column } from 'primereact/column';
-import { DataTable } from 'primereact/datatable';
 import { Menu } from 'primereact/menu';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 
 
 import { ProductService } from '@/src/demo/service/ProductService';
 import { LayoutContext } from '@/src/layout/context/layoutcontext';
 
-import Link from 'next/link';
 import { Demo } from '@/src/types';
 import { ChartData, ChartOptions } from 'chart.js';
+
+import DashCardCCT from '@/src/obi/components/App/DashCardCCT';
+import DashCardCO2Tanks from '@/src/obi/components/App/DashCardCO2Tanks';
+import ReactIcons from '@/src/obi/components/Icons/ReactIcons';
+import { useTranslations } from 'next-intl';
+
 
 const lineData: ChartData = {
     labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
@@ -36,18 +37,12 @@ const lineData: ChartData = {
         }
     ]
 };
-import { getIntl } from "@/src/lib/intl";
-import ReactIcons from '@/src/obi/components/Icons/ReactIcons';
-import { Card } from 'primereact/card';
-import DashCard from '@/src/obi/components/App/DashCardCCT';
-import DashCardCCT from '@/src/obi/components/App/DashCardCCT';
-import DashCardCO2Tanks from '@/src/obi/components/App/DashCardCO2Tanks';
 
 type HomeProps = {
-    params: { locale: string };
+
 };
 
-const Dashboard = ({ params: { locale } }: HomeProps) => {
+const Dashboard = ({ }: HomeProps) => {
     // console.log("Dashboard", locale);
 
     const [products, setProducts] = useState<Demo.Product[]>([]);
@@ -508,17 +503,22 @@ const Dashboard = ({ params: { locale } }: HomeProps) => {
 
     });
 
+
+    const t = useTranslations('page');
     return (
         <>
 
-            <h1>TODs</h1>
+            <h1>{t('dashboard.title')}</h1>
+
+            <h2>{t('dashboard.CCT.short')}</h2>
 
             <div className="grid">
                 {CCTs()}
             </div>
 
             <hr />
-            <h1>TBF</h1>
+            <h2>{t('dashboard.BBT.short')}</h2>
+            <p>{t('dashboard.BBT.description')}</p>
 
             <div className="grid">
                 {/* {CCTs()} */}

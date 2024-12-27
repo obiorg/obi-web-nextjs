@@ -20,6 +20,8 @@ import { locale, addLocale, updateLocaleOption, updateLocaleOptions, localeOptio
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import { Button } from 'primereact/button';
+import { setRequestLocale } from 'next-intl/server';
+import SEO from '../obi/components/Header/SEO';
 config.autoAddCss = false;
 
 const Layout = ({ children }: ChildContainerProps) => {
@@ -149,12 +151,14 @@ const Layout = ({ children }: ChildContainerProps) => {
         <React.Fragment>
             <div className={containerClass}>
 
+                <SEO
+                    title='OBI - One Brewery Industry'
+                    description='The modeling system designed for Breweries and Beverages.'>
+
+                </SEO>
                 <AppTopbar ref={topbarRef} />
                 <div ref={sidebarRef} className="layout-sidebar">
                     <AppSidebar />
-
-                    <Button label="Fr" onClick={() => { console.log('set lang Fr'); locale('fr')}} />
-                    <Button label="En" onClick={() => { console.log('set lang En'); locale('en')}} />
                 </div>
                 <div className="layout-main-container">
                     <div className="layout-main">{children}</div>

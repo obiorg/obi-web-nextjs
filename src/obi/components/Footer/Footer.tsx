@@ -12,7 +12,7 @@ function Footer({ locale }: { locale: string }) {
         <img src="/img/next.svg" width={60} height={12} alt="NextJS " />
       </div>
       <div>
-        <FormattedMessage tagName="p" id="common.footer" />
+        <FormattedMessage tagName="p" id="test" />
       </div>
     </FooterContainer>
   );

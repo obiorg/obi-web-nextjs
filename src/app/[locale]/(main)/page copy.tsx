@@ -36,7 +36,7 @@ const lineData: ChartData = {
         }
     ]
 };
-import { getIntl } from "@/src/lib/intl";
+// import { getIntl } from "@/src//lib/intl";
 
 type HomeProps = {
   params: { locale: string };

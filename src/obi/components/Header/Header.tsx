@@ -133,11 +133,22 @@ function LocaleLink({ locale }: { locale: Locale }) {
     <div>
       <Link
         className={isActive ? 'underline' : undefined}
-        href={pathname}
-        locale={locale}
+        href={pathname + '/' + locale}
+        // locale={locale}
       >
         <Flag country={locale.toUpperCase()} />
       </Link>
+
+      {/* <Link key={l}
+        href={l === defaultLocale ? "/fr" : `/${l}`}
+      >
+        <div>
+          <button type="button" className="p-link layout-topbar-button">
+            {formatLanguage(l)}
+          </button>
+        </div>
+
+      </Link> */}
     </div>
   );
 }

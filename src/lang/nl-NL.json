@@ -1,27 +1,28 @@
 {
-    "common": {
-        "footer": "handleiding internationalisering"
-    },
-
-    "page": {
-        "home": {
-            "head": {
-                "title": "Next.js i18n voorbeeld",
-                "meta": {
-                    "description": "Next.js i18n voorbeeld - Nederlands (Nederland)"
-                }
-            },
-            "title": "Welkom bij <b>Next.js i18n zelfstudie</b>",
-            "description": "U bekijkt momenteel de homepage in het Nederlands (Nederland) 🚀"
-        },
-        "nested": {
-            "title": "Voorbeeld van geneste route"
+  "common": {
+    "footer": "handleiding internationalisering"
+  },
+  "page": {
+    "home": {
+      "head": {
+        "title": "Next.js i18n voorbeeld",
+        "meta": {
+          "description": "Next.js i18n voorbeeld - Nederlands (Nederland)"
         }
+      },
+      "title": "Welkom bij <b>Next.js i18n zelfstudie</b>",
+      "description": "U bekijkt momenteel de homepage in het Nederlands (Nederland) 🚀"
     },
-
-    "header": {
-        "lang": {
-            "active": "Actieve taal"
-        }
+    "nested": {
+      "title": "Voorbeeld van geneste route"
+    },
+    "dashboard": {
+      "title": "Dashboard"
     }
+  },
+  "header": {
+    "lang": {
+      "active": "Actieve taal"
+    }
+  }
 }

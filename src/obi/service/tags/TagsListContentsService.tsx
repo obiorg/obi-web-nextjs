@@ -200,6 +200,34 @@ export const TagsListContentsService = {
     },
 
 
+    
+    async getByList(tag: any) {
+        const url = process.env.httpPath + '/tags/listcontents/list/' + tag.list + '/company/' + tag.company;
+        try {
+            const res = await fetch(url, { headers: { 'Cache-Control': 'no-cache' } })
+            if (res.ok) {
+                // const val = await res.json();
+                const dataset: any[] = await res.json();
+                return dataset;
+            } else {
+                if (res.status === 404) throw new Error('404, Not found');
+                if (res.status === 500) throw new Error('500, internal server error');
+                // For any other server error
+                throw new Error(`HTTP status ${res.status} error`);
+            }
+        } catch (error) {
+            if (error instanceof SyntaxError) {
+                console.log('There was a SyntaxError', error);
+            } else {
+                // console.log('There was an error', error);
+                // Promise.reject(error);
+
+                return JSON.stringify({ error: error });
+            }
+        }
+    },
+
+
     defaultMultiSortMeta(): any {
         const model = new TagsListContentsModel();
         return model.toMultiSortMeta();

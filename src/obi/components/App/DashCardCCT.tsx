@@ -6,7 +6,7 @@ import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { SplitButton } from "primereact/splitbutton";
 import { Toast } from "primereact/toast";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
 import ReactIcons from "../Icons/ReactIcons";
 import { PersistencesStandardsService } from "../../service/persistences/PersistencesStandardsService";
@@ -37,6 +37,8 @@ interface DashCardCCTProps {
     onChange?: (e: any) => void; // when change occur in mode
     error?: any; // child of formState ex: formState.erros?.location
 
+    refresh?: boolean; // enable automatic refresh defaulat true
+    refresh_s?: number; // Number of seconds before auto-refresh, default 15 seconds,
 
 }
 
@@ -54,6 +56,9 @@ export default function DashCardCCT(
         onChange,
         error,
 
+        refresh = true,
+        refresh_s = 15,
+
     }: DashCardCCTProps) {
 
 
@@ -62,27 +67,24 @@ export default function DashCardCCT(
     const [pressure, setPressure] = useState(0);
     const [temperatureMiddle, setTemperatureMiddle] = useState(0);
     const [temperatureBottom, setTemperatureBottom] = useState(0);
-    const [state, setState] = useState('???');
     const [stateDisplayed, setStateDisplayed] = useState('???');
     const [updated, setUpdated] = useState(new Date(0));
 
 
+    const [changing, setChanging] = useState(false);
+    const [changed, setChanged] = useState(false);
 
 
-    const dataUpdate = (_tags: any[]) => {
+    const [stateTag, setStateTag] = useState<any>();
+    const [stateTagSaved, setStateTagSaved] = useState<any>();
 
-        // setLoading(true);
-
-        // if (loadLazyTimeout) {
-        //     clearTimeout(loadLazyTimeout);
-        // }
-
-
-        // //initiate delay of a backend call
-        // loadLazyTimeout = setTimeout(() => {
+    /**
+     * Get value listed by tags
+     */
+    const fetchData = useCallback(() => {
         // Get Lazy Data
-        TagsService.getByIds(_tags).then((data: any) => {
-            // console.log('tag : ' + _tags[cursor] + ' cursor : ' + cursor + ' = ', data)
+        TagsService.getByIds(tags).then((data: any) => {
+            // console.log('tag : ' + tags[cursor] + ' cursor : ' + cursor + ' = ', data)
             if (data.status && data.status !== 200) {
                 // console.log(data.status + ' in DashCardCCT reading tag ' + tags[cursor]);
                 console.log('DashCardCCT >> Error', data);
@@ -91,9 +93,9 @@ export default function DashCardCCT(
                 // console.log('DashCardCCT >> success', data);
 
                 data.forEach((tag: any) => {
-                    _tags.forEach((tagId: any) => {
+                    tags.forEach((tagId: any) => {
                         if (tagId === tag.id) {
-                            switch (_tags.indexOf(tagId)) {
+                            switch (tags.indexOf(tagId)) {
                                 case 0:
                                     setVolume(tag.vFloat);
                                     if (updated === undefined || updated > data.vStamp) {
@@ -119,60 +121,92 @@ export default function DashCardCCT(
                                     }
                                     break;
                                 case 4:
-                                    setState(tag.vInt);
-                                    TagsListContentsService.getByTag(tag).then((tagListContents: any) => {
-                                        // console.log('find data is ', tagListContents, tagListContents[0]);
-                                        if (tagListContents.length > 0) {
-                                            setStateDisplayed(tagListContents[0].value);
-                                        }
-                                    });
-
-                                    if (updated === undefined || updated > data.vStamp) {
-                                        setUpdated(data.vStamp);
+                                    if (stateTag?.vInt !== tag.vInt) {
+                                        console.log(stateTag, tag);
+                                        setStateTag(tag);
                                     }
                                     break;
                             }
                         }
                     });
+                    setChanging(!changing);
                 });
 
 
-                // let dates = data.map((d: any) => { return [d.vStamp.replace('Z','')]; });
-                // console.log('date', dates);
+                // update de date
                 let update: any[] = data.map((d: any) => { return [Date.parse(d.vStamp.replace('Z', ''))]; });
-                // console.log('update', update);
-                // console.log('Min', Math.min(...update))
-                // setUpdated(Math.min(...update));
                 setUpdated(new Date(Math.min.apply(null, update)));
 
 
             }
         });
-        // }, Math.random() * 1000 + 500) as unknown as number;
 
-    };
+    }, [])
 
 
+
+    /**
+     * Recover state Map each time stateTag change
+     */
+    useEffect(() => {
+        if (stateTag === undefined) {
+            //console.error('DashCardCCT stateTag is undefined');
+            return;
+        }
+
+        // console.log('Recovering state', stateTag, stateTagSaved);
+        if (stateTag?.id !== stateTagSaved?.id) {
+            TagsListContentsService.getByTag(stateTag).then((tagListContents: any) => {
+                // console.log('find data is ', tagListContents, tagListContents[0]);
+                if (tagListContents.length > 0) {
+                    setStateDisplayed(tagListContents[0].value);
+                    // setStateMap(tagListContents);
+
+                }
+            });
+            setStateTagSaved(stateTag);
+        }
+    }, [stateTag, stateTagSaved]);
 
     /**
      * Get value listed by tags
      */
     useEffect(() => {
-
-        dataUpdate(tags);
-
-    }, [tags]);
+        fetchData();
+    }, [fetchData, tags]);
 
 
-
+    /**
+     * Auto refresh time system
+     */
+    const [time, setTime] = useState(Date.now());
     useEffect(() => {
-        const interval = setInterval(() => {
-            console.log('interval update', interval);
-            dataUpdate(tags);
-        }, 15000); //set your time here. repeat every 5 seconds
-
-        return () => clearInterval(interval);
+        if (refresh) {
+            const interval = setInterval(() => setTime(Date.now()), refresh_s * 1000);
+            return () => {
+                clearInterval(interval);
+            };
+        }
     }, []);
+
+
+    /**
+     * Auto refresh time system callback
+     */
+    const [dateSaved, setDateSaved] = useState<Date>(new Date());
+    useEffect(() => {
+        let dt = new Date();
+        console.log('From ' + dateSaved.toLocaleTimeString()
+            + ' to ' + dt.toLocaleTimeString() +
+            ' delta = ' + (dt.getTime() - dateSaved.getTime()) / 1000);
+        setDateSaved(dt);
+
+        if (changing != changed) {
+            fetchData();
+            changed === changing;
+        }
+    }, [time]);
+
 
 
     return (

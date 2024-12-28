@@ -21,7 +21,8 @@ import "@fortawesome/fontawesome-svg-core/styles.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import { Button } from 'primereact/button';
 import { setRequestLocale } from 'next-intl/server';
-import SEO from '../obi/components/Header/SEO';
+import SEO from '../obi/components/Header/seo';
+
 config.autoAddCss = false;
 
 const Layout = ({ children }: ChildContainerProps) => {

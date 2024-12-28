@@ -23,6 +23,9 @@ interface DashCardCO2TanksProps {
     onChange?: (e: any) => void; // when change occur in mode
     error?: any; // child of formState ex: formState.erros?.location
 
+    refresh?: boolean; // enable automatic refresh defaulat true
+    refresh_s?: number; // Number of seconds before auto-refresh, default 15 seconds,
+
 
 }
 
@@ -39,6 +42,9 @@ export default function DashCardCO2Tanks(
         onClick,
         onChange,
         error,
+
+        refresh = true,
+        refresh_s = 15,
 
     }: DashCardCO2TanksProps) {
 
@@ -92,28 +98,41 @@ export default function DashCardCO2Tanks(
 
     }, [changing, tags, updated])
 
+    /**
+     * Get value listed by tags
+     */
+
     useEffect(() => {
         fetchData();
     }, [fetchData, tags]);
 
 
-
-    const [time, setTime] = useState<number>(new Date().getTime());
+    const [time, setTime] = useState(Date.now());
     useEffect(() => {
-        const interval = setInterval(() => {
-            console.log('Call from interval : ' + new Date().toLocaleTimeString() +
-                ' delta = ' + (new Date().getTime() - time));
-            setTime(new Date().getTime());
+        if (refresh) {
+            const interval = setInterval(() => setTime(Date.now()), refresh_s * 1000);
+            return () => {
+                clearInterval(interval);
+            };
+        }
+    }, []);
 
 
-            if (changing != changed) {
-                fetchData();
-                changed === changing;
-            }
-        }, 5000); //set your time here. repeat every 5 seconds
 
-        return () => clearInterval(interval);
-    }, [state]);
+    const [dateSaved, setDateSaved] = useState<Date>(new Date());
+    useEffect(() => {
+        let dt = new Date();
+        // console.log('From ' + dateSaved.toLocaleTimeString()
+        //     + ' to ' + dt.toLocaleTimeString() +
+        //     ' delta = ' + (dt.getTime() - dateSaved.getTime()) / 1000);
+        setDateSaved(dt);
+
+        if (changing != changed) {
+            fetchData();
+            changed === changing;
+        }
+    }, [time]);
+
 
 
     return (

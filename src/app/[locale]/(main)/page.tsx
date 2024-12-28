@@ -14,6 +14,7 @@ import DashCardCCT from '@/src/obi/components/App/DashCardCCT';
 import DashCardCO2Tanks from '@/src/obi/components/App/DashCardCO2Tanks';
 import ReactIcons from '@/src/obi/components/Icons/ReactIcons';
 import { useTranslations } from 'next-intl';
+import SEO from '@/src/obi/components/Header/seo';
 
 
 const lineData: ChartData = {
@@ -462,13 +463,13 @@ const Dashboard = ({ }: HomeProps) => {
             {
                 id: 'TANK02',
                 name: 'TANK 02',
-                tags: [35, 2, 73, 57, 18], // Tons, Pressure, MaxCapacityTons, 
+                tags: [35], // Tons, Pressure, MaxCapacityTons, 
                 icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
             },
             {
                 id: 'TANK03',
                 name: 'TANK 03',
-                tags: [33, 3, 74, 58, 19], // Tons, Pressure, MaxCapacityTons, 
+                tags: [33], // Tons, Pressure, MaxCapacityTons, 
                 icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
             },
 
@@ -507,6 +508,7 @@ const Dashboard = ({ }: HomeProps) => {
     const t = useTranslations('page');
     return (
         <>
+            <SEO title="OBI - Dashboard" description="Specify the dashboard" />
 
             <h1>{t('dashboard.title')}</h1>
 

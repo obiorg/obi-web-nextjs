@@ -12,9 +12,9 @@ import { OverlayPanel } from "primereact/overlaypanel";
 
 
 
-import { locales, defaultLocale, languages, Locale } from "@/src/config";
+import { locales, defaultLocale, languages, Locale, defaultLocaleFlag, flagFromFlagKit, getLanguageLabel } from "@/src/config";
 import { usePathname } from "@/src/i18n/routing";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 import Flag from 'react-flagkit';
 
@@ -50,15 +50,6 @@ export default function Header(
     }
   }, [selectedLanguage]);// eslint-disable-line react-hooks/exhaustive-deps
 
-  useEffect(() => {
-    isMounted.current = true;
-    setLangs(languages);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-
-  const formatLanguage = (language: string) => {
-    return language.charAt(0).toUpperCase() + language.substring(1, language.length);
-  };
 
 
 
@@ -77,7 +68,7 @@ export default function Header(
   //   };
   // }, []); // En windows size management
 
-
+  const t = useTranslations('header');
   return (
     <>
 
@@ -93,20 +84,22 @@ export default function Header(
         <i className="pi pi-language" />
       </Button>
 
+
+
       <OverlayPanel
         ref={op}
         showCloseIcon
         id="overlay_panel"
-        // style={{ width: "450px" }}
+        style={{ width: "240px" }}
         className="overlaypanel-demo"
       >
         <>
-          <span>Langue active</span>
+          <h6>{t('lang.active')}</h6>
 
-          {[...locales].sort().map((l) => (
-            <>
-              <LocaleLink key={l} locale={l} />
-            </>
+          {[...locales].sort().map((l, i) => (
+
+            <LocaleLink key={l + '_' + i} locale={l} />
+
           ))}
 
         </>
@@ -129,36 +122,24 @@ function LocaleLink({ locale }: { locale: Locale }) {
   const pathname = usePathname();
   const isActive = useLocale() === locale;
 
+
   return (
-    <div>
-      <Link
-        className={isActive ? 'underline' : undefined}
-        href={pathname + '/' + locale}
-        // locale={locale}
-      >
-        <Flag country={locale.toUpperCase()} />
-      </Link>
+    <Link
+      className={(isActive ? 'active' : undefined) + ''}
+      href={pathname + '/' + locale}
+      locale={locale + ''}
+    >
+      <div className={"flex flex-row flex-wrap hover:shadow-8 hover:bg-primary-reverse" + (isActive ? 'active bg-primary-reverse' : '')}>
 
-      {/* <Link key={l}
-        href={l === defaultLocale ? "/fr" : `/${l}`}
-      >
-        <div>
-          <button type="button" className="p-link layout-topbar-button">
-            {formatLanguage(l)}
-          </button>
+        <div className='flex flex-row flex-wrap'>
+          <Flag country={flagFromFlagKit(locale)} className="flex align-items-center justify-content-center font-bold m-2 border-round" />
+          <span className="flex align-items-center justify-content-center  font-bold m-2 border-round">{getLanguageLabel(locale)}</span>
         </div>
+      </div>
 
-      </Link> */}
-    </div>
+    </Link>
   );
 }
 
-function isLocale(locale: Locale) {
-  let loc: boolean = false;
-  languages.map((language) => {
-    if (language.locale === locale) {
-      return true;
-    }
-  });
-  return false;
-}
+
+

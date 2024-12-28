@@ -51,7 +51,6 @@ export default function DashCardCO2Tanks(
 
 
     const [volume, setVolume] = useState(0);
-    const [state, setState] = useState('???');
     const [updated, setUpdated] = useState(new Date(0));
 
     const [loadLazyTimeout, setLoadLazyTimeout] = useState(0)
@@ -82,11 +81,12 @@ export default function DashCardCO2Tanks(
                                     if (updated === undefined || updated > data.vStamp) {
                                         setUpdated(data.vStamp);
                                     }
-                                    setChanging(!changing);
+
                                     break;
                             }
                         }
                     });
+                    setChanging(!changing);
                 });
 
                 let update: any[] = data.map((d: any) => { return [Date.parse(d.vStamp.replace('Z', ''))]; });
@@ -96,7 +96,7 @@ export default function DashCardCO2Tanks(
             }
         });
 
-    }, [changing, tags, updated])
+    }, [])
 
     /**
      * Get value listed by tags
@@ -106,7 +106,9 @@ export default function DashCardCO2Tanks(
         fetchData();
     }, [fetchData, tags]);
 
-
+    /**
+     * Auto refresh time system
+     */
     const [time, setTime] = useState(Date.now());
     useEffect(() => {
         if (refresh) {
@@ -118,7 +120,9 @@ export default function DashCardCO2Tanks(
     }, []);
 
 
-
+    /**
+     * Auto refresh time system callback
+     */
     const [dateSaved, setDateSaved] = useState<Date>(new Date());
     useEffect(() => {
         let dt = new Date();

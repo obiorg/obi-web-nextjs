@@ -157,6 +157,7 @@ const Layout = ({ children }: ChildContainerProps) => {
                     description='The modeling system designed for Breweries and Beverages.'>
 
                 </SEO>
+
                 <AppTopbar ref={topbarRef} />
                 <div ref={sidebarRef} className="layout-sidebar">
                     <AppSidebar />

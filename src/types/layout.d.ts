@@ -2,6 +2,7 @@ import React, { ReactElement, Dispatch, SetStateAction, HTMLAttributeAnchorTarge
 import { NextPage } from 'next';
 import { Demo } from './demo';
 import { Toast } from 'primereact/toast';
+import { Url } from 'next/dist/shared/lib/router/router';
 
 /* Breadcrumb Types */
 export interface AppBreadcrumbProps {
@@ -81,7 +82,7 @@ export interface MenuModel {
     icon?: string;
     group?: string;
     items?: MenuModel[];
-    to?: string;
+    to?:  Url;
     url?: string;
     target?: HTMLAttributeAnchorTarget;
     seperator?: boolean;
@@ -105,4 +106,5 @@ export interface AppMenuItemProps {
     index?: number;
     root?: boolean;
     className?: string;
+    locale?: Locale;
 }

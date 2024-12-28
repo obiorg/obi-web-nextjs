@@ -3,14 +3,17 @@ import { Metadata } from 'next';
 
 interface AppLayoutProps {
     children: React.ReactNode;
-    params: {
-        lang: string;
-    };
-}
+    params: { locale: string };
+};
 
 
 
-export default function AppLayout({ children }: AppLayoutProps) {
-    // console.log('Layout lang', params.lang);
+
+export default function AppLayout({
+    children,
+    params: { locale }
+}: AppLayoutProps) {
+
+    // console.log('Layout lang', locale);
     return <Layout>{children}</Layout>;
 }

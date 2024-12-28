@@ -23,40 +23,40 @@ const AppMenu = () => {
                 {
                     label: 'Localisations', icon: 'pi pi-fw pi-map',
                     items: [
-                        { label: 'Continent', group: 'fa6', icon: 'FaGlobe', to: '/obi/sys/localisations/regions' },
-                        { label: 'Sous-continent', group: 'fa', icon: 'FaGlobeEurope', to: '/obi/sys/localisations/subregions' },
-                        { label: 'Pays', group: 'fa', icon: 'FaCity', to: '/obi/sys/localisations/countries' },
-                        { label: 'États', group: 'fa6', icon: 'FaMountainCity', to: '/obi/sys/localisations/states' },
-                        { label: 'Villes', group: 'fa', icon: 'FaCity', to: '/obi/sys/localisations/cities' },
-                        { label: 'Localisation', group: 'fa6', icon: 'FaMapLocationDot', to: '/obi/sys/localisations/locations' },
+                        { label: 'Continent', group: 'fa6', icon: 'FaGlobe', to: '/sys/localisations/regions' },
+                        { label: 'Sous-continent', group: 'fa', icon: 'FaGlobeEurope', to: '/sys/localisations/subregions' },
+                        { label: 'Pays', group: 'fa', icon: 'FaCity', to: '/sys/localisations/countries' },
+                        { label: 'États', group: 'fa6', icon: 'FaMountainCity', to: '/sys/localisations/states' },
+                        { label: 'Villes', group: 'fa', icon: 'FaCity', to: '/sys/localisations/cities' },
+                        { label: 'Localisation', group: 'fa6', icon: 'FaMapLocationDot', to: '/sys/localisations/locations' },
                     ]
                 },
                 {
                     label: 'Businesses', icon: 'pi pi-fw pi-briefcase',
                     items: [
-                        { label: 'Entités', icon: 'pi pi-fw pi-building', to: '/obi/sys/businesses/entities' },
-                        { label: 'Entreprises', icon: 'pi pi-fw pi-briefcase', to: '/obi/sys/businesses/businesses' },
-                        { label: 'Sociétés', icon: 'pi pi-fw pi-building-columns', to: '/obi/sys/businesses/companies' },
+                        { label: 'Entités', icon: 'pi pi-fw pi-building', to: '/sys/businesses/entities' },
+                        { label: 'Entreprises', icon: 'pi pi-fw pi-briefcase', to: '/sys/businesses/businesses' },
+                        { label: 'Sociétés', icon: 'pi pi-fw pi-building-columns', to: '/sys/businesses/companies' },
                     ]
                 },
                 {
                     label: 'Gestion alarmes', icon: 'pi pi-fw pi-bell',
                     items: [
-                        { label: 'Groupes', group: 'lia', icon: 'LiaLayerGroupSolid', to: '/obi/sys/alarms/groups' },
-                        { label: 'Classes', group: 'vsc', icon: 'VscSymbolClass', to: '/obi/sys/alarms/classes' },
-                        { label: 'Rendus', group: 'si', icon: 'SiOctanerender', to: '/obi/sys/alarms/renders' },
-                        { label: 'Alarmes', group: 'fc', icon: 'FcAlarmClock', to: '/obi/sys/alarms' },
+                        { label: 'Groupes', group: 'lia', icon: 'LiaLayerGroupSolid', to: '/sys/alarms/groups' },
+                        { label: 'Classes', group: 'vsc', icon: 'VscSymbolClass', to: '/sys/alarms/classes' },
+                        { label: 'Rendus', group: 'si', icon: 'SiOctanerender', to: '/sys/alarms/renders' },
+                        { label: 'Alarmes', group: 'fc', icon: 'FcAlarmClock', to: '/sys/alarms' },
                     ]
                 },
                 {
 
                     label: 'Analyses', group: 'fa6', icon: 'FaCreativeCommonsSampling',
                     items: [
-                        { label: 'Autorisées', group: 'lia', icon: 'LiaObjectGroupSolid', to: '/obi/sys/analyses/allowed' },
-                        { label: 'Catégories', group: 'md', icon: 'MdOutlineCategory', to: '/obi/sys/analyses/categories' },
-                        { label: 'Methodes', group: 'ri', icon: 'RiInputMethodLine', to: '/obi/sys/analyses/methods' },
-                        { label: 'Points', group: 'gi', icon: 'GiImpactPoint', to: '/obi/sys/analyses/points' },
-                        { label: 'Types', group: 'md', icon: 'MdOutlineTypeSpecimen', to: '/obi/sys/analyses/types' },
+                        { label: 'Autorisées', group: 'lia', icon: 'LiaObjectGroupSolid', to: '/sys/analyses/allowed' },
+                        { label: 'Catégories', group: 'md', icon: 'MdOutlineCategory', to: '/sys/analyses/categories' },
+                        { label: 'Methodes', group: 'ri', icon: 'RiInputMethodLine', to: '/sys/analyses/methods' },
+                        { label: 'Points', group: 'gi', icon: 'GiImpactPoint', to: '/sys/analyses/points' },
+                        { label: 'Types', group: 'md', icon: 'MdOutlineTypeSpecimen', to: '/sys/analyses/types' },
 
                     ]
                 },
@@ -69,12 +69,12 @@ const AppMenu = () => {
             items: [
                 {
 
-                    label: 'Mesures', group: 'tb', icon: 'TbRulerMeasure', 
+                    label: 'Mesures', group: 'tb', icon: 'TbRulerMeasure',
                     items: [
-                        { label: 'Comparateurs', group: 'fa', icon: 'FaDraftingCompass', to: '/obi/sys/measures/comparators' },
-                        { label: 'Limite Groupe', group: 'lu', icon: 'LuGroup', to: '/obi/sys/measures/limitsgroups' },
-                        { label: 'Limites', group: 'md', icon: 'MdProductionQuantityLimits', to: '/obi/sys/measures/limits' },
-                        { label: 'Unités', group: 'si', icon: 'SiJunit5', to: '/obi/sys/measures/units' },
+                        { label: 'Comparateurs', group: 'fa', icon: 'FaDraftingCompass', to: '/sys/measures/comparators' },
+                        { label: 'Limite Groupe', group: 'lu', icon: 'LuGroup', to: '/sys/measures/limitsgroups' },
+                        { label: 'Limites', group: 'md', icon: 'MdProductionQuantityLimits', to: '/sys/measures/limits' },
+                        { label: 'Unités', group: 'si', icon: 'SiJunit5', to: '/sys/measures/units' },
 
                     ]
                 },
@@ -88,11 +88,11 @@ const AppMenu = () => {
             items: [
                 {
 
-                    label: 'Maintenance', group: 'bi', icon: 'BiSolidCarMechanic', 
+                    label: 'Maintenance', group: 'bi', icon: 'BiSolidCarMechanic',
                     items: [
-                        { label: 'Equipements', group: 'gi', icon: 'GiMechanicGarage', to: '/obi/sys/maintenance/equipements' },
-                        { label: 'Providers', group: 'sl', icon: 'SlSupport', to: '/obi/sys/maintenance/equipements/externalproviders' },
-                        { label: 'Data Externe', group: 'bs', icon: 'BsDatabaseExclamation', to: '/obi/sys/maintenance/equipements/dataexternal' },
+                        { label: 'Equipements', group: 'gi', icon: 'GiMechanicGarage', to: '/sys/maintenance/equipements' },
+                        { label: 'Providers', group: 'sl', icon: 'SlSupport', to: '/sys/maintenance/equipements/externalproviders' },
+                        { label: 'Data Externe', group: 'bs', icon: 'BsDatabaseExclamation', to: '/sys/maintenance/equipements/dataexternal' },
 
                     ]
                 }
@@ -108,8 +108,8 @@ const AppMenu = () => {
 
                     label: 'Connexions', icon: 'pi pi-fw pi-sitemap',
                     items: [
-                        { label: 'Drivers', icon: 'pi pi-fw pi-arrows-h', to: '/obi/sys/connexions/drivers' },
-                        { label: 'Machines', icon: 'pi pi-fw pi-sitemap', to: '/obi/sys/connexions/machines' },
+                        { label: 'Drivers', icon: 'pi pi-fw pi-arrows-h', to: '/sys/connexions/drivers' },
+                        { label: 'Machines', icon: 'pi pi-fw pi-sitemap', to: '/sys/connexions/machines' },
 
                     ]
                 },
@@ -117,8 +117,8 @@ const AppMenu = () => {
 
                     label: 'Tags (Variables)', icon: 'pi pi-fw pi-server',
                     items: [
-                        { label: 'Tags', icon: 'pi pi-fw pi-hashtag', to: '/obi/sys/tags' },
-                        { label: 'Standard', icon: 'pi pi-fw pi-star', to: '/obi/sys/persistences/standards' },
+                        { label: 'Tags', icon: 'pi pi-fw pi-hashtag', to: '/sys/tags' },
+                        { label: 'Standard', icon: 'pi pi-fw pi-star', to: '/sys/persistences/standards' },
 
                     ]
                 },
@@ -126,10 +126,10 @@ const AppMenu = () => {
 
                     label: 'Archivage', icon: 'pi pi-fw pi-database',
                     items: [
-                        { label: 'Persistences', icon: 'pi pi-fw pi-database', to: '/obi/sys/persistences' },
-                        { label: 'Méthodes', icon: 'pi pi-fw pi-star', to: '/obi/sys/persistences/methods' },
-                        { label: 'Standards', icon: 'pi pi-fw pi-star', to: '/obi/sys/persistences/standards' },
-                        { label: 'Limites Standards', icon: 'pi pi-fw pi-star', to: '/obi/sys/persistences/standardslimits' },
+                        { label: 'Persistences', icon: 'pi pi-fw pi-database', to: '/sys/persistences' },
+                        { label: 'Méthodes', icon: 'pi pi-fw pi-star', to: '/sys/persistences/methods' },
+                        { label: 'Standards', icon: 'pi pi-fw pi-star', to: '/sys/persistences/standards' },
+                        { label: 'Limites Standards', icon: 'pi pi-fw pi-star', to: '/sys/persistences/standardslimits' },
 
                     ]
                 }
@@ -301,7 +301,11 @@ const AppMenu = () => {
                 {
                     model.map((item, i) => {
                         return !item?.seperator ?
-                            <AppMenuitem item={item} root={true} index={i} key={item.label} />
+                            <AppMenuitem
+                                item={item}
+                                root={true}
+                                index={i}
+                                key={item.label} />
                             : <li className="menu-separator"></li>;
                     })
                 }

@@ -8,7 +8,7 @@ const AppFooter = () => {
 
     return (
         <div className="layout-footer">
-            <img src={`../layout/images/obi/obi-${layoutConfig.colorScheme === 'light' ? 'dark' : 'light'}.svg`} alt="Logo" height="30" className="mr-2" />
+            <img src={`/obi/layout/images/obi/obi-${layoutConfig.colorScheme === 'light' ? 'dark' : 'light'}.svg`} alt="Logo" height="30" className="mr-2" />
         
             <span className="font-medium ml-2"></span>
         </div>

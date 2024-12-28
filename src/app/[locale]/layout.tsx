@@ -20,6 +20,7 @@ import { getMessages, setRequestLocale } from 'next-intl/server';
 import Head from 'next/head';
 import { notFound } from 'next/navigation';
 
+import '@/public/themes/lara-dark-teal/theme.css';
 
 type RootLayoutProps = {
     children: React.ReactNode;
@@ -72,7 +73,7 @@ export default async function RootLayout({
 
             <html lang={locale} suppressHydrationWarning>
                 <head>
-                    <link id="theme-css" href={`../themes/lara-dark-teal/theme.css`} rel="stylesheet"></link>
+                    {/* <link id="theme-css" href={'//themes/lara-dark-teal/theme.css'} rel="stylesheet"></link> */}
                 </head>
                 <body>
 

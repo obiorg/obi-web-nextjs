@@ -122,7 +122,7 @@ export default function DashCardCCT(
                                     break;
                                 case 4:
                                     if (stateTag?.vInt !== tag.vInt) {
-                                        console.log(stateTag, tag);
+                                        // console.log(stateTag, tag);
                                         setStateTag(tag);
                                     }
                                     break;
@@ -196,9 +196,9 @@ export default function DashCardCCT(
     const [dateSaved, setDateSaved] = useState<Date>(new Date());
     useEffect(() => {
         let dt = new Date();
-        console.log('From ' + dateSaved.toLocaleTimeString()
-            + ' to ' + dt.toLocaleTimeString() +
-            ' delta = ' + (dt.getTime() - dateSaved.getTime()) / 1000);
+        // console.log('From ' + dateSaved.toLocaleTimeString()
+        //     + ' to ' + dt.toLocaleTimeString() +
+        //     ' delta = ' + (dt.getTime() - dateSaved.getTime()) / 1000);
         setDateSaved(dt);
 
         if (changing != changed) {

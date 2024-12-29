@@ -4,15 +4,14 @@ import Link from "next/link";
 
 
 
-import { Menu } from 'primereact/menu';
 import { Button } from 'primereact/button';
+import { OverlayPanel } from "primereact/overlaypanel";
 import { Toast } from 'primereact/toast';
 import { useEffect, useRef, useState } from "react";
-import { OverlayPanel } from "primereact/overlaypanel";
 
 
 
-import { locales, defaultLocale, languages, Locale, defaultLocaleFlag, flagFromFlagKit, getLanguageLabel } from "@/src/config";
+import { flagFromFlagKit, getLanguageLabel, Locale, locales } from "@/src/config";
 import { usePathname } from "@/src/i18n/routing";
 import { useLocale, useTranslations } from "next-intl";
 

@@ -1,27 +1,23 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { useEventListener, useMountEffect, useUnmountEffect } from 'primereact/hooks';
-import React, { useContext, useEffect, useRef } from 'react';
+import { AppTopbarRef, ChildContainerProps, LayoutState } from '@/src/types';
+import { usePathname, useSearchParams } from 'next/navigation';
+import { PrimeReactContext } from 'primereact/api';
+import { useEventListener, useUnmountEffect } from 'primereact/hooks';
 import { classNames } from 'primereact/utils';
+import React, { useContext, useEffect, useRef } from 'react';
+import AppConfig from './AppConfig';
 import AppFooter from './AppFooter';
 import AppSidebar from './AppSidebar';
 import AppTopbar from './AppTopbar';
-import AppConfig from './AppConfig';
 import { LayoutContext } from './context/layoutcontext';
-import { PrimeReactContext } from 'primereact/api';
-import { ChildContainerProps, LayoutState, AppTopbarRef } from '@/src/types';
-import { usePathname, useSearchParams } from 'next/navigation';
 
 
-import { locale, addLocale, updateLocaleOption, updateLocaleOptions, localeOption, localeOptions } from 'primereact/api';
+import { addLocale, locale } from 'primereact/api';
 
-import "@fortawesome/fontawesome-svg-core/styles.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
-import { Button } from 'primereact/button';
-import { setRequestLocale } from 'next-intl/server';
-import SEO from '../obi/components/Header/seo';
+import "@fortawesome/fontawesome-svg-core/styles.css";
 
 config.autoAddCss = false;
 
@@ -151,13 +147,6 @@ const Layout = ({ children }: ChildContainerProps) => {
     return (
         <React.Fragment>
             <div className={containerClass}>
-
-                <SEO
-                    title='OBI - One Brewery Industry'
-                    description='The modeling system designed for Breweries and Beverages.'>
-
-                </SEO>
-
                 <AppTopbar ref={topbarRef} />
                 <div ref={sidebarRef} className="layout-sidebar">
                     <AppSidebar />

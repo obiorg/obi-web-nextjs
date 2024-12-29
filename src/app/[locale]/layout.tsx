@@ -14,13 +14,13 @@ import 'primereact/resources/primereact.css';
 
 import { locales } from '@/src/config';
 import { routing } from '@/src/i18n/routing';
-import { Viewport } from 'next';
+import { Metadata, Viewport } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import Head from 'next/head';
 import { notFound } from 'next/navigation';
 
-import '@/public/themes/lara-dark-teal/theme.css';
+// import '@/public/themes/lara-dark-teal/theme.css';
 
 type RootLayoutProps = {
     children: React.ReactNode;
@@ -33,10 +33,29 @@ export function generateStaticParams() {
 
 export const viewport: Viewport = {
     themeColor: '#colorHere',
-    initialScale: 1, 
+    initialScale: 1,
     width: 'device-width'
 }
 
+
+export const metadata: Metadata = {
+    title: {
+        template: '%s | OBI - One Brewery Industry',
+        default: 'OBI - One Brewery Industry',
+    },
+    description: 'The modeling system designed for Breweries and Beverages.',
+    robots: { index: false, follow: false },
+
+    openGraph: {
+        type: 'website',
+        title: 'OBI - One Brewery Industry',
+        url: 'https://castel-group.org/',
+        description: 'The modeling system designed for Breweries and Beverages',
+        images: ['https://www.primefaces.org/static/social/sakai-react.png'],
+        ttl: 604800
+    },
+
+};
 
 export default async function RootLayout({
     children,
@@ -73,11 +92,15 @@ export default async function RootLayout({
 
             <html lang={locale} suppressHydrationWarning>
                 <head>
-                    {/* <link id="theme-css" href={'//themes/lara-dark-teal/theme.css'} rel="stylesheet"></link> */}
+                    <link id="theme-css" href={'/obi/themes/lara-dark-teal/theme.css'} rel="stylesheet" key="k_theme-css" />
                 </head>
+                <Head>
+                    <link rel="icon" href="/favicon.ico" />
+                </Head>
+
                 <body>
 
-       
+
                     <PrimeReactProvider >
                         <NextIntlClientProvider messages={messages}>
                             <LayoutProvider>{children}</LayoutProvider>

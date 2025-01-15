@@ -2,6 +2,7 @@
 
 import { OBI } from "@/src/types/obi";
 import { LocationsStatesModel } from "../../models/localisations/LocationsStatesModel";
+import axios from "axios";
 
 
 
@@ -69,6 +70,21 @@ interface LocationsStatesPostFormState {
 
 
 export const LocationsStatesService = {
+
+    async count(): Promise<any> {
+        const url = process.env.httpPath + '/localisations/states/count';
+        axios.get(url)
+            .then((res) => {
+                const dataset: number = res.data;
+                return dataset;
+            })
+            .catch((error) => {
+                // Code for handling the error
+                return error;
+            })
+
+    },
+
 
     /**
      * Find catalogs specified by lazy parameters
@@ -248,7 +264,7 @@ export const LocationsStatesService = {
 
     async processAll(formState: any, datas: any): Promise<any> {
         let res: any = [];
-        datas.forEach((row:any, index:any) => {
+        datas.forEach((row: any, index: any) => {
             LocationsStatesService.create(formState, row).then((res_row) => {
                 console.log('res_row', res_row, 'res', res);
                 res.push(res_row);

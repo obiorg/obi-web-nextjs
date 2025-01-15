@@ -7,40 +7,38 @@ import React, { useEffect, useRef, useState } from 'react';
 import '@/src/styles/obi/obi.scss';
 
 
-import { LocationsService } from '@/src/obi/service/localisations/LocationsService';
-import { LocationsModel } from '@/src/obi/models/localisations/LocationsModel';
+import { MachinesService } from '@/src/obi/service/connexions/MachinesService';
+import { MachinesModel } from '@/src/obi/models/connexions/MachinesModel';
 import PostForm from '../../components/post-form';
 import { OBI } from '@/src/types/obi';
 
 
-const model = new LocationsModel();
+const model = new MachinesModel();
 
-interface LocationUpdateProps {
+interface MachineCopyProps {
     params: any,
-    // updatePost: (id: string, data: OBI.Localisations.Location) => void;
 }
 
 // Defining a new page, server component PostsEdit
-const LocationUpdate = ({ params }: LocationUpdateProps) => {
+const MachineCopy = ({ params }: MachineCopyProps) => {
     // Receives params as a prop, which includes the id of the post to be edited.
     const { id } = params;
 
-    const [location, setLocation] = useState();
-    let m = new LocationsModel();
+    const [catalog, setCatalog] = useState();
+
     useEffect(() => {
         // Fetch the post from the database
-        LocationsService.getById(id).then((data) => {
+        MachinesService.getById(id).then((data) => {
             if (data.status) {
                 // If there was an error, display the error message
                 console.error(data.message);
             } else {
                 // If the post was successfully fetched, set it as the current location
-                setLocation(() => {
+                setCatalog(() => {
                     return {
                         ...data,
                     }
                 });
-
             }
         })
     }, [id]);
@@ -49,14 +47,14 @@ const LocationUpdate = ({ params }: LocationUpdateProps) => {
 
 
     return (<>
-        {location ?
-            <PostForm formAction={LocationsService.create}
+        {catalog ?
+            <PostForm formAction={MachinesService.create}
                 type={2}
-                initialData={location}
+                initialData={catalog}
             />
             : null}
     </>
     );
 };
 
-export default LocationUpdate;
+export default MachineCopy;

@@ -9,24 +9,48 @@ import { MachinesDriversModel } from "@/src/obi/models/connexions/MachinesDriver
 import { MachinesDriversService } from "@/src/obi/service/connexions/MachinesDriversService"
 import { Dropdown } from "primereact/dropdown"
 import { Skeleton } from "primereact/skeleton"
+import ReactIcons from "@/src/obi/components/Icons/ReactIcons"
 
- 
+
 // Define the props that the PostForm component expects
 interface MachinesDriversDropDownProps {
-    value: any;
-    onChanged?: (e: any) => void;       // The callback function to be called when the value changes
+    id?: string;                         // ID of the component
+    name?: string;                       // Name of the component
+    title?: string;                      // preceding title of dropdown
+
+    value?: string | number | undefined;
+    onClick?: (e: any) => void; // The callback function to be called when the button is clicked
+    onChange?: (e: any) => void; // The callback function to be called when the value changes
+
+    error?: any; // child of formState ex: formState.erros?.location
 
     placeholder?: string;               // placeholder
     tooltip?: string;                   // tooltip text
     tooltipOptions?: any;               // options for tooltip
+
+    options?: any; // options
+
+    emptyFilterMessage?: string; //
+    emptyMessage?: string; // Message to display when no items are found
+
+    render?: boolean; //
 }
 
 
 
 export default function MachinesDriversDropDown({
+    id,
+    name,
+    title,
     value,
-    onChanged,
-    placeholder, tooltip, tooltipOptions
+    onChange,
+    error,
+    placeholder = "Rechercher ...'",
+    tooltip,
+    tooltipOptions,
+    emptyFilterMessage = "Recherche sans résultat...",
+    emptyMessage = 'vide !',
+    render = true,
 }: MachinesDriversDropDownProps) {
 
 
@@ -45,7 +69,7 @@ export default function MachinesDriversDropDown({
     const [initCatalog, setInitCatalog] = useState(false);
 
 
-    let loadLazyTimeout:any = undefined;
+    let loadLazyTimeout: any = undefined;
 
 
 
@@ -53,31 +77,31 @@ export default function MachinesDriversDropDown({
      * Restaure data on init
      */
     useEffect(() => {
-        if (initCatalog === false) {
-            const _catalogs = Array.from({ length: 100000 });
-            const lazyEventSet = { lazyEvent: JSON.stringify(lazyParams) };
-            // Get Lazy Data
-            MachinesDriversService.getLazy(lazyEventSet).then((data: any) => {
-                for (let i = lazyParams.first; i < lazyParams.rows; i++) {
-                    _catalogs[i] = {
-                        label: data[i].driver + ' - ' + data[i].designation + ' [' + data[i].id + ']',
-                        value: data[i].id,
-                        catalogs: data[i]
-                    };
-                }
-                setCatalogs(_catalogs);
-                setLazyLoading(false);
-            });
-            setInitCatalog(true);
+        // if (initCatalog === false) {
+        //     const _catalogs = Array.from({ length: 100000 });
+        //     const lazyEventSet = { lazyEvent: JSON.stringify(lazyParams) };
+        //     // Get Lazy Data
+        //     MachinesDriversService.getLazy(lazyEventSet).then((data: any) => {
+        //         for (let i = lazyParams.first; i < lazyParams.rows; i++) {
+        //             _catalogs[i] = {
+        //                 label: data[i].driver + ' - ' + data[i].designation + ' [' + data[i].id + ']',
+        //                 value: data[i].id,
+        //                 catalogs: data[i]
+        //             };
+        //         }
+        //         setCatalogs(_catalogs);
+        //         setLazyLoading(false);
+        //     });
+        //     setInitCatalog(true);
 
-        }
-        setSelectedCatalog(value);
+        // }
+        // setSelectedCatalog(value);
     }, [value]);
 
 
     const onChangeCatalog = (e: { value: any }) => {
         setSelectedCatalog(e.value)
-        onChanged && onChanged(e);
+        onChange && onChange(e);
     }
 
     const onChangedFilter = (e: any) => {
@@ -152,38 +176,67 @@ export default function MachinesDriversDropDown({
 
 
     return <>
+        {render !== true ? <></> :
+            <div className="grid mb-2">
 
-        <Dropdown
-            value={selectedCatalog}
+                <div className='col-12 md:col-2'>
+                    <label htmlFor={id} className="input-field">
+                        {title}
+                    </label>
+                </div>
 
-            options={catalogs}
-            onChange={onChangeCatalog}
-            placeholder="Drivers..."
-            showClear
-            filter
-            onFilter={onChangedFilter}
-            showFilterClear
-            emptyFilterMessage="Recherche sans résultat..."
-            emptyMessage="Vide !"
+                <Dropdown
+                    id={id}
+                    name={name}
+                    value={selectedCatalog}
 
-            // loading={lazyLoading}
-            virtualScrollerOptions={
-                {
-                    lazy: true,
-                    onLazyLoad: onLazyLoad,
-                    itemSize: 28,
-                    showLoader: true,
-                    loading: lazyLoading,
-                    delay: 250,
-                    loadingTemplate: (options) => {
-                        return (
-                            <div className="flex align-items-center p-2" style={{ height: '28px' }}>
-                                <Skeleton width={options.even ? '60%' : '50%'} height="0.5rem" />
-                            </div>
-                        )
+
+                    options={catalogs}
+                    onChange={onChangeCatalog}
+
+                    className={'col-12 md:col-5  pl-2 mb-2 input-value ' + (error ? 'p-invalid' : '')}
+                    placeholder={placeholder}
+
+
+                    showClear
+                    filter
+                    onFilter={onChangedFilter}
+                    showFilterClear
+                    emptyFilterMessage="Recherche sans résultat..."
+                    emptyMessage="Vide !"
+
+                    // loading={lazyLoading}
+                    virtualScrollerOptions={
+                        {
+                            lazy: true,
+                            onLazyLoad: onLazyLoad,
+                            itemSize: 28,
+                            showLoader: true,
+                            loading: lazyLoading,
+                            delay: 250,
+                            loadingTemplate: (options) => {
+                                return (
+                                    <div className="flex align-items-center p-2" style={{ height: '28px' }}>
+                                        <Skeleton width={options.even ? '60%' : '50%'} height="0.5rem" />
+                                    </div>
+                                )
+                            }
+                        }}
+                />
+
+                <div className={'col-12 md:col-4 p-0 m-0 text-left align-content-center'}>
+                    {
+                        error
+                        &&
+                        <div className="text-red-500">
+                            <ReactIcons group="bi" icon="BiSolidCommentError"
+                            /> &nbsp;
+                            {error?.join(', ')} {/* // Display form errors related to the title field*/}
+                        </div >
                     }
-                }}
-        />
+                </div>
 
+            </div>
+        }
     </>
 }

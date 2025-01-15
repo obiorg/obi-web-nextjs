@@ -37,6 +37,183 @@
       "title": "Exemple d'itinéraire imbriqué"
     }
   },
+  "global": {
+    "Form": {
+      "id": {
+        "label": "ID",
+        "placeholder": "Numéro d'identification unique",
+        "tooltip": "Référence au code d'identification unique"
+      },
+      "deleted": {
+        "label": "Supprimé",
+        "placeholder": "Supprimer logiquement...",
+        "tooltip": "Indique si l'élément est supprimé logiquement"
+      },
+      "created": {
+        "label": "Créé le",
+        "placeholder": "Date de création",
+        "tooltip": "Indique la date de création de l'élément"
+      },
+      "changed": {
+        "label": "Modifié le",
+        "placeholder": "Date de dernière modification",
+        "tooltip": "Indique la date de dernière modification de l'élément"
+      }
+    },
+    "Msg": {
+      "loading": "Chargement...",
+      "error": "Une erreur est survenue",
+      "success": "Opération réussie",
+      "Error": {
+        "title": "Erreur",
+        "message": "Une erreur est survenue",
+        "Value": {
+          "required": "Valeur requise",
+          "min": "Valeur trop petite",
+          "max": "Valeur trop grande",
+          "max255": "Valeur trop grande ! Max à 255",
+          "email": "Adresse email invalide",
+          "pattern": "Format invalide",
+          "unique": "Valeur déjà existante"
+        }
+      }
+    }
+  },
+  "connectionMachine": {
+    "title": "Connexions Machines",
+    "subTitle": "Définition des accès aux machines...",
+    "Table": {
+      "title": "Liste des machines",
+      "subTitle": "Liste des connexions aux machines..."
+    },
+    "Create": {
+      "title": "Création d'une machine",
+      "subTitle": ""
+    },
+    "Edit": {
+      "title": "",
+      "subTitle": ""
+    },
+    "Form": {
+      "company": {
+        "label": "Société",
+        "placeholder": "Code de la société",
+        "tooltip": "Associer le code de la société"
+      },
+      "address": {
+        "label": "Adresse ",
+        "placeholder": "Adresse IP, lien de connexion",
+        "tooltip": "Défini l'adresse IP de connexion"
+      },
+      "mask": {
+        "label": "Masque",
+        "placeholder": "Masque de sous-réseau",
+        "tooltip": "Défini le masque de sous-réseau"
+      },
+      "dns": {
+        "label": "DNS",
+        "placeholder": "Serveur DNS",
+        "tooltip": "Défini le serveur DNS"
+      },
+      "IPv6": {
+        "label": "IPv6",
+        "placeholder": "Adresse IPv6",
+        "tooltip": "Défini l'adresse IPv6"
+      },
+      "port": {
+        "label": "Port",
+        "placeholder": "Port de connexion",
+        "tooltip": "Défini le port de connexion"
+      },
+      "name": {
+        "label": "Nom",
+        "placeholder": "Nom de la machine",
+        "tooltip": "Défini le nom de la machine"
+      },
+      "rack": {
+        "label": "Rack",
+        "placeholder": "Emplacement dans le rack, défaut: 0",
+        "tooltip": "Défini l'emplacement dans le rack"
+      },
+      "slot": {
+        "label": "Slot",
+        "placeholder": "Emplacement dans le slot, défaut: 2",
+        "tooltip": "Défini l'emplacement dans le slot"
+      },
+      "driver": {
+        "label": "Driver",
+        "placeholder": "Sélection du driver",
+        "tooltip": "Défini le driver de connexion"
+      },
+      "mqtt": {
+        "label": "Source MQTT",
+        "placeholder": "L'adresse définie correspond à la source mqtt",
+        "tooltip": "Active l'adresse définie en tank que source mqtt"
+      },
+      "mqtt_user": {
+        "label": "MQTT User",
+        "placeholder": "Nom d'utilisateur MQTT",
+        "tooltip": "Défini le nom d'utilisateur MQTT"
+      },
+      "mqtt_password": {
+        "label": "MQTT Password",
+        "placeholder": "Mot de passe MQTT",
+        "tooltip": "Défini le mot de passe MQTT"
+      },
+      "webhook": {
+        "label": "Webhook",
+        "placeholder": "Adresse du webhook",
+        "tooltip": "Défini l'adresse du webhook"
+      },
+      "webhook_secret": {
+        "label": "Webhook Secret",
+        "placeholder": "Secret du webhook",
+        "tooltip": "Défini le secret du webhook"
+      },
+      "bus": {
+        "label": "Bus",
+        "placeholder": "Bus de communication",
+        "tooltip": "Défini le bus de communication"
+      },
+      "description": {
+        "label": "Description",
+        "placeholder": "Description de la machine",
+        "tooltip": "Défini la description de la machine"
+      },
+      "linkSrouce": {
+        "label": "Type de lien"
+      },
+      "linkSource": {
+        "IP": {
+          "label": "IPv4"
+        },
+        "MQTT": {
+          "label": "MQTT"
+        },
+        "Webhook": {
+          "label": "Webhook"
+        },
+        "Bus": {
+          "label": "Bus"
+        }
+      },
+      "addressIPv4": {
+        "label": "Adresse IPv4",
+        "placeholder": "###.###.###.###",
+        "tooltip": "Définir une adresse IPv4 de connexion"
+      },
+      "addressLink": {
+        "label": "Lien adressage",
+        "placeholder": "lien de connexion...",
+        "tooltip": "Définir une adresse de connexion à la source"
+      }
+    },
+    "import": {
+      "table": {
+        "title": "Importer - Connexions Machine"
+      }
+    }
+  },
   "header": {
     "lang": {
       "active": "Langue active"

@@ -19,21 +19,19 @@ declare namespace OBI {
         bodyTemplate?: any;
         sortable?: any;
         filter?: any;
-        filterElement?:any
+        filterElement?: any;
         filterPlaceholder?: any;
         dataType?: any;
-        body?:any;
-        filterField?:any;
-        style?:any;
-        showFilterMatchModes?:boolean;
+        body?: any;
+        filterField?: any;
+        style?: any;
+        showFilterMatchModes?: boolean;
     }
 
     interface SizeOption {
         label: string;
         value: string;
     }
-
-
 
     // Define an interface for the form state
     interface LocationsFormState {
@@ -461,5 +459,93 @@ declare namespace OBI {
         tags_memories?: OBI.tags_memories;
         tags_tables?: OBI.tags_tables;
         tags_types?: OBI.tags_types;
+    };
+
+    type tags_lists = {
+        id?: number;
+        deleted?: boolean;
+        created?: Date;
+        changed?: Date;
+
+        company?: number;
+        type?: number;
+        list?: string;
+        designation?: string;
+        comment?: string;
+
+        tags?: OBI.tags[];
+        companies?: OBI.companies;
+        tags_lists_types?: OBI.tags_lists_types;
+        tags_lists_content?: OBI.tags_lists_content[];
+    };
+
+    type tags_lists_content = {
+        id?: number;
+        deleted?: boolean;
+        created?: Date;
+        changed?: Date;
+
+        company?: number;
+        list?: number;
+        content?: number;
+        value?: string;
+        default?: boolean;
+        width?: number;
+        height?: number;
+        comment?: string;
+
+        companies?: OBI.companies;
+        tags_lists?: OBI.tags_lists;
+    };
+
+    type tags_lists_types = {
+        id?: number;
+        deleted?: boolean;
+        created?: Date;
+        changed?: Date;
+
+        designation?: string;
+        comment?: string;
+        tags_lists?: OBI.tags_lists[];
+    };
+
+    type tags_memories = {
+        id?: number;
+        deleted?: boolean;
+        created?: Date;
+        changed?: Date;
+
+        name?: string;
+        comment?: string;
+        tags?: OBI.tags[];
+    };
+
+    type tags_tables = {
+        id?: number;
+        deleted?: boolean;
+        created?: Date;
+        changed?: Date;
+
+        company?: number;
+        table?: string;
+        designation?: string;
+        comment?: string;
+        tags?: OBI.tags[];
+        companies?: OBI.companies;
+    };
+
+    type tags_types = {
+        id?: number;
+        deleted?: boolean;
+        created?: Date;
+        changed?: Date;
+
+        type?: string;
+        designation?: string;
+        bit?: number;
+        byte?: number;
+        word?: number;
+        group?: string;
+        tags?: OBI.tags[];
     };
 }

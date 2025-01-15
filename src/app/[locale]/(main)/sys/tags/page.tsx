@@ -8,17 +8,7 @@ export const metadata: Metadata = {
 };
 
 const Tags = () => {
-
-
-
-
-
-    return (<>
-
-        <TagsPage />
-
-    </>)
-
+    return (<><TagsPage /></>)
 };
 
 export default Tags;

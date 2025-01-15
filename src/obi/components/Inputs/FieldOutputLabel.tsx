@@ -10,7 +10,7 @@ interface FieldOutputLabelProps {
     id?: string;                         // ID of the component
     name?: string;                       // Name of the component
     title?: string;                      // preceding title of dropdown
-    value?: string;
+    value?: string | number | Date ;
     type?: string;                       // type of input field (text, date, number, password, etc.)   
     onClick?: (e: any) => void; // The callback function to be called when the button is clicked
     onChange?: (e: any) => void; // when change occur in mode

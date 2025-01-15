@@ -14,8 +14,8 @@ import { Skeleton } from "primereact/skeleton"
 
 // Define the props that the PostForm component expects
 interface CountriesDropDownProps {
-    // id: string;                         // ID of the component
-    // name: string;                       // Name of the component
+    id?: string;                         // ID of the component
+    name?: string;                       // Name of the component
     // title: string;                      // preceding title of dropdown
     value: any;
     onChanged?: (e: any) => void;       // The callback function to be called when the value changes
@@ -28,7 +28,9 @@ interface CountriesDropDownProps {
 
 
 export default function CountriesDropDown({
-    // id, name, title, 
+    id, 
+    name, 
+    // title, 
     value,
     onChanged,
     placeholder, tooltip, tooltipOptions

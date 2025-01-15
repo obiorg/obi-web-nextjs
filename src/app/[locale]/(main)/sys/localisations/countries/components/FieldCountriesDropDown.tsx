@@ -2,20 +2,24 @@
 
 import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Button } from "primereact/button";
 import { Dropdown } from "primereact/dropdown";
-import { useEffect, useRef, useState } from "react";
+import { InputText } from "primereact/inputtext";
+import { SplitButton } from "primereact/splitbutton";
+import { Toast } from "primereact/toast";
+import React, { useEffect, useRef, useState } from "react";
+import { useFormStatus } from "react-dom";
+import CountriesDropDown from "./CountriesDropDown";
 
 
 // Define the props that the PostForm component expects
-interface FieldDropDownProps {
+interface FieldCountriesDropDownProps {
     id?: string;                         // ID of the component
     name?: string;                       // Name of the component
     title?: string;                      // preceding title of dropdown
-
-    value?: string | number | undefined;
-    
+    value?: string;
+    onClick?: (e: any) => void; // The callback function to be called when the button is clicked
     onChange?: (e: any) => void; // The callback function to be called when the value changes
-
     error?: any; // child of formState ex: formState.erros?.location
 
     placeholder?: string; // placeholder
@@ -32,19 +36,13 @@ interface FieldDropDownProps {
 
 
 
-export default function FieldDropDown({ 
-        id,
-        name, 
-        title, 
-        value, 
-        options, 
-        onChange, 
-        error,
+export default function FieldCountriesDropDown(
+    { id, name, title, value, options, onChange, error,
         placeholder = "Rechercher ...'",
         tooltip, tooltipOptions,
         emptyFilterMessage = "Recherche sans résultat...",
         emptyMessage = 'vide !',
-        render = true }: FieldDropDownProps) {
+        render = true }: FieldCountriesDropDownProps) {
 
     // Used for dropdown list catalog
     const [selectedCatalog, setSelectedCatalog] = useState<any>(null);
@@ -78,7 +76,7 @@ export default function FieldDropDown({
      * @param e 
      */
     const onChangeCatalog = (e: any) => {
-        onChange ? onChange(e):false;
+        onChange ? onChange(e) : false;
         setSelectedCatalog(e.value);
     }
 
@@ -93,7 +91,7 @@ export default function FieldDropDown({
                         </label>
                     </div>
 
-                    <Dropdown
+                    {/* <Dropdown
                         id={id}
                         name={name}
                         value={selectedCatalog}
@@ -110,7 +108,28 @@ export default function FieldDropDown({
                         showFilterClear
                         emptyFilterMessage={emptyFilterMessage ? emptyFilterMessage : "Recherche sans résultat..."}
                         emptyMessage={emptyMessage ? emptyMessage : "Vide !"}
+                    /> */}
+
+                    <CountriesDropDown
+                        id={id}
+                        name={name}
+                        value={selectedCatalog}
+                        options={catalogs}
+                        onChange={onChangeCatalog}
+                        className={'col-12 md:col-5  pl-2 mb-2 input-value ' + (error ? 'p-invalid' : '')}
+                        placeholder={placeholder}
+                        // required
+                        tooltip={tooltip}
+                        tooltipOptions={tooltipOptions ? tooltipOptions : { position: 'bottom' }}
+
+                        showClear
+                        filter
+                        showFilterClear
+                        emptyFilterMessage={emptyFilterMessage ? emptyFilterMessage : "Recherche sans résultat..."}
+                        emptyMessage={emptyMessage ? emptyMessage : "Vide !"}
+
                     />
+
 
                     <div className={'col-12 md:col-4 p-0 m-0 text-left align-content-center'}>
                         {

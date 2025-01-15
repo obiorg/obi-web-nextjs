@@ -1,18 +1,23 @@
 'use client'
 
 
-import React from 'react';
-import { LocationsService } from '@/src/obi/service/localisations/LocationsService';
-import { LocationsModel } from '@/src/obi/models/localisations/LocationsModel';
 import TableImport from '@/src/obi/components/Tables/TableImport';
+import { TagsModel } from '@/src/obi/models/tags/TagsModel';
+import { TagsService } from '@/src/obi/service/tags/TagsService';
 
-const LocationsImport = () => {
+
+// export const metadata: Metadata = {
+//     title: "Tags 🏷 - Import",
+//     description: "Import data tags",
+// };
+
+const TagsImport = () => {
     return (<>
-        <TableImport 
-            params = {(new LocationsModel().getStandardParam({ field: 'location', order: 1 }, LocationsService.defaultFilters()))}
-            services={LocationsService}
-            />
+        <TableImport
+            params={(new TagsModel().getStandardParam({ field: 'name', order: 1 }, TagsService.defaultFilters()))}
+            services={TagsService}
+        />
     </>)
 }
 
-export default LocationsImport;
+export default TagsImport;

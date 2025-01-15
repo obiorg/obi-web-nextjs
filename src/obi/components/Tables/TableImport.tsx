@@ -13,9 +13,11 @@ import { InputText } from 'primereact/inputtext';
 
 import '@/src/styles/obi/import.scss';
 import { ArrayHelper } from '@/src/obi/utilities/helpers/arrayHelper';
+import { useTranslations } from 'next-intl';
 
 
 interface TableImportProps {
+    title?: string; // Title page
     params: any,                 // a structural parameter model
     services: any,                // a service allowing request
 }
@@ -25,6 +27,11 @@ interface TableImportProps {
 
 
 export default function TableImport({
+    title = 'Import',
+    // prefix = 'import_',
+    // defaultParams,
+    // columns,
+    // exportColumnsStyle,
     params,
     services,
 }: TableImportProps) {
@@ -47,6 +54,12 @@ export default function TableImport({
     const [tableEditMode, setTableEditMode] = useState<any>();
 
     const [lazyParams, setLazyParams] = useState(params);
+
+
+
+
+    const g = useTranslations('global');
+    const t = useTranslations('connectionMachine');
 
 
     /**
@@ -109,8 +122,8 @@ export default function TableImport({
                     }, {});
                 });
                 _importedCols = ArrayHelper.insertItemAtIndex(_importedCols, 1, {
-                    "field": "comment",
-                    "header": "commentaire"
+                    "field": "commentRet",
+                    "header": "Info Ret."
                 }); Array
 
                 setImportedCols(_importedCols);
@@ -185,7 +198,7 @@ export default function TableImport({
         return (
             <>
                 <TableHeader
-                    title='Importer Localisation'
+                    title={title}
                     catalogSelected={selectedImportedData}
                     deleteId={onDelete}
                     onColumnChanged={(cols) => { setImportedCols(cols); }}
@@ -250,121 +263,141 @@ export default function TableImport({
 
 
     const doProcessCreate = async (e: any) => new Promise((resolve, reject) => {
-        services.createMany(e.create).then((datas: any) => {
-            // If unable to create 
-            //console.log('createMany - result', datas);
-            if (datas?.errors) {
-                //console.log('createMany - process error');
-                e.create.forEach((catalog: any) => {
-                    datas.errors.forEach((err: any) => {
-                        //console.log('Error: ', err);
-                        const firstKey = Object.keys(err.errors)[0]; // Get first key
-                        //console.log('catalog index', catalog.index, 'err index', err.index);
-                        if (catalog.index === err.index && importedData) {
+        if (e.create.length > 0) {
+            services.createMany(e.create).then((datas: any) => {
+                // If unable to create 
+                console.log('createMany - result', datas);
+                if (!datas.ok) {
+                    //console.log('createMany - process error');
+                    e.create.forEach((catalog: any) => {
+                        datas.errors.items.forEach((err: any) => {
+                            console.log('Error: ', err);
+                            const firstKey = Object.keys(err.errors)[0]; // Get first key
+                            console.log('catalog index', catalog.index, 'err index', err.index);
+                            if (catalog.index === err.index && importedData) {
+                                let dv: any = importedData[catalog.index];
+                                dv.transaction = -1;
+                                dv.commentRet = '' + firstKey + ' > ' + err.errors[firstKey];
+                            }
+                        })
+                    });
+                    showError('Erreur', 'Erreur lors de la création des données');
+                } else {
+                    //console.log('createMany - process success !');
+                    e.create.forEach((catalog: any) => {
+                        if (importedData) {
                             let dv: any = importedData[catalog.index];
-                            dv.transaction = -1;
-                            dv.comment = '' + firstKey + ' > ' + err.errors[firstKey];
+                            dv.transaction = '';
+                            dv.commentRet = 'success';
                         }
-                    })
-                });
-                showError('Erreur', 'Erreur lors de la création des données');
-            } else {
-                //console.log('createMany - process success !');
-                e.create.forEach((catalog: any) => {
-                    if (importedData) {
-                        let dv: any = importedData[catalog.index];
-                        dv.transaction = '';
-                        dv.comment = 'success';
-                    }
-                });
-            }
-            resolve('Successfully');
-        });
+                    });
+                }
+                resolve('Successfully');
+            });
+        } else {
+            resolve('Skipped');
+        }
+
     });
 
 
     const doProcessUpdate = async (e: any) => new Promise((resolve, reject) => {
-        services.updateMany(e.update).then((datas: any) => {
-            // If unable to update 
-            //console.log('updateMany - result', datas);
-            if ((datas?.errors) || datas[0] === null) {
-                //console.log('updateMany - process error');
-                e.update.forEach((catalog: any) => {
-                    if (datas[0] !== null) {
-                        datas.errors.forEach((err: any) => {
-                            // console.log('Error: ', err);
-                            const firstKey = Object.keys(err.errors)[0]; // Get first key
-                            // console.log('catalog index', catalog.index, 'err index', err.index);
-                            if (catalog.index === err.index && err.errors[firstKey] && importedData) {
-                                let dv: any = importedData[catalog.index];
-                                dv.transaction = -1;
-                                dv.comment = '' + firstKey + ' > ' + err.errors[firstKey];
-                            } else {
-                                if (importedData) {
-                                    // importedData[catalog.index].transaction = -1;
+        if (e.update.length > 0) {
+            services.updateMany(e.update).then((datas: any) => {
+                // If unable to update 
+                console.log('updateMany - result', datas);
+                if ((datas?.errors) || datas[0] === null) {
+                    console.log('updateMany - process error');
+                    e.update.forEach((catalog: any) => {
+                        if (datas[0] !== null) {
+                            datas.errors.forEach((err: any) => {
+                                // console.log('Error: ', err);
+                                const firstKey = Object.keys(err.errors)[0]; // Get first key
+                                // console.log('catalog index', catalog.index, 'err index', err.index);
+                                if (catalog.index === err.index && err.errors[firstKey] && importedData) {
                                     let dv: any = importedData[catalog.index];
-                                    dv.comment = 'pending...';
+                                    dv.transaction = -1;
+                                    dv.commentRet = '' + firstKey + ' > ' + err.errors[firstKey];
+                                } else {
+                                    if (importedData) {
+                                        // importedData[catalog.index].transaction = -1;
+                                        let dv: any = importedData[catalog.index];
+                                        dv.commentRet = 'pending...';
+                                    }
                                 }
-                            }
-                        })
-                    }
-                });
-                showError('Erreur', 'Erreur lors de la modification des données');
-            } else {
-                //console.log('updateMany - process success !');
-                e.update.forEach((catalog: any) => {
-                    if (importedData) {
-                        let dv: any = importedData[catalog.index];
-                        dv.transaction = '';
-                        dv.comment = 'success';
-                    }
-                });
-            }
-            resolve(importedData);
-        });
+                            })
+                        }
+                    });
+                    showError('Erreur', 'Erreur lors de la modification des données');
+                } else {
+                    //console.log('updateMany - process success !');
+                    e.update.forEach((catalog: any) => {
+                        if (importedData) {
+                            let dv: any = importedData[catalog.index];
+                            dv.transaction = '';
+                            dv.commentRet = 'success';
+                        }
+                    });
+                }
+                resolve(importedData);
+            });
+        } else {
+            resolve('Skipped');
+        }
 
     });
     const doProcessDelete = async (e: any) => new Promise((resolve, reject) => {
-        services.deleteMany(e.delete).then((datas: any) => {
-            // If unable to delete 
-            //console.log('deleteMany - result', datas);
-            if ((datas?.errors && datas?.errors?.status === 500) || datas[0] === null) {
-                //console.log('deleteMany - process error');
-                e.delete.forEach((catalog: any) => {
-                    //console.log('data erros', datas.errors, 'data errors items', datas.errors.items, 'errors items lenght', datas.errors.items.length);
-                    if (datas.errors.items.length > 0) {
-                        datas.errors.items.forEach((item: any) => {
-                            if (catalog.location === item.location && importedData) {
+
+        if (e.delete.length > 0) {
+            services.deleteMany(e.delete).then((datas: any) => {
+                // If unable to delete 
+                //console.log('deleteMany - result', datas);
+                if ((datas?.errors && datas?.errors?.status === 500) || datas[0] === null) {
+                    //console.log('deleteMany - process error');
+                    e.delete.forEach((catalog: any) => {
+                        //console.log('data erros', datas.errors, 'data errors items', datas.errors.items, 'errors items lenght', datas.errors.items.length);
+                        if (datas.errors.items.length > 0) {
+                            datas.errors.items.forEach((item: any) => {
+                                if (catalog.location === item.location && importedData) {
+                                    let dv: any = importedData[catalog.index];
+                                    dv.transaction = -1;
+                                    dv.commentRet = datas?.errors.message;
+                                }
+                            })
+                        } else {
+                            if (importedData) {
                                 let dv: any = importedData[catalog.index];
                                 dv.transaction = -1;
-                                dv.comment = datas?.errors.message;
+                                dv.commentRet = datas?.errors.message;
                             }
-                        })
-                    } else {
+                        }
+                    });
+                    showError('Erreur', 'Erreur lors de la modification des données');
+                } else {
+                    //console.log('deleteMany - process success !');
+                    e.delete.forEach((catalog: any) => {
                         if (importedData) {
                             let dv: any = importedData[catalog.index];
-                            dv.transaction = -1;
-                            dv.comment = datas?.errors.message;
+                            dv.transaction = '';
+                            dv.commentRet = 'success';
                         }
-                    }
-                });
-                showError('Erreur', 'Erreur lors de la modification des données');
-            } else {
-                //console.log('deleteMany - process success !');
-                e.delete.forEach((catalog: any) => {
-                    if (importedData) {
-                        let dv: any = importedData[catalog.index];
-                        dv.transaction = '';
-                        dv.comment = 'success';
-                    }
-                });
-            }
+                    });
+                }
 
-            resolve(importedData);
-        });
+                resolve(importedData);
+            });
+        } else {
+            resolve('Skipped');
+        }
     });
 
+
+    /**
+     * Main upload action
+     * @param e 
+     */
     const onUpload = (e: any) => {
+
         // Get data to process
         if (importedData) {
             let dv: any = importedData;
@@ -387,6 +420,12 @@ export default function TableImport({
                     } else if (row.transaction === 2 || row.transaction === '2') { // to remove
                         delete r.transaction;
                         toDelete.push(r);
+                    } else {
+                        console.log('Unknown transaction state', row.transaction);
+                        row.transaction = -1;
+                        row.commentRet = 'Unkown transaction state : allowed are 0: create, 1: update, 2: remove'; // g('import');
+                        // showError('Erreur', 'Erreur lors de la modification des données');
+                        // return;
                     }
                     row.id = id;
                     row.transaction = trans;
@@ -417,7 +456,8 @@ export default function TableImport({
 
             }
         } else {
-            toast.current.show({ severity: 'error', summary: 'Erreur', detail: 'Aucune donnée à importer', life: 3000 });
+            toast.current.show({ severity: 'error', summary: g('error.summary'), detail: g('error.import.nodata'), life: 5000 });
+            setLoading(false);
         }
 
 
@@ -434,7 +474,7 @@ export default function TableImport({
             return {
                 'row-error': true,
             }
-        } else if (data.comment === 'success') {
+        } else if (data.commentRet === 'success') {
             return {
                 'row-success': true
             }
@@ -478,6 +518,7 @@ export default function TableImport({
 
             <DataTable
                 id="dataTable"
+                key='dataTable'
                 ref={dt}
                 value={importedData}
                 rowClassName={rowClass}

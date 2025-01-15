@@ -2,17 +2,16 @@
 'use client'
 
 
-import { Toast } from "primereact/toast"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 
 
-import { OBI } from "@/src/types"
-import { Dropdown } from "primereact/dropdown"
-import { CompaniesService } from "@/src/obi/service/businesses/CompaniesService"
-import { Skeleton } from "primereact/skeleton"
-import { CompaniesModel } from "@/src/obi/models/businesses/CompaniesModel"
-import { DataTableFilterMeta } from "primereact/datatable"
 import ReactIcons from "@/src/obi/components/Icons/ReactIcons"
+import { CompaniesModel } from "@/src/obi/models/businesses/CompaniesModel"
+import { CompaniesService } from "@/src/obi/service/businesses/CompaniesService"
+import { DataTableFilterMeta } from "primereact/datatable"
+import { Dropdown } from "primereact/dropdown"
+import { Skeleton } from "primereact/skeleton"
+import { useTranslations } from "next-intl"
 
 
 // Define the props that the PostForm component expects
@@ -21,9 +20,9 @@ interface CompaniesDropDownProps {
     name?: string;                       // Name of the component
     title?: string;                      // preceding title of dropdown
 
-    value: any;
-    onChanged?: (e: any) => void;       // The callback function to be called when the value changes
-
+    value?: string | number | undefined;
+    onClick?: (e: any) => void; // The callback function to be called when the button is clicked
+    onChange?: (e: any) => void; // The callback function to be called when the value changes
 
     error?: any; // child of formState ex: formState.erros?.location
 
@@ -31,31 +30,42 @@ interface CompaniesDropDownProps {
     tooltip?: string;                   // tooltip text
     tooltipOptions?: any;               // options for tooltip
 
+    options?: any; // options
+
     emptyFilterMessage?: string; //
     emptyMessage?: string; // Message to display when no items are found
+
     render?: boolean; //
 }
 
 
 
+
 export default function CompaniesDropDown({
-    id, name, title,
+    id,
+    name,
+    title,
     value,
-    onChanged,
+    onChange,
     error,
     placeholder = "Rechercher ...'",
-    tooltip, tooltipOptions,
+    tooltip,
+    tooltipOptions,
     emptyFilterMessage = "Recherche sans résultat...",
     emptyMessage = 'vide !',
     render = true,
 }: CompaniesDropDownProps) {
 
+    
 
-    const model = new CompaniesModel();
-    const defaultFilters: Array<DataTableFilterMeta> = CompaniesService.defaultFilters();
+    // lazy for request
     const [lazyParams, setLazyParams] = useState(
-        model.
-            getStandardParam({ field: 'company', order: 1 }, defaultFilters));
+        (new CompaniesModel()).
+            getStandardParam({ field: 'company', order: 1 },
+                CompaniesService.defaultFilters()));
+    // Manage Timeout
+    let loadLazyTimeout: any = undefined;
+
 
     // catalog processing
     const [selectedCatalog, setSelectedCatalog] = useState<any>(value);
@@ -63,8 +73,6 @@ export default function CompaniesDropDown({
     const [lazyLoading, setLazyLoading] = useState(true);
     const [initCatalog, setInitCatalog] = useState(false);
 
-
-    let loadLazyTimeout:any = undefined;
 
 
 
@@ -95,11 +103,10 @@ export default function CompaniesDropDown({
     const onChangeCatalog = (e: { value: any }) => {
         // console.log('onLazyItemChange', e);
         setSelectedCatalog(e.value)
-        onChanged && onChanged(e);
+        onChange && onChange(e);
     }
 
     const onChangedFilter = (e: any) => {
-
         let _lazyParams = lazyParams;
         _lazyParams.filters.global.value = e.filter === '' ? null : e.filter;
         _lazyParams.filters.global.matchMode = 'contains';
@@ -146,7 +153,7 @@ export default function CompaniesDropDown({
 
             // Get Lazy Data
             CompaniesService.getLazy(lazyEventSet).then((data: any) => {
-                console.log(lazyParams.rows, data, catalogs);
+                // console.log(lazyParams.rows, data, catalogs);
                 for (let i = lazyParams.first; (i < lazyParams.rows && i < data.length); i++) {
                     // console.log('for i', i, data[i])
                     _catalogs[i] = {
@@ -188,19 +195,28 @@ export default function CompaniesDropDown({
     return <>
         {render !== true ? <></> :
             <div className="grid mb-2">
+
                 <div className='col-12 md:col-2'>
                     <label htmlFor={id} className="input-field">
                         {title}
                     </label>
                 </div>
+
                 <Dropdown
+                    id={id}
+                    name={name}
                     value={selectedCatalog}
 
                     options={catalogs}
                     onChange={onChangeCatalog}
 
                     className={'col-12 md:col-5  pl-2 mb-2 input-value ' + (error ? 'p-invalid' : '')}
-                    placeholder="Sélectionner une société..."
+                    placeholder={placeholder}
+                    // required
+                    tooltip={tooltip}
+                    tooltipOptions={tooltipOptions ? tooltipOptions : { position: 'bottom' }}
+
+
                     showClear
                     filter
                     onFilter={onChangedFilter}

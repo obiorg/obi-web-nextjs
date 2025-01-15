@@ -2,6 +2,7 @@
 
 import { OBI } from "@/src/types/obi";
 import { TagsModel } from "../../models/tags/TagsModel";
+import axios from "axios";
 
 
 
@@ -288,6 +289,7 @@ export const TagsService = {
 
     async createMany(data: any[]): Promise<any[]> {
 
+        console.log('createMany', data);
         const url = process.env.httpPath + '/tags/create';
 
         const res = await fetch(
@@ -304,9 +306,13 @@ export const TagsService = {
                 body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
             }
         )
+        
         const dataset: TagsFormState[] = await res.json();
+        console.log('dataset', dataset);
         return dataset;
 
+        // const res = await axios.post(url, data);
+        // return res.data;
     },
 
 

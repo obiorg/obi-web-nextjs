@@ -117,7 +117,14 @@ const AppMenu = () => {
 
                     label: 'Tags (Variables)', icon: 'pi pi-fw pi-server',
                     items: [
-                        { label: 'Tags', icon: 'pi pi-fw pi-hashtag', to: '/sys/tags' },
+                        { label: 'Tags',                group: 'fa', icon: 'FaTag', to: '/sys/tags' },
+                        { label: 'Listes',              group: 'hi2', icon: 'HiOutlineQueueList', to: '/sys/tags/list' },
+                        { label: 'Données de liste',    group: 'hi2', icon: 'HiQueueList', to: '/sys/tags/listcontents' },
+                        { label: 'Type de liste',       group: 'bs', icon: 'BsViewList', to: '/sys/tags/listtypes' },
+                        { label: 'Mémoire',             group: 'gr', icon: 'GrMemory', to: '/sys/tags/memories' },
+                        { label: 'Tables',              group: 'fa6', icon: 'FaGlobe', to: '/sys/tags/tables' },
+                        { label: 'Types',               group: 'lu', icon: 'LuFileType2', to: '/sys/tags' },
+
                         { label: 'Standard', icon: 'pi pi-fw pi-star', to: '/sys/persistences/standards' },
 
                     ]

@@ -22,16 +22,21 @@ interface FieldInputMaskProps {
     disabled?: any; // disable edition
 
     mask?: string; // text mask
+
+    render?: boolean; // render the component or not, default is true
 }
 
 
-export default function FieldInputMask(
-    { id, name, title,
+export default function FieldInputMask({ 
+        id, 
+        name, 
+        title,
         value,
         onChange,
         error, placeholder, tooltip, tooltipOptions,
-        disabled ,
-        mask
+        disabled,
+        mask,
+        render = true, // render the component or not
     }: FieldInputMaskProps) {
 
 
@@ -39,44 +44,46 @@ export default function FieldInputMask(
 
     return (
         <>
-            <div className="grid mb-2">
-                <div className='col-12 md:col-2'>
-                    <label htmlFor={id} className="input-field">
-                        {title}
-                    </label>
+            {render !== true ? <></> :
+                <div className="grid mb-2">
+                    <div className='col-12 md:col-2'>
+                        <label htmlFor={id} className="input-field">
+                            {title}
+                        </label>
+                    </div>
+
+                    <InputMask
+                        id={id}
+                        name={name}
+                        defaultValue={value}
+                        onChange={onChange}
+                        className={'col-12 md:col-5  pl-2 mb-2 input-value ' + (error ? 'p-invalid' : '')}
+
+                        placeholder={placeholder}
+                        // required
+                        tooltip={tooltip}
+                        tooltipOptions={tooltipOptions ? tooltipOptions : { position: 'bottom' }}
+                        disabled={disabled}
+
+                        mask={mask}
+                        
+                    />
+
+                    <div className={'col-12 md:col-4 p-0 m-0 text-left align-content-center'}>
+                        {
+                            error
+                            &&
+                            <div className="text-red-500">
+                                <FontAwesomeIcon icon={faCircleXmark} /> &nbsp;
+                                {error?.join(', ')} {/* // Display form errors related to the title field*/}
+                            </div >
+                        }
+                    </div>
+
+
+
                 </div>
-
-                <InputMask
-                    id={id}
-                    name={name}
-                    defaultValue={value}
-                    onChange={onChange}
-                    className={'col-12 md:col-5  pl-2 mb-2 input-value ' + (error ? 'p-invalid' : '')}
-
-                    placeholder={placeholder}
-                    // required
-                    tooltip={tooltip}
-                    tooltipOptions={tooltipOptions ? tooltipOptions : { position: 'bottom' }}
-                    disabled={disabled}
-
-                    mask={mask}
-                />
-
-                <div className={'col-12 md:col-4 p-0 m-0 text-left align-content-center'}>
-                    {
-                        error
-                        &&
-                        <div className="text-red-500">
-                            <FontAwesomeIcon icon={faCircleXmark} /> &nbsp;
-                            {error?.join(', ')} {/* // Display form errors related to the title field*/}
-                        </div >
-                    }
-                </div>
-
-
-
-            </div>
-
+            }
         </>
     );
 }

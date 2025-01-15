@@ -31,6 +31,7 @@ import FieldOutputLabel from "@/src/obi/components/Inputs/FieldOutputLabel"
 import { useRouter } from "next/navigation"
 import DialogError from "@/src/obi/components/Dialog/DialogError"
 import { DataTableFilterMeta } from "primereact/datatable"
+import FieldCountriesDropDown from "../../countries/components/FieldCountriesDropDown"
 
 
 // Define the shape of the form errors locations
@@ -111,7 +112,7 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
 
     // Managing long request wating
     const [lazyLoading, setLazyLoading] = useState<any>(false);
-    let loadLazyTimeout:any = undefined;
+    let loadLazyTimeout: any = undefined;
 
 
     // Sub state dropdown selection
@@ -158,20 +159,20 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
         initialData.country = e.value
         if (initialData?.country !== undefined) {
             setCountryOn(true);
-            // LocationsStatesService.count().then((count: any) => {
-            //     setLazyParamsStates(
-            //         () => {
-            //             return {
-            //                 ...lazyParamsStates,
-            //                 filters: {
-            //                     "global": { value: null, matchMode: 'contains' },
-            //                     "country_id": { operator: 'and', constraints: [{ value: e.value, matchMode: 'equals' }] }
-            //                 },
-            //                 rows: count,
-            //             }
-            //         }
-            //     );
-            // });
+            LocationsStatesService.count().then((count: any) => {
+                setLazyParamsStates(
+                    () => {
+                        return {
+                            ...lazyParamsStates,
+                            filters: {
+                                "global": { value: null, matchMode: 'contains' },
+                                "country_id": { operator: 'and', constraints: [{ value: e.value, matchMode: 'equals' }] }
+                            },
+                            rows: count,
+                        }
+                    }
+                );
+            });
         } else {
             setCountryOn(false);
         }
@@ -181,21 +182,21 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
         initialData.state = e.value
         if (initialData?.state !== undefined) {
             setStateOn(true);
-            // LocationsCitiesService.count().then((count: any) => {
-            //     setLazyParamsCities(
-            //         () => {
-            //             return {
-            //                 ...lazyParamsCities,
-            //                 filters: {
-            //                     "global": { value: null, matchMode: 'contains' },
-            //                     "country_id": { operator: 'and', constraints: [{ value: initialData?.country, matchMode: 'equals' }] },
-            //                     "state_id": { operator: 'and', constraints: [{ value: e.value, matchMode: 'equals' }] }
-            //                 },
-            //                 rows: count,
-            //             }
-            //         }
-            //     );
-            // });
+            LocationsCitiesService.count().then((count: any) => {
+                setLazyParamsCities(
+                    () => {
+                        return {
+                            ...lazyParamsCities,
+                            filters: {
+                                "global": { value: null, matchMode: 'contains' },
+                                "country_id": { operator: 'and', constraints: [{ value: initialData?.country, matchMode: 'equals' }] },
+                                "state_id": { operator: 'and', constraints: [{ value: e.value, matchMode: 'equals' }] }
+                            },
+                            rows: count,
+                        }
+                    }
+                );
+            });
         } else {
             setStateOn(false);
         }
@@ -204,9 +205,9 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
     const onChangedCity = (e: any) => {
         initialData.city = e.value
         if (initialData?.city !== undefined) {
-            // setStateOn(true);
+            setStateOn(true);
         } else {
-            // setStateOn(false);
+            setStateOn(false);
         }
     }
 
@@ -276,7 +277,7 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
 
             // Manage create processing
             if (type === 0 || type === 2) {
-                console.log('start create');
+                console.log('start create :', formData);
                 LocationsService.create(formState, formData).then((data: any) => {
                     if (data.errors) {
                         formState.errors = { errors: {} };
@@ -616,6 +617,17 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
                             placeholder="Pays ..."
                             tooltip="Sélectionner un pays..."
                         />
+                        {/* <FieldCountriesDropDown
+                            id='country'
+                            name="country"
+                            title='Pays'
+                            value={initialData?.country}
+                            options={countries}
+                            onChange={(e: any) => { onChangedCountry(e) }}
+                            error={formState.errors?.country}
+                            placeholder="Pays ..."
+                            tooltip="Sélectionner un pays..."
+                        /> */}
 
                         {/** State */}
                         <FieldDropDown

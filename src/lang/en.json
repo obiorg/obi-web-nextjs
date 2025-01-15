@@ -1,49 +1,80 @@
 {
-    "common": {
-        "footer": "internationalization tutorial"
-    },
-
-    "page": {
-        "dashboard": {
-            "title": "Dashboard",
-            "description": "Welcome to your dashboard",
-
-            "CCT": {
-                "short": "TOD",
-                "label": "Tank out doors",
-                "description": "Data of fermentation tank"
-            },
-            "BBT": {
-                "short": "BBT",
-                "label": "Brine beer tank",
-                "description": "Data of brine beer tanks"
-            },
-            "CO2": {
-                "Storage": {
-                    "title": "CO2 storage tanks",
-                    "description": "Show all volume of CO2 storage tank"
-                }
-            }
-        },
-
-        "home": {
-            "head": {
-                "title": "Next.js i18n example",
-                "meta": {
-                    "description": "Next.js i18n example - English"
-                }
-            },
-            "title": "Welcome to <b>Next.js i18n tutorial</b>",
-            "description": "You are currently viewing the homepage in English 🚀"
-        },
-        "nested": {
-            "title": "Nested route example"
+  "common": {
+    "footer": "internationalization tutorial"
+  },
+  "page": {
+    "dashboard": {
+      "title": "Dashboard",
+      "description": "Welcome to your dashboard",
+      "CCT": {
+        "short": "TOD",
+        "label": "Tank out doors",
+        "description": "Data of fermentation tank"
+      },
+      "BBT": {
+        "short": "BBT",
+        "label": "Brine beer tank",
+        "description": "Data of brine beer tanks"
+      },
+      "CO2": {
+        "Storage": {
+          "title": "CO2 storage tanks",
+          "description": "Show all volume of CO2 storage tank"
         }
+      }
     },
-
-    "header": {
-        "lang": {
-            "active": "Active language"
+    "home": {
+      "head": {
+        "title": "Next.js i18n example",
+        "meta": {
+          "description": "Next.js i18n example - English"
         }
+      },
+      "title": "Welcome to <b>Next.js i18n tutorial</b>",
+      "description": "You are currently viewing the homepage in English 🚀"
+    },
+    "nested": {
+      "title": "Nested route example"
     }
+  },
+  "header": {
+    "lang": {
+      "active": "Active language"
+    }
+  },
+  "connectionMachine": {
+    "Create": {
+      "title": "Create Machine"
+    },
+    "Edit": {
+      "title": ""
+    },
+    "Form": {
+      "linkSource": {
+        "IP": {
+          "label": "IPv4"
+        },
+        "Bus": {
+          "label": "Bus"
+        }
+      },
+      "addressIPv4": {
+        "label": "IPv4 address",
+        "tooltip": "Set a connection IPv4 address"
+      },
+      "addressLink": {
+        "label": "Addressing link",
+        "tooltip": "Set a source connection address",
+        "placeholder": "connection link..."
+      },
+      "driver": {
+        "label": "Driver"
+      }
+    },
+    "import": {
+      "table": {
+        "title": "Import - Machine Connections"
+      }
+    }
+  }
 }

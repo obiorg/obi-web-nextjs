@@ -25,7 +25,118 @@ import { useRouter } from "next/navigation"
 import { BlockUI } from "primereact/blockui"
 import { Messages } from "primereact/messages"
 import CompaniesDropDown from "../../../businesses/companies/components/CompaniesDropDown"
+import { useTranslations } from "next-intl"
+import FieldInputPassword from "@/src/obi/components/Inputs/FieldInputPassword"
+import { Button } from "primereact/button"
+import FieldDropDown from "@/src/obi/components/Inputs/FieldDropDown"
+import { CompaniesService } from "@/src/obi/service/businesses/CompaniesService"
+import { CompaniesModel } from "@/src/obi/models/businesses/CompaniesModel"
+import { RadioButton } from "primereact/radiobutton"
+import { InputMask } from "primereact/inputmask"
+import FieldInputIPv4 from "@/src/obi/components/Inputs/FieldInputIPv4"
+import { MachinesDriversService } from "@/src/obi/service/connexions/MachinesDriversService"
+import MachinesDriversDropDown from "../../drivers/components/MachinesDriversDropDown"
 
+
+
+// Define the shape of the form errors locations
+interface MachinesFormErrors {
+    id?: string[];
+    deleted?: string[];
+    created?: string[];
+    changed?: string[];
+
+
+    company?: number[];
+    address?: string[];
+    mask?: string[];
+    dns?: string[];
+    ipv6?: string[];
+    port?: number[];
+    name?: string[];
+    rack?: number[];
+    slot?: number[];
+    driver?: number[];
+    mqtt?: boolean[];
+    mqtt_user?: string[];
+    mqtt_password?: string[];
+    webhook?: boolean[];
+    webhook_secret?: string[];
+    bus?: number[];
+    description?: string[];
+
+    companies?: OBI.companies[][];
+    drivers?: OBI.mach_drivers[][];
+}
+
+// Define the shape of the form state
+
+// Define an interface for the form state
+interface MachinesFormState {
+    errors: {
+        id?: string[];
+        deleted?: string[];
+        created?: string[];
+        changed?: string[];
+
+
+        company?: number[];
+        address?: string[];
+        mask?: string[];
+        dns?: string[];
+        ipv6?: string[];
+        port?: number[];
+        name?: string[];
+        rack?: number[];
+        slot?: number[];
+        driver?: number[];
+        mqtt?: boolean[];
+        mqtt_user?: string[];
+        mqtt_password?: string[];
+        webhook?: boolean[];
+        webhook_secret?: string[];
+        bus?: number[];
+        description?: string[];
+
+        companies?: OBI.companies[][];
+        drivers?: OBI.mach_drivers[][];
+    };
+}
+
+// Define the props that the PostForm component expects
+interface MachinesPostFormProps {
+    formAction: any; // The action to perform when the form is submitted
+    type: number; // 0: create, 1: update, 2: destroy (delete), 3: read
+    initialData: {
+        // The initial data for the form fields
+        id: number;
+        deleted: boolean;
+        created: Date;
+        changed: Date;
+
+        company?: number;
+        address?: string;
+        mask?: string;
+        dns?: string;
+        ipv6?: string;
+        port?: number;
+        name?: string;
+        rack?: number;
+        slot?: number;
+        driver?: number;
+        mqtt?: boolean;
+        mqtt_user?: string;
+        mqtt_password?: string;
+        webhook?: boolean;
+        webhook_secret?: string;
+        bus?: number;
+        description?: string;
+
+        companies?: {};
+        drivers?: {};
+    };
+
+}
 
 
 
@@ -37,9 +148,9 @@ const model = new MachinesModel();
 // The formAction is the action to perform when the form is submitted. We use it as a props because
 // we will use this for create and edit page which both page doesn't have the same action
 // The initialData is the initial data for the form fields. 
-export default function PostForm({ formAction, type, initialData }: OBI.LocationsPostFormProps) {
+export default function PostForm({ formAction, type, initialData }: MachinesPostFormProps) {
     // Initialize the form state and action
-    const [formState, action] = useFormState<OBI.LocationsFormState>(formAction, {
+    const [formState, action] = useFormState<any>(formAction, {
         errors: {},
     })
 
@@ -49,7 +160,7 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
 
     // Managing long request wating
     const [lazyLoading, setLazyLoading] = useState<any>(false);
-    let loadLazyTimeout:any = undefined;
+    let loadLazyTimeout: any = undefined;
 
 
     // state management
@@ -66,8 +177,8 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
 
     // To manage validation
     const [saveMode, setSaveMode] = useState(0); // 0: save and reset; 1: save
-    const formRef = React.useRef(document.createElement('form'));
-    const [enableOnupdate, setEnableOnupdate] = useState(true); //
+    const formRef = React.useRef(document.createElement('form')); //
+
 
 
 
@@ -89,14 +200,15 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
 
 
     const onChangedCompany = (e: any) => {
-        initialData.company = e.value
+        initialData.company = Number(e.value)
     }
 
 
-    const doMsgPrompt = (severity: string, summary: string, message: string, sticky?: boolean) => {
+    const doMsgPrompt = (severity: string, summary: string, message: string, sticky?: any) => {
         setMsgSeverity(severity);
         setMsgSummary(summary);
         setMsgDetail(message);
+        setMsgSticky(sticky);
         setOnMessage(true);
     }
 
@@ -116,6 +228,7 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
 
     useEffect(() => {
         if (saveMode === 0) {
+            // console.log('initialData useEffect catalog', initialData);
             initialData.company = undefined;
         }
     }, [catalog]);
@@ -133,7 +246,7 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
      * @param e Porcess submit form
      */
     const onSubmit = (e: any) => {
-        //console.log('onSubmit', e)
+        // console.log('onSubmit', e.target, e)
         e.preventDefault();
         const formData = new FormData(e.target);
 
@@ -144,18 +257,19 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
             clearTimeout(loadLazyTimeout);
         }
 
-
         //imitate delay of a backend call
         loadLazyTimeout = setTimeout(() => {
 
             // Manage create processing
             if (type === 0 || type === 2) {
-                console.log('start create');
+                console.log('start create', formData);
                 MachinesService.create(formState, formData).then((data: any) => {
-                    if (data.errors) {
+                    console.log('Data saved', data);
+                    if (data.errors || data.status === 500) {
                         formState.errors = { errors: {} };
                         formState.errors = data.errors;
-                        doMsgPrompt('error', 'Erreur de création : ', 'Veuillez corriger les erreurs')
+                        toast.current.clear();
+                        doMsgPrompt('error', 'Erreur de création : ', data.error.message + '\n\n' + data.error.stack, true)
                     } else {
                         formState.errors = { errors: {} };
                         setCatalog(data);
@@ -173,10 +287,12 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
             // Manage update processing
             else if (type === 1) {
                 MachinesService.update(formState, formData).then((data: any) => {
-                    if (data.errors) {
+                    console.log('Data saved', data);
+                    if (data.errors || data.status === 500) {
                         formState.errors = { errors: {} };
                         formState.errors = data.errors;
-                        doMsgPrompt('error', 'Erreur de modification : ', 'Veuillez corriger les erreurs')
+                        toast.current.clear();
+                        doMsgPrompt('error', 'Erreur de modification : ', data.error.message + '\n\n' + data.error.stack, true)
                     } else {
                         formState.errors = { errors: {} };
                         setCatalog(data);
@@ -242,23 +358,49 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
      * Countries catalog update list
      */
     const [companies, setCompanies] = useState<any>([]);
+    const [drivers, setDrivers] = useState<any>([]);
     const [reload, setReload] = useState(false);
-    // useEffect(() => {
-    //     // Get full data list
-    //     CompaniesService.getLazy().then((data: any) => {
-    //         if (data.status) {
-    //             showError(data.status, data.message);
-    //         } else {
-    //             setCompanies(() => {
-    //                 return data.map((item: any) => ({
-    //                     label: item.name + ' - ' + item.iso3 + ' (' + item.numeric_code + ') ' + ' -  [' + item.id + ']',
-    //                     value: item.id,
-    //                     catalog: item
-    //                 }));
-    //             });
-    //         }
-    //     });
-    // }, [reload]); // eslint-disable-line react-hooks/exhaustive-deps
+
+    const [lazyParams, setLazyParams] = useState(
+        model.
+            getStandardParam({ field: 'company', order: 1 }, CompaniesService.defaultFilters()));
+    const [lazyParamsDrivers, setLazyParamsDrivers] = useState(
+        model.
+            getStandardParam({ field: 'driver', order: 1 }, MachinesDriversService.defaultFilters()));
+
+    useEffect(() => {
+        // Get full data list
+        const lazyEventSet = { lazyEvent: JSON.stringify(lazyParams) };
+        CompaniesService.getLazy(lazyEventSet).then((data: any) => {
+            if (data.status) {
+                showError(data.status, data.message);
+            } else {
+                setCompanies(() => {
+                    return data.map((item: any) => ({
+                        label: item.name + ' - ' + item.iso3 + ' (' + item.numeric_code + ') ' + ' -  [' + item.id + ']',
+                        value: item.id,
+                        catalog: item
+                    }));
+                });
+            }
+        });
+
+
+        const lazyEventSetDrivers = { lazyEvent: JSON.stringify(lazyParamsDrivers) };
+        MachinesDriversService.getLazy(lazyEventSetDrivers).then((data: any) => {
+            if (data.status) {
+                showError(data.status, data.message);
+            } else {
+                setDrivers(() => {
+                    return data.map((item: any) => ({
+                        label: item.driver + ' - ' + item.designation + ' [' + item.id + ']',
+                        value: item.id,
+                        catalogs: item
+                    }));
+                });
+            }
+        });
+    }, [reload]); // eslint-disable-line react-hooks/exhaustive-deps
 
 
 
@@ -270,8 +412,11 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
 
 
 
+    const g = useTranslations('global');
+    const t = useTranslations('connectionMachine');
 
-
+    const [update, setUpdate] = useState(false); //
+    const [linkSource, setLinkSource] = useState('IPv4'); // Define linkSource state variable
     /**
      * Display the catalog
      */
@@ -291,7 +436,8 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
 
 
 
-            <h3>{type === 0 ? 'Création' : 'Modification'} d une machine</h3>
+            <h3>{type === 0 ? t('Create.title') : t('Edit.title')}</h3>
+            <p>{type === 0 ? t('Create.subTitle') : t('Edit.subTitle')}</p>
             <hr />
 
             <BlockUI blocked={blockedFrom}>
@@ -303,16 +449,18 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
                 >
                     <div className="col-12">
 
+
+
                         {type === 1 ? <>
                             {/** id */}
                             <FieldOutputLabel
                                 id="id"
                                 name='id'
-                                title='ID'
+                                title={g('Form.id.label')}
                                 value={initialData.id}
                                 error={formState.errors?.id}
-                                placeholder="ID Code..."
-                                tooltip="reference code d'identification ..."
+                                placeholder={g('Form.id.placeholder')}
+                                tooltip={g('Form.id.tooltip')}
                                 disabled
                             />
 
@@ -321,11 +469,11 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
                             <FieldOutputLabel
                                 id="created"
                                 name='created'
-                                title='Créé le '
+                                title={g('Form.created.label')}
                                 value={initialData?.created}
                                 error={formState.errors?.created}
-                                placeholder="Créé le ..."
-                                tooltip="date de création ..."
+                                placeholder={g('Form.created.placeholder')}
+                                tooltip={g('Form.created.tooltip')}
                                 disabled
                                 type="datetime"
                             />
@@ -336,11 +484,11 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
                             <FieldOutputLabel
                                 id="changed"
                                 name='changed'
-                                title='Changé le'
+                                title={g('Form.changed.label')}
                                 value={initialData?.changed}
                                 error={formState.errors?.changed}
-                                placeholder="Changé le ..."
-                                tooltip="date de changement ..."
+                                placeholder={g('Form.changed.placeholder')}
+                                tooltip={g('Form.changed.tooltip')}
                                 disabled
                                 type="datetime"
                             />
@@ -350,11 +498,11 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
                             <FieldInputCheckbox
                                 id="deleted"
                                 name='deleted'
-                                title='Supprimer'
+                                title={g('Form.deleted.label')}
                                 value={initialData.deleted}
                                 onChange={(e) => { initialData['deleted'] = e.value }}
                                 error={formState.errors?.delete}
-                                tooltip="suppression logique ..."
+                                tooltip={g('Form.deleted.tooltip')}
                             />
                         </> : null
                         }
@@ -366,135 +514,294 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
                         <CompaniesDropDown
                             id='company'
                             name="company"
-                            title='Société'
+                            title={t('Form.company.label')}
                             value={initialData?.company}
-                            onChanged={(e: any) => { onChangedCompany(e) }}
-                            error={formState.errors?.country}
-                            placeholder="Société ..."
-                            tooltip="Sélectionner une société..."
+                            options={companies}
+                            onChange={(e: any) => { onChangedCompany(e); }}
+                            error={formState.errors?.company}
+                            placeholder={t('Form.company.placeholder')}
+                            tooltip={t('Form.company.tooltip')}
                         />
 
-                        {/** Location */}
-                        {type !== 1 ?
-                            <FieldInputText
-                                id="location"
-                                name='location'
-                                title='Localisation'
-                                value={initialData?.location}
-                                error={formState.errors?.location}
-                                placeholder="Code..."
-                                tooltip="code d'identification ..."
-                                disabled={type === 1}
-                            />
-                            :
-                            <FieldOutputLabel
-                                id="location"
-                                name='location'
-                                title='Localisation'
-                                value={initialData?.location}
-                                error={formState.errors?.location}
-                                placeholder="Code..."
-                                tooltip="code d'identification ..."
-                                disabled={type === 1}
-                            />
-                        }
 
-                        {/** Adress */}
-                        <FieldInputMask
-                            id="ipaddress"
-                            name='ipaddress'
-                            title='IP'
+
+                        {/** Name */}
+                        <FieldInputText
+                            id="name"
+                            name='name'
+                            title={t('Form.name.label')}
+                            value={initialData?.name}
+                            error={formState.errors?.name}
+                            placeholder={t('Form.name.placeholder')}
+                            tooltip={t('Form.name.tooltip')}
+                        />
+
+
+                        {/** SELECTOR TYPE */}
+                        <div className="grid mb-3">
+                            <div className='col-12 md:col-2'>
+                                <label htmlFor='linkSource' className="input-field">
+                                    {t('Form.linkSrouce.label')}
+                                </label>
+                            </div>
+
+                            <div className="flex flex-wrap gap-3">
+                                <div className="flex align-items-center">
+                                    <RadioButton
+                                        inputId="linkIP"
+                                        name="linkIP"
+                                        value='IPv4'
+                                        onChange={(e: any) => {
+                                            setLinkSource(e.value);
+                                            initialData.mqtt = false; initialData.webhook = false; setUpdate(!update)
+                                        }}
+                                        checked={linkSource === 'IPv4'} />
+                                    <label htmlFor="linkIP" className="ml-2">{t('Form.linkSource.IP.label')}</label>
+                                </div>
+
+                                <div className="flex align-items-center">
+                                    <RadioButton
+                                        inputId="linkMQTT"
+                                        name="linkMQTT"
+                                        value='MQTT'
+                                        onChange={(e: any) => {
+                                            setLinkSource(e.value);
+                                            initialData.mqtt = true; initialData.webhook = false; setUpdate(!update)
+                                        }}
+                                        checked={linkSource === 'MQTT'} />
+                                    <label htmlFor="linkMQTT" className="ml-2">{t('Form.linkSource.MQTT.label')}</label>
+                                </div>
+
+                                <div className="flex align-items-center">
+                                    <RadioButton
+                                        inputId="linkWebhook"
+                                        name="linkWebhook"
+                                        value='Webhook'
+                                        onChange={(e: any) => {
+                                            setLinkSource(e.value);
+                                            initialData.mqtt = false; initialData.webhook = true; setUpdate(!update)
+                                        }}
+                                        checked={linkSource === 'Webhook'} />
+                                    <label htmlFor="linkWebhook" className="ml-2">{t('Form.linkSource.Webhook.label')}</label>
+                                </div>
+
+                                <div className="flex align-items-center">
+                                    <RadioButton
+                                        inputId="linkBus"
+                                        name="linkBus"
+                                        value='Bus'
+                                        onChange={(e: any) => {
+                                            setLinkSource(e.value);
+                                            initialData.mqtt = false; initialData.webhook = false; setUpdate(!update)
+                                        }}
+                                        checked={linkSource === 'Bus'} />
+                                    <label htmlFor="linkBus" className="ml-2">{t('Form.linkSource.Bus.label')}</label>
+                                </div>
+                            </div>
+
+
+                            <div className={'col-12 md:col-4 p-0 m-0 text-left align-content-center'}>
+                                {/* Non applicable */}
+                            </div>
+
+                        </div>
+
+
+
+                        {/** Machines Drivers */}
+                        <MachinesDriversDropDown
+                            id='driver'
+                            name="driver"
+                            title={t('Form.driver.label')}
+                            value={initialData?.driver}
+                            options={drivers}
+                            onChange={(e: any) => { initialData.driver = e.value; setUpdate(!update) }}
+                            error={formState.errors?.driver}
+                            placeholder={t('Form.driver.placeholder')}
+                            tooltip={t('Form.driver.tooltip')}
+                            render={linkSource === 'IPv4'}
+                        />
+
+
+
+                        <FieldInputIPv4
+                            id="address"
+                            name='address'
+                            title={t('Form.addressIPv4.label')}
                             value={initialData?.address}
+                            onChange={(e: any) => { initialData.address = e.value; setUpdate(!update) }}
                             error={formState.errors?.address}
-                            placeholder="0.0.0.0"
-                            tooltip="Adresse IP..."
-                            mask="(9?99.9?99.9?99.9?99)" 
+                            placeholder={t('Form.addressIPv4.placeholder')}
+                            tooltip={t('Form.addressIPv4.tooltip')}
+                            render={linkSource === 'IPv4'}
                         />
 
 
 
 
-
-
-
-
-
-                        {/** Address */}
+                        {/* link address */}
                         <FieldInputText
                             id="address"
                             name='address'
-                            title='Adresse'
+                            title={t('Form.addressLink.label')}
                             value={initialData?.address}
                             error={formState.errors?.address}
-                            placeholder="Adresse..."
-                            tooltip="adresse associée..."
+                            placeholder={t('Form.addressLink.placeholder')}
+                            tooltip={t('Form.addressLink.tooltip')}
+                            render={linkSource !== 'IPv4' && linkSource !== 'Bus'}
                         />
 
-                        {/** Address 1 */}
+
+
+                        {/** Mask */}
+                        <FieldInputIPv4
+                            id="mask"
+                            name='mask'
+                            title={t('Form.mask.label')}
+                            value={initialData?.mask}
+                            error={formState.errors?.mask}
+                            placeholder={t('Form.mask.placeholder')}
+                            tooltip={t('Form.mask.tooltip')}
+                            render={linkSource === 'IPv4'}
+                        />
+
+                        {/** DNS */}
+                        <FieldInputIPv4
+                            id="dns"
+                            name='dns'
+                            title={t('Form.dns.label')}
+                            value={initialData?.dns}
+                            error={formState.errors?.dns}
+                            placeholder={t('Form.dns.placeholder')}
+                            tooltip={t('Form.dns.tooltip')}
+                            render={linkSource === 'IPv4'}
+                        />
+
+                        {/** IPv6 */}
                         <FieldInputText
-                            id="address1"
-                            name='address1'
-
-                            value={initialData?.address1}
-                            error={formState.errors?.address1}
-                            placeholder="adresse 1 ..."
-                            tooltip="adresse complémentaire 1 associée..."
+                            id="ipv6"
+                            name='ipv6'
+                            title={t('Form.IPv6.label')}
+                            value={initialData?.ipv6}
+                            error={formState.errors?.ipv6}
+                            placeholder={t('Form.IPv6.placeholder')}
+                            tooltip={t('Form.IPv6.tooltip')}
+                            render={linkSource === 'IPv4'}
                         />
 
-                        {/** Address 3 */}
-                        <FieldInputText
-                            id="address3"
-                            name='address3'
-
-                            value={initialData?.address3}
-                            error={formState.errors?.address3}
-                            placeholder="adresse 2 ..."
-                            tooltip="adresse complémentaire 2 associée..."
-                        />
-
-
-
-                        {/** bloc */}
-                        <FieldInputText
-                            id="bloc"
-                            name='bloc'
-                            title='Bloc'
-                            value={initialData?.bloc}
-                            error={formState.errors?.bloc}
-                            placeholder="bloc... : ex: 3 ou 3B"
-                            tooltip="Bloc ou bâtiment dans un lotissement ou parc industriel..."
-                        />
-
-
-
-
-
-                        {/** floor */}
+                        {/** Port */}
                         <FieldInputNumber
-                            id="floor"
-                            name='floor'
-                            title='Étage'
-                            value={initialData?.floor}
-                            error={formState.errors?.floor}
-                            placeholder="étage... : ex: 3"
-                            tooltip="numéro d'étage, du plateau..."
+                            id="port"
+                            name='port'
+                            title={t('Form.port.label')}
+                            value={initialData?.port}
+                            error={formState.errors?.port}
+                            placeholder={t('Form.port.placeholder')}
+                            tooltip={t('Form.port.tooltip')}
+                            render={linkSource === 'IPv4'}
                         />
 
 
+                        {/** Rack */}
+                        <FieldInputNumber
+                            id="rack"
+                            name='rack'
+                            title={t('Form.rack.label')}
+                            value={initialData?.rack}
+                            error={formState.errors?.rack}
+                            placeholder={t('Form.rack.placeholder')}
+                            tooltip={t('Form.rack.tooltip')}
+                            render={linkSource === 'IPv4'}
+                        />
+
+                        {/** Slot */}
+                        <FieldInputNumber
+                            id="slot"
+                            name='slot'
+                            title={t('Form.slot.label')}
+                            value={initialData?.slot}
+                            error={formState.errors?.slot}
+                            placeholder={t('Form.slot.placeholder')}
+                            tooltip={t('Form.slot.tooltip')}
+                            render={linkSource === 'IPv4'}
+                        />
 
 
+                        {/** MQTT */}
+                        <FieldInputCheckbox
+                            id="mqtt"
+                            name='mqtt'
+                            title={t('Form.mqtt.label')}
+                            value={initialData.mqtt}
+                            onChange={(e: any) => { initialData.mqtt = e; setUpdate(!update) }}
+                            error={formState.errors?.mqtt}
+                            tooltip={t('Form.mqtt.tooltip')}
+                            hidden={true}
+                            render={linkSource === 'MQTT'}
+                        />
 
-                        {/** number */}
+                        {/** mqtt_user */}
                         <FieldInputText
-                            id="number"
-                            name='number'
-                            title='Numéro'
-                            value={initialData.number}
-                            error={formState.errors?.number}
-                            placeholder="numéro... : ex: 6B ou 3, 3A"
-                            tooltip="numéro de porte de destination..."
+                            id="mqtt_user"
+                            name='mqtt_user'
+                            title={t('Form.mqtt_user.label')}
+                            value={initialData?.mqtt_user}
+                            error={formState.errors?.mqtt_user}
+                            placeholder={t('Form.mqtt_user.placeholder')}
+                            tooltip={t('Form.mqtt_user.tooltip')}
+                            render={initialData.mqtt === true}
                         />
 
+                        {/** mqtt_password */}
+                        <FieldInputPassword
+                            id="mqtt_password"
+                            name='mqtt_password'
+                            title={t('Form.mqtt_password.label')}
+                            value={initialData?.mqtt_password}
+                            error={formState.errors?.mqtt_password}
+                            placeholder={t('Form.mqtt_password.placeholder')}
+                            tooltip={t('Form.mqtt_password.tooltip')}
+                            render={initialData.mqtt === true}
+                        />
+
+
+                        {/** webhook */}
+                        <FieldInputCheckbox
+                            id="webhook"
+                            name='webhook'
+                            title={t('Form.webhook.label')}
+                            value={initialData.webhook}
+                            onChange={(e) => { initialData['webhook'] = e; setUpdate(!update) }}
+                            error={formState.errors?.webhook}
+                            tooltip={t('Form.webhook.tooltip')}
+                            hidden={true}
+                            render={linkSource === 'Webhook'}
+                        />
+
+                        {/** webhook_secret */}
+                        <FieldInputPassword
+                            id="webhook_secret"
+                            name='webhook_secret'
+                            title={t('Form.webhook_secret.label')}
+                            value={initialData?.webhook_secret}
+                            error={formState.errors?.webhook_secret}
+                            placeholder={t('Form.webhook_secret.placeholder')}
+                            tooltip={t('Form.webhook_secret.tooltip')}
+                            render={initialData.webhook === true}
+                        />
+
+
+                        {/** Bus */}
+                        <FieldInputNumber
+                            id="bus"
+                            name='bus'
+                            title={t('Form.bus.label')}
+                            value={initialData?.bus}
+                            error={formState.errors?.bus}
+                            placeholder={t('Form.bus.placeholder')}
+                            tooltip={t('Form.bus.tooltip')}
+                            render={linkSource === 'Bus'}
+                        />
 
 
 
@@ -521,3 +828,70 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
 
     </>
 }
+
+
+
+
+
+// 127.0.0.1
+function InputIPAddress(props) {
+    function checkIpValue(value: any) {
+        const subips = value.split('.')
+        if (subips.length > 4) {
+            return false
+        }
+        const invalidSubips = subips.filter((ip: any) => {
+            ip = parseInt(ip)
+            return ip < 0 || ip > 255
+        })
+        if (invalidSubips.length !== 0) {
+            return false
+        }
+        let emptyIpCount = 0
+        subips.forEach((ip: any) => {
+            if (ip === "") {
+                emptyIpCount++
+            }
+        })
+        if (emptyIpCount > 1) {
+            return false
+        }
+        return true
+    }
+
+    return (
+        <InputMask
+            formatChars={{
+                '9': '[0-9\.]',
+            }}
+            mask="999999999999999"
+            maskChar={null}
+            alwaysShowMask={false}
+            beforeMaskedValueChange={(newState: any, oldState: any, userInput: any) => {
+                let value = newState.value;
+                const oldValue = oldState.value;
+                let selection = newState.selection;
+                let cursorPosition = selection ? selection.start : null;
+                const result = checkIpValue(value)
+                if (!result) {
+                    value = value.trim()
+                    // try to add . before the last char to see if it is valid ip address
+                    const newValue = value.substring(0, value.length - 1) + "." + value.substring(value.length - 1);
+                    if (checkIpValue(newValue)) {
+                        cursorPosition++
+                        selection = { start: cursorPosition, end: cursorPosition };
+                        value = newValue
+                    } else {
+                        value = oldValue
+                    }
+                }
+
+                return {
+                    value,
+                    selection
+                };
+            }}
+        />
+    )
+}
+

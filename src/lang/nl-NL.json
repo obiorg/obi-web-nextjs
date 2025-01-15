@@ -24,5 +24,42 @@
     "lang": {
       "active": "Actieve taal"
     }
+  },
+  "connectionMachine": {
+    "Create": {
+      "title": "",
+      "subTitle": ""
+    },
+    "Edit": {
+      "title": "",
+      "subTitle": ""
+    },
+    "Form": {
+      "linkSource": {
+        "IP": {
+          "label": "IPv4"
+        },
+        "Bus": {
+          "label": "Bus"
+        }
+      },
+      "addressIPv4": {
+        "label": "IPv4-adres",
+        "tooltip": "Stel een verbindings-IPv4-adres in"
+      },
+      "addressLink": {
+        "label": "Adresseringslink",
+        "tooltip": "Stel een bronverbindingsadres in",
+        "placeholder": "verbindingslink..."
+      },
+      "driver": {
+        "label": "Bestuurder"
+      }
+    },
+    "import": {
+      "table": {
+        "title": "Importeren - Machineverbindingen"
+      }
+    }
   }
 }

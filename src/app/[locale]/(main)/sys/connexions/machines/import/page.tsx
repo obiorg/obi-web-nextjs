@@ -2,17 +2,22 @@
 
 
 import React from 'react';
-import { LocationsService } from '@/src/obi/service/localisations/LocationsService';
-import { LocationsModel } from '@/src/obi/models/localisations/LocationsModel';
+import { MachinesService } from '@/src/obi/service/connexions/MachinesService';
+import { MachinesModel } from '@/src/obi/models/connexions/MachinesModel';
 import TableImport from '@/src/obi/components/Tables/TableImport';
+import { useTranslations } from 'next-intl';
 
-const LocationsImport = () => {
+const MachinesImport = () => {
+
+    const g = useTranslations('global');
+    const t = useTranslations('connectionMachine');
     return (<>
-        <TableImport 
-            params = {(new LocationsModel().getStandardParam({ field: 'location', order: 1 }, LocationsService.defaultFilters()))}
-            services={LocationsService}
-            />
+        <TableImport
+            title={t('import.table.title')}
+            params={(new MachinesModel().getStandardParam({ field: 'name', order: 1 }, MachinesService.defaultFilters()))}
+            services={MachinesService}
+        />
     </>)
 }
 
-export default LocationsImport;
+export default MachinesImport;

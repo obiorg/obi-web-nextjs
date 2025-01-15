@@ -8,6 +8,7 @@ import https from 'https';
 import { OBI } from "@/src/types/obi";
 import { MachinesModel } from "../../models/connexions/MachinesModel";
 import { create } from "domain";
+import { ZodHelper } from "../../utilities/helpers/zodHelper";
 
 
 
@@ -135,66 +136,126 @@ export const MachinesService = {
      * @returns 
      */
     async create(
-        formState:any,
+        formState: any,
         formData: FormData | any): Promise<any> {
 
-        // console.log('formData', formData);
-        let data: any;
+        // From default model adapt values
+        let model = (new MachinesModel());
+        let data: any = model.defaults;
+        let dataType: any = model.type;
 
-        if (formData.id) {
-            data = formData;
-        } else {
-            data = {
-                id: undefined, //(formData.get("id") === '') ? undefined : Number(formData.get("id")),
-                deleted: formData.get("deleted") === "true",
-                created: formData.get("created"),
-                changed: formData.get("changed"),
-
-                location: formData.get("location"),
-                designation: formData.get("designation"),
-                group: formData.get("group"),
-                country: (formData.get("country") === '') ? undefined : Number(formData.get("country")),
-                state: (formData.get("state") === '') ? undefined : Number(formData.get("state")),
-                city: (formData.get("city") === '') ? undefined : Number(formData.get("city")),
-                address: formData.get("address"),
-                address1: formData.get("address1"),
-                address3: formData.get("address3"),
-                bloc: formData.get("bloc"),
-                floor: (formData.get("floor") === '') ? undefined : Number(formData.get("floor")),
-                number: formData.get("number"),
-            };
+        // Transmited data
+        let defaults: any = {};
+        for (const [key, value] of formData) {
+            // console.log(`default >> ${key}: ${value}\n`);
+            defaults[key] = value;
         }
-        // console.log(data);
-        // console.log(formState);
+
+        for (const [key, value] of formData) {
+            // console.log(`process >> ${key}: ${value}\n`);
+            data[key] = value;
+
+            // case of address
+            if (defaults.linkIP) {
+                // Change all string number to Number
+                if (dataType[key] === Number) {
+                    data[key] = value === '' ? undefined : Number(value);
+                    // console.log(`key ${key} is a number and value is ${value} \n`);
+                }
+
+                // Manage Ips
+                if (key === 'address' || key === 'mask' || key === 'dns' || key == 'ipv6') {
+                    // console.log('key = ' + key + ' value = ' + value);
+                    data[key] = value.replaceAll(' ', '').trim();
+                    // console.log('data key become  = ' + data[key]);
+                }
+
+            } else if (defaults.linkIP === 'MQTT') {
+                console.log('MQTT type not yet supported');
+            } else if (defaults.linkIP === 'Webhook') {
+                console.log('Webhook type not yet supported');
+            } else if (defaults.linkIP === 'Bus') {
+                console.log('Bus type not yet supported');
+            }
 
 
+
+        }
+        // console.log('MachinesService >> data', data);
+        delete data.compagnies;
+        delete data.drivers;
+        delete data.tags;
+
+        // Define URL
         const url = process.env.httpPath + '/connexions/machines';
 
+        // Fetch data from API
+        try {
+            const res = await fetch(
+                url,
+                {
+                    method: "POST",
+                    mode: "cors", // no-cors, *cors, same-origin
+                    cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                    credentials: "same-origin", // include, *same-origin, omit
+                    headers: {
+                        "Content-Type": "application/json",
+                        'Cache-Control': 'no-cache'
+                    },
+                    body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
+                }
+            )
 
-        const res = await fetch(
-            url,
-            {
-                method: "POST",
-                mode: "cors", // no-cors, *cors, same-origin
-                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                credentials: "same-origin", // include, *same-origin, omit
-                headers: {
-                    "Content-Type": "application/json",
-                    'Cache-Control': 'no-cache'
-                },
-                body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
+            // On success
+            if (res.ok) {
+                // console.log('Promise resolved and HTTP status is successful');
+                const dataset: any = await res.json();
+                return dataset;
             }
-        )
-        // console.log("MachinesService response", res);
-        const dataset: any = await res.json();
-        // console.log('MachinesService >> result from api machines ', dataset);
-        return dataset;
+            // On fail !
+            else {
+                let datas: any = await res.json();
+                // console.log(datas);
+                let dataset: any = {};
+                if (datas.issues !== undefined && datas.issues.length > 0) {
+                    dataset = { errors: ZodHelper.issuesFlatten(datas.issues[0].unionErrors, 0) };
+                    dataset['error'] = {};
+                    dataset['error'].message = datas.issues[0].code;
+                    dataset['error'].stack = datas.issues[0].message;
+                } else {
+                    dataset = datas;
+                }
+                dataset['status'] = res.status;
+                dataset['message'] = res.statusText;
+                return dataset;
+            }
+
+
+
+        } catch (error) {
+            if (error instanceof SyntaxError) {
+                // Unexpected token < in JSON
+                console.log('There was a SyntaxError', error);
+
+            } else {
+                console.log('There was an error', error);
+                // Promise.reject(error);
+                return ({
+                    name: 'Fetching',
+                    message: 'Check OAP API is running or database is reachable',
+                    error: error,
+                    // errors: datas,
+                    url: url,
+                    status: 500,
+                });
+            }
+        }
 
     },
 
     async processAll(formState: any, datas: any): Promise<any> {
         let res: any = [];
-        datas.forEach((row:any, index:any) => {
+        datas.forEach((row: any, index: any) => {
             MachinesService.create(formState, row).then((res_row) => {
                 console.log('res_row', res_row, 'res', res);
                 res.push(res_row);
@@ -205,28 +266,71 @@ export const MachinesService = {
         return res;
     },
 
-    async createMany(data: any[]): Promise<any[]> {
+    async createMany(data: any[]): Promise<any> {
 
         const url = process.env.httpPath + '/connexions/machines/create';
 
-        const res = await fetch(
-            url,
-            {
-                method: "POST",
-                mode: "cors", // no-cors, *cors, same-origin
-                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                credentials: "same-origin", // include, *same-origin, omit
-                headers: {
-                    "Content-Type": "application/json",
-                    'Cache-Control': 'no-cache'
-                },
-                body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
+        // Fetch data from API
+        try {
+            const res = await fetch(
+                url,
+                {
+                    method: "POST",
+                    mode: "cors", // no-cors, *cors, same-origin
+                    cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                    credentials: "same-origin", // include, *same-origin, omit
+                    headers: {
+                        "Content-Type": "application/json",
+                        'Cache-Control': 'no-cache'
+                    },
+                    body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
+                }
+            )
+
+            // On success
+            if (res.ok) {
+                // console.log('Promise resolved and HTTP status is successful');
+                const dataset: any = await res.json();
+                return dataset;
             }
-        )
-        // console.log("MachinesService response", res);
-        const dataset: any = await res.json();
-        console.log('MachinesService >> result from api machines ', dataset);
-        return dataset;
+            // On fail !
+            else {
+                let datas: any = await res.json();
+                // console.log(datas);
+                let dataset: any = {};
+                if (datas.issues !== undefined && datas.issues.length > 0) {
+                    dataset = { errors: ZodHelper.issuesFlatten(datas.issues[0].unionErrors, 0) };
+                    dataset['error'] = {};
+                    dataset['error'].message = datas.issues[0].code;
+                    dataset['error'].stack = datas.issues[0].message;
+                } else {
+                    dataset = datas;
+                }
+                dataset['status'] = res.status;
+                dataset['message'] = res.statusText;
+                return dataset;
+            }
+
+
+
+        } catch (error) {
+            if (error instanceof SyntaxError) {
+                // Unexpected token < in JSON
+                console.log('There was a SyntaxError', error);
+
+            } else {
+                console.log('There was an error', error);
+                // Promise.reject(error);
+                return ({
+                    name: 'Fetching',
+                    message: 'Check OAP API is running or database is reachable',
+                    error: error,
+                    // errors: datas,
+                    url: url,
+                    status: 500,
+                });
+            }
+        }
 
     },
 
@@ -235,58 +339,125 @@ export const MachinesService = {
         formState: any,
         formData: FormData | any): Promise<any> {
 
+        // From default model adapt values
+        let model = (new MachinesModel());
+        let data: any = model.defaults;
+        let dataType: any = model.type;
 
-        let data = {
-            id: (formData.get("id") === '') ? undefined : Number(formData.get("id")),
-            deleted: formData.get("deleted") === "on",
-            created: formData.get("created"),
-            changed: formData.get("changed"),
+        // Transmited data
+        let defaults: any = {};
+        for (const [key, value] of formData) {
+            // console.log(`default >> ${key}: ${value}\n`);
+            defaults[key] = value;
+        }
 
-            location: formData.get("location"),
-            designation: formData.get("designation"),
-            group: formData.get("group"),
-            country: (formData.get("country") === '') ? undefined : Number(formData.get("country")),
-            state: (formData.get("state") === '') ? undefined : Number(formData.get("state")),
-            city: (formData.get("city") === '') ? undefined : Number(formData.get("city")),
-            address: formData.get("address"),
-            address1: formData.get("address1"),
-            address3: formData.get("address3"),
-            bloc: formData.get("bloc"),
-            floor: (formData.get("floor") === '') ? undefined : Number(formData.get("floor")),
-            number: formData.get("number"),
-        };
-        // console.log(data);
-        // console.log(formState);
+        for (const [key, value] of formData) {
+            // console.log(`process >> ${key}: ${value}\n`);
+            data[key] = value;
+
+            // case of address
+            if (defaults.linkIP) {
+                // Change all string number to Number
+                if (dataType[key] === Number) {
+                    data[key] = value === '' ? undefined : Number(value);
+                    // console.log(`key ${key} is a number and value is ${value} \n`);
+                }
+
+                // Manage Ips
+                if (key === 'address' || key === 'mask' || key === 'dns' || key == 'ipv6') {
+                    // console.log('key = ' + key + ' value = ' + value);
+                    data[key] = value.replaceAll(' ', '').trim();
+                    // console.log('data key become  = ' + data[key]);
+                }
+
+            } else if (defaults.linkIP === 'MQTT') {
+                console.log('MQTT type not yet supported');
+            } else if (defaults.linkIP === 'Webhook') {
+                console.log('Webhook type not yet supported');
+            } else if (defaults.linkIP === 'Bus') {
+                console.log('Bus type not yet supported');
+            }
+
+
+
+        }
+        console.log('MachinesService >> data', data);
+        delete data.compagnies;
+        delete data.drivers;
+        delete data.tags;
 
 
         const url = process.env.httpPath + '/connexions/machines/' + data.id;
 
 
-        const res = await fetch(
-            url,
-            {
-                method: "PUT",
-                mode: "cors", // no-cors, *cors, same-origin
-                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                credentials: "same-origin", // include, *same-origin, omit
-                headers: {
-                    "Content-Type": "application/json",
-                    'Cache-Control': 'no-cache'
-                },
-                body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
+        // Fetch data from API
+        try {
+            const res = await fetch(
+                url,
+                {
+                    method: "PUT",
+                    mode: "cors", // no-cors, *cors, same-origin
+                    cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                    credentials: "same-origin", // include, *same-origin, omit
+                    headers: {
+                        "Content-Type": "application/json",
+                        'Cache-Control': 'no-cache'
+                    },
+                    body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
+                }
+            )
+
+            // On success
+            if (res.ok) {
+                console.log('Promise resolved and HTTP status is successful');
+                const dataset: any = await res.json();
+                return dataset;
             }
-        )
-        // console.log("MachinesService response", res);
-        const dataset: any = await res.json();
-        // console.log('MachinesService >> result from api machines ', dataset);
-        return dataset;
+            // On fail !
+            else {
+                let datas: any = await res.json();
+                console.log(datas);
+                let dataset: any = {};
+                if (datas.issues !== undefined && datas.issues.length > 0) {
+                    dataset = { errors: ZodHelper.issuesFlatten(datas.issues[0].unionErrors, 0) };
+                    dataset['error'] = {};
+                    dataset['error'].message = datas.issues[0].code;
+                    dataset['error'].stack = datas.issues[0].message;
+                } else {
+                    dataset = datas;
+                }
+                dataset['status'] = res.status;
+                dataset['message'] = res.statusText;
+                return dataset;
+            }
+
+
+
+        } catch (error) {
+            if (error instanceof SyntaxError) {
+                // Unexpected token < in JSON
+                console.log('There was a SyntaxError', error);
+
+            } else {
+                console.log('There was an error', error);
+                // Promise.reject(error);
+                return ({
+                    name: 'Fetching',
+                    message: 'Check OAP API is running or database is reachable',
+                    error: error,
+                    // errors: datas,
+                    url: url,
+                    status: 500,
+                });
+            }
+        }
 
 
     },
 
 
     async updateMany(
-        data: any[]): Promise<any[]> {
+        data: any[]): Promise<any> {
 
         const url = process.env.httpPath + '/connexions/machines/update';
         // console.log(data);

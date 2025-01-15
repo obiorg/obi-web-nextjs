@@ -24,5 +24,42 @@
     "lang": {
       "active": "لغة نشطة"
     }
+  },
+  "connectionMachine": {
+    "Create": {
+      "title": "",
+      "subTitle": ""
+    },
+    "Edit": {
+      "title": "",
+      "subTitle": ""
+    },
+    "Form": {
+      "linkSource": {
+        "IP": {
+          "label": "IPv4"
+        },
+        "Bus": {
+          "label": "حافلة"
+        }
+      },
+      "addressIPv4": {
+        "label": "عنوان IPv4",
+        "tooltip": "قم بتعيين عنوان IPv4 للاتصال"
+      },
+      "addressLink": {
+        "label": "رابط المخاطبة",
+        "tooltip": "قم بتعيين عنوان اتصال المصدر",
+        "placeholder": "رابط اتصال..."
+      },
+      "driver": {
+        "label": "سائق"
+      }
+    },
+    "import": {
+      "table": {
+        "title": "استيراد - اتصالات الجهاز"
+      }
+    }
   }
 }

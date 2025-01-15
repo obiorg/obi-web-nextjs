@@ -2,6 +2,7 @@
 
 import { OBI } from "@/src/types/obi";
 import { LocationsCitiesModel } from "../../models/localisations/LocationsCitiesModel";
+import axios from "axios";
 
 
 
@@ -69,6 +70,21 @@ import { LocationsCitiesModel } from "../../models/localisations/LocationsCities
 
 
 export const LocationsCitiesService = {
+
+    async count(): Promise<any> {
+        const url = process.env.httpPath + '/localisations/cities/count';
+        axios.get(url)
+            .then((res) => {
+                const dataset: number = res.data;
+                return dataset;
+            })
+            .catch((error) => {
+                // Code for handling the error
+                return error;
+            })
+
+    },
+
 
     /**
      * Find catalogs specified by lazy parameters

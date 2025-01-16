@@ -3,68 +3,231 @@
 import { OBI } from "@/src/types/obi";
 import { TagsModel } from "../../models/tags/TagsModel";
 import axios from "axios";
+import { ZodHelper } from "../../utilities/helpers/zodHelper";
 
 
 
 
-    // Define the shape of the form errors Tags
-    interface TagsFormErrors {
+// Define the shape of the form errors Tags
+interface TagsFormErrors {
+    id?: string[];
+    deleted?: string[];
+    created?: string[];
+    changed?: string[];
+
+    company?: string[];
+    table?: string[];
+    name?: string[];
+    machine?: string[];
+    type?: string[];
+    memory?: string[];
+    db?: string[];
+    byte?: string[];
+    bit?: string[];
+    active?: string[];
+    cycle?: string[];
+    delta?: string[];
+    deltaFloat?: string[];
+    deltaInt?: string[];
+    deltaBool?: string[];
+    deltaDateTime?: string[];
+    vFloat?: string[];
+    vInt?: string[];
+    vBool?: string[];
+    vStr?: string[];
+    vDateTime?: string[];
+    vStamp?: string[];
+    vDefault?: string[];
+    vFloatDefault?: string[];
+    vIntDefault?: string[];
+    vBoolDefault?: string[];
+    vStrDefault?: string[];
+    vDateTimeDefault?: string[];
+    vStampDefault?: string[];
+    counter?: string[];
+    counterType?: string[];
+    mesure?: string[];
+    mesureMin?: string[];
+    mesureMax?: string[];
+    measureUnit?: string[];
+    mqtt_topic?: string[];
+    webhook?: string[];
+    laboratory?: string[];
+    formula?: string[];
+    formCalculus?: string[];
+    formProcessing?: string[];
+    error?: string[];
+    errorMsg?: string[];
+    errorStamp?: string[];
+    alarmEnable?: string[];
+    alarm?: string[];
+    persistenceEnable?: string[];
+    persOffsetEnable?: string[];
+    persOffsetFloat?: string[];
+    persOffsetInt?: string[];
+    persOffsetBool?: string[];
+    persOffsetDateTime?: string[];
+    comment?: string[];
+    list?: string[];
+
+    alarms?: string[][];
+    companies?: string[][];
+    tags_lists?: string[][];
+    machines?: string[][];
+    meas_units?: string[][];
+    tags_memories?: string[][];
+    tags_tables?: string[][];
+    tags_types?: string[][];
+
+}
+
+// Define the shape of the form state
+interface TagsFormState {
+    errors: TagsFormErrors;
+}
+
+// Define the props that the PostForm component expects
+interface TagsPostFormProps {
+    formAction: any; // The action to perform when the form is submitted
+    type: number; // 0: create, 1: update, 2: destroy (delete), 3: read
+    initialData: {
+        // The initial data for the form fields
+        id: number;
+        deleted: boolean;
+        created: Date;
+        changed: Date;
+
+        company: number;
+        table: number;
+        name: string;
+        machine: number;
+        type: number;
+        memory: number;
+        db: number;
+        byte: number;
+        bit: number;
+        active: boolean;
+        cycle: number;
+        delta: boolean;
+        deltaFloat: number;
+        deltaInt: number;
+        deltaBool: boolean;
+        deltaDateTime: Date,
+        vFloat: number;
+        vInt: number;
+        vBool: boolean;
+        vStr: string;
+        vDateTime: Date,
+        vStamp: Date,
+        vDefault: number;
+        vFloatDefault: number;
+        vIntDefault: number;
+        vBoolDefault: boolean;
+        vStrDefault: string;
+        vDateTimeDefault: Date,
+        vStampDefault: Date,
+        counter: boolean;
+        counterType: number;
+        mesure: boolean;
+        mesureMin: number;
+        mesureMax: number;
+        measureUnit: number;
+        mqtt_topic: string;
+        webhook: string;
+        laboratory: boolean;
+        formula: boolean;
+        formCalculus: string;
+        formProcessing: number;
+        error: boolean;
+        errorMsg: string;
+        errorStamp: Date,
+        alarmEnable: boolean;
+        alarm: number;
+        persistenceEnabled: boolean;
+        persOffsetEnable: boolean;
+        persOffsetFloat: number;
+        persOffsetInt: number;
+        persOffsetBool: boolean;
+        persOffsetDateTime: Date,
+        comment: string;
+        list: number;
+
+    };
+}
+
+// Define an interface for the form state
+interface TagsPostFormState {
+    errors: {
         id?: string[];
         deleted?: string[];
         created?: string[];
         changed?: string[];
-        entity?: string[];
-        designation?: string[];
-        builded?: string[];
-        main?: string[];
-        activated?: string[];
-        logoPath?: string[];
-        location?: string[];
-    }
 
-    // Define the shape of the form state
-    interface TagsFormState {
-        errors: TagsFormErrors;
-    }
+        company?: string[];
+        table?: string[];
+        name?: string[];
+        machine?: string[];
+        type?: string[];
+        memory?: string[];
+        db?: string[];
+        byte?: string[];
+        bit?: string[];
+        active?: string[];
+        cycle?: string[];
+        delta?: string[];
+        deltaFloat?: string[];
+        deltaInt?: string[];
+        deltaBool?: string[];
+        deltaDateTime?: string[];
+        vFloat?: string[];
+        vInt?: string[];
+        vBool?: string[];
+        vStr?: string[];
+        vDateTime?: string[];
+        vStamp?: string[];
+        vDefault?: string[];
+        vFloatDefault?: string[];
+        vIntDefault?: string[];
+        vBoolDefault?: string[];
+        vStrDefault?: string[];
+        vDateTimeDefault?: string[];
+        vStampDefault?: string[];
+        counter?: string[];
+        counterType?: string[];
+        mesure?: string[];
+        mesureMin?: string[];
+        mesureMax?: string[];
+        measureUnit?: string[];
+        mqtt_topic?: string[];
+        webhook?: string[];
+        laboratory?: string[];
+        formula?: string[];
+        formCalculus?: string[];
+        formProcessing?: string[];
+        error?: string[];
+        errorMsg?: string[];
+        errorStamp?: string[];
+        alarmEnable?: string[];
+        alarm?: string[];
+        persistenceEnable?: string[];
+        persOffsetEnable?: string[];
+        persOffsetFloat?: string[];
+        persOffsetInt?: string[];
+        persOffsetBool?: string[];
+        persOffsetDateTime?: string[];
+        comment?: string[];
+        list?: string[];
 
-    // Define the props that the PostForm component expects
-    interface TagsPostFormProps {
-        formAction: any; // The action to perform when the form is submitted
-        type: number; // 0: create, 1: update, 2: destroy (delete), 3: read
-        initialData: {
-            // The initial data for the form fields
-            id: number;
-            deleted: boolean;
-            created: Date;
-            changed: Date;
-
-            entity: string;
-            designation: string;
-            builded: boolean;
-            main: number;
-            activated: boolean;
-            logoPath: string;
-            location: number;
-        };
-    }
-
-    // Define an interface for the form state
-    interface TagsPostFormState {
-        errors: {
-            id?: string[];
-            deleted?: string[];
-            created?: string[];
-            changed?: string[];
-            entity?: string[];
-            designation?: string[];
-            builded?: string[];
-            main?: string[];
-            activated?: string[];
-            logoPath?: string[];
-            location?: string[];
-            _form?: string[];
-        };
-    }
+        alarms?: string[][];
+        companies?: string[][];
+        tags_lists?: string[][];
+        machines?: string[][];
+        meas_units?: string[][];
+        tags_memories?: string[][];
+        tags_tables?: string[][];
+        tags_types?: string[][];
+    };
+}
 
 
 
@@ -219,64 +382,114 @@ export const TagsService = {
      * @returns 
      */
     async create(
-        formState: TagsFormState,
-        formData: FormData | any): Promise<TagsFormState> {
+        formState: any,
+        formData: FormData | any): Promise<any> {
 
-        // console.log('formData', formData);
-        let data: any;
+        // From default model adapt values
+        let model = (new TagsModel());
+        let data: any = model.defaults;
+        let dataType: any = model.type;
 
-        if (formData.id) {
-            data = formData;
-        } else {
-            data = {
-                id: undefined, //(formData.get("id") === '') ? undefined : Number(formData.get("id")),
-                deleted: formData.get("deleted") === "true",
-                created: formData.get("created"),
-                changed: formData.get("changed"),
-
-                location: formData.get("location"),
-                designation: formData.get("designation"),
-                group: formData.get("group"),
-                country: (formData.get("country") === '') ? undefined : Number(formData.get("country")),
-                state: (formData.get("state") === '') ? undefined : Number(formData.get("state")),
-                city: (formData.get("city") === '') ? undefined : Number(formData.get("city")),
-                address: formData.get("address"),
-                address1: formData.get("address1"),
-                address3: formData.get("address3"),
-                bloc: formData.get("bloc"),
-                floor: (formData.get("floor") === '') ? undefined : Number(formData.get("floor")),
-                number: formData.get("number"),
-            };
+        // Transmited data
+        let defaults: any = {};
+        for (const [key, value] of formData) {
+            // console.log(`default >> ${key}: ${value}\n`);
+            defaults[key] = value;
         }
-        // console.log(data);
-        // console.log(formState);
 
+        for (const [key, value] of formData) {
+            // console.log(`process >> ${key}: ${value}\n`);
+            data[key] = value;
 
+                           // Change all string number to Number
+                if (dataType[key] === Number) {
+                    data[key] = value === '' ? undefined : Number(value);
+                    // console.log(`key ${key} is a number and value is ${value} \n`);
+                }
+
+        }
+        console.log('TagsService >> data', data);
+        delete data.alarms;
+        delete data.companies;
+        delete data.tags_lists;
+        delete data.machines;
+        delete data.meas_units;
+        delete data.tags_memories;
+        delete data.tags_tables;
+        delete data.tags_types;
+        delete data.tags;
+        delete data.tags;
+
+        // Define URL
         const url = process.env.httpPath + '/tags';
 
+        // Fetch data from API
+        try {
+            const res = await fetch(
+                url,
+                {
+                    method: "POST",
+                    mode: "cors", // no-cors, *cors, same-origin
+                    cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                    credentials: "same-origin", // include, *same-origin, omit
+                    headers: {
+                        "Content-Type": "application/json",
+                        'Cache-Control': 'no-cache'
+                    },
+                    body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
+                }
+            )
 
-        const res = await fetch(
-            url,
-            {
-                method: "POST",
-                mode: "cors", // no-cors, *cors, same-origin
-                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                credentials: "same-origin", // include, *same-origin, omit
-                headers: {
-                    "Content-Type": "application/json",
-                    'Cache-Control': 'no-cache'
-                },
-                body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
+            // On success
+            if (res.ok) {
+                // console.log('Promise resolved and HTTP status is successful');
+                const dataset: any = await res.json();
+                return dataset;
             }
-        )
-        const dataset: TagsFormState = await res.json();
-        return dataset;
+            // On fail !
+            else {
+                let datas: any = await res.json();
+                // console.log(datas);
+                let dataset: any = {};
+                if (datas.issues !== undefined && datas.issues.length > 0) {
+                    dataset = { errors: ZodHelper.issuesFlatten(datas.issues[0].unionErrors, 0) };
+                    dataset['error'] = {};
+                    dataset['error'].message = datas.issues[0].code;
+                    dataset['error'].stack = datas.issues[0].message;
+                } else {
+                    dataset = datas;
+                }
+                dataset['status'] = res.status;
+                dataset['message'] = res.statusText;
+                return dataset;
+            }
+
+
+
+        } catch (error) {
+            if (error instanceof SyntaxError) {
+                // Unexpected token < in JSON
+                console.log('There was a SyntaxError', error);
+
+            } else {
+                console.log('There was an error', error);
+                // Promise.reject(error);
+                return ({
+                    name: 'Fetching',
+                    message: 'Check OAP API is running or database is reachable',
+                    error: error,
+                    // errors: datas,
+                    url: url,
+                    status: 500,
+                });
+            }
+        }
 
     },
 
     async processAll(formState: any, datas: any): Promise<any> {
         let res: any = [];
-        datas.forEach((row:any, index:any) => {
+        datas.forEach((row: any, index: any) => {
             TagsService.create(formState, row).then((res_row) => {
                 console.log('res_row', res_row, 'res', res);
                 res.push(res_row);
@@ -287,89 +500,185 @@ export const TagsService = {
         return res;
     },
 
-    async createMany(data: any[]): Promise<any[]> {
+    async createMany(data: any[]): Promise<any> {
 
-        console.log('createMany', data);
         const url = process.env.httpPath + '/tags/create';
 
-        const res = await fetch(
-            url,
-            {
-                method: "POST",
-                mode: "cors", // no-cors, *cors, same-origin
-                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                credentials: "same-origin", // include, *same-origin, omit
-                headers: {
-                    "Content-Type": "application/json",
-                    'Cache-Control': 'no-cache'
-                },
-                body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
-            }
-        )
-        
-        const dataset: TagsFormState[] = await res.json();
-        console.log('dataset', dataset);
-        return dataset;
+        // Fetch data from API
+        try {
+            const res = await fetch(
+                url,
+                {
+                    method: "POST",
+                    mode: "cors", // no-cors, *cors, same-origin
+                    cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                    credentials: "same-origin", // include, *same-origin, omit
+                    headers: {
+                        "Content-Type": "application/json",
+                        'Cache-Control': 'no-cache'
+                    },
+                    body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
+                }
+            )
 
-        // const res = await axios.post(url, data);
-        // return res.data;
+            // On success
+            if (res.ok) {
+                // console.log('Promise resolved and HTTP status is successful');
+                const dataset: any = await res.json();
+                return dataset;
+            }
+            // On fail !
+            else {
+                let datas: any = await res.json();
+                // console.log(datas);
+                let dataset: any = {};
+                if (datas.issues !== undefined && datas.issues.length > 0) {
+                    dataset = { errors: ZodHelper.issuesFlatten(datas.issues[0].unionErrors, 0) };
+                    dataset['error'] = {};
+                    dataset['error'].message = datas.issues[0].code;
+                    dataset['error'].stack = datas.issues[0].message;
+                } else {
+                    dataset = datas;
+                }
+                dataset['status'] = res.status;
+                dataset['message'] = res.statusText;
+                return dataset;
+            }
+
+
+
+        } catch (error) {
+            if (error instanceof SyntaxError) {
+                // Unexpected token < in JSON
+                console.log('There was a SyntaxError', error);
+
+            } else {
+                console.log('There was an error', error);
+                // Promise.reject(error);
+                return ({
+                    name: 'Fetching',
+                    message: 'Check OAP API is running or database is reachable',
+                    error: error,
+                    // errors: datas,
+                    url: url,
+                    status: 500,
+                });
+            }
+        }
+
     },
 
 
     async update(
-        formState: TagsFormState,
-        formData: FormData | any): Promise<TagsFormState> {
+        formState: any,
+        formData: FormData | any): Promise<any> {
 
+        // From default model adapt values
+        let model = (new TagsModel());
+        let data: any = model.defaults;
+        let dataType: any = model.type;
 
-        let data = {
-            id: (formData.get("id") === '') ? undefined : Number(formData.get("id")),
-            deleted: formData.get("deleted") === "on",
-            created: formData.get("created"),
-            changed: formData.get("changed"),
+        // Transmited data
+        let defaults: any = {};
+        for (const [key, value] of formData) {
+            // console.log(`default >> ${key}: ${value}\n`);
+            defaults[key] = value;
+        }
 
-            location: formData.get("location"),
-            designation: formData.get("designation"),
-            group: formData.get("group"),
-            country: (formData.get("country") === '') ? undefined : Number(formData.get("country")),
-            state: (formData.get("state") === '') ? undefined : Number(formData.get("state")),
-            city: (formData.get("city") === '') ? undefined : Number(formData.get("city")),
-            address: formData.get("address"),
-            address1: formData.get("address1"),
-            address3: formData.get("address3"),
-            bloc: formData.get("bloc"),
-            floor: (formData.get("floor") === '') ? undefined : Number(formData.get("floor")),
-            number: formData.get("number"),
-        };
-        // console.log(data);
-        // console.log(formState);
+        for (const [key, value] of formData) {
+            // console.log(`process >> ${key}: ${value}\n`);
+            data[key] = value;
+
+                // Change all string number to Number
+                if (dataType[key] === Number) {
+                    data[key] = value === '' ? undefined : Number(value);
+                    // console.log(`key ${key} is a number and value is ${value} \n`);
+                }
+        }
+        console.log('TagsService >> data', data);
+        delete data.alarms;
+        delete data.companies;
+        delete data.tags_lists;
+        delete data.machines;
+        delete data.meas_units;
+        delete data.tags_memories;
+        delete data.tags_tables;
+        delete data.tags_types;
+        delete data.tags;
+        delete data.tags;
 
 
         const url = process.env.httpPath + '/tags/' + data.id;
 
 
-        const res = await fetch(
-            url,
-            {
-                method: "PUT",
-                mode: "cors", // no-cors, *cors, same-origin
-                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                credentials: "same-origin", // include, *same-origin, omit
-                headers: {
-                    "Content-Type": "application/json",
-                    'Cache-Control': 'no-cache'
-                },
-                body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
+        // Fetch data from API
+        try {
+            const res = await fetch(
+                url,
+                {
+                    method: "PUT",
+                    mode: "cors", // no-cors, *cors, same-origin
+                    cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                    credentials: "same-origin", // include, *same-origin, omit
+                    headers: {
+                        "Content-Type": "application/json",
+                        'Cache-Control': 'no-cache'
+                    },
+                    body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
+                }
+            )
+
+            // On success
+            if (res.ok) {
+                console.log('Promise resolved and HTTP status is successful');
+                const dataset: any = await res.json();
+                return dataset;
             }
-        )
-        const dataset: TagsFormState = await res.json();
-        return dataset;
+            // On fail !
+            else {
+                let datas: any = await res.json();
+                console.log(datas);
+                let dataset: any = {};
+                if (datas.issues !== undefined && datas.issues.length > 0) {
+                    dataset = { errors: ZodHelper.issuesFlatten(datas.issues[0].unionErrors, 0) };
+                    dataset['error'] = {};
+                    dataset['error'].message = datas.issues[0].code;
+                    dataset['error'].stack = datas.issues[0].message;
+                } else {
+                    dataset = datas;
+                }
+                dataset['status'] = res.status;
+                dataset['message'] = res.statusText;
+                return dataset;
+            }
+
+
+
+        } catch (error) {
+            if (error instanceof SyntaxError) {
+                // Unexpected token < in JSON
+                console.log('There was a SyntaxError', error);
+
+            } else {
+                console.log('There was an error', error);
+                // Promise.reject(error);
+                return ({
+                    name: 'Fetching',
+                    message: 'Check OAP API is running or database is reachable',
+                    error: error,
+                    // errors: datas,
+                    url: url,
+                    status: 500,
+                });
+            }
+        }
 
 
     },
 
 
     async updateMany(
-        data: any[]): Promise<any[]> {
+        data: any[]): Promise<any> {
 
         const url = process.env.httpPath + '/tags/update';
         // console.log(data);
@@ -387,14 +696,16 @@ export const TagsService = {
                 body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
             }
         )
+        // console.log("TagsService response", res);
         const dataset: any = await res.json();
+        // console.log('TagsService >> result from api machines ', dataset);
         return dataset;
 
     },
 
 
 
-    async delete(id: any): Promise<TagsFormState> {
+    async delete(id: any): Promise<any> {
 
 
         const url = process.env.httpPath + '/tags/' + id;
@@ -412,7 +723,9 @@ export const TagsService = {
                 },
             }
         )
-        const dataset: TagsFormState = await res.json();
+        // console.log("TagsService response", res);
+        const dataset: any = await res.json();
+        // console.log('TagsService >> result from api machines ', dataset);
         return dataset;
 
 
@@ -437,10 +750,13 @@ export const TagsService = {
                 body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
             }
         )
+        // console.log("TagsService response", res);
         const dataset: any = await res.json();
+        // console.log('TagsService >> result from api machines ', dataset);
         return dataset;
 
     },
+
 
     async download(lazy: any): Promise<any[]> {
         const url = process.env.httpPath + '/tags/download/' + lazy.lazyEvent;

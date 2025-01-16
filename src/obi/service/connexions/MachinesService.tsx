@@ -13,6 +13,7 @@ import { ZodHelper } from "../../utilities/helpers/zodHelper";
 
 
 
+
 export const MachinesService = {
 
     /**
@@ -502,7 +503,7 @@ export const MachinesService = {
                 },
             }
         )
-        console.log("MachinesService response", res);
+        // console.log("MachinesService response", res);
         const dataset: any = await res.json();
         // console.log('MachinesService >> result from api machines ', dataset);
         return dataset;

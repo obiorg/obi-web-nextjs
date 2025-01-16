@@ -17,15 +17,15 @@ export class TagsListModel extends Model {
 
     get defaults() {
         return {
-            id: 0,
-            deleted: 0,
+            id: undefined,
+            deleted: false,
             created: 0,
             changed: 0,
 
             
-            company: 0,
-            type: 0,
-            list: '',
+            company: undefined,
+            type: undefined,
+            list: undefined,
             designation: '',
             comment: '',
 

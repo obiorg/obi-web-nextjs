@@ -17,13 +17,13 @@ export class TagsListContentsModel extends Model {
 
     get defaults() {
         return {
-            id: 0,
-            deleted: 0,
+            id: undefined,
+            deleted: false,
             created: 0,
             changed: 0,
 
-            company: 0,
-            list: 0,
+            company: undefined,
+            list: undefined,
             content: 0,
             value: '',
             default: false,

@@ -2,68 +2,79 @@
 
 import { OBI } from "@/src/types/obi";
 import { TagsListModel } from "../../models/tags/TagsListModel";
+import { ZodHelper } from "../../utilities/helpers/zodHelper";
 
 
 
 
-    // Define the shape of the form errors TagsLists
-    interface TagsListsFormErrors {
+// Define the shape of the form errors TagsLists
+interface TagsListsFormErrors {
+    id?: string[];
+    deleted?: string[];
+    created?: string[];
+    changed?: string[];
+
+
+    company?: string[];
+    type?: string[];
+    list?: string[];
+    designation?: string[];
+    comment?: string[];
+
+    companies?: string[][];
+    tags_lists_types?: string[][];
+
+}
+
+// Define the shape of the form state
+interface TagsListsFormState {
+    errors: TagsListsFormErrors;
+}
+
+// Define the props that the PostForm component expects
+interface TagsListsPostFormProps {
+    formAction: any; // The action to perform when the form is submitted
+    type: number; // 0: create, 1: update, 2: destroy (delete), 3: read
+    initialData: {
+        // The initial data for the form fields
+        id: number;
+        deleted: boolean;
+        created: Date;
+        changed: Date;
+
+
+
+        company: number,
+        type: number,
+        list: number,
+        designation: string,
+        comment: string,
+
+        companies: {},
+        tags_lists_types: {},
+    };
+}
+
+// Define an interface for the form state
+interface TagsListsPostFormState {
+    errors: {
         id?: string[];
         deleted?: string[];
         created?: string[];
         changed?: string[];
-        entity?: string[];
+
+        company?: string[];
+        type?: string[];
+        list?: string[];
         designation?: string[];
-        builded?: string[];
-        main?: string[];
-        activated?: string[];
-        logoPath?: string[];
-        location?: string[];
-    }
+        comment?: string[];
 
-    // Define the shape of the form state
-    interface TagsListsFormState {
-        errors: TagsListsFormErrors;
-    }
+        companies?: string[][];
+        tags_lists_types?: string[][];
 
-    // Define the props that the PostForm component expects
-    interface TagsListsPostFormProps {
-        formAction: any; // The action to perform when the form is submitted
-        type: number; // 0: create, 1: update, 2: destroy (delete), 3: read
-        initialData: {
-            // The initial data for the form fields
-            id: number;
-            deleted: boolean;
-            created: Date;
-            changed: Date;
-
-            entity: string;
-            designation: string;
-            builded: boolean;
-            main: number;
-            activated: boolean;
-            logoPath: string;
-            location: number;
-        };
-    }
-
-    // Define an interface for the form state
-    interface TagsListsPostFormState {
-        errors: {
-            id?: string[];
-            deleted?: string[];
-            created?: string[];
-            changed?: string[];
-            entity?: string[];
-            designation?: string[];
-            builded?: string[];
-            main?: string[];
-            activated?: string[];
-            logoPath?: string[];
-            location?: string[];
-            _form?: string[];
-        };
-    }
+        _form?: string[];
+    };
+}
 
 
 
@@ -191,64 +202,107 @@ export const TagsListsService = {
      * @returns 
      */
     async create(
-        formState: TagsListsFormState,
-        formData: FormData | any): Promise<TagsListsFormState> {
+        formState: any,
+        formData: FormData | any): Promise<any> {
 
-        // console.log('formData', formData);
-        let data: any;
+        // From default model adapt values
+        let model = (new TagsListModel());
+        let data: any = model.defaults;
+        let dataType: any = model.type;
 
-        if (formData.id) {
-            data = formData;
-        } else {
-            data = {
-                id: undefined, //(formData.get("id") === '') ? undefined : Number(formData.get("id")),
-                deleted: formData.get("deleted") === "true",
-                created: formData.get("created"),
-                changed: formData.get("changed"),
-
-                location: formData.get("location"),
-                designation: formData.get("designation"),
-                group: formData.get("group"),
-                country: (formData.get("country") === '') ? undefined : Number(formData.get("country")),
-                state: (formData.get("state") === '') ? undefined : Number(formData.get("state")),
-                city: (formData.get("city") === '') ? undefined : Number(formData.get("city")),
-                address: formData.get("address"),
-                address1: formData.get("address1"),
-                address3: formData.get("address3"),
-                bloc: formData.get("bloc"),
-                floor: (formData.get("floor") === '') ? undefined : Number(formData.get("floor")),
-                number: formData.get("number"),
-            };
+        // Transmited data
+        let defaults: any = {};
+        for (const [key, value] of formData) {
+            // console.log(`default >> ${key}: ${value}\n`);
+            defaults[key] = value;
         }
-        // console.log(data);
-        // console.log(formState);
+
+        for (const [key, value] of formData) {
+            // console.log(`process >> ${key}: ${value}\n`);
+            data[key] = value;
 
 
-        const url = process.env.httpPath + '/tags/listcontents';
-
-
-        const res = await fetch(
-            url,
-            {
-                method: "POST",
-                mode: "cors", // no-cors, *cors, same-origin
-                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                credentials: "same-origin", // include, *same-origin, omit
-                headers: {
-                    "Content-Type": "application/json",
-                    'Cache-Control': 'no-cache'
-                },
-                body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
+            // Change all string number to Number
+            if (dataType[key] === Number) {
+                data[key] = value === '' ? undefined : Number(value);
+                // console.log(`key ${key} is a number and value is ${value} \n`);
             }
-        )
-        const dataset: TagsListsFormState = await res.json();
-        return dataset;
+
+        }
+        // console.log('TagsListService >> data', data);
+        delete data.compagnies;
+        delete data.tags_lists_types;
+
+        // Define URL
+        const url = process.env.httpPath + '/tags/list';
+
+        // Fetch data from API
+        try {
+            const res = await fetch(
+                url,
+                {
+                    method: "POST",
+                    mode: "cors", // no-cors, *cors, same-origin
+                    cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                    credentials: "same-origin", // include, *same-origin, omit
+                    headers: {
+                        "Content-Type": "application/json",
+                        'Cache-Control': 'no-cache'
+                    },
+                    body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
+                }
+            )
+
+            // On success
+            if (res.ok) {
+                // console.log('Promise resolved and HTTP status is successful');
+                const dataset: any = await res.json();
+                return dataset;
+            }
+            // On fail !
+            else {
+                let datas: any = await res.json();
+                // console.log(datas);
+                let dataset: any = {};
+                if (datas.issues !== undefined && datas.issues.length > 0) {
+                    dataset = { errors: ZodHelper.issuesFlatten(datas.issues[0].unionErrors, 0) };
+                    dataset['error'] = {};
+                    dataset['error'].message = datas.issues[0].code;
+                    dataset['error'].stack = datas.issues[0].message;
+                } else {
+                    dataset = datas;
+                }
+                dataset['status'] = res.status;
+                dataset['message'] = res.statusText;
+                return dataset;
+            }
+
+
+
+        } catch (error) {
+            if (error instanceof SyntaxError) {
+                // Unexpected token < in JSON
+                console.log('There was a SyntaxError', error);
+
+            } else {
+                console.log('There was an error', error);
+                // Promise.reject(error);
+                return ({
+                    name: 'Fetching',
+                    message: 'Check OAP API is running or database is reachable',
+                    error: error,
+                    // errors: datas,
+                    url: url,
+                    status: 500,
+                });
+            }
+        }
 
     },
 
     async processAll(formState: any, datas: any): Promise<any> {
         let res: any = [];
-        datas.forEach((row:any, index:any) => {
+        datas.forEach((row: any, index: any) => {
             TagsListsService.create(formState, row).then((res_row) => {
                 console.log('res_row', res_row, 'res', res);
                 res.push(res_row);
@@ -259,77 +313,172 @@ export const TagsListsService = {
         return res;
     },
 
-    async createMany(data: any[]): Promise<any[]> {
+    async createMany(data: any[]): Promise<any> {
 
-        const url = process.env.httpPath + '/tags/listcontents/create';
+        const url = process.env.httpPath + '/tags/list/create';
 
-        const res = await fetch(
-            url,
-            {
-                method: "POST",
-                mode: "cors", // no-cors, *cors, same-origin
-                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                credentials: "same-origin", // include, *same-origin, omit
-                headers: {
-                    "Content-Type": "application/json",
-                    'Cache-Control': 'no-cache'
-                },
-                body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
+        // Fetch data from API
+        try {
+            const res = await fetch(
+                url,
+                {
+                    method: "POST",
+                    mode: "cors", // no-cors, *cors, same-origin
+                    cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                    credentials: "same-origin", // include, *same-origin, omit
+                    headers: {
+                        "Content-Type": "application/json",
+                        'Cache-Control': 'no-cache'
+                    },
+                    body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
+                }
+            )
+
+            // On success
+            if (res.ok) {
+                // console.log('Promise resolved and HTTP status is successful');
+                const dataset: any = await res.json();
+                return dataset;
             }
-        )
-        const dataset: TagsListsFormState[] = await res.json();
-        return dataset;
+            // On fail !
+            else {
+                let datas: any = await res.json();
+                // console.log(datas);
+                let dataset: any = {};
+                if (datas.issues !== undefined && datas.issues.length > 0) {
+                    dataset = { errors: ZodHelper.issuesFlatten(datas.issues[0].unionErrors, 0) };
+                    dataset['error'] = {};
+                    dataset['error'].message = datas.issues[0].code;
+                    dataset['error'].stack = datas.issues[0].message;
+                } else {
+                    dataset = datas;
+                }
+                dataset['status'] = res.status;
+                dataset['message'] = res.statusText;
+                return dataset;
+            }
+
+
+
+        } catch (error) {
+            if (error instanceof SyntaxError) {
+                // Unexpected token < in JSON
+                console.log('There was a SyntaxError', error);
+
+            } else {
+                console.log('There was an error', error);
+                // Promise.reject(error);
+                return ({
+                    name: 'Fetching',
+                    message: 'Check OAP API is running or database is reachable',
+                    error: error,
+                    // errors: datas,
+                    url: url,
+                    status: 500,
+                });
+            }
+        }
 
     },
 
 
     async update(
-        formState: TagsListsFormState,
-        formData: FormData | any): Promise<TagsListsFormState> {
+        formState: any,
+        formData: FormData | any): Promise<any> {
+
+        // From default model adapt values
+        let model = (new TagsListModel());
+        let data: any = model.defaults;
+        let dataType: any = model.type;
+
+        // Transmited data
+        let defaults: any = {};
+        for (const [key, value] of formData) {
+            // console.log(`default >> ${key}: ${value}\n`);
+            defaults[key] = value;
+        }
+
+        for (const [key, value] of formData) {
+            // console.log(`process >> ${key}: ${value}\n`);
+            data[key] = value;
 
 
-        let data = {
-            id: (formData.get("id") === '') ? undefined : Number(formData.get("id")),
-            deleted: formData.get("deleted") === "on",
-            created: formData.get("created"),
-            changed: formData.get("changed"),
-
-            location: formData.get("location"),
-            designation: formData.get("designation"),
-            group: formData.get("group"),
-            country: (formData.get("country") === '') ? undefined : Number(formData.get("country")),
-            state: (formData.get("state") === '') ? undefined : Number(formData.get("state")),
-            city: (formData.get("city") === '') ? undefined : Number(formData.get("city")),
-            address: formData.get("address"),
-            address1: formData.get("address1"),
-            address3: formData.get("address3"),
-            bloc: formData.get("bloc"),
-            floor: (formData.get("floor") === '') ? undefined : Number(formData.get("floor")),
-            number: formData.get("number"),
-        };
-        // console.log(data);
-        // console.log(formState);
-
-
-        const url = process.env.httpPath + '/tags/listcontents/' + data.id;
-
-
-        const res = await fetch(
-            url,
-            {
-                method: "PUT",
-                mode: "cors", // no-cors, *cors, same-origin
-                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                credentials: "same-origin", // include, *same-origin, omit
-                headers: {
-                    "Content-Type": "application/json",
-                    'Cache-Control': 'no-cache'
-                },
-                body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
+            // Change all string number to Number
+            if (dataType[key] === Number) {
+                data[key] = value === '' ? undefined : Number(value);
+                // console.log(`key ${key} is a number and value is ${value} \n`);
             }
-        )
-        const dataset: TagsListsFormState = await res.json();
-        return dataset;
+
+        }
+        // console.log('TagsListService >> data', data);
+        delete data.compagnies;
+        delete data.tags_lists_types;
+
+
+        const url = process.env.httpPath + '/tags/list/' + data.id;
+
+
+        // Fetch data from API
+        try {
+            const res = await fetch(
+                url,
+                {
+                    method: "PUT",
+                    mode: "cors", // no-cors, *cors, same-origin
+                    cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                    credentials: "same-origin", // include, *same-origin, omit
+                    headers: {
+                        "Content-Type": "application/json",
+                        'Cache-Control': 'no-cache'
+                    },
+                    body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
+                }
+            )
+
+            // On success
+            if (res.ok) {
+                console.log('Promise resolved and HTTP status is successful');
+                const dataset: any = await res.json();
+                return dataset;
+            }
+            // On fail !
+            else {
+                let datas: any = await res.json();
+                console.log(datas);
+                let dataset: any = {};
+                if (datas.issues !== undefined && datas.issues.length > 0) {
+                    dataset = { errors: ZodHelper.issuesFlatten(datas.issues[0].unionErrors, 0) };
+                    dataset['error'] = {};
+                    dataset['error'].message = datas.issues[0].code;
+                    dataset['error'].stack = datas.issues[0].message;
+                } else {
+                    dataset = datas;
+                }
+                dataset['status'] = res.status;
+                dataset['message'] = res.statusText;
+                return dataset;
+            }
+
+
+
+        } catch (error) {
+            if (error instanceof SyntaxError) {
+                // Unexpected token < in JSON
+                console.log('There was a SyntaxError', error);
+
+            } else {
+                console.log('There was an error', error);
+                // Promise.reject(error);
+                return ({
+                    name: 'Fetching',
+                    message: 'Check OAP API is running or database is reachable',
+                    error: error,
+                    // errors: datas,
+                    url: url,
+                    status: 500,
+                });
+            }
+        }
 
 
     },
@@ -338,7 +487,7 @@ export const TagsListsService = {
     async updateMany(
         data: any[]): Promise<any[]> {
 
-        const url = process.env.httpPath + '/tags/listcontents/update';
+        const url = process.env.httpPath + '/tags/list/update';
         // console.log(data);
         const res = await fetch(
             url,
@@ -364,7 +513,7 @@ export const TagsListsService = {
     async delete(id: any): Promise<TagsListsFormState> {
 
 
-        const url = process.env.httpPath + '/tags/listcontents/' + id;
+        const url = process.env.httpPath + '/tags/list/' + id;
 
         const res = await fetch(
             url,
@@ -379,7 +528,7 @@ export const TagsListsService = {
                 },
             }
         )
-        const dataset: TagsListsFormState = await res.json();
+        const dataset: any = await res.json();
         return dataset;
 
 
@@ -388,7 +537,7 @@ export const TagsListsService = {
     async deleteMany(
         data: any[]): Promise<any[]> {
 
-        const url = process.env.httpPath + '/tags/listcontents/delete';
+        const url = process.env.httpPath + '/tags/list/delete';
         // console.log(data);
         const res = await fetch(
             url,

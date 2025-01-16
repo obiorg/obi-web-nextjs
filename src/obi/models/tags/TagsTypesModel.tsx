@@ -18,8 +18,8 @@ export class TagsTypesModel extends Model {
 
     get defaults() {
         return {
-            id: 0,
-            deleted: 0,
+            id: undefined,
+            deleted: false,
             created: 0,
             changed: 0,
 

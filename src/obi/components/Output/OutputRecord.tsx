@@ -36,8 +36,9 @@ export default function OutputRecord({ id, title, catalog, loading }: OutputReco
                     </div>
                     :
                     <>
-                        {catalog ?
+                        {catalog ? 
                             <>
+                               
                                 <h5>{title ? title : 'Dernier enregistrement'}</h5>
                                 <div  className="col-12 ">
                                     {Object.keys(catalog).map((key, index) => (

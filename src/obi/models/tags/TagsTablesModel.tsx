@@ -23,9 +23,9 @@ export class TagsTablesModel extends Model {
             changed: 0,
 
             company: undefined,
-            table: '',
-            designation: '',
-            comment: '',
+            table: undefined,
+            designation: undefined,
+            comment: undefined,
             
             companies: {},
         };

@@ -14,6 +14,7 @@ import { InputText } from 'primereact/inputtext';
 import '@/src/styles/obi/import.scss';
 import { ArrayHelper } from '@/src/obi/utilities/helpers/arrayHelper';
 import { useTranslations } from 'next-intl';
+import OutputError from '../Output/OutputError';
 
 
 interface TableImportProps {
@@ -146,6 +147,8 @@ export default function TableImport({
         setImportedData(dv);
         setSelectedImportedData([]);
         setImportedCols([{ field: '', header: 'Header' }]);
+        setErrorCatalog(null);
+        setLoading(false);
     }
 
     const onImportSelectionChange = (e: any) => {
@@ -243,6 +246,11 @@ export default function TableImport({
     const [msgDetail, setMsgDetail] = useState('Default detail'); // Message Content as default
     const [msgSticky, setMsgSticky] = useState(false); //
 
+    // last created catalog
+    const [catalog, setCatalog] = useState<any>(null);
+    const [errorCatalog, setErrorCatalog] = useState<any>(null);
+    const [lazyLoading, setLazyLoading] = useState<any>(false);
+
     const doMsgPrompt = (severity: string, summary: string, message: string, sticky?: boolean) => {
         setMsgSeverity(severity);
         setMsgSummary(summary);
@@ -301,46 +309,114 @@ export default function TableImport({
     });
 
 
+    /**
+     * 
+     * @param datas datas that need to be reduced as small payloads off 50
+     * @returns new splitted data payloads
+     */
+    const payloadManagement = (datas: any[]) => {
+        let c: number = -1;
+        let a: any[] = [];
+        datas.forEach((data: any, i: number) => {
+            if (i % 50 === 0) {
+                c++;
+                a.push([]);
+            }
+            a[c].push(data);
+        });
+        return a;
+    };
+
+
     const doProcessUpdate = async (e: any) => new Promise((resolve, reject) => {
         if (e.update.length > 0) {
-            services.updateMany(e.update).then((datas: any) => {
-                // If unable to update 
-                console.log('updateMany - result', datas);
-                if ((datas?.errors) || datas[0] === null) {
-                    console.log('updateMany - process error');
-                    e.update.forEach((catalog: any) => {
-                        if (datas[0] !== null) {
-                            datas.errors.forEach((err: any) => {
-                                // console.log('Error: ', err);
-                                const firstKey = Object.keys(err.errors)[0]; // Get first key
-                                // console.log('catalog index', catalog.index, 'err index', err.index);
-                                if (catalog.index === err.index && err.errors[firstKey] && importedData) {
-                                    let dv: any = importedData[catalog.index];
-                                    dv.transaction = -1;
-                                    dv.commentRet = '' + firstKey + ' > ' + err.errors[firstKey];
-                                } else {
+            let dataUpdate = payloadManagement(e.update);
+            console.log('update - process', dataUpdate);
+            dataUpdate.forEach(async (payload: any[], index: number) => {
+
+                services.updateMany(payload).then((datas: any) => {
+                    // If unable to update 
+                    console.log('updateMany - result - index = ' + index, datas);
+
+
+                    if ((datas?.errors) || (datas && datas[0] === null)) {
+                        // console.log('updateMany - process error');
+                        e.update.forEach((catalog: any) => {
+                            if (datas[0] !== null) {
+                                let errCatalog: any = [];
+                                datas.errors.forEach((err: any) => {
+                                    let keys = Object.keys(err.errors);
+                                    let commentError = '';
+                                    keys.forEach((k: any) => {
+                                        commentError = commentError + ' | ' + k + '>' + err.errors[k];
+                                    });
                                     if (importedData) {
-                                        // importedData[catalog.index].transaction = -1;
                                         let dv: any = importedData[catalog.index];
-                                        dv.commentRet = 'pending...';
+                                        dv.transaction = -1;
+                                        dv.commentRet = commentError;
                                     }
-                                }
-                            })
-                        }
-                    });
-                    showError('Erreur', 'Erreur lors de la modification des données');
-                } else {
-                    //console.log('updateMany - process success !');
-                    e.update.forEach((catalog: any) => {
-                        if (importedData) {
-                            let dv: any = importedData[catalog.index];
-                            dv.transaction = '';
-                            dv.commentRet = 'success';
-                        }
-                    });
-                }
-                resolve(importedData);
+                                    if (keys.length > 0) errCatalog.push(err);
+                                })
+                                setErrorCatalog(errCatalog);
+                            }
+                        });
+                        showError('Erreur', 'Erreur lors de la modification des données');
+                    } else if ((datas?.error)) {
+                        setErrorCatalog(datas);
+
+                    } else {
+                        //console.log('updateMany - process success !');
+                        e.update.forEach((catalog: any) => {
+                            if (importedData) {
+                                let dv: any = importedData[catalog.index];
+                                dv.transaction = '';
+                                dv.commentRet = 'success';
+                            }
+                        });
+                    }
+                    resolve(importedData);
+                });
             });
+            // services.updateMany(e.update).then((datas: any) => {
+            //     // If unable to update 
+            //     console.log('updateMany - result', datas);
+            //     if ((datas?.errors) || (datas && datas[0] === null)) {
+            //         // console.log('updateMany - process error');
+            //         e.update.forEach((catalog: any) => {
+            //             if (datas[0] !== null) {
+            //                 let errCatalog: any = [];
+            //                 datas.errors.forEach((err: any) => {
+            //                     let keys = Object.keys(err.errors);
+            //                     let commentError = '';
+            //                     keys.forEach((k: any) => {
+            //                         commentError = commentError + ' | ' + k + '>' + err.errors[k];
+            //                     });
+            //                     if (importedData) {
+            //                         let dv: any = importedData[catalog.index];
+            //                         dv.transaction = -1;
+            //                         dv.commentRet = commentError;
+            //                     }
+            //                     if (keys.length > 0) errCatalog.push(err);
+            //                 })
+            //                 setErrorCatalog(errCatalog);
+            //             }
+            //         });
+            //         showError('Erreur', 'Erreur lors de la modification des données');
+            //     } else if ((datas?.error)) {
+            //         setErrorCatalog(datas);
+
+            //     } else {
+            //         //console.log('updateMany - process success !');
+            //         e.update.forEach((catalog: any) => {
+            //             if (importedData) {
+            //                 let dv: any = importedData[catalog.index];
+            //                 dv.transaction = '';
+            //                 dv.commentRet = 'success';
+            //             }
+            //         });
+            //     }
+            //     resolve(importedData);
+            // });
         } else {
             resolve('Skipped');
         }
@@ -397,7 +473,7 @@ export default function TableImport({
      * @param e 
      */
     const onUpload = (e: any) => {
-
+        setLazyLoading(true);
         // Get data to process
         if (importedData) {
             let dv: any = importedData;
@@ -458,7 +534,9 @@ export default function TableImport({
         } else {
             toast.current.show({ severity: 'error', summary: g('error.summary'), detail: g('error.import.nodata'), life: 5000 });
             setLoading(false);
+            setLazyLoading(false);
         }
+
 
 
     }
@@ -571,7 +649,7 @@ export default function TableImport({
                 tableStyle={{ minWidth: '50rem' }}
 
                 editMode={tableEditMode}
-
+                columnResizeMode="expand"
             >
                 {
                     importedCols.map(
@@ -582,11 +660,17 @@ export default function TableImport({
                                 header={col.header}
                                 editor={(options) => cellEditor(options)}
                                 onCellEditComplete={onCellEditComplete}
+                                style={{ textAlign: 'left', width: '10rem' }}
                             />
 
                     )
                 }
             </DataTable>
+
+
+            {/* Display last record */}
+            {/* <OutputRecord catalog={catalog} loading={lazyLoading} /> */}
+            <OutputError catalog={errorCatalog} loading={loading} />
         </div>
 
 

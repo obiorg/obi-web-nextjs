@@ -102,7 +102,7 @@ export default function FieldInputIPv4(
     const fillPart = (value: string): string => {
         let s = value.split('.');
         let l: string = '';
-        console.log('adjustSequence : s = ', s);
+        // console.log('adjustSequence : s = ', s);
         for (let i = 0; i < s.length - 1; i++) {
             if (s[i].length < 3 && i < 3) {
                 l += s[i].padEnd(3, ' ') + '.';
@@ -111,7 +111,7 @@ export default function FieldInputIPv4(
             } else {
                 l += s[i];
             }
-            console.log('adjustSequence ' + i + ' l = ' + l);
+            // console.log('adjustSequence ' + i + ' l = ' + l);
         }
         return l;
     }
@@ -119,7 +119,7 @@ export default function FieldInputIPv4(
     const clearPart = (value: string): string => {
         let s = value.split('.');
         let l: string = '';
-        console.log('clearSequence : s = ', s);
+        // console.log('clearSequence : s = ', s);
         for (let i = 0; i < s.length; i++) {
             // if (s[i].length < 3 && i < 3) {
             //     l += s[i].padEnd(3, ' ') + '.';
@@ -133,7 +133,7 @@ export default function FieldInputIPv4(
             } else {
                 l += s[i] + '.';
             }
-            console.log('clearSequence ' + i + ' l = ' + l);
+            // console.log('clearSequence ' + i + ' l = ' + l);
         }
         return l;
     }
@@ -157,25 +157,25 @@ export default function FieldInputIPv4(
 
         // console.log('onInput', e, e.target.value, lValue);
         // Avoid dot duplication
-        let value = e.target.value.replaceAll('..', '.');
+        let _value = e.target.value.replaceAll('..', '.');
         let l: string = '';
-        // console.log('onInput : value, lValue (>' + value + '<, >' + lValue + '<)');
+        // console.log('onInput : _value, lValue (>' + lValue + '<, >' + lValue + '<)');
 
         // Detect Mode depend on size insert
         let editing: boolean = false;
         let editingDirection: string = ''; // 'backward' or 'forward' depending state
         // Check edit by inserting one character from empty value
         if (lValue === undefined) {
-            editing = value.length === 1;
+            editing = _value.length === 1;
         }
-        // Check edit by existing value depend on new one
-        else if (Math.abs(lValue.length - value.length) === 1) {
+        // Check edit by existing _value depend on new one
+        else if (Math.abs(lValue.length - _value.length) === 1) {
             editing = true;
-            editingDirection = value.length > lValue.length ? 'forward' : 'backward';
+            editingDirection = _value.length > lValue.length ? 'forward' : 'backward';
         }
 
-        // Stop if no change between value and lvalue
-        else if (value === lValue) {
+        // Stop if no change between _value and lvalue
+        else if (_value === lValue) {
             // console.log('==> onChanging : no change');
             return;
         }
@@ -185,16 +185,16 @@ export default function FieldInputIPv4(
 
 
         // Discard IPv4 length
-        if (value.length >= 16) {
+        if (_value.length >= 16) {
             // console.log('==> onChanging : discarding IPv4 length');
             return;
         }
 
         //
-        l = value;
+        l = _value;
         if (editing) {
             // Get last character
-            let lastChar = charEnd(value);
+            let lastChar = charEnd(_value);
             // console.log('onChanging : editing char = ' + lastChar);
 
             // Discard if editing an alphanumeric except dot
@@ -208,19 +208,19 @@ export default function FieldInputIPv4(
                 if (lValue && isDot(charEnd(lValue))) {
                     // do nothing
                 } else {
-                    l = fillPart(value);
+                    l = fillPart(_value);
                 }
             }
             // On delete mean backwards
             else if (editingDirection == 'backward' && lValue) {
                 // If last character is a dot, remove it
                 if (isDot(charEnd(lValue))) {
-                    l = clearPart(value);
+                    l = clearPart(_value);
                 }
             }
             // On forward editing different from dot
             else if (editingDirection == 'forward') {
-                // limit value in good range
+                // limit _value in good range
                 let splited = l.split('.');
                 let partOn = splited[splited.length - 1];
                 // console.log('==> onChanging : forwards partOn = ' + partOn);
@@ -244,16 +244,16 @@ export default function FieldInputIPv4(
             // Make full process
 
             // Split with dot '.'
-            let splited = value.split('.');
+            let splited = _value.split('.');
             let part: any = [];
             // console.log('on paste splitted: ', splited)
 
             // Fill with space
             let j = 0;
             for (let i = 0; i < splited.length; i++) {
-                // check if value inserted
+                // check if _value inserted
                 let n = Number(splited[i]);
-                // console.log('checking value i=' + GREEN + i + ' n= ' + RED + n);
+                // console.log('checking _value i=' + GREEN + i + ' n= ' + RED + n);
                 if (!isNaN(n) && splited[i] !== '') {
                     if (n < 0) n = 0;
                     if (n > 255) n = 255;
@@ -295,12 +295,13 @@ export default function FieldInputIPv4(
                         </label>
                     </div>
 
-                    <>
-                        {/* <InputMask
+                    <InputText
                         id={id}
                         name={name}
-                        defaultValue={value}
-                        onChange={onChange}
+                        // defaultValue={lValue?lValue:''}
+                        value={lValue?lValue:''}
+                        onChange={onChanging}
+
                         className={'col-12 md:col-5  pl-2 mb-2 input-value ' + (error ? 'p-invalid' : '')}
 
                         placeholder={placeholder}
@@ -308,42 +309,7 @@ export default function FieldInputIPv4(
                         tooltip={tooltip}
                         tooltipOptions={tooltipOptions ? tooltipOptions : { position: 'bottom' }}
                         disabled={disabled}
-
-                        max={1}
-                    /> */}
-                        {/* <InputMask
-                            id={id}
-                            name={name}
-                            defaultValue={lValue}
-                            value={lValue}
-                            onChange={onInput}
-                            className={'col-12 md:col-5  pl-2 mb-2 input-value p-inputtext p-component' + (error ? 'p-invalid' : '')}
-
-                            placeholder='###.###.###.###'
-
-                            mask="#__.#__.#__.#__" replacement={{ '#': /\d/, b: /\d/, c: /\d/, d: /\d/, _: /./ }}
-                        // showMask={true}
-                        // separate={true}
-                        // track={track}
-                        /> */}
-
-                        <InputText
-                            id={id}
-                            name={name}
-                            defaultValue={lValue}
-                            value={lValue}
-                            onChange={onChanging}
-
-                            className={'col-12 md:col-5  pl-2 mb-2 input-value ' + (error ? 'p-invalid' : '')}
-
-                            placeholder={placeholder}
-                            // required
-                            tooltip={tooltip}
-                            tooltipOptions={tooltipOptions ? tooltipOptions : { position: 'bottom' }}
-                            disabled={disabled}
-                        />
-
-                    </>
+                    />
 
 
 

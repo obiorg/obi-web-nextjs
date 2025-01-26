@@ -202,8 +202,8 @@ export default function MachinesDriversDropDown({
                     filter
                     onFilter={onChangedFilter}
                     showFilterClear
-                    emptyFilterMessage="Recherche sans résultat..."
-                    emptyMessage="Vide !"
+                    emptyFilterMessage={emptyFilterMessage}
+                    emptyMessage={emptyMessage}
 
                     // loading={lazyLoading}
                     virtualScrollerOptions={

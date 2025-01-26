@@ -44,10 +44,12 @@
   },
   "connectionMachine": {
     "Create": {
-      "title": "Create Machine"
+      "title": "Create Machine",
+      "subTitle": "Below \"CREATE\" a new machine"
     },
     "Edit": {
-      "title": ""
+      "title": "Editing a machine",
+      "subTitle": "Below \"EDIT\" the selected machine"
     },
     "Form": {
       "linkSource": {
@@ -74,6 +76,256 @@
     "import": {
       "table": {
         "title": "Import - Machine Connections"
+      }
+    }
+  },
+  "tags": {
+    "Form": {
+      "company": {
+        "label": "Company"
+      },
+      "name": {
+        "label": "Tags",
+        "placeholder": "tag name",
+        "tooltip": "Set a name for the tag"
+      },
+      "machine": {
+        "placeholder": "Machine code",
+        "tooltip": "Associate a machine code",
+        "label": "Machine"
+      },
+      "type": {
+        "label": "Variable type",
+        "placeholder": "Select type",
+        "tooltip": "Associate a type"
+      },
+      "memory": {
+        "label": "Memory",
+        "placeholder": "Select memory",
+        "tooltip": "Associate a memory type"
+      },
+      "table": {
+        "label": "Table (tags)",
+        "placeholder": "Select a table",
+        "tooltip": "Associate a table"
+      },
+      "DB": {
+        "label": "Data block",
+        "placeholder": "e.g.: 340",
+        "tooltip": "Insert an integer"
+      },
+      "BYTE": {
+        "label": "BYTE",
+        "placeholder": "ex: 0",
+        "tooltip": "Insert a number representing the DB reference byte"
+      },
+      "BIT": {
+        "label": "BIT Offset",
+        "placeholder": "ex: 5",
+        "tooltip": "Insert the bit number between 0 and 7 corresponding to the byte"
+      },
+      "active": {
+        "label": "Reading - Active",
+        "tooltip": "Enable cyclic playback"
+      },
+      "cycle": {
+        "placeholder": "e.g.: 10",
+        "tooltip": "Insert an autoplay cycle"
+      },
+      "delta": {
+        "label": "Delta Cycle",
+        "tooltip": "Enables updating by delta value"
+      },
+      "deltaFloat": {
+        "label": "Delta - Real",
+        "placeholder": "ex: 12.3",
+        "tooltip": "Insert a real type delta (comma number)"
+      },
+      "deltaInt": {
+        "label": "Delta - Integer",
+        "placeholder": "ex: 3",
+        "tooltip": "Insert an integer delta (number without comma)"
+      },
+      "deltaBool": {
+        "label": "Delta - State",
+        "tooltip": "Enables state inversion support as cycle"
+      },
+      "deltaDateTime": {
+        "label": "Delta - Time",
+        "placeholder": "ex: 00/00/01 01:00:00",
+        "tooltip": "Insert a cyclical duration \"Every...\""
+      },
+      "vDateTime": {
+        "label": "Time (default)",
+        "placeholder": "ex: 00/00/01 01:00:00",
+        "tooltip": "Insert a default time duration"
+      },
+      "vBool": {
+        "label": "State (default)",
+        "tooltip": "Insert a default state"
+      },
+      "vInt": {
+        "label": "Integer (default)",
+        "placeholder": "e.g. 12",
+        "tooltip": "Insert an integer"
+      },
+      "vFloat": {
+        "label": "Real (default)",
+        "placeholder": "ex: 12.3",
+        "tooltip": "Insert a real number"
+      },
+      "vDefault": {
+        "label": "Default value",
+        "tooltip": "Enable default value management"
+      },
+      "counterType": {
+        "label": "Counter - Type",
+        "placeholder": "ex: 2",
+        "tooltip": "Set counter type"
+      },
+      "counter": {
+        "tooltip": "Activate tags as counter"
+      },
+      "mesure": {
+        "label": "Measurement",
+        "tooltip": "Enables the tag as measurement value"
+      },
+      "mesureMin": {
+        "label": "Minimum measurement",
+        "placeholder": "ex: 0.05",
+        "tooltip": "Insert minimum measurement value when measuring"
+      },
+      "mesureMax": {
+        "label": "Maximum measurement",
+        "placeholder": "eg: 50.0",
+        "tooltip": "Insert maximum measurement value when measuring"
+      },
+      "measureUnit": {
+        "label": "Measurement - unit",
+        "placeholder": "Select unit of measurement",
+        "tooltip": "Insert the tag's unit of measurement"
+      },
+      "mqtt_topic": {
+        "label": "MQTT TOPIC",
+        "placeholder": "mqtt topic link",
+        "tooltip": "Insert the link of the topic associated with the tag"
+      },
+      "webhook": {
+        "label": "Webhook - Link",
+        "placeholder": "webhook link",
+        "tooltip": "Insert the webhook link associated with the tag"
+      },
+      "laboratory": {
+        "label": "Laboratory - Tag",
+        "tooltip": "Associate the tag as a laboratory value"
+      },
+      "formula": {
+        "label": "Formula - Tag",
+        "tooltip": "Reference the tag as a calculation formula"
+      },
+      "formCalculus": {
+        "label": "Formula",
+        "placeholder": "["
+      },
+      "formProcessing": {
+        "label": "Formula trigger",
+        "placeholder": "e.g.: 0",
+        "tooltip": "Select a trigger - default 0 - by tag change"
+      },
+      "error": {
+        "label": "Error detected",
+        "tooltip": "Indicates that an error was detected"
+      },
+      "errorMsg": {
+        "label": "Error - message",
+        "tooltip": "Return detected error message"
+      },
+      "errorStamp": {
+        "label": "Error - Timing",
+        "tooltip": "Indicates the time of the error"
+      },
+      "alarmEnable": {
+        "label": "Alarm - Type",
+        "tooltip": "Associate the tag with the alarm type"
+      },
+      "alarm": {
+        "label": "Alarm",
+        "placeholder": "Select the associated alarm",
+        "tooltip": "Indicate the alarm associated with the tag"
+      },
+      "persistenceEnable": {
+        "label": "Persistence tag",
+        "tooltip": "Indicates if the tag is archiveable"
+      },
+      "persOffsetEnable": {
+        "label": "Persistence - Offset",
+        "tooltip": "Enable offset during persistence"
+      },
+      "persOffsetFloat": {
+        "label": "Offset - Actual (pers.)",
+        "placeholder": "ex: 0.05",
+        "tooltip": "Indicates the offset to apply to a real during persistence"
+      },
+      "persOffsetInt": {
+        "label": "Offset - Integer",
+        "placeholder": "ex: 3"
+      },
+      "persOffsetBool": {
+        "label": "Offset - Status",
+        "tooltip": "Indicates the status offset"
+      },
+      "persOffsetDateTime": {
+        "label": "Offset - Time",
+        "placeholder": "ex: 00/00/01 01:00:00",
+        "tooltip": "Indicates a time offset during archiving"
+      },
+      "comment": {
+        "placeholder": "A description",
+        "tooltip": "Insert a tag description"
+      },
+      "list": {
+        "label": "List (related)",
+        "placeholder": "Select a list",
+        "tooltip": "Associate a list with the entire reference as display elements"
+      }
+    },
+    "Create": {
+      "title": "Creating a Tag",
+      "subTitle": "Below add a Tag"
+    },
+    "Edit": {
+      "title": "Edit Tag",
+      "subTitle": "Below edit a Tag"
+    }
+  },
+  "tagstables": {
+    "Create": {
+      "title": "Creation - Table for Tags",
+      "subTitle": "Add a table that can contain the tags"
+    },
+    "Edit": {
+      "title": "Editing - Table for Tags",
+      "subTitle": "Edit a tag table"
+    },
+    "Form": {
+      "company": {
+        "label": "Company",
+        "placeholder": "Select a company",
+        "tooltip": "Associate company code"
+      },
+      "table": {
+        "label": "Table",
+        "tooltip": "Define a code for the table"
+      },
+      "designation": {
+        "label": "Designation",
+        "placeholder": "ex: STEAM - BOSCH 1",
+        "tooltip": "Define a table code designation"
+      },
+      "comment": {
+        "label": "Description",
+        "placeholder": "A description...",
+        "tooltip": "Associate a full description"
       }
     }
   }

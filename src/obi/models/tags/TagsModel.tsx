@@ -24,57 +24,73 @@ export class TagsModel extends Model {
 
             company: undefined,
             table: undefined,
-            name: null,
+            name: undefined,
             machine: undefined,
             type: undefined,
             memory: undefined,
-            db: 0,
-            byte: 0,
-            bit: 0,
+
+            db: undefined,
+            byte: undefined,
+            bit: undefined,
+            
             active: false,
-            cycle: 0,
+            cycle: 10,
+
             delta: false,
-            deltaFloat: 0,
+            deltaFloat: 0.0,
             deltaInt: 0,
             deltaBool: 0,
-            deltaDateTime: null,
-            vFloat: 0,
+            deltaDateTime: undefined,
+
+            vFloat: 0.0,
             vInt: 0,
             vBool: false,
-            vStr: null,
-            vDateTime: null,
-            vStamp: null,
+            vStr: undefined,
+            vDateTime: undefined,
+            vStamp: undefined,
+
             vDefault: false,
             vFloatDefault: 0,
             vIntDefault: 0,
             vBoolDefault: false,
-            vStrDefault: null,
-            vDateTimeDefault: null,
-            vStampDefault: null,
+            vStrDefault: undefined,
+            vDateTimeDefault: undefined,
+            vStampDefault: undefined,
+
             counter: false,
             counterType: 0,
+
             mesure: false,
             mesureMin: 0,
             mesureMax: 0,
             measureUnit: undefined,
-            mqtt_topic: null,
-            webhook: null,
+
+            mqtt_topic: undefined,
+            webhook: undefined,
+
+
             laboratory: false,
+
             formula: false,
-            formCalculus: null,
+            formCalculus: undefined,
             formProcessing: 0,
+
             error: false,
-            errorMsg: null,
-            errorStamp: null,
+            errorMsg: undefined,
+            errorStamp: undefined,
+
             alarmEnable: false,
-            alarm: undefined,
+            alarm: 0,
+
             persistenceEnable: false,
             persOffsetEnable: false,
             persOffsetFloat: 0,
             persOffsetInt: 0,
             persOffsetBool: false,
-            persOffsetDateTime: null,
-            comment: null,
+            persOffsetDateTime: undefined,
+
+            comment: undefined,
+            
             list: undefined,
     
             alarms: {},
@@ -144,7 +160,7 @@ export class TagsModel extends Model {
         this.map.set('errorStamp', 'datetime');
         this.map.set('alarmEnable', 'boolean');
         this.map.set('alarm', 'numeric');
-        this.map.set('persistenceEnabled', 'boolean');
+        this.map.set('persistenceEnable', 'boolean');
         this.map.set('persOffsetEnable', 'boolean');
         this.map.set('persOffsetFloat', 'numeric');
         this.map.set('persOffsetInt', 'numeric');
@@ -210,7 +226,7 @@ export class TagsModel extends Model {
             errorStamp: Date,
             alarmEnable: Boolean,
             alarm: Number,
-            persistenceEnabled: Boolean,
+            persistenceEnable: Boolean,
             persOffsetEnable: Boolean,
             persOffsetFloat: Number,
             persOffsetInt: Number,

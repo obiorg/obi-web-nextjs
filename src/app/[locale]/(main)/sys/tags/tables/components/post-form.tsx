@@ -3,95 +3,37 @@
 // this is a client component
 'use client'
 
-import { useFormState } from "react-dom"
-import { LocationsModel } from "@/src/obi/models/localisations/LocationsModel"
 import { Toast } from "primereact/toast"
 import React, { useEffect, useRef, useState } from "react"
+import { useFormState } from "react-dom"
 
 import { OBI } from "@/src/types"
 
 
 
-import { Messages } from "primereact/messages"
-import { LocationsService } from "@/src/obi/service/localisations/LocationsService"
-import { BlockUI } from "primereact/blockui"
+import DialogError from "@/src/obi/components/Dialog/DialogError"
+import FieldDropDown from "@/src/obi/components/Inputs/FieldDropDown"
+import FieldInputCheckbox from "@/src/obi/components/Inputs/FieldInputCheckbox"
+import FieldInputNumber from "@/src/obi/components/Inputs/FieldInputNumber"
+import FieldInputText from "@/src/obi/components/Inputs/FieldInputText"
+import FieldOutputLabel from "@/src/obi/components/Inputs/FieldOutputLabel"
 import OutputRecord from "@/src/obi/components/Output/OutputRecord"
 import ButtonBarCreate from "@/src/obi/components/Validations/ButtonBarCreate"
-import FieldInputText from "@/src/obi/components/Inputs/FieldInputText"
-import FieldDropDown from "@/src/obi/components/Inputs/FieldDropDown"
-import { LocationsCountriesService } from "@/src/obi/service/localisations/LocationsCountriesService"
-import { LocationsStatesService } from "@/src/obi/service/localisations/LocationsStatesService"
-import { LocationsStatesModel } from "@/src/obi/models/localisations/LocationsStatesModel"
-import { LocationsCitiesModel } from "@/src/obi/models/localisations/LocationsCitiesModel"
-import { LocationsCitiesService } from "@/src/obi/service/localisations/LocationsCitiesService"
-import FieldInputNumber from "@/src/obi/components/Inputs/FieldInputNumber"
-import FieldInputCheckbox from "@/src/obi/components/Inputs/FieldInputCheckbox"
-import FieldLabel from "@/src/obi/components/Inputs/FieldOutputLabel"
-import FieldOutputLabel from "@/src/obi/components/Inputs/FieldOutputLabel"
+import { TagsTablesService } from "@/src/obi/service/tags/TagsTablesService"
 import { useRouter } from "next/navigation"
-import DialogError from "@/src/obi/components/Dialog/DialogError"
+import { BlockUI } from "primereact/blockui"
 import { DataTableFilterMeta } from "primereact/datatable"
+import { Messages } from "primereact/messages"
+import { CompaniesService } from "@/src/obi/service/businesses/CompaniesService"
+import { CompaniesModel } from "@/src/obi/models/businesses/CompaniesModel"
+import { useTranslations } from "next-intl"
+import CompaniesDropDown from "../../../businesses/companies/components/CompaniesDropDown"
+import OutputError from "@/src/obi/components/Output/OutputError"
 
 
-// Define the shape of the form errors locations
-interface LocationsFormErrors {
-    id?: string[];
-    deleted?: string[];
-    created?: string[];
-    changed?: string[];
-
-    location?: string[];
-    designation?: string[];
-    group?: string[];
-
-    country?: string[];
-    state?: string[];
-    city?: string[];
-    address?: string[];
-    address1?: string[];
-    address3?: string[];
-    bloc?: string[];
-    floor?: string[];
-    number?: string[];
-}
-
-// Define the shape of the form state
-interface LocationsFormState {
-    errors: LocationsFormErrors;
-}
-
-// Define the props that the PostForm component expects
-interface LocationsPostFormProps {
-    formAction: any; // The action to perform when the form is submitted
-    type: number; // 0: create, 1: update, 2: destroy (delete), 3: read
-    initialData: {
-        // The initial data for the form fields
-        id: number;
-        deleted: boolean;
-        created: Date;
-        changed: Date;
-
-        location: string;
-        designation: string;
-        group: string;
-        country: number;
-        state: number;
-        city: number;
-        address: string;
-        address1: string;
-        address3: string;
-        bloc: string;
-        floor: number;
-        number: string;
-        businesses: {},
-        companies: {},
-        entities: {},
-    };
-
-}
 
 
-const model = new LocationsModel();
+
 
 
 
@@ -99,9 +41,9 @@ const model = new LocationsModel();
 // The formAction is the action to perform when the form is submitted. We use it as a props because
 // we will use this for create and edit page which both page doesn't have the same action
 // The initialData is the initial data for the form fields. 
-export default function PostForm({ formAction, type, initialData }: OBI.LocationsPostFormProps) {
+export default function PostForm({ formAction, type, initialData }: OBI.TagsTablesPostFormProps) {
     // Initialize the form state and action
-    const [formState, action] = useFormState<OBI.LocationsFormState>(formAction, {
+    const [formState, action] = useFormState<OBI.TagsTablesFormState>(formAction, {
         errors: {},
     })
 
@@ -111,12 +53,8 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
 
     // Managing long request wating
     const [lazyLoading, setLazyLoading] = useState<any>(false);
-    let loadLazyTimeout:any = undefined;
+    let loadLazyTimeout: any = undefined;
 
-
-    // Sub state dropdown selection
-    const [countryOn, setCountryOn] = useState(initialData?.country !== undefined ? true : false);
-    const [stateOn, setStateOn] = useState(initialData?.state ? true : false);
 
     // state management
     const [onMessage, setOnMessage] = useState(false);
@@ -126,14 +64,12 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
     const [msgSticky, setMsgSticky] = useState(false); //
 
     // last created catalog
-    const [catalog, setCatalog] = useState<OBI.Locations>(null);
-
-
+    const [catalog, setCatalog] = useState<OBI.Tags>(null);
+    const [errorCatalog, setErrorCatalog] = useState<any>(null);
 
     // To manage validation
     const [saveMode, setSaveMode] = useState(0); // 0: save and reset; 1: save
-    const formRef = React.useRef(document.createElement('form'));
-    const [enableOnupdate, setEnableOnupdate] = useState(true); //
+    const formRef = React.useRef(document.createElement('form')); //
 
 
 
@@ -154,61 +90,10 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
     };
 
 
-    const onChangedCountry = (e: any) => {
-        initialData.country = e.value
-        if (initialData?.country !== undefined) {
-            setCountryOn(true);
-            // LocationsStatesService.count().then((count: any) => {
-            //     setLazyParamsStates(
-            //         () => {
-            //             return {
-            //                 ...lazyParamsStates,
-            //                 filters: {
-            //                     "global": { value: null, matchMode: 'contains' },
-            //                     "country_id": { operator: 'and', constraints: [{ value: e.value, matchMode: 'equals' }] }
-            //                 },
-            //                 rows: count,
-            //             }
-            //         }
-            //     );
-            // });
-        } else {
-            setCountryOn(false);
-        }
+    const onChangedCompany = (e: any) => {
+        initialData.company = Number(e.value)
     }
 
-    const onChangedState = (e: any) => {
-        initialData.state = e.value
-        if (initialData?.state !== undefined) {
-            setStateOn(true);
-            // CitiesService.count().then((count: any) => {
-            //     setLazyParamsCities(
-            //         () => {
-            //             return {
-            //                 ...lazyParamsCities,
-            //                 filters: {
-            //                     "global": { value: null, matchMode: 'contains' },
-            //                     "country_id": { operator: 'and', constraints: [{ value: initialData?.country, matchMode: 'equals' }] },
-            //                     "state_id": { operator: 'and', constraints: [{ value: e.value, matchMode: 'equals' }] }
-            //                 },
-            //                 rows: count,
-            //             }
-            //         }
-            //     );
-            // });
-        } else {
-            setStateOn(false);
-        }
-    }
-
-    const onChangedCity = (e: any) => {
-        initialData.city = e.value
-        if (initialData?.city !== undefined) {
-            // setStateOn(true);
-        } else {
-            // setStateOn(false);
-        }
-    }
 
     const doMsgPrompt = (severity: string, summary: string, message: string, sticky?: boolean) => {
         setMsgSeverity(severity);
@@ -233,22 +118,14 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
 
     useEffect(() => {
         if (saveMode === 0) {
-            initialData.city = undefined;
-            initialData.state = undefined;
-            initialData.country = undefined;
-            setStateOn(false);
-            setCountryOn(false);
+            // console.log('initialData useEffect catalog', initialData);
+            initialData.company = undefined;
         }
     }, [catalog]);
 
 
     useEffect(() => {
-        // console.log(initialData)
-        if (initialData?.country) {
-            setCountryOn(true);
-        }
-        if (initialData?.state) {
-            setStateOn(true);
+        if (initialData?.company) {
         }
 
     }, [initialData]);
@@ -276,16 +153,19 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
 
             // Manage create processing
             if (type === 0 || type === 2) {
-                console.log('start create');
-                LocationsService.create(formState, formData).then((data: any) => {
-                    if (data.errors) {
+                // console.log('start create');
+                TagsTablesService.create(formState, formData).then((data: any) => {
+                    console.log('Data saved', data);
+                    if (data.errors || data.status === 500) {
                         formState.errors = { errors: {} };
                         formState.errors = data.errors;
-                        doMsgPrompt('error', 'Erreur de création : ', 'Veuillez corriger les erreurs')
+                        setErrorCatalog(data)
+                        doMsgPrompt('error', 'Erreur de création : ', data.error.message + '\n\n' + data.error.stack, true)
                     } else {
                         formState.errors = { errors: {} };
                         setCatalog(data);
-                        showSuccess('Création réussie !', data.location + ' - ' + data.designation + ' [' + data.id + ']');
+                        setErrorCatalog({});
+                        showSuccess('Création réussie !', data.table + ' - ' + data.designation + '(' + data.companies + ') [' + data.id + ']',);
                         saveModeProcess()
                     }
                     setLazyLoading(false);
@@ -298,15 +178,17 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
             }
             // Manage update processing
             else if (type === 1) {
-                LocationsService.update(formState, formData).then((data: any) => {
-                    if (data.errors) {
+                TagsTablesService.update(formState, formData).then((data: any) => {
+                    if (data.errors || data.status === 500) {
                         formState.errors = { errors: {} };
                         formState.errors = data.errors;
-                        doMsgPrompt('error', 'Erreur de modification : ', 'Veuillez corriger les erreurs')
+                        setErrorCatalog(data)
+                        doMsgPrompt('error', 'Erreur de création : ', data.error.message + '\n\n' + data.error.stack, true)
                     } else {
                         formState.errors = { errors: {} };
                         setCatalog(data);
-                        showSuccess('Modification réussie!', data.location + '-' + data.designation + '[' + data.id + ']');
+                        setErrorCatalog({});
+                        showSuccess('Création réussie !', data.table + ' - ' + data.designation + '(' + data.companies + ') [' + data.id + ']',);
                         saveModeProcess()
                     }
                     setLazyLoading(false);
@@ -317,7 +199,6 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
                     unBlockForm();
                 });
             } else {
-                console.error('Unknow type state  ', type);
                 setLazyLoading(false);
                 unBlockForm();
             }
@@ -332,11 +213,7 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
      */
     const onCancel = (e: any) => {
         e.preventDefault();
-        initialData.city = undefined;
-        initialData.state = undefined;
-        initialData.country = undefined;
-        setStateOn(false);
-        setCountryOn(false);
+        initialData.company = undefined;
         formRef.current.reset();
     }
 
@@ -371,98 +248,48 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
     /**
      * Countries catalog update list
      */
-    const [countries, setCountries] = useState<any>([]);
+
+    const [companies, setCompanies] = useState<any>([]);
     const [reload, setReload] = useState(false);
+
+    const [lazyParams, setLazyParams] = useState(
+        new CompaniesModel().
+            getStandardParam({ field: 'company', order: 1 }, CompaniesService.defaultFilters()));
+
+
     useEffect(() => {
         // Get full data list
-        // CountriesService.list().then((data: any) => {
-        //     if (data.status) {
-        //         showError(data.status, data.message);
-        //     } else {
-        //         setCountries(() => {
-        //             return data.map((item: any) => ({
-        //                 label: item.name + ' - ' + item.iso3 + ' (' + item.numeric_code + ') ' + ' -  [' + item.id + ']',
-        //                 value: item.id,
-        //                 catalog: item
-        //             }));
-        //         });
-        //     }
-        // });
-    }, [reload]); // eslint-disable-line react-hooks/exhaustive-deps
-
-
-    /**
-     * States catalog update list
-     */
-    const [states, setStates] = useState<any>([]);
-    const stateModel = new LocationsStatesModel();
-    const defaultFiltersStates: Array<DataTableFilterMeta> = LocationsStatesService.defaultFilters();
-    const [lazyParamsStates, setLazyParamsStates] = useState(
-        stateModel.getStandardParam({ field: 'name', order: 1 },
-            {
-                ...defaultFiltersStates,
-                // "global": { value: null, matchMode: 'contains' },
-                "country_id": { operator: 'and', constraints: [{ value: initialData?.country, matchMode: 'equals' }] }
-            }, 0
-        ));
-
-
-    const [dlgError, setDlgError] = useState<any>();
-    useEffect(() => {
-        const lazyEventSet = { lazyEvent: JSON.stringify(lazyParamsStates) };
-        console.log(lazyParamsStates);
-        // Get full data list
-        LocationsStatesService.getLazy(lazyEventSet).then((data: any) => {
-            if (data.status && data.status !== 200) {
-                setDlgError(data);
-                return;
+        const lazyEventSet = { lazyEvent: JSON.stringify(lazyParams) };
+        CompaniesService.getLazy(lazyEventSet).then((data: any) => {
+            if (data.status) {
+                showError(data.status, data.message);
             } else {
-                setStates(() => {
-                    return data.map((item: OBI.loc_states) => ({
-                        label: item.name + ' (' + item.iso2 + ') - ' + item.country_code + ' -  [' + item.id + ']',
+                setCompanies(() => {
+                    return data.map((item: any) => ({
+                        label: item.name + ' - ' + item.iso3 + ' (' + item.numeric_code + ') ' + ' -  [' + item.id + ']',
                         value: item.id,
                         catalog: item
                     }));
                 });
             }
         });
-    }, [lazyParamsStates]);
+    }, [reload]); // eslint-disable-line react-hooks/exhaustive-deps
 
 
-    /**
-     * States catalog update list
-     */
-    const [cities, setCities] = useState<any>([]);
-    const cityModel = new LocationsCitiesModel();
-    const defaultFiltersCities: Array<DataTableFilterMeta> = LocationsCitiesService.defaultFilters();
-    const [lazyParamsCities, setLazyParamsCities] = useState(
-        cityModel.getStandardParam({ field: 'name', order: 1 },
-            {
-                ...defaultFiltersCities,
-                "country_id": { operator: 'and', constraints: [{ value: initialData?.country, matchMode: 'equals' }] },
-                "state_id": { operator: 'and', constraints: [{ value: initialData?.state, matchMode: 'equals' }] }
-            }, 0
-        ));
-    useEffect(() => {
-        const lazyEventSet = { lazyEvent: JSON.stringify(lazyParamsCities) };
 
-        // Get full data list
-        // CitiesService.getLazy(lazyEventSet).then((data: any) => {
-        //     if (data.status) {
-        //         showError(data.status, data.message);
-        //     } else {
-        //         setCities(() => {
-        //             // console.log('cities', data)
-        //             return data?.map((item: OBI.loc_cities) => ({
-        //                 label: item.name + ' (' + item.state_code + ') - ' + item.country_code + ' -  [' + item.id + ']',
-        //                 value: item.id,
-        //                 catalog: item
-        //             }));
-        //         });
-        //     }
-        // });
-    }, [lazyParamsCities]);
 
+
+
+
+
+
+
+    const [dlgError, setDlgError] = useState<any>();
+
+    const g = useTranslations('global');
+    const t = useTranslations('tagstables');
+
+    const [update, setUpdate] = useState(false); //
 
 
 
@@ -475,8 +302,6 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
             error={dlgError}
             onYes={(e: any) => {
                 setReload((reload: any) => { return { ...reload } })
-                setLazyParamsStates((lazyParamsStates: any) => { return { ...lazyParamsStates } })
-                setLazyParamsCities((lazyParamsCities: any) => { return { ...lazyParamsCities } })
             }}
         />
         <div className="card">
@@ -484,12 +309,13 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
             {/** Message toaster display */}
             <Toast ref={toast} />
 
-            <Messages ref={msg} onRemove={doMsgRemove} />
+            {/* <Messages ref={msg} onRemove={doMsgRemove} /> */}
 
 
-
-            <h3>{type === 0 ? 'Création' : 'Modification'} d une Localisation</h3>
+            <h3>{type === 0 ? t('Create.title') : t('Edit.title')}</h3>
+            <p>{type === 0 ? t('Create.subTitle') : t('Edit.subTitle')}</p>
             <hr />
+
 
             <BlockUI blocked={blockedFrom}>
                 <form
@@ -505,11 +331,11 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
                             <FieldOutputLabel
                                 id="id"
                                 name='id'
-                                title='ID'
+                                title={g('Form.id.label')}
                                 value={initialData.id}
                                 error={formState.errors?.id}
-                                placeholder="ID Code..."
-                                tooltip="reference code d'identification ..."
+                                placeholder={g('Form.id.placeholder')}
+                                tooltip={g('Form.id.tooltip')}
                                 disabled
                             />
 
@@ -518,11 +344,11 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
                             <FieldOutputLabel
                                 id="created"
                                 name='created'
-                                title='Créé le '
+                                title={g('Form.created.label')}
                                 value={initialData?.created}
                                 error={formState.errors?.created}
-                                placeholder="Créé le ..."
-                                tooltip="date de création ..."
+                                placeholder={g('Form.created.placeholder')}
+                                tooltip={g('Form.created.tooltip')}
                                 disabled
                                 type="datetime"
                             />
@@ -533,11 +359,11 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
                             <FieldOutputLabel
                                 id="changed"
                                 name='changed'
-                                title='Changé le'
+                                title={g('Form.changed.label')}
                                 value={initialData?.changed}
                                 error={formState.errors?.changed}
-                                placeholder="Changé le ..."
-                                tooltip="date de changement ..."
+                                placeholder={g('Form.changed.placeholder')}
+                                tooltip={g('Form.changed.tooltip')}
                                 disabled
                                 type="datetime"
                             />
@@ -547,184 +373,66 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
                             <FieldInputCheckbox
                                 id="deleted"
                                 name='deleted'
-                                title='Supprimer'
+                                title={g('Form.deleted.label')}
                                 value={initialData.deleted}
                                 onChange={(e) => { initialData['deleted'] = e.value }}
                                 error={formState.errors?.delete}
-                                tooltip="suppression logique ..."
+                                tooltip={g('Form.deleted.tooltip')}
                             />
                         </> : null
                         }
 
 
-                        {/** Location */}
-                        {type !== 1 ?
-                            <FieldInputText
-                                id="location"
-                                name='location'
-                                title='Localisation'
-                                value={initialData?.location}
-                                error={formState.errors?.location}
-                                placeholder="Code..."
-                                tooltip="code d'identification ..."
-                                disabled={type === 1}
-                            />
-                            :
-                            <FieldOutputLabel
-                                id="location"
-                                name='location'
-                                title='Localisation'
-                                value={initialData?.location}
-                                error={formState.errors?.location}
-                                placeholder="Code..."
-                                tooltip="code d'identification ..."
-                                disabled={type === 1}
-                            />
-                        }
+
+                        {/** Company */}
+                        <CompaniesDropDown
+                            id='company'
+                            name="company"
+                            title={t('Form.company.label')}
+                            value={initialData?.company}
+                            options={companies}
+                            onChange={(e: any) => { onChangedCompany(e); }}
+                            error={formState.errors?.company}
+                            placeholder={t('Form.company.placeholder')}
+                            tooltip={t('Form.company.tooltip')}
+                        />
+
+
+                        {/** TABLE */}
+                        <FieldInputText
+                            id="table"
+                            name='table'
+                            title={t('Form.table.label')}
+                            value={initialData?.table}
+                            error={formState.errors?.table}
+                            placeholder={t('Form.table.placeholder')}
+                            tooltip={t('Form.table.tooltip')}
+                        />
+
 
                         {/** Designation */}
                         <FieldInputText
                             id="designation"
                             name='designation'
-                            title='Designation'
+                            title={t('Form.designation.label')}
                             value={initialData?.designation}
                             error={formState.errors?.designation}
-                            placeholder="Désignation..."
-                            tooltip="désignation associée..."
+                            placeholder={t('Form.designation.placeholder')}
+                            tooltip={t('Form.designation.tooltip')}
                         />
 
-                        {/** Group */}
+                        {/** COMMENT */}
                         <FieldInputText
-                            id="group"
-                            name='group'
-                            title='Groupe'
-                            value={initialData?.group}
-                            error={formState.errors?.group}
-                            placeholder="Groupe..."
-                            tooltip="grouper via un nom..."
-                        />
-
-                        {/** Country */}
-                        <FieldDropDown
-                            id='country'
-                            name="country"
-                            title='Pays'
-                            value={initialData?.country}
-                            options={countries}
-                            onChange={(e: any) => { onChangedCountry(e) }}
-                            error={formState.errors?.country}
-                            placeholder="Pays ..."
-                            tooltip="Sélectionner un pays..."
-                        />
-
-                        {/** State */}
-                        <FieldDropDown
-                            id='state'
-                            name="state"
-                            title='Etat/Province'
-                            value={initialData?.state}
-                            options={states}
-                            onChange={(e: any) => { onChangedState(e) }}
-                            error={formState.errors?.state}
-                            placeholder="Etat\Province ..."
-                            tooltip="Sélectionner un\une état\province..."
-                            render={countryOn}
-                        />
-
-                        {/** City */}
-                        <FieldDropDown
-                            id='city'
-                            name="city"
-                            title='Ville'
-                            value={initialData?.city}
-                            options={cities}
-                            onChange={(e: any) => { onChangedCity(e) }}
-                            error={formState.errors?.city}
-                            placeholder="Ville ..."
-                            tooltip="Sélectionner une ville..."
-                            render={stateOn}
+                            id="comment"
+                            name='comment'
+                            title={t('Form.comment.label')}
+                            value={initialData?.comment}
+                            error={formState.errors?.comment}
+                            placeholder={t('Form.comment.placeholder')}
+                            tooltip={t('Form.comment.tooltip')}
                         />
 
 
-
-
-
-
-                        {/** Address */}
-                        <FieldInputText
-                            id="address"
-                            name='address'
-                            title='Adresse'
-                            value={initialData?.address}
-                            error={formState.errors?.address}
-                            placeholder="Adresse..."
-                            tooltip="adresse associée..."
-                        />
-
-                        {/** Address 1 */}
-                        <FieldInputText
-                            id="address1"
-                            name='address1'
-
-                            value={initialData?.address1}
-                            error={formState.errors?.address1}
-                            placeholder="adresse 1 ..."
-                            tooltip="adresse complémentaire 1 associée..."
-                        />
-
-                        {/** Address 3 */}
-                        <FieldInputText
-                            id="address3"
-                            name='address3'
-
-                            value={initialData?.address3}
-                            error={formState.errors?.address3}
-                            placeholder="adresse 2 ..."
-                            tooltip="adresse complémentaire 2 associée..."
-                        />
-
-
-
-                        {/** bloc */}
-                        <FieldInputText
-                            id="bloc"
-                            name='bloc'
-                            title='Bloc'
-                            value={initialData?.bloc}
-                            error={formState.errors?.bloc}
-                            placeholder="bloc... : ex: 3 ou 3B"
-                            tooltip="Bloc ou bâtiment dans un lotissement ou parc industriel..."
-                        />
-
-
-
-
-
-                        {/** floor */}
-                        <FieldInputNumber
-                            id="floor"
-                            name='floor'
-                            title='Étage'
-                            value={initialData?.floor}
-                            error={formState.errors?.floor}
-                            placeholder="étage... : ex: 3"
-                            tooltip="numéro d'étage, du plateau..."
-                        />
-
-
-
-
-
-                        {/** number */}
-                        <FieldInputText
-                            id="number"
-                            name='number'
-                            title='Numéro'
-                            value={initialData.number}
-                            error={formState.errors?.number}
-                            placeholder="numéro... : ex: 6B ou 3, 3A"
-                            tooltip="numéro de porte de destination..."
-                        />
 
 
 
@@ -734,6 +442,8 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
 
                         {/** Command options */}
                         <ButtonBarCreate
+                            name="buttonBarCreate"
+                            key='buttonBarCreate'
                             // onSaveClick={onSubmit}
                             onCancelClick={onCancel}
                             onModeChanged={e => handleModeChanged(e)}
@@ -746,6 +456,7 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
 
             {/* Display last record */}
             <OutputRecord catalog={catalog} loading={lazyLoading} />
+            <OutputError catalog={errorCatalog} loading={lazyLoading} />
 
         </div>
 

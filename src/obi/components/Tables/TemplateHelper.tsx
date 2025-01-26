@@ -10,13 +10,33 @@ import { classNames } from "primereact/utils";
 
 
 
-exports.bool = (rowData: any) => {
-    return <i className={
-        classNames('pi', {
-            'true-icon pi-check text-red-600':
-                rowData?.deleted, 'false-icon pi-times text-green-600': !rowData?.deleted
-        })} />;
+exports.datetimeObj = (date: any) => {
+    if (date === undefined || date === null) {
+        return null;
+    }
+
+    var dateParts;
+    if (date) {
+        dateParts = date.split('-')
+    }
+
+    var jsDate = new Date(
+        dateParts[0],
+        dateParts[1] - 1,
+        dateParts[2].substr(0, 2),
+        dateParts[2].substr(3, 2),
+        dateParts[2].substr(6, 2),
+        dateParts[2].substr(9, 2)
+    )
+    return (
+        <span>
+            {jsDate.toLocaleDateString('fr') +
+                ' ' +
+                jsDate.toLocaleTimeString('fr')}
+        </span>
+    )
 }
+
 
 exports.datetime = (rowData: any) => {
     if (rowData === undefined) {
@@ -28,6 +48,62 @@ exports.datetime = (rowData: any) => {
         dateParts = rowData.created.split('-')
     } else {
         dateParts = rowData.created_at.split('-')
+    }
+    var jsDate = new Date(
+        dateParts[0],
+        dateParts[1] - 1,
+        dateParts[2].substr(0, 2),
+        dateParts[2].substr(3, 2),
+        dateParts[2].substr(6, 2),
+        dateParts[2].substr(9, 2)
+    )
+    return (
+        <span>
+            {jsDate.toLocaleDateString('fr') +
+                ' ' +
+                jsDate.toLocaleTimeString('fr')}
+        </span>
+    )
+}
+
+exports.datetimeCreated = (rowData: any) => {
+    if (rowData === undefined) {
+        return '';
+    }
+
+    var dateParts;
+    if (rowData.created) {
+        dateParts = rowData.created.split('-')
+    } else {
+        dateParts = rowData.created_at.split('-')
+    }
+    var jsDate = new Date(
+        dateParts[0],
+        dateParts[1] - 1,
+        dateParts[2].substr(0, 2),
+        dateParts[2].substr(3, 2),
+        dateParts[2].substr(6, 2),
+        dateParts[2].substr(9, 2)
+    )
+    return (
+        <span>
+            {jsDate.toLocaleDateString('fr') +
+                ' ' +
+                jsDate.toLocaleTimeString('fr')}
+        </span>
+    )
+}
+
+exports.datetimeChanged = (rowData: any) => {
+    if (rowData === undefined) {
+        return '';
+    }
+
+    var dateParts;
+    if (rowData.changed) {
+        dateParts = rowData.changed.split('-')
+    } else {
+        dateParts = rowData.changed_at.split('-')
     }
     var jsDate = new Date(
         dateParts[0],
@@ -63,7 +139,7 @@ exports.booleanFilterTemplate = (options: any) => {
 
 exports.dateFilterTemplate = (options: any) => {
     return <Calendar value={options.value}
-        onChange={(e: any) => { console.log(e); options.filterCallback(e.value, options.index); options.value = e.value; }}
+        onChange={(e: any) => { options.filterCallback(e.value, options.index); options.value = e.value; }}
         // showTime 
         showIcon
         hourFormat="24"
@@ -200,19 +276,24 @@ exports.entity = (rowData: any) => {
  * CONNEXIONS
  */
 exports.machine = (rowData: any) => {
+    // console.log(rowData);
     return <label>
-        {rowData.machines?.address + '/'
-            + rowData.machines?.type + ' - '
-            + rowData.machines?.name
+        {rowData.machines ? rowData.machines?.name + ' / '
+            + rowData.machines?.address + ' - '
+            + rowData.machines?.mask
             + ' (' + rowData.machines?.company + ')'
-            + ' [' + rowData.machines?.id + ']'} </label>
+            + ' [' + rowData.machines?.description + ']'
+            : ''} </label>
+
 }
+
 
 exports.machinesDriver = (rowData: any) => {
     return <label>
-        {rowData.mach_drivers?.driver + ' - '
+        {rowData.mach_drivers ? rowData.mach_drivers?.driver + ' - '
             + rowData.mach_drivers?.designation
-            + ' [' + rowData.mach_drivers?.id + ']'} </label>
+            + ' [' + rowData.mach_drivers?.id + ']'
+            : ''} </label>
 }
 
 
@@ -394,10 +475,11 @@ exports.tagsListContent = (rowData: any) => {
 
 exports.tagsList = (rowData: any) => {
     return <label>
-        {rowData.tags_lists?.list + ' - '
+        {rowData.tags_lists?.list ? rowData.tags_lists?.list + ' - '
             + rowData.tags_lists?.designation
             + ' (' + rowData.tags_lists?.type + '/' + rowData.tags_lists?.company
-            + ') [' + rowData.tags_lists?.id + ']'} </label>
+            + ') [' + rowData.tags_lists?.id + ']'
+            : ''} </label>
 }
 
 
@@ -432,8 +514,7 @@ exports.tagsTable = (rowData: any) => {
     return <label>
         {rowData.tags_tables?.table + ' - '
             + rowData.tags_tables?.designation
-            + ' (' + rowData.tags_lists?.company
-            + ') [' + rowData.tags_tables?.id + ']'} </label>
+            + ' [' + rowData.tags_tables?.id + ']'} </label>
 }
 
 

@@ -9,8 +9,8 @@ import { useFormStatus } from "react-dom";
 
 // Define the props that the PostForm component expects
 interface ButtonSaveProps {
-    id?: string;                        // ID of the component
-    name?: string;                      // Name of the component
+    id?: string;                         // ID of the component
+    name?: string;                       // Name of the component
     labelsType0?: string[];                     // preceding title 
     labelsType1?: string[];                     // preceding title 
     labelsType2?: string[];                     // preceding title 
@@ -23,18 +23,19 @@ interface ButtonSaveProps {
 }
 
 
-export default function ButtonSave(
-    { id, name,
-        labelsType0 = ['Créer & Reset', 'Enreg. & Voir'],
-        labelsType1 = ['Enreg. & Lister', 'Enreg. partiel'],
-        labelsType2 = ['Créer. & Lister', 'Enreg. & Voir'],
-        icons = ['pi pi-save', 'pi pi-spin pi-save'],
-        className = '',
-        onClick, onModeChanged,
-        type = 0
-    }
+export default function ButtonSave({
+    id,
+    name,
+    labelsType0 = ['Créer & Reset', 'Enreg. & Voir'],
+    labelsType1 = ['Enreg. & Lister', 'Enreg. partiel'],
+    labelsType2 = ['Créer. & Lister', 'Enreg. & Voir'],
+    icons = ['pi pi-save', 'pi pi-spin pi-save'],
+    className = '',
+    onClick, onModeChanged,
+    type = 0
+}
 
-        : ButtonSaveProps) {
+    : ButtonSaveProps) {
     // To bloc during status
     const { pending } = useFormStatus();
 
@@ -51,7 +52,7 @@ export default function ButtonSave(
         {
             label: type === 0 ? labelsType0[0] : type === 1 ? labelsType1[0] : labelsType2[0],
             icon: icons[0],
-            command: (e:any) => {
+            command: (e: any) => {
                 toast.current.show({ severity: 'success', summary: 'Mode Sauvegarde', detail: 'Mode sauvegarde et reset activé' });
                 setMode(0);
                 { onModeChanged ? onModeChanged(0) : null }
@@ -60,7 +61,7 @@ export default function ButtonSave(
         {
             label: type === 0 ? labelsType0[1] : type === 1 ? labelsType1[1] : labelsType2[1],
             icon: icons[1],
-            command: (e:any) => {
+            command: (e: any) => {
                 toast.current.show({ severity: 'success', summary: 'Mode Sauvegarde', detail: 'Mode sauvegarde seul activé' });
                 setMode(1);
                 { onModeChanged ? onModeChanged(1) : null }
@@ -84,18 +85,22 @@ export default function ButtonSave(
             <Toast ref={toast} />
 
             <SplitButton
-                id={id}
+                id={id + '_splitButton'}
+                key={name + '_splitButton'}
                 label={pending ? "En cours..." : modes[mode].label}
                 icon={modes[mode].icon}
                 severity="success"
                 disabled={pending}
                 onClick={doSubmit}
                 model={modes}
-                
+
                 className={className}
             />
 
-            <button type='submit' ref={inputElement} className="hidden" ></button>
+            <button
+                id={id + '_button'}
+                key={name + '_button'}
+                type='submit' ref={inputElement} className="hidden" ></button>
 
         </>
     );

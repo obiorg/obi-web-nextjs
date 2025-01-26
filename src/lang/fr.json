@@ -88,11 +88,11 @@
     },
     "Create": {
       "title": "Création d'une machine",
-      "subTitle": ""
+      "subTitle": "Ci-dessous \"CREER\" une nouvelle machine"
     },
     "Edit": {
-      "title": "",
-      "subTitle": ""
+      "title": "Edition d'une machine",
+      "subTitle": "Ci-dessous \"EDITER\" la machine sélectionnée"
     },
     "Form": {
       "company": {
@@ -214,9 +214,269 @@
       }
     }
   },
+  "tags": {
+    "title": "Tags",
+    "subTitle": "Gestion des tags...",
+    "Form": {
+      "company": {
+        "label": "Société",
+        "placeholder": "Sélectionner une société",
+        "tooltip": "Associer le code société"
+      },
+      "name": {
+        "label": "Tags",
+        "placeholder": "###_###",
+        "tooltip": "Définir un nom pour le tag"
+      },
+      "machine": {
+        "placeholder": "Code machine",
+        "tooltip": "Associer un code machine",
+        "label": "Machine"
+      },
+      "type": {
+        "label": "Type variable",
+        "placeholder": "Sélectionner le type",
+        "tooltip": "Associer un type"
+      },
+      "memory": {
+        "label": "Mémoire",
+        "placeholder": "Sélectionner la mémoire",
+        "tooltip": "Associer un type de mémoire"
+      },
+      "table": {
+        "label": "Table (tags)",
+        "placeholder": "Sélectionner une table",
+        "tooltip": "Associer une table"
+      },
+      "DB": {
+        "label": "Bloc de données",
+        "placeholder": "ex: 340",
+        "tooltip": "Insérer un nombre entier"
+      },
+      "BYTE": {
+        "label": "BYTE",
+        "placeholder": "ex: 0",
+        "tooltip": "Insérer un nombre représentant le byte de référence au DB"
+      },
+      "BIT": {
+        "label": "BIT Offset",
+        "placeholder": "ex: 5",
+        "tooltip": "Insérer le numéro de bit entre 0 et 7 correspondant au byte"
+      },
+      "active": {
+        "label": "Lecture - Active",
+        "tooltip": "Activer la lecture cyclique"
+      },
+      "cycle": {
+        "label": "Cycle (sec)",
+        "placeholder": "ex: 10",
+        "tooltip": "Insérer un cycle de lecture automatique"
+      },
+      "delta": {
+        "label": "Cycle Delta",
+        "tooltip": "Active la mise à jour par valeur delta"
+      },
+      "deltaFloat": {
+        "label": "Delta - Réel",
+        "placeholder": "ex: 12.3",
+        "tooltip": "Insérer un delta de type réel (nombre à virgule)"
+      },
+      "deltaInt": {
+        "label": "Delta - Entier",
+        "placeholder": "ex: 3",
+        "tooltip": "Insérer un delta de type entier (nombre sans virgule)"
+      },
+      "deltaBool": {
+        "label": "Delta - Etat",
+        "tooltip": "Active la prise en charge d'inversion d'état comme cycle"
+      },
+      "deltaDateTime": {
+        "label": "Delta - Temps",
+        "placeholder": "ex: 00/00/01 01:00:00",
+        "tooltip": "Insérer une durée cyclique \"Tout les ...\""
+      },
+      "vDateTime": {
+        "label": "Temps (par défaut)",
+        "placeholder": "ex: 00/00/01 01:00:00",
+        "tooltip": "Insérer une durée de temps par défaut"
+      },
+      "vBool": {
+        "label": "Etat (par défaut)",
+        "tooltip": "Insérer un état par défaut"
+      },
+      "vInt": {
+        "label": "Entier (par défaut)",
+        "tooltip": "Insérer un nombre entier",
+        "placeholder": "ex: 12"
+      },
+      "vFloat": {
+        "label": "Réel (par défaut)",
+        "placeholder": "ex: 12.3",
+        "tooltip": "Insérer un nombre réel"
+      },
+      "vDefault": {
+        "label": "Valeur par défaut",
+        "tooltip": "Activer la gestion de valeur par défaut"
+      },
+      "counterType": {
+        "label": "Compteur - Type",
+        "placeholder": "ex: 2",
+        "tooltip": "Définir le type de compteur"
+      },
+      "counter": {
+        "label": "Comptage",
+        "tooltip": "Active le tags comme compteur"
+      },
+      "mesure": {
+        "label": "Mesurage",
+        "tooltip": "Active le tag comme valeur de mesure"
+      },
+      "mesureMin": {
+        "label": "Mesure minimale",
+        "placeholder": "ex: 0.05",
+        "tooltip": "Insérer une valeur de mesure minimale lors de la mesure"
+      },
+      "mesureMax": {
+        "label": "Mesure maximale",
+        "placeholder": "ex: 50.0",
+        "tooltip": "Insérer une valeur de mesure maximale lors de la mesure"
+      },
+      "measureUnit": {
+        "label": "Mesure - unité",
+        "placeholder": "Sélectionner l'unité de mesure",
+        "tooltip": "Insérer l'unité de mesure du tag"
+      },
+      "mqtt_topic": {
+        "label": "MQTT TOPIC",
+        "placeholder": "lien topic mqtt",
+        "tooltip": "Insérer le lien du topic associé au tag"
+      },
+      "webhook": {
+        "label": "Webhook - Lien",
+        "placeholder": "lien webhook",
+        "tooltip": "Insérer le lien du webhook associé au tag"
+      },
+      "laboratory": {
+        "label": "Laboratoire - Tag",
+        "tooltip": "Associer le tag en tant que valeur laboratoire"
+      },
+      "formula": {
+        "label": "Formule - Tag",
+        "tooltip": "Référence le tag comme formule de calcul"
+      },
+      "formCalculus": {
+        "label": "Formule",
+        "placeholder": "[#22]*2",
+        "tooltip": "Insérer un type de formule - [#22]*22"
+      },
+      "formProcessing": {
+        "label": "Déclencheur formule",
+        "placeholder": "ex : 0",
+        "tooltip": "Sélectionner un déclencheur - defaut 0 - par changement tag"
+      },
+      "error": {
+        "label": "Erreur détecté",
+        "tooltip": "Indique qu'une erreur a été détecté"
+      },
+      "errorMsg": {
+        "label": "Erreur - message",
+        "tooltip": "Retour le message d'erreur détecté"
+      },
+      "errorStamp": {
+        "label": "Erreur - Moment",
+        "tooltip": "Indique le moment de l'erreur"
+      },
+      "alarmEnable": {
+        "label": "Alarme - Type",
+        "tooltip": "Associe le tag au type alarme"
+      },
+      "alarm": {
+        "label": "Alarme",
+        "placeholder": "Sélectionner l'alarme associé",
+        "tooltip": "Indiquer l'alarme associé au tag"
+      },
+      "persistenceEnable": {
+        "label": "Persistence tag",
+        "tooltip": "Indique si le tag est archivable"
+      },
+      "persOffsetEnable": {
+        "label": "Persistence - Offset",
+        "tooltip": "Active l'offset lors de la persistence"
+      },
+      "persOffsetFloat": {
+        "label": "Offset - Réel (pers.)",
+        "placeholder": "ex: 0.05",
+        "tooltip": "Indique l'offset à appliquer sur un réel lors de la persistence"
+      },
+      "persOffsetInt": {
+        "label": "Offset - Entier",
+        "placeholder": "ex: 3",
+        "tooltip": "Indique l'offset à appliquer sur une valeur entière"
+      },
+      "persOffsetBool": {
+        "label": "Offset - Etat",
+        "tooltip": "Indique l'offset d'état "
+      },
+      "persOffsetDateTime": {
+        "label": "Offset - Temps",
+        "placeholder": "ex : 00/00/01 01:00:00",
+        "tooltip": "Indique un offset de temps lors de l'archive"
+      },
+      "comment": {
+        "label": "Description",
+        "placeholder": "Une description",
+        "tooltip": "Insérer une description du tag"
+      },
+      "list": {
+        "label": "Liste (associée)",
+        "placeholder": "Sélectionner une liste",
+        "tooltip": "Associer une liste au référence entier comme éléments d'affichage"
+      }
+    },
+    "Create": {
+      "title": "Création d'un Tag",
+      "subTitle": "Ci-dessous ajouter un Tag"
+    },
+    "Edit": {
+      "title": "Modifier le Tag",
+      "subTitle": "Ci-dessous éditer un Tag"
+    }
+  },
   "header": {
     "lang": {
       "active": "Langue active"
+    }
+  },
+  "tagstables": {
+    "Create": {
+      "title": "Création - Table pour Tags",
+      "subTitle": "Ajouter une table pouvant contenir les tags"
+    },
+    "Edit": {
+      "title": "Edition - Table pour Tags",
+      "subTitle": "Editer une table de tags"
+    },
+    "Form": {
+      "company": {
+        "label": "Société",
+        "placeholder": "Sélectionner une société",
+        "tooltip": "Associer le code de société"
+      },
+      "table": {
+        "label": "Table",
+        "placeholder": "###_###",
+        "tooltip": "Définir un code pour la table"
+      },
+      "designation": {
+        "label": "Désignation",
+        "placeholder": "ex: VAPEUR - BOSCH 1",
+        "tooltip": "Définir une designation du code de table"
+      },
+      "comment": {
+        "label": "Description",
+        "placeholder": "Une description...",
+        "tooltip": "Associer une description complète"
+      }
     }
   }
 }

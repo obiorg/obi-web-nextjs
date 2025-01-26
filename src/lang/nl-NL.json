@@ -28,11 +28,11 @@
   "connectionMachine": {
     "Create": {
       "title": "",
-      "subTitle": ""
+      "subTitle": "Onder \"CREATE\" een nieuwe machine"
     },
     "Edit": {
-      "title": "",
-      "subTitle": ""
+      "title": "Een machine bewerken",
+      "subTitle": "Onder \"EDIT\" de geselecteerde machine"
     },
     "Form": {
       "linkSource": {
@@ -59,6 +59,256 @@
     "import": {
       "table": {
         "title": "Importeren - Machineverbindingen"
+      }
+    }
+  },
+  "tags": {
+    "Form": {
+      "company": {
+        "label": "Bedrijf"
+      },
+      "name": {
+        "label": "Labels",
+        "placeholder": "tagnaam",
+        "tooltip": "Stel een naam in voor de tag"
+      },
+      "machine": {
+        "placeholder": "Machinecode",
+        "tooltip": "Koppel een machinecode",
+        "label": "Machine"
+      },
+      "type": {
+        "label": "Variabel type",
+        "placeholder": "Selecteer soort",
+        "tooltip": "Koppel een type"
+      },
+      "memory": {
+        "label": "Geheugen",
+        "placeholder": "Selecteer geheugen",
+        "tooltip": "Koppel een geheugentype"
+      },
+      "table": {
+        "label": "Tabel (tags)",
+        "placeholder": "Selecteer een tafel",
+        "tooltip": "Koppel een tafel"
+      },
+      "DB": {
+        "label": "Gegevensblok",
+        "placeholder": "bijvoorbeeld: 340",
+        "tooltip": "Voer een geheel getal in"
+      },
+      "BYTE": {
+        "label": "BYTE",
+        "placeholder": "bijv: 0",
+        "tooltip": "Voeg een getal in dat de DB-referentiebyte vertegenwoordigt"
+      },
+      "BIT": {
+        "label": "BIT-compensatie",
+        "placeholder": "bijv: 5",
+        "tooltip": "Voer het bitnummer in tussen 0 en 7 dat overeenkomt met de byte"
+      },
+      "active": {
+        "label": "Lezen - Actief",
+        "tooltip": "Schakel cyclisch afspelen in"
+      },
+      "cycle": {
+        "placeholder": "bijvoorbeeld: 10",
+        "tooltip": "Voeg een autoplay-cyclus in"
+      },
+      "delta": {
+        "label": "Delta-cyclus",
+        "tooltip": "Maakt bijwerken op basis van deltawaarde mogelijk"
+      },
+      "deltaFloat": {
+        "label": "Delta - Echt",
+        "placeholder": "bijv.: 12.3",
+        "tooltip": "Voeg een reële type delta in (kommanummer)"
+      },
+      "deltaInt": {
+        "label": "Delta - geheel getal",
+        "placeholder": "bijv: 3",
+        "tooltip": "Voer een geheel getal-delta in (getal zonder komma)"
+      },
+      "deltaBool": {
+        "label": "Delta - Staat",
+        "tooltip": "Schakelt ondersteuning voor statusinversie in als cyclus"
+      },
+      "deltaDateTime": {
+        "label": "Delta - Tijd",
+        "placeholder": "bijv: 00/00/01 01:00:00",
+        "tooltip": "Voer een cyclische duur in \"Elke...\""
+      },
+      "vDateTime": {
+        "label": "Tijd (standaard)",
+        "placeholder": "bijv.: 00/00/01 01:00:00",
+        "tooltip": "Voer een standaardtijdsduur in"
+      },
+      "vBool": {
+        "label": "Staat (standaard)",
+        "tooltip": "Voeg een standaardstatus in"
+      },
+      "vInt": {
+        "label": "Geheel getal (standaard)",
+        "placeholder": "bijvoorbeeld 12",
+        "tooltip": "Voer een geheel getal in"
+      },
+      "vFloat": {
+        "label": "Echt (standaard)",
+        "placeholder": "bijv.: 12.3",
+        "tooltip": "Voer een reëel getal in"
+      },
+      "vDefault": {
+        "label": "Standaardwaarde",
+        "tooltip": "Standaardwaardebeheer inschakelen"
+      },
+      "counterType": {
+        "label": "Teller - Type",
+        "placeholder": "bijv: 2",
+        "tooltip": "Tellertype instellen"
+      },
+      "counter": {
+        "tooltip": "Activeer tags als teller"
+      },
+      "mesure": {
+        "label": "Meting",
+        "tooltip": "Schakelt de tag in als meetwaarde"
+      },
+      "mesureMin": {
+        "label": "Minimale meting",
+        "placeholder": "bijv.: 0,05",
+        "tooltip": "Minimale meetwaarde invoeren bij het meten"
+      },
+      "mesureMax": {
+        "label": "Maximale meting",
+        "placeholder": "bijvoorbeeld: 50,0",
+        "tooltip": "Voer bij het meten de maximale meetwaarde in"
+      },
+      "measureUnit": {
+        "label": "Meting - eenheid",
+        "placeholder": "Selecteer maateenheid",
+        "tooltip": "Voer de maateenheid van de tag in"
+      },
+      "mqtt_topic": {
+        "label": "MQTT-ONDERWERP",
+        "placeholder": "mqtt-onderwerplink",
+        "tooltip": "Voeg de link in van het onderwerp dat aan de tag is gekoppeld"
+      },
+      "webhook": {
+        "label": "Webhook - Koppeling",
+        "placeholder": "webhook-link",
+        "tooltip": "Voeg de webhooklink in die aan de tag is gekoppeld"
+      },
+      "laboratory": {
+        "label": "Laboratorium - Label",
+        "tooltip": "Koppel de tag als laboratoriumwaarde"
+      },
+      "formula": {
+        "label": "Formule - Label",
+        "tooltip": "Verwijs naar de tag als een berekeningsformule"
+      },
+      "formCalculus": {
+        "label": "Formule",
+        "placeholder": "["
+      },
+      "formProcessing": {
+        "label": "Formule-trigger",
+        "placeholder": "bijvoorbeeld: 0",
+        "tooltip": "Selecteer een trigger - standaard 0 - door tagwijziging"
+      },
+      "error": {
+        "label": "Fout gedetecteerd",
+        "tooltip": "Geeft aan dat er een fout is gedetecteerd"
+      },
+      "errorMsg": {
+        "label": "Fout - bericht",
+        "tooltip": "Gedetecteerde foutmelding retourneren"
+      },
+      "errorStamp": {
+        "label": "Fout - Timing",
+        "tooltip": "Geeft het tijdstip van de fout aan"
+      },
+      "alarmEnable": {
+        "label": "Alarm - Type",
+        "tooltip": "Koppel de tag aan het alarmtype"
+      },
+      "alarm": {
+        "label": "Alarm",
+        "placeholder": "Selecteer het bijbehorende alarm",
+        "tooltip": "Geef het alarm aan dat aan de tag is gekoppeld"
+      },
+      "persistenceEnable": {
+        "label": "Persistentie-tag",
+        "tooltip": "Geeft aan of de tag archiveerbaar is"
+      },
+      "persOffsetEnable": {
+        "label": "Persistentie - compensatie",
+        "tooltip": "Schakel offset tijdens persistentie in"
+      },
+      "persOffsetFloat": {
+        "label": "Offset - Werkelijk (pers.)",
+        "placeholder": "bijv.: 0,05",
+        "tooltip": "Geeft de offset aan die tijdens persistentie op een reële waarde moet worden toegepast"
+      },
+      "persOffsetInt": {
+        "label": "Offset - geheel getal",
+        "placeholder": "bijv: 3"
+      },
+      "persOffsetBool": {
+        "label": "Offset - Status",
+        "tooltip": "Geeft de statusverschuiving aan"
+      },
+      "persOffsetDateTime": {
+        "label": "Offset - Tijd",
+        "placeholder": "bijv.: 00/00/01 01:00:00",
+        "tooltip": "Geeft een tijdsverschil aan tijdens het archiveren"
+      },
+      "comment": {
+        "placeholder": "Een beschrijving",
+        "tooltip": "Voeg een tagbeschrijving in"
+      },
+      "list": {
+        "label": "Lijst (gerelateerd)",
+        "placeholder": "Selecteer een lijst",
+        "tooltip": "Koppel een lijst aan de gehele referentie als weergave-elementen"
+      }
+    },
+    "Create": {
+      "title": "Een label maken",
+      "subTitle": "Voeg hieronder een tag toe"
+    },
+    "Edit": {
+      "title": "Tag bewerken",
+      "subTitle": "Bewerk hieronder een tag"
+    }
+  },
+  "tagstables": {
+    "Create": {
+      "title": "Creatie - Tabel voor tags",
+      "subTitle": "Voeg een tabel toe die de tags kan bevatten"
+    },
+    "Edit": {
+      "title": "Bewerken - Tabel voor tags",
+      "subTitle": "Bewerk een tagtabel"
+    },
+    "Form": {
+      "company": {
+        "label": "Bedrijf",
+        "placeholder": "Selecteer een bedrijf",
+        "tooltip": "Bijbehorende bedrijfscode"
+      },
+      "table": {
+        "label": "Tafel",
+        "tooltip": "Definieer een code voor de tabel"
+      },
+      "designation": {
+        "label": "Aanduiding",
+        "placeholder": "bijv.: STOOM - BOSCH 1",
+        "tooltip": "Definieer een tabelcodeaanduiding"
+      },
+      "comment": {
+        "label": "Beschrijving",
+        "placeholder": "Een beschrijving...",
+        "tooltip": "Voeg een volledige beschrijving toe"
       }
     }
   }

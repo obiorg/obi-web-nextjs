@@ -96,13 +96,13 @@ export default function TableHeader({ id, name,
 
     return (
         <>
-            <div className="container-fluid">
-                <div className='row mb-3'>
-                    <div className='flex flex-wrap align-items-center justify-content-between gap-2'>
+            <div key={'TableHeaderContainer'} className="container-fluid">
+                <div key={'TableHeaderContainer_row'} className='row mb-3'>
+                    <div key={'TableHeaderContainer_row_title'} className='flex flex-wrap align-items-center justify-content-between gap-2'>
                         <h2><span className="text-900">{title}</span></h2>
 
 
-                        <div className='flex justify-content-center mb-0'>
+                        <div key={'TableHeaderContainer_row_title_center'} className='flex justify-content-center mb-0'>
                         </div>
                     </div>
                 </div>
@@ -110,10 +110,10 @@ export default function TableHeader({ id, name,
 
 
 
-                <div className="row">
-                    <div className="flex flex-wrap justify-content-between align-items-center">
+                <div key={'TableHeaderContainer_row1'} className="row">
+                    <div key={'TableHeaderContainer_row1_between'} className="flex flex-wrap justify-content-between align-items-center">
 
-                        <div className="flex justify-content-between align-items-center" style={{ textAlign: 'left' }}>
+                        <div key={'TableHeaderContainer_row1_between_items'} className="flex justify-content-between align-items-center" style={{ textAlign: 'left' }}>
                             {columns ?
                                 <MultiSelect
                                     value={selectedColumns}
@@ -125,7 +125,7 @@ export default function TableHeader({ id, name,
 
 
 
-                        <div className="p-input-icon-left">
+                        <div key={'TableHeaderContainer_row1_between_inputSelect'} className="p-input-icon-left">
                             <i className="pi pi-search ml-3" />
                             {value ?
                                 <InputText

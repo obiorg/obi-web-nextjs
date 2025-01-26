@@ -12,6 +12,106 @@ import { ZodHelper } from "../../utilities/helpers/zodHelper";
 
 
 
+// Define the shape of the form errors locations
+interface MachinesFormErrors {
+    id?: string[];
+    deleted?: string[];
+    created?: string[];
+    changed?: string[];
+
+
+    company?: number[];
+    address?: string[];
+    mask?: string[];
+    dns?: string[];
+    ipv6?: string[];
+    port?: number[];
+    name?: string[];
+    rack?: number[];
+    slot?: number[];
+    driver?: number[];
+    mqtt?: boolean[];
+    mqtt_user?: string[];
+    mqtt_password?: string[];
+    webhook?: boolean[];
+    webhook_secret?: string[];
+    bus?: number[];
+    description?: string[];
+
+    companies?: OBI.companies[][];
+    drivers?: OBI.mach_drivers[][];
+}
+
+// Define the shape of the form state
+
+// Define an interface for the form state
+interface MachinesFormState {
+    errors: {
+        id?: string[];
+        deleted?: string[];
+        created?: string[];
+        changed?: string[];
+
+
+        company?: number[];
+        address?: string[];
+        mask?: string[];
+        dns?: string[];
+        ipv6?: string[];
+        port?: number[];
+        name?: string[];
+        rack?: number[];
+        slot?: number[];
+        driver?: number[];
+        mqtt?: boolean[];
+        mqtt_user?: string[];
+        mqtt_password?: string[];
+        webhook?: boolean[];
+        webhook_secret?: string[];
+        bus?: number[];
+        description?: string[];
+
+        companies?: OBI.companies[][];
+        drivers?: OBI.mach_drivers[][];
+    };
+}
+
+// Define the props that the PostForm component expects
+interface MachinesPostFormProps {
+    formAction: any; // The action to perform when the form is submitted
+    type: number; // 0: create, 1: update, 2: destroy (delete), 3: read
+    initialData: {
+        // The initial data for the form fields
+        id: number;
+        deleted: boolean;
+        created: Date;
+        changed: Date;
+
+        company?: number;
+        address?: string;
+        mask?: string;
+        dns?: string;
+        ipv6?: string;
+        port?: number;
+        name?: string;
+        rack?: number;
+        slot?: number;
+        driver?: number;
+        mqtt?: boolean;
+        mqtt_user?: string;
+        mqtt_password?: string;
+        webhook?: boolean;
+        webhook_secret?: string;
+        bus?: number;
+        description?: string;
+
+        companies?: {};
+        drivers?: {};
+    };
+
+}
+
+
 
 
 export const MachinesService = {
@@ -93,6 +193,7 @@ export const MachinesService = {
 
     async getById(id: any) {
         const url = process.env.httpPath + '/connexions/machines/' + id;
+        console.log(url);
         try {
             const res = await fetch(url, { headers: { 'Cache-Control': 'no-cache' } })
             if (res.ok) {
@@ -382,7 +483,7 @@ export const MachinesService = {
 
 
         }
-        console.log('MachinesService >> data', data);
+        // console.log('MachinesService >> data', data);
         delete data.compagnies;
         delete data.drivers;
         delete data.tags;

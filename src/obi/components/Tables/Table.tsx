@@ -215,6 +215,7 @@ export default function Table({
         return (
             <>
                 <TableHeader
+                    key='TableHeader'
                     title={title}
                     catalogSelected={selectedCatalog}
                     onClear={clearFilter}
@@ -287,7 +288,7 @@ export default function Table({
 
 
     return (
-        <div className='container-fluid p-0 m-0'>
+        <div key={'TableContainer'} className='container-fluid p-0 m-0'>
 
             <TableToolbar
                 catalogSelected={selectedCatalog}
@@ -315,6 +316,8 @@ export default function Table({
 
             <DataTable
                 id="dataTable"
+                name='dataTabel'
+                key='dataTable'
                 ref={dt}
                 value={catalogs}
                 selection={selectedCatalog}
@@ -382,6 +385,7 @@ export default function Table({
                 tableStyle={{ minWidth: '50rem' }}
 
 
+                columnResizeMode="expand"
             >
 
 

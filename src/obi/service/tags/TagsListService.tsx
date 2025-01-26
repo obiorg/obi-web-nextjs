@@ -89,7 +89,7 @@ export const TagsListsService = {
      * @returns catalogs table.
      */
     async getLazy(lazy: any): Promise<any> {
-        const url = process.env.httpPath + '/tags/listcontents/lazy/' + lazy.lazyEvent;
+        const url = process.env.httpPath + '/tags/list/lazy/' + lazy.lazyEvent;
         // console.log(JSON.parse(lazy.lazyEvent))
         // console.log(url)
         try {
@@ -132,7 +132,7 @@ export const TagsListsService = {
      * @returns number of catalogs
      */
     async getLazyCount(lazy: any) {
-        const url = process.env.httpPath + '/tags/listcontents/lazy/count/' + lazy.lazyEvent;
+        const url = process.env.httpPath + '/tags/list/lazy/count/' + lazy.lazyEvent;
         try {
             const res = await fetch(url, { headers: { 'Cache-Control': 'no-cache' } })
             if (res.ok) {
@@ -157,7 +157,7 @@ export const TagsListsService = {
     },
 
     async getById(id: any) {
-        const url = process.env.httpPath + '/tags/listcontents/' + id;
+        const url = process.env.httpPath + '/tags/list/' + id;
         try {
             const res = await fetch(url, { headers: { 'Cache-Control': 'no-cache' } })
             if (res.ok) {
@@ -559,7 +559,7 @@ export const TagsListsService = {
     },
 
     async download(lazy: any): Promise<any[]> {
-        const url = process.env.httpPath + '/tags/listcontents/download/' + lazy.lazyEvent;
+        const url = process.env.httpPath + '/tags/list/download/' + lazy.lazyEvent;
         const res = await fetch(url, { headers: { 'Cache-Control': 'no-cache' } })
         const dataset: any[] = await res.json();
         return dataset;

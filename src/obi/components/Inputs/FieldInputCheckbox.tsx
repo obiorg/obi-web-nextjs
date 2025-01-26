@@ -44,18 +44,19 @@ export default function FieldInputCheckbox({
     const onCheck = (e: any) => {
         // console.log('onCheck', e);
         setChecked(e.target.checked);
-        onChange ? onChange(e.target.checked) : false;
+        onChange ? onChange(e.target.checked ? true : false) : false;
     }
 
     useEffect(() => {
         setChecked(value);
+        // console.log('Value checkbox', value);
     }, [value]);
 
 
     return (
         <>
             {render !== true ? <></> :
-                <div className={'grid mb-2 '+  (hidden ? ' hidden' : '')}>
+                <div className={'grid mb-2 ' + (hidden ? ' hidden' : '')}>
                     <div className='col-12 md:col-2'>
                         <label htmlFor={id} className={'input-field '}>
                             {title}
@@ -69,9 +70,9 @@ export default function FieldInputCheckbox({
                         value={value}
                         checked={checked}
                         onChange={onCheck}
-                        className={'col-12 md:col-5  pl-2 mb-2 input-value ' + (error ? 'p-invalid' : '') }
+                        className={'col-12 md:col-5  mb-2 pt-2 input-value ' + (error ? 'p-invalid' : '')}
 
-                
+
                         tooltip={tooltip}
                         tooltipOptions={tooltipOptions ? tooltipOptions : { position: 'bottom' }}
                         disabled={disabled}

@@ -39,106 +39,6 @@ import MachinesDriversDropDown from "../../drivers/components/MachinesDriversDro
 
 
 
-// Define the shape of the form errors locations
-interface MachinesFormErrors {
-    id?: string[];
-    deleted?: string[];
-    created?: string[];
-    changed?: string[];
-
-
-    company?: number[];
-    address?: string[];
-    mask?: string[];
-    dns?: string[];
-    ipv6?: string[];
-    port?: number[];
-    name?: string[];
-    rack?: number[];
-    slot?: number[];
-    driver?: number[];
-    mqtt?: boolean[];
-    mqtt_user?: string[];
-    mqtt_password?: string[];
-    webhook?: boolean[];
-    webhook_secret?: string[];
-    bus?: number[];
-    description?: string[];
-
-    companies?: OBI.companies[][];
-    drivers?: OBI.mach_drivers[][];
-}
-
-// Define the shape of the form state
-
-// Define an interface for the form state
-interface MachinesFormState {
-    errors: {
-        id?: string[];
-        deleted?: string[];
-        created?: string[];
-        changed?: string[];
-
-
-        company?: number[];
-        address?: string[];
-        mask?: string[];
-        dns?: string[];
-        ipv6?: string[];
-        port?: number[];
-        name?: string[];
-        rack?: number[];
-        slot?: number[];
-        driver?: number[];
-        mqtt?: boolean[];
-        mqtt_user?: string[];
-        mqtt_password?: string[];
-        webhook?: boolean[];
-        webhook_secret?: string[];
-        bus?: number[];
-        description?: string[];
-
-        companies?: OBI.companies[][];
-        drivers?: OBI.mach_drivers[][];
-    };
-}
-
-// Define the props that the PostForm component expects
-interface MachinesPostFormProps {
-    formAction: any; // The action to perform when the form is submitted
-    type: number; // 0: create, 1: update, 2: destroy (delete), 3: read
-    initialData: {
-        // The initial data for the form fields
-        id: number;
-        deleted: boolean;
-        created: Date;
-        changed: Date;
-
-        company?: number;
-        address?: string;
-        mask?: string;
-        dns?: string;
-        ipv6?: string;
-        port?: number;
-        name?: string;
-        rack?: number;
-        slot?: number;
-        driver?: number;
-        mqtt?: boolean;
-        mqtt_user?: string;
-        mqtt_password?: string;
-        webhook?: boolean;
-        webhook_secret?: string;
-        bus?: number;
-        description?: string;
-
-        companies?: {};
-        drivers?: {};
-    };
-
-}
-
-
 
 const model = new MachinesModel();
 
@@ -148,7 +48,7 @@ const model = new MachinesModel();
 // The formAction is the action to perform when the form is submitted. We use it as a props because
 // we will use this for create and edit page which both page doesn't have the same action
 // The initialData is the initial data for the form fields. 
-export default function PostForm({ formAction, type, initialData }: MachinesPostFormProps) {
+export default function PostForm({ formAction, type, initialData }: OBI.MachinesPostFormProps) {
     // Initialize the form state and action
     const [formState, action] = useFormState<any>(formAction, {
         errors: {},
@@ -229,7 +129,8 @@ export default function PostForm({ formAction, type, initialData }: MachinesPost
     useEffect(() => {
         if (saveMode === 0) {
             // console.log('initialData useEffect catalog', initialData);
-            initialData.company = undefined;
+            if (initialData.company)
+                initialData.company = undefined;
         }
     }, [catalog]);
 
@@ -262,9 +163,9 @@ export default function PostForm({ formAction, type, initialData }: MachinesPost
 
             // Manage create processing
             if (type === 0 || type === 2) {
-                console.log('start create', formData);
+                // console.log('start create', formData);
                 MachinesService.create(formState, formData).then((data: any) => {
-                    console.log('Data saved', data);
+                    // console.log('Data saved', data);
                     if (data.errors || data.status === 500) {
                         formState.errors = { errors: {} };
                         formState.errors = data.errors;
@@ -287,7 +188,7 @@ export default function PostForm({ formAction, type, initialData }: MachinesPost
             // Manage update processing
             else if (type === 1) {
                 MachinesService.update(formState, formData).then((data: any) => {
-                    console.log('Data saved', data);
+                    // console.log('Data update', data);
                     if (data.errors || data.status === 500) {
                         formState.errors = { errors: {} };
                         formState.errors = data.errors;
@@ -322,7 +223,8 @@ export default function PostForm({ formAction, type, initialData }: MachinesPost
      */
     const onCancel = (e: any) => {
         e.preventDefault();
-        initialData.company = undefined;
+        if (initialData.company)
+            initialData.company = undefined;
         formRef.current.reset();
     }
 
@@ -427,7 +329,8 @@ export default function PostForm({ formAction, type, initialData }: MachinesPost
                 setReload((reload: any) => { return { ...reload } })
             }}
         />
-        <div className="card">
+
+        <div key='post-form' className="card">
 
             {/** Message toaster display */}
             <Toast ref={toast} />
@@ -440,14 +343,15 @@ export default function PostForm({ formAction, type, initialData }: MachinesPost
             <p>{type === 0 ? t('Create.subTitle') : t('Edit.subTitle')}</p>
             <hr />
 
-            <BlockUI blocked={blockedFrom}>
+            <BlockUI key='post-form_blockUi' blocked={blockedFrom}>
                 <form
                     id="formId"
+                    key='post-form_form'
                     ref={formRef}
                     onSubmit={onSubmit}
                     className="p-fluid"
                 >
-                    <div className="col-12">
+                    <div key='post-form_inputs' className="col-12">
 
 
 
@@ -829,69 +733,4 @@ export default function PostForm({ formAction, type, initialData }: MachinesPost
     </>
 }
 
-
-
-
-
-// 127.0.0.1
-function InputIPAddress(props) {
-    function checkIpValue(value: any) {
-        const subips = value.split('.')
-        if (subips.length > 4) {
-            return false
-        }
-        const invalidSubips = subips.filter((ip: any) => {
-            ip = parseInt(ip)
-            return ip < 0 || ip > 255
-        })
-        if (invalidSubips.length !== 0) {
-            return false
-        }
-        let emptyIpCount = 0
-        subips.forEach((ip: any) => {
-            if (ip === "") {
-                emptyIpCount++
-            }
-        })
-        if (emptyIpCount > 1) {
-            return false
-        }
-        return true
-    }
-
-    return (
-        <InputMask
-            formatChars={{
-                '9': '[0-9\.]',
-            }}
-            mask="999999999999999"
-            maskChar={null}
-            alwaysShowMask={false}
-            beforeMaskedValueChange={(newState: any, oldState: any, userInput: any) => {
-                let value = newState.value;
-                const oldValue = oldState.value;
-                let selection = newState.selection;
-                let cursorPosition = selection ? selection.start : null;
-                const result = checkIpValue(value)
-                if (!result) {
-                    value = value.trim()
-                    // try to add . before the last char to see if it is valid ip address
-                    const newValue = value.substring(0, value.length - 1) + "." + value.substring(value.length - 1);
-                    if (checkIpValue(newValue)) {
-                        cursorPosition++
-                        selection = { start: cursorPosition, end: cursorPosition };
-                        value = newValue
-                    } else {
-                        value = oldValue
-                    }
-                }
-
-                return {
-                    value,
-                    selection
-                };
-            }}
-        />
-    )
-}
 

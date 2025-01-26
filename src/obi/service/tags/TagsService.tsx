@@ -385,30 +385,40 @@ export const TagsService = {
         formState: any,
         formData: FormData | any): Promise<any> {
 
-        // From default model adapt values
+        // Recover model object
         let model = (new TagsModel());
         let data: any = model.defaults;
+        // Recover original data type
         let dataType: any = model.type;
 
-        // Transmited data
-        let defaults: any = {};
-        for (const [key, value] of formData) {
-            // console.log(`default >> ${key}: ${value}\n`);
-            defaults[key] = value;
-        }
+        // // Recover data from form
+        // let dataForm: any = {};
+        // for (const [key, value] of formData) {
+        //     // console.log(`default >> ${key}: ${value}\n`);
+        //     dataForm[key] = value;
+        // }
 
+        // Inject form data into the model
         for (const [key, value] of formData) {
-            // console.log(`process >> ${key}: ${value}\n`);
+            //console.log(`process >> ${key}: ${value} with dataType = ${dataType[key]}\n`);
+
+            // Set form value
             data[key] = value;
 
-                           // Change all string number to Number
-                if (dataType[key] === Number) {
-                    data[key] = value === '' ? undefined : Number(value);
-                    // console.log(`key ${key} is a number and value is ${value} \n`);
-                }
-
+            // Adapt form value depending on type
+            //
+            // Adapt Number value
+            if (dataType[key] === Number) {
+                data[key] = value === '' ? undefined : Number(value);
+                // console.log(`key ${key} is a number and value is ${value} \n`);
+            }
+            // Adapt boolean value
+            else if (dataType[key] === Boolean) {
+                //console.log(`key ${key} is a boolean and value is ${value} \n`);
+                data[key] = value === 'true' || value === '1' || value === 'on' ? true : false;
+                //console.log('data['+ key + '] = ' + data[key]);
+            }
         }
-        console.log('TagsService >> data', data);
         delete data.alarms;
         delete data.companies;
         delete data.tags_lists;
@@ -419,6 +429,8 @@ export const TagsService = {
         delete data.tags_types;
         delete data.tags;
         delete data.tags;
+        // console.log('TagsService >> data', data);
+        // console.log('TagsService >> data stringify', JSON.stringify(data));
 
         // Define URL
         const url = process.env.httpPath + '/tags';
@@ -444,15 +456,19 @@ export const TagsService = {
             if (res.ok) {
                 // console.log('Promise resolved and HTTP status is successful');
                 const dataset: any = await res.json();
-                return dataset;
+                return JSON.parse(dataset);
             }
             // On fail !
             else {
                 let datas: any = await res.json();
-                // console.log(datas);
+                console.log(datas);
                 let dataset: any = {};
                 if (datas.issues !== undefined && datas.issues.length > 0) {
-                    dataset = { errors: ZodHelper.issuesFlatten(datas.issues[0].unionErrors, 0) };
+                    if (datas.issues[0].unionErrors) {
+                        dataset = { errors: ZodHelper.issuesFlatten(datas.issues[0].unionErrors, 0) };
+                    } else {
+                        dataset = datas;
+                    }
                     dataset['error'] = {};
                     dataset['error'].message = datas.issues[0].code;
                     dataset['error'].stack = datas.issues[0].message;
@@ -532,7 +548,7 @@ export const TagsService = {
                 let datas: any = await res.json();
                 // console.log(datas);
                 let dataset: any = {};
-                if (datas.issues !== undefined && datas.issues.length > 0) {
+                if (datas.issues !== undefined && datas.issues.length > 0 && datas.issues[0]?.unionErrors) {
                     dataset = { errors: ZodHelper.issuesFlatten(datas.issues[0].unionErrors, 0) };
                     dataset['error'] = {};
                     dataset['error'].message = datas.issues[0].code;
@@ -573,29 +589,40 @@ export const TagsService = {
         formState: any,
         formData: FormData | any): Promise<any> {
 
-        // From default model adapt values
+        // Recover model object
         let model = (new TagsModel());
         let data: any = model.defaults;
+        // Recover original data type
         let dataType: any = model.type;
 
-        // Transmited data
-        let defaults: any = {};
-        for (const [key, value] of formData) {
-            // console.log(`default >> ${key}: ${value}\n`);
-            defaults[key] = value;
-        }
+        // // Recover data from form
+        // let dataForm: any = {};
+        // for (const [key, value] of formData) {
+        //     // console.log(`default >> ${key}: ${value}\n`);
+        //     dataForm[key] = value;
+        // }
 
+        // Inject form data into the model
         for (const [key, value] of formData) {
-            // console.log(`process >> ${key}: ${value}\n`);
+            //console.log(`process >> ${key}: ${value} with dataType = ${dataType[key]}\n`);
+
+            // Set form value
             data[key] = value;
 
-                // Change all string number to Number
-                if (dataType[key] === Number) {
-                    data[key] = value === '' ? undefined : Number(value);
-                    // console.log(`key ${key} is a number and value is ${value} \n`);
-                }
+            // Adapt form value depending on type
+            //
+            // Adapt Number value
+            if (dataType[key] === Number) {
+                data[key] = value === '' ? undefined : Number(value);
+                // console.log(`key ${key} is a number and value is ${value} \n`);
+            }
+            // Adapt boolean value
+            else if (dataType[key] === Boolean) {
+                //console.log(`key ${key} is a boolean and value is ${value} \n`);
+                data[key] = value === 'true' || value === '1' || value === 'on' ? true : false;
+                //console.log('data['+ key + '] = ' + data[key]);
+            }
         }
-        console.log('TagsService >> data', data);
         delete data.alarms;
         delete data.companies;
         delete data.tags_lists;
@@ -606,6 +633,8 @@ export const TagsService = {
         delete data.tags_types;
         delete data.tags;
         delete data.tags;
+        // console.log('TagsService >> data', data);
+        // console.log('TagsService >> data stringify', JSON.stringify(data));
 
 
         const url = process.env.httpPath + '/tags/' + data.id;
@@ -630,16 +659,17 @@ export const TagsService = {
 
             // On success
             if (res.ok) {
-                console.log('Promise resolved and HTTP status is successful');
+                // console.log('Promise resolved and HTTP status is successful');
                 const dataset: any = await res.json();
-                return dataset;
+                return JSON.parse(dataset);
             }
             // On fail !
             else {
                 let datas: any = await res.json();
                 console.log(datas);
                 let dataset: any = {};
-                if (datas.issues !== undefined && datas.issues.length > 0) {
+                // console.log('onUpdating datas', datas);
+                if (datas.issues !== undefined && datas.issues.length > 0 && datas.issues[0]?.unionErrors) {
                     dataset = { errors: ZodHelper.issuesFlatten(datas.issues[0].unionErrors, 0) };
                     dataset['error'] = {};
                     dataset['error'].message = datas.issues[0].code;
@@ -681,26 +711,56 @@ export const TagsService = {
         data: any[]): Promise<any> {
 
         const url = process.env.httpPath + '/tags/update';
-        // console.log(data);
-        const res = await fetch(
-            url,
-            {
-                method: "POST",
-                mode: "cors", // no-cors, *cors, same-origin
-                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                credentials: "same-origin", // include, *same-origin, omit
-                headers: {
-                    "Content-Type": "application/json",
-                    'Cache-Control': 'no-cache'
-                },
-                body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
-            }
-        )
-        // console.log("TagsService response", res);
-        const dataset: any = await res.json();
-        // console.log('TagsService >> result from api machines ', dataset);
-        return dataset;
+        console.log(data, JSON.stringify(data));
 
+        // Fetch data from API
+        try {
+            
+            const res = await fetch(
+                url,
+                {
+                    method: "POST",
+                    mode: "cors", // no-cors, *cors, same-origin
+                    cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                    credentials: "same-origin", // include, *same-origin, omit
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Content-Length': '1000000'
+                    },
+                    body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
+                }
+            )
+            // console.log("TagsService response", res);
+            const dataset: any = await res.json();
+            // console.log('TagsService >> result from api machines ', dataset);
+            return dataset;
+        } catch (error) {
+            if (error instanceof SyntaxError) {
+                // Unexpected token < in JSON
+                console.log('There was a SyntaxError', error);
+                return ({
+                    name: 'Fetching',
+                    message: 'Check OAP API is running or database is reachable',
+                    error: error,
+                    // data: data,
+                    url: url,
+                    status: 500,
+                });
+
+            } else {
+                console.log('There was an error', error);
+                // Promise.reject(error);
+                return ({
+                    name: 'Fetching',
+                    message: 'Check OAP API is running or database is reachable',
+                    error: error,
+                    // errors: datas,
+                    url: url,
+                    status: 500,
+                });
+            }
+        }
     },
 
 

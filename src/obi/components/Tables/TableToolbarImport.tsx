@@ -280,7 +280,7 @@ export default function TableToolbarImport({ id, name,
                 name="demo[]"
                 accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
                 customUpload={true}
-                uploadHandler={(e:any) => { e.ref = refFileUploadExcel; onImportExcel && onImportExcel(e); }}
+                uploadHandler={(e: any) => { e.ref = refFileUploadExcel; onImportExcel && onImportExcel(e); }}
                 mode="basic"
                 auto={true}
                 className='mr-2 w-full sm:hidden '
@@ -291,7 +291,7 @@ export default function TableToolbarImport({ id, name,
                 name="demo[]"
                 accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
                 customUpload={true}
-                uploadHandler={(e:any) => { e.ref = refFileUploadExcel; onImportExcel && onImportExcel(e); }}
+                uploadHandler={(e: any) => { e.ref = refFileUploadExcel; onImportExcel && onImportExcel(e); }}
                 mode="basic"
                 auto={true}
                 className='mr-2 w-full hidden sm:block '
@@ -330,6 +330,25 @@ export default function TableToolbarImport({ id, name,
                 aria-label="Confirmation"
                 tooltip="Editer" tooltipOptions={{ position: 'top' }}
             />
+
+            {/* List  */}
+            <Link
+                id={id + '_linkList'}
+                key={name + '_linkList'}
+                href={"./../"}
+                className="ml-2"
+                >
+                <Button
+                    id={id + '_linkButtonList'}
+                    name={name + '_linkButtonList'}
+                    key={name + '_linkButtonList'}
+                    label="Lister" icon="pi pi-list"
+                    severity="info"
+                    // className="col-12 md:col-2  m-1"
+                    tooltip='Retourner au tableau de données'
+                    tooltipOptions={{ position: 'bottom' }}
+                />
+            </Link>
 
 
         </React.Fragment>

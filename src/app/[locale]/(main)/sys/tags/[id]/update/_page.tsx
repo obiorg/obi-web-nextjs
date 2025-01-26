@@ -7,38 +7,34 @@ import React, { useEffect, useRef, useState } from 'react';
 import '@/src/styles/obi/obi.scss';
 
 
-import { MachinesService } from '@/src/obi/service/connexions/MachinesService';
-import { MachinesModel } from '@/src/obi/models/connexions/MachinesModel';
+import { TagsService } from '@/src/obi/service/tags/TagsService';
+import { TagsModel } from '@/src/obi/models/tags/TagsModel';
 import PostForm from '../../components/post-form';
-import { OBI } from '@/src/types/obi';
 
 
-const model = new MachinesModel();
 
-interface MachineCopyProps {
+
+interface TagsUpdateProps {
     params: any,
 }
 
 // Defining a new page, server component PostsEdit
-const MachineCopy = ({ params }: MachineCopyProps) => {
+const TagsUpdate = ({ params }: TagsUpdateProps) => {
     // Receives params as a prop, which includes the id of the post to be edited.
     const { id } = params;
 
     const [catalog, setCatalog] = useState();
-
+    let m = new TagsModel();
     useEffect(() => {
         // Fetch the post from the database
-        MachinesService.getById(id).then((data) => {
+        TagsService.getById(id).then((data: any) => {
             if (data.status) {
                 // If there was an error, display the error message
                 console.error(data.message);
             } else {
                 // If the post was successfully fetched, set it as the current location
-                setCatalog(() => {
-                    return {
-                        ...data,
-                    }
-                });
+                setCatalog(data);
+
             }
         })
     }, [id]);
@@ -48,8 +44,8 @@ const MachineCopy = ({ params }: MachineCopyProps) => {
 
     return (<>
         {catalog ?
-            <PostForm formAction={MachinesService.create}
-                type={2}
+            <PostForm formAction={TagsService.update}
+                type={1}
                 initialData={catalog}
             />
             : null}
@@ -57,4 +53,4 @@ const MachineCopy = ({ params }: MachineCopyProps) => {
     );
 };
 
-export default MachineCopy;
+export default TagsUpdate;

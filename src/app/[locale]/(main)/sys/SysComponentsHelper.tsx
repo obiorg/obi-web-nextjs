@@ -383,7 +383,7 @@ exports.tagsListContents_lazyFilter = (options: any) => {
 exports.tagsLists_lazyFilter = (options: any) => {
     return <TagsListsDropDown
         value={options.value}
-        onChanged={(e: any) => {
+        onChange={(e: any) => {
             options.filterCallback(e.value);
         }}
     />;
@@ -403,7 +403,7 @@ exports.tagsListTypes_lazyFilter = (options: any) => {
 exports.tagsMemories_lazyFilter = (options: any) => {
     return <TagsMemoriesDropDown
         value={options.value}
-        onChanged={(e: any) => {
+        onChange={(e: any) => {
             options.filterCallback(e.value);
         }}
     />;
@@ -413,7 +413,7 @@ exports.tagsMemories_lazyFilter = (options: any) => {
 exports.tags_lazyFilter = (options: any) => {
     return <TagsDropDown
         value={options.value}
-        onChanged={(e: any) => {
+        onChange={(e: any) => {
             options.filterCallback(e.value);
         }}
     />;
@@ -422,7 +422,7 @@ exports.tags_lazyFilter = (options: any) => {
 exports.tagsTables_lazyFilter = (options: any) => {
     return <TagsTablesDropDown
         value={options.value}
-        onChanged={(e: any) => {
+        onChange={(e: any) => {
             options.filterCallback(e.value);
         }}
     />;
@@ -431,7 +431,7 @@ exports.tagsTables_lazyFilter = (options: any) => {
 exports.tagsTypes_lazyFilter = (options: any) => {
     return <TagsTypesDropDown
         value={options.value}
-        onChanged={(e: any) => {
+        onChange={(e: any) => {
             options.filterCallback(e.value);
         }}
     />;

@@ -33,7 +33,9 @@ interface ButtonSaveProps {
 
 
 export default function ButtonBarCreate({
-    id, name, label,
+    id,
+    name,
+    label,
     createLabel, cancelLabel,
     listLabel, updateLabel, copyLabel,
     onSaveClick, onCancelClick, onModeChanged,
@@ -51,7 +53,7 @@ export default function ButtonBarCreate({
     // Simulate click event
     const inputCancelElement = React.useRef<any>()
 
- 
+
 
     /**
      * Preprocess cancel event
@@ -61,7 +63,7 @@ export default function ButtonBarCreate({
         e.preventDefault();
         // console.log('ButtonBarCreate > doCancel', e)
         inputCancelElement.current.click();
-        onCancelClick ? onCancelClick(e):false;
+        onCancelClick ? onCancelClick(e) : false;
         window.location.reload();
     }
 
@@ -69,11 +71,14 @@ export default function ButtonBarCreate({
 
     return (
         <>
-            <div className='grid'>
+            <div key={name + '_grid'} className='grid'>
 
                 {/* Create / Update  */}
-                <div className='col-12 md:col-3 mt-0 '>
+                <div key={name + '_createUpdate'} className='col-12 md:col-3 mt-0 '>
                     <ButtonSave
+                        id={id + '_createUpdate'}
+                        name={name + '_createUpdate'}
+                        key={name + '_createUpdate'}
                         labelsType0={createLabel}
                         labelsType1={updateLabel}
                         labelsType2={copyLabel}
@@ -85,9 +90,18 @@ export default function ButtonBarCreate({
 
 
                 {/* Cancel */}
-                <Link href="./"
+                <Link
+                    id={id + '_linkCancel'}
+                    key={name + '_linkCancel'}
+                    href="./"
                     className='col-12 md:col-3 mt-0 '>
-                    <Button label={cancelLabel ? cancelLabel : "Annuler"}
+
+                    <Button
+                        id={id + '_cancel'}
+                        name={name + '_cancel'}
+                        key={name + '_cancel'}
+
+                        label={cancelLabel ? cancelLabel : "Annuler"}
                         icon="pi pi-undo"
                         severity="secondary"
                         type="submit"
@@ -99,13 +113,24 @@ export default function ButtonBarCreate({
                     // onClick={reset}
                     />
 
-                    <button type='submit' ref={inputCancelElement} onClick={reset} className="hidden" ></button>
+                    <button
+                        id={id + '_linkButtonCancel'}
+                        name={name + '_linkButtonCancel'}
+                        key={name + '_linkButtonCancel'}
+                        type='submit' ref={inputCancelElement} onClick={reset} className="hidden" ></button>
                 </Link>
 
                 {/* List  */}
-                <Link href={type === 0 ? "./../" : "./../../"}
+                <Link
+                    id={id + '_linkList'}
+                    key={name + '_linkList'}
+                    href={type === 0 ? "./../" : "./../../"}
                     className='col-12 md:col-3 mt-0 '>
-                    <Button label="Lister" icon="pi pi-list"
+                    <Button
+                        id={id + '_linkButtonList'}
+                        name={name + '_linkButtonList'}
+                        key={name + '_linkButtonList'}
+                        label="Lister" icon="pi pi-list"
                         severity="info"
                         // className="col-12 md:col-2  m-1"
                         tooltip='Retourner au tableau de données'

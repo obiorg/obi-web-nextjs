@@ -9,7 +9,7 @@ export const ZodHelper = {
     issuesFlatten(unionErrors: any[], index: number): any {
 
         // console.log('zodHelper >> issuesFlatten >> Errors ', unionErrors);
-        console.log('zodHelper >> issuesFlatten >> Errors ', unionErrors[index].issues);
+        // console.log('zodHelper >> issuesFlatten >> Errors ', unionErrors[index].issues);
         // console.log('zodHelper >> issuesFlatten >> Errors >> issues index ' + index + ' ' , unionErrors[index].issues[0]);
         // console.log('zodHelper >> issuesFlatten >> Errors >> issues index ' + index + ' ' , unionErrors[index].issues[1]);
 
@@ -21,7 +21,7 @@ export const ZodHelper = {
         });
 
 
-        console.log('zodHelper >> errors', errors);
+        // console.log('zodHelper >> errors', errors);
         return errors;
     }
 

@@ -3,95 +3,59 @@
 // this is a client component
 'use client'
 
-import { useFormState } from "react-dom"
-import { LocationsModel } from "@/src/obi/models/localisations/LocationsModel"
+import { TagsModel } from "@/src/obi/models/tags/TagsModel"
 import { Toast } from "primereact/toast"
 import React, { useEffect, useRef, useState } from "react"
+import { useFormState } from "react-dom"
 
 import { OBI } from "@/src/types"
 
 
 
-import { Messages } from "primereact/messages"
-import { LocationsService } from "@/src/obi/service/localisations/LocationsService"
-import { BlockUI } from "primereact/blockui"
+import DialogError from "@/src/obi/components/Dialog/DialogError"
+import FieldInputCheckbox from "@/src/obi/components/Inputs/FieldInputCheckbox"
+import FieldInputText from "@/src/obi/components/Inputs/FieldInputText"
+import FieldOutputLabel from "@/src/obi/components/Inputs/FieldOutputLabel"
+import OutputError from "@/src/obi/components/Output/OutputError"
 import OutputRecord from "@/src/obi/components/Output/OutputRecord"
 import ButtonBarCreate from "@/src/obi/components/Validations/ButtonBarCreate"
-import FieldInputText from "@/src/obi/components/Inputs/FieldInputText"
-import FieldDropDown from "@/src/obi/components/Inputs/FieldDropDown"
-import { LocationsCountriesService } from "@/src/obi/service/localisations/LocationsCountriesService"
-import { LocationsStatesService } from "@/src/obi/service/localisations/LocationsStatesService"
-import { LocationsStatesModel } from "@/src/obi/models/localisations/LocationsStatesModel"
-import { LocationsCitiesModel } from "@/src/obi/models/localisations/LocationsCitiesModel"
-import { LocationsCitiesService } from "@/src/obi/service/localisations/LocationsCitiesService"
-import FieldInputNumber from "@/src/obi/components/Inputs/FieldInputNumber"
-import FieldInputCheckbox from "@/src/obi/components/Inputs/FieldInputCheckbox"
-import FieldLabel from "@/src/obi/components/Inputs/FieldOutputLabel"
-import FieldOutputLabel from "@/src/obi/components/Inputs/FieldOutputLabel"
+import { CompaniesService } from "@/src/obi/service/businesses/CompaniesService"
+import { MachinesService } from "@/src/obi/service/connexions/MachinesService"
+import { TagsMemoriesService } from "@/src/obi/service/tags/TagsMemoriesService"
+import { TagsService } from "@/src/obi/service/tags/TagsService"
+import { TagsTablesService } from "@/src/obi/service/tags/TagsTablesService"
+import { TagsTypesService } from "@/src/obi/service/tags/TagsTypesService"
+import { useTranslations } from "next-intl"
 import { useRouter } from "next/navigation"
-import DialogError from "@/src/obi/components/Dialog/DialogError"
-import { DataTableFilterMeta } from "primereact/datatable"
+import { BlockUI } from "primereact/blockui"
+import { Messages } from "primereact/messages"
+import CompaniesDropDown from "../../businesses/companies/components/CompaniesDropDown"
+import MachinesDropDown from "../../connexions/machines/components/MachinesDropDown"
+import TagsMemoriesDropDown from "../memories/components/TagsMemoriesDropDown"
+import TagsTablesDropDown from "../tables/components/TagsTablesDropDown"
+import TagsTypesDropDown from "../types/components/TagsTypesDropDown"
+import FieldInputNumber from "@/src/obi/components/Inputs/FieldInputNumber"
+import FieldInputDateTime from "@/src/obi/components/Inputs/FieldInputDateTime"
+import FieldInputTextSlider from "@/src/obi/components/Inputs/FieldInputTextSlider"
+import MeasuresUnitsDropDown from "../../measures/units/components/MeasuresUnitsDropDown"
+import { MeasuresUnitsService } from "@/src/obi/service/measures/MeasuresUnitsService"
+import FieldInputEditor from "@/src/obi/components/Inputs/FieldInputEditor"
+import AlarmsDropDown from "../../alarms/components/AlarmsDropDown"
+import { AlarmsService } from "@/src/obi/service/alarms/AlarmsService"
+import { AlarmsModel } from "@/src/obi/models/alarms/AlarmsModel"
+import { MachinesModel } from "@/src/obi/models/connexions/MachinesModel"
+import { TagsMemoriesModel } from "@/src/obi/models/tags/TagsMemoriesModel"
+import { TagsTablesModel } from "@/src/obi/models/tags/TagsTablesModel"
+import { MeasuresUnitsModel } from "@/src/obi/models/measures/MeasuresUnitsModel"
+import { TagsTypesModel } from "@/src/obi/models/tags/TagsTypesModel"
+import TagsListsDropDown from "../list/components/TagsListsDropDown"
+import { TagsListModel } from "@/src/obi/models/tags/TagsListModel"
+import { TagsListsService } from "@/src/obi/service/tags/TagsListService"
 
 
-// Define the shape of the form errors locations
-interface LocationsFormErrors {
-    id?: string[];
-    deleted?: string[];
-    created?: string[];
-    changed?: string[];
-
-    location?: string[];
-    designation?: string[];
-    group?: string[];
-
-    country?: string[];
-    state?: string[];
-    city?: string[];
-    address?: string[];
-    address1?: string[];
-    address3?: string[];
-    bloc?: string[];
-    floor?: string[];
-    number?: string[];
-}
-
-// Define the shape of the form state
-interface LocationsFormState {
-    errors: LocationsFormErrors;
-}
-
-// Define the props that the PostForm component expects
-interface LocationsPostFormProps {
-    formAction: any; // The action to perform when the form is submitted
-    type: number; // 0: create, 1: update, 2: destroy (delete), 3: read
-    initialData: {
-        // The initial data for the form fields
-        id: number;
-        deleted: boolean;
-        created: Date;
-        changed: Date;
-
-        location: string;
-        designation: string;
-        group: string;
-        country: number;
-        state: number;
-        city: number;
-        address: string;
-        address1: string;
-        address3: string;
-        bloc: string;
-        floor: number;
-        number: string;
-        businesses: {},
-        companies: {},
-        entities: {},
-    };
-
-}
 
 
-const model = new LocationsModel();
+
 
 
 
@@ -99,9 +63,9 @@ const model = new LocationsModel();
 // The formAction is the action to perform when the form is submitted. We use it as a props because
 // we will use this for create and edit page which both page doesn't have the same action
 // The initialData is the initial data for the form fields. 
-export default function PostForm({ formAction, type, initialData }: OBI.LocationsPostFormProps) {
+export default function PostForm({ formAction, type, initialData }: OBI.TagsPostFormProps) {
     // Initialize the form state and action
-    const [formState, action] = useFormState<OBI.LocationsFormState>(formAction, {
+    const [formState, action] = useFormState<OBI.TagsFormState>(formAction, {
         errors: {},
     })
 
@@ -111,12 +75,8 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
 
     // Managing long request wating
     const [lazyLoading, setLazyLoading] = useState<any>(false);
-    let loadLazyTimeout:any = undefined;
+    let loadLazyTimeout: any = undefined;
 
-
-    // Sub state dropdown selection
-    const [countryOn, setCountryOn] = useState(initialData?.country !== undefined ? true : false);
-    const [stateOn, setStateOn] = useState(initialData?.state ? true : false);
 
     // state management
     const [onMessage, setOnMessage] = useState(false);
@@ -126,14 +86,14 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
     const [msgSticky, setMsgSticky] = useState(false); //
 
     // last created catalog
-    const [catalog, setCatalog] = useState<OBI.Locations>(null);
+    const [catalog, setCatalog] = useState<OBI.Tags>(null);
+    const [errorCatalog, setErrorCatalog] = useState<any>(null);
 
 
 
     // To manage validation
     const [saveMode, setSaveMode] = useState(0); // 0: save and reset; 1: save
-    const formRef = React.useRef(document.createElement('form'));
-    const [enableOnupdate, setEnableOnupdate] = useState(true); //
+    const formRef = React.useRef(document.createElement('form')); //
 
 
 
@@ -144,7 +104,9 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
     const saveModeProcess = () => {
         if (saveMode === 0) {
             if (type === 0) {
-                formRef.current.reset();
+                if (formRef)
+                    if (formRef.current)
+                        formRef.current.reset();
             } else {
                 router.push('./../..')
             }
@@ -154,66 +116,38 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
     };
 
 
-    const onChangedCountry = (e: any) => {
-        initialData.country = e.value
-        if (initialData?.country !== undefined) {
-            setCountryOn(true);
-            // LocationsStatesService.count().then((count: any) => {
-            //     setLazyParamsStates(
-            //         () => {
-            //             return {
-            //                 ...lazyParamsStates,
-            //                 filters: {
-            //                     "global": { value: null, matchMode: 'contains' },
-            //                     "country_id": { operator: 'and', constraints: [{ value: e.value, matchMode: 'equals' }] }
-            //                 },
-            //                 rows: count,
-            //             }
-            //         }
-            //     );
-            // });
-        } else {
-            setCountryOn(false);
-        }
+    const onChangedCompany = (e: any) => {
+        initialData.company = Number(e.value)
+    }
+    const onChangedMachine = (e: any) => {
+        initialData.machine = Number(e.value)
+    }
+    const onChangedType = (e: any) => {
+        initialData[type] = Number(e.value)
+    }
+    const onChangedMemory = (e: any) => {
+        initialData.memory = Number(e.value)
+    }
+    const onChangedTable = (e: any) => {
+        initialData.table = Number(e.value)
+    }
+    const onChangedMeasureUnits = (e: any) => {
+        initialData.mesureUnits = Number(e.value)
+    }
+    const onChangedAlarms = (e: any) => {
+        initialData.alarms = Number(e.value)
+    }
+    const onChangedLists = (e: any) => {
+        initialData.list = Number(e.value)
     }
 
-    const onChangedState = (e: any) => {
-        initialData.state = e.value
-        if (initialData?.state !== undefined) {
-            setStateOn(true);
-            // CitiesService.count().then((count: any) => {
-            //     setLazyParamsCities(
-            //         () => {
-            //             return {
-            //                 ...lazyParamsCities,
-            //                 filters: {
-            //                     "global": { value: null, matchMode: 'contains' },
-            //                     "country_id": { operator: 'and', constraints: [{ value: initialData?.country, matchMode: 'equals' }] },
-            //                     "state_id": { operator: 'and', constraints: [{ value: e.value, matchMode: 'equals' }] }
-            //                 },
-            //                 rows: count,
-            //             }
-            //         }
-            //     );
-            // });
-        } else {
-            setStateOn(false);
-        }
-    }
 
-    const onChangedCity = (e: any) => {
-        initialData.city = e.value
-        if (initialData?.city !== undefined) {
-            // setStateOn(true);
-        } else {
-            // setStateOn(false);
-        }
-    }
 
-    const doMsgPrompt = (severity: string, summary: string, message: string, sticky?: boolean) => {
+    const doMsgPrompt = (severity: string, summary: string, message: string, sticky?: any) => {
         setMsgSeverity(severity);
         setMsgSummary(summary);
         setMsgDetail(message);
+        setMsgSticky(sticky);
         setOnMessage(true);
     }
 
@@ -231,24 +165,21 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
         }
     }, [onMessage]);
 
+
     useEffect(() => {
         if (saveMode === 0) {
-            initialData.city = undefined;
-            initialData.state = undefined;
-            initialData.country = undefined;
-            setStateOn(false);
-            setCountryOn(false);
+            // console.log('initialData useEffect catalog', initialData);
+            initialData.company = undefined;
         }
     }, [catalog]);
 
 
     useEffect(() => {
-        // console.log(initialData)
-        if (initialData?.country) {
-            setCountryOn(true);
+        if (initialData?.company) {
         }
-        if (initialData?.state) {
-            setStateOn(true);
+        if (initialData?.machine) {
+        }
+        if (initialData?.memory) {
         }
 
     }, [initialData]);
@@ -270,22 +201,24 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
             clearTimeout(loadLazyTimeout);
         }
 
-
         //imitate delay of a backend call
         loadLazyTimeout = setTimeout(() => {
 
             // Manage create processing
             if (type === 0 || type === 2) {
-                console.log('start create');
-                LocationsService.create(formState, formData).then((data: any) => {
-                    if (data.errors) {
+                // console.log('start create');
+                TagsService.create(formState, formData).then((data: any) => {
+                    console.log('Data saved', data);
+                    if (data.errors || data.status === 500) {
                         formState.errors = { errors: {} };
                         formState.errors = data.errors;
-                        doMsgPrompt('error', 'Erreur de création : ', 'Veuillez corriger les erreurs')
+                        setErrorCatalog(data)
+                        doMsgPrompt('error', 'Erreur de création : ', data.error.message + '\n\n' + data.error.stack, true)
                     } else {
                         formState.errors = { errors: {} };
                         setCatalog(data);
-                        showSuccess('Création réussie !', data.location + ' - ' + data.designation + ' [' + data.id + ']');
+                        setErrorCatalog({});
+                        showSuccess('Création réussie !', data.name + ' - ' + data.machines + '(' + data.companies + ') [' + data.id + ']',);
                         saveModeProcess()
                     }
                     setLazyLoading(false);
@@ -298,15 +231,18 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
             }
             // Manage update processing
             else if (type === 1) {
-                LocationsService.update(formState, formData).then((data: any) => {
-                    if (data.errors) {
+                TagsService.update(formState, formData).then((data: any) => {
+                    console.log('Data saved', data);
+                    if (data.errors || data.status === 500) {
                         formState.errors = { errors: {} };
                         formState.errors = data.errors;
-                        doMsgPrompt('error', 'Erreur de modification : ', 'Veuillez corriger les erreurs')
+                        setErrorCatalog(data)
+                        doMsgPrompt('error', 'Erreur de création : ', data.error.message + '\n\n' + data.error.stack, true)
                     } else {
                         formState.errors = { errors: {} };
                         setCatalog(data);
-                        showSuccess('Modification réussie!', data.location + '-' + data.designation + '[' + data.id + ']');
+                        setErrorCatalog({});
+                        showSuccess('Création réussie !', data.name + ' - ' + data.machines + '(' + data.business + '/' + data.companies + ') [' + data.id + ']',);
                         saveModeProcess()
                     }
                     setLazyLoading(false);
@@ -317,7 +253,6 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
                     unBlockForm();
                 });
             } else {
-                console.error('Unknow type state  ', type);
                 setLazyLoading(false);
                 unBlockForm();
             }
@@ -332,11 +267,7 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
      */
     const onCancel = (e: any) => {
         e.preventDefault();
-        initialData.city = undefined;
-        initialData.state = undefined;
-        initialData.country = undefined;
-        setStateOn(false);
-        setCountryOn(false);
+        initialData.company = undefined;
         formRef.current.reset();
     }
 
@@ -368,22 +299,84 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
         setSaveMode(mode);
     }
 
+
+
     /**
      * Countries catalog update list
      */
-    const [countries, setCountries] = useState<any>([]);
+    const [companies, setCompanies] = useState<any>([]);
+    const [machines, setMachines] = useState<any>([]);
+    const [types, setTypes] = useState<any>([]);
+    const [memories, setMemories] = useState<any>([]);
+    const [tables, setTables] = useState<any>([]);
+    const [measureUnits, setMeasureUnits] = useState<any>([]);
+    const [alarms, setAlarms] = useState<any>([]);
+    const [lists, setLists] = useState<any>([]);
     const [reload, setReload] = useState(false);
+
+    const [lazyParams, setLazyParams] = useState(
+        new TagsModel().
+            getStandardParam({ field: 'company', order: 1 }, CompaniesService.defaultFilters()));
+    const [lazyParamsMachines, setLazyParamsMachines] = useState(
+        new MachinesModel().
+            getStandardParam({ field: 'name', order: 1 }, MachinesService.defaultFilters()));
+    const [lazyParamsTypes, setLazyParamsTypes] = useState(
+        new TagsTypesModel().
+            getStandardParam({ field: 'type', order: 1 }, TagsTypesService.defaultFilters()));
+    const [lazyParamsMemories, setLazyParamsMemories] = useState(
+        new TagsMemoriesModel().
+            getStandardParam({ field: 'name', order: 1 }, TagsMemoriesService.defaultFilters()));
+    const [lazyParamsTables, setLazyParamsTables] = useState(
+        new TagsTablesModel().
+            getStandardParam({ field: 'company', order: 1 }, { field: 'tables', order: 1 }, TagsTablesService.defaultFilters()));
+    const [lazyParamsMeasureUnits, setLazyParamsMeasureUnits] = useState(
+        new MeasuresUnitsModel().
+            getStandardParam({ field: 'entity', order: 1 }, { field: 'sizeName', order: 1 }, MeasuresUnitsService.defaultFilters()));
+    const [lazyParamsAlarms, setLazyParamsAlarms] = useState(
+        new AlarmsModel().
+            getStandardParam([{ field: 'company', order: 1 }, { field: 'alarm', order: 1 }, { field: 'name', order: 1 }],
+                AlarmsService.defaultFilters()));
+    const [lazyParamsLists, setLazyParamsLists] = useState(
+        new TagsListModel().
+            getStandardParam([{ field: 'business', order: 1 },
+            { field: 'company', order: 1 }, { field: 'tag', order: 1 },
+            { field: 'group', order: 1 }, { field: 'name', order: 1 }],
+                TagsListsService.defaultFilters()));
+
+
+
     useEffect(() => {
         // Get full data list
-        // CountriesService.list().then((data: any) => {
+        const lazyEventSet = { lazyEvent: JSON.stringify(lazyParams) };
+        CompaniesService.getLazy(lazyEventSet).then((data: any) => {
+            if (data.status) {
+                showError(data.status, data.message);
+            } else {
+                setCompanies(() => {
+                    return data.map((item: any) => ({
+                        label: item.company + ' - ' + item.designation
+                            + ' [' + item.id + ']',
+                        value: item.id,
+                        catalog: item
+                    }));
+                });
+            }
+        });
+
+
+        // const lazyEventSetMachines = { lazyEvent: JSON.stringify(lazyParamsMachines) };
+        // MachinesService.getLazy(lazyEventSetMachines).then((data: any) => {
         //     if (data.status) {
         //         showError(data.status, data.message);
         //     } else {
-        //         setCountries(() => {
+        //         setMachines(() => {
         //             return data.map((item: any) => ({
-        //                 label: item.name + ' - ' + item.iso3 + ' (' + item.numeric_code + ') ' + ' -  [' + item.id + ']',
+        //                 label: item.name
+        //                     + ' (' + item.address + ' / '
+        //                     + item.mask + ') [' + item.id + ']'
+        //                     + ' - ' + item.description,
         //                 value: item.id,
-        //                 catalog: item
+        //                 catalogs: item
         //             }));
         //         });
         //     }
@@ -391,81 +384,15 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
     }, [reload]); // eslint-disable-line react-hooks/exhaustive-deps
 
 
-    /**
-     * States catalog update list
-     */
-    const [states, setStates] = useState<any>([]);
-    const stateModel = new LocationsStatesModel();
-    const defaultFiltersStates: Array<DataTableFilterMeta> = LocationsStatesService.defaultFilters();
-    const [lazyParamsStates, setLazyParamsStates] = useState(
-        stateModel.getStandardParam({ field: 'name', order: 1 },
-            {
-                ...defaultFiltersStates,
-                // "global": { value: null, matchMode: 'contains' },
-                "country_id": { operator: 'and', constraints: [{ value: initialData?.country, matchMode: 'equals' }] }
-            }, 0
-        ));
+
 
 
     const [dlgError, setDlgError] = useState<any>();
-    useEffect(() => {
-        const lazyEventSet = { lazyEvent: JSON.stringify(lazyParamsStates) };
-        console.log(lazyParamsStates);
-        // Get full data list
-        LocationsStatesService.getLazy(lazyEventSet).then((data: any) => {
-            if (data.status && data.status !== 200) {
-                setDlgError(data);
-                return;
-            } else {
-                setStates(() => {
-                    return data.map((item: OBI.loc_states) => ({
-                        label: item.name + ' (' + item.iso2 + ') - ' + item.country_code + ' -  [' + item.id + ']',
-                        value: item.id,
-                        catalog: item
-                    }));
-                });
-            }
-        });
-    }, [lazyParamsStates]);
 
+    const g = useTranslations('global');
+    const t = useTranslations('tags');
 
-    /**
-     * States catalog update list
-     */
-    const [cities, setCities] = useState<any>([]);
-    const cityModel = new LocationsCitiesModel();
-    const defaultFiltersCities: Array<DataTableFilterMeta> = LocationsCitiesService.defaultFilters();
-    const [lazyParamsCities, setLazyParamsCities] = useState(
-        cityModel.getStandardParam({ field: 'name', order: 1 },
-            {
-                ...defaultFiltersCities,
-                "country_id": { operator: 'and', constraints: [{ value: initialData?.country, matchMode: 'equals' }] },
-                "state_id": { operator: 'and', constraints: [{ value: initialData?.state, matchMode: 'equals' }] }
-            }, 0
-        ));
-    useEffect(() => {
-        const lazyEventSet = { lazyEvent: JSON.stringify(lazyParamsCities) };
-
-        // Get full data list
-        // CitiesService.getLazy(lazyEventSet).then((data: any) => {
-        //     if (data.status) {
-        //         showError(data.status, data.message);
-        //     } else {
-        //         setCities(() => {
-        //             // console.log('cities', data)
-        //             return data?.map((item: OBI.loc_cities) => ({
-        //                 label: item.name + ' (' + item.state_code + ') - ' + item.country_code + ' -  [' + item.id + ']',
-        //                 value: item.id,
-        //                 catalog: item
-        //             }));
-        //         });
-        //     }
-        // });
-    }, [lazyParamsCities]);
-
-
-
-
+    const [update, setUpdate] = useState(false); //
 
     /**
      * Display the catalog
@@ -475,8 +402,8 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
             error={dlgError}
             onYes={(e: any) => {
                 setReload((reload: any) => { return { ...reload } })
-                setLazyParamsStates((lazyParamsStates: any) => { return { ...lazyParamsStates } })
-                setLazyParamsCities((lazyParamsCities: any) => { return { ...lazyParamsCities } })
+                setLazyParams((lazyParamsCompanies: any) => { return { ...lazyParamsCompanies } })
+                setLazyParamsMachines((lazyParamsMachines: any) => { return { ...lazyParamsMachines } })
             }}
         />
         <div className="card">
@@ -484,11 +411,13 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
             {/** Message toaster display */}
             <Toast ref={toast} />
 
-            <Messages ref={msg} onRemove={doMsgRemove} />
+            {/* <Messages ref={msg} onRemove={doMsgRemove} /> */}
 
 
 
-            <h3>{type === 0 ? 'Création' : 'Modification'} d une Localisation</h3>
+
+            <h3>{type === 0 ? t('Create.title') : t('Edit.title')}</h3>
+            <p>{type === 0 ? t('Create.subTitle') : t('Edit.subTitle')}</p>
             <hr />
 
             <BlockUI blocked={blockedFrom}>
@@ -499,17 +428,16 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
                     className="p-fluid"
                 >
                     <div className="col-12">
-
                         {type === 1 ? <>
                             {/** id */}
                             <FieldOutputLabel
                                 id="id"
                                 name='id'
-                                title='ID'
+                                title={g('Form.id.label')}
                                 value={initialData.id}
                                 error={formState.errors?.id}
-                                placeholder="ID Code..."
-                                tooltip="reference code d'identification ..."
+                                placeholder={g('Form.id.placeholder')}
+                                tooltip={g('Form.id.tooltip')}
                                 disabled
                             />
 
@@ -518,11 +446,11 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
                             <FieldOutputLabel
                                 id="created"
                                 name='created'
-                                title='Créé le '
+                                title={g('Form.created.label')}
                                 value={initialData?.created}
                                 error={formState.errors?.created}
-                                placeholder="Créé le ..."
-                                tooltip="date de création ..."
+                                placeholder={g('Form.created.placeholder')}
+                                tooltip={g('Form.created.tooltip')}
                                 disabled
                                 type="datetime"
                             />
@@ -533,11 +461,11 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
                             <FieldOutputLabel
                                 id="changed"
                                 name='changed'
-                                title='Changé le'
+                                title={g('Form.changed.label')}
                                 value={initialData?.changed}
                                 error={formState.errors?.changed}
-                                placeholder="Changé le ..."
-                                tooltip="date de changement ..."
+                                placeholder={g('Form.changed.placeholder')}
+                                tooltip={g('Form.changed.tooltip')}
                                 disabled
                                 type="datetime"
                             />
@@ -547,193 +475,610 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
                             <FieldInputCheckbox
                                 id="deleted"
                                 name='deleted'
-                                title='Supprimer'
+                                title={g('Form.deleted.label')}
                                 value={initialData.deleted}
                                 onChange={(e) => { initialData['deleted'] = e.value }}
                                 error={formState.errors?.delete}
-                                tooltip="suppression logique ..."
+                                tooltip={g('Form.deleted.tooltip')}
                             />
                         </> : null
                         }
 
 
-                        {/** Location */}
-                        {type !== 1 ?
-                            <FieldInputText
-                                id="location"
-                                name='location'
-                                title='Localisation'
-                                value={initialData?.location}
-                                error={formState.errors?.location}
-                                placeholder="Code..."
-                                tooltip="code d'identification ..."
-                                disabled={type === 1}
-                            />
-                            :
-                            <FieldOutputLabel
-                                id="location"
-                                name='location'
-                                title='Localisation'
-                                value={initialData?.location}
-                                error={formState.errors?.location}
-                                placeholder="Code..."
-                                tooltip="code d'identification ..."
-                                disabled={type === 1}
-                            />
-                        }
 
-                        {/** Designation */}
+                        {/** Company */}
+                        <CompaniesDropDown
+                            id='company'
+                            name="company"
+                            title={t('Form.company.label')}
+                            value={initialData?.company}
+                            options={companies}
+                            onChange={(e: any) => { onChangedCompany(e); }}
+                            error={formState.errors?.company}
+                            placeholder={t('Form.company.placeholder')}
+                            tooltip={t('Form.company.tooltip')}
+                        />
+
+
+
+                        {/** Name */}
                         <FieldInputText
-                            id="designation"
-                            name='designation'
-                            title='Designation'
-                            value={initialData?.designation}
-                            error={formState.errors?.designation}
-                            placeholder="Désignation..."
-                            tooltip="désignation associée..."
-                        />
-
-                        {/** Group */}
-                        <FieldInputText
-                            id="group"
-                            name='group'
-                            title='Groupe'
-                            value={initialData?.group}
-                            error={formState.errors?.group}
-                            placeholder="Groupe..."
-                            tooltip="grouper via un nom..."
-                        />
-
-                        {/** Country */}
-                        <FieldDropDown
-                            id='country'
-                            name="country"
-                            title='Pays'
-                            value={initialData?.country}
-                            options={countries}
-                            onChange={(e: any) => { onChangedCountry(e) }}
-                            error={formState.errors?.country}
-                            placeholder="Pays ..."
-                            tooltip="Sélectionner un pays..."
-                        />
-
-                        {/** State */}
-                        <FieldDropDown
-                            id='state'
-                            name="state"
-                            title='Etat/Province'
-                            value={initialData?.state}
-                            options={states}
-                            onChange={(e: any) => { onChangedState(e) }}
-                            error={formState.errors?.state}
-                            placeholder="Etat\Province ..."
-                            tooltip="Sélectionner un\une état\province..."
-                            render={countryOn}
-                        />
-
-                        {/** City */}
-                        <FieldDropDown
-                            id='city'
-                            name="city"
-                            title='Ville'
-                            value={initialData?.city}
-                            options={cities}
-                            onChange={(e: any) => { onChangedCity(e) }}
-                            error={formState.errors?.city}
-                            placeholder="Ville ..."
-                            tooltip="Sélectionner une ville..."
-                            render={stateOn}
+                            id="name"
+                            name='name'
+                            title={t('Form.name.label')}
+                            value={initialData?.name}
+                            error={formState.errors?.name}
+                            placeholder={t('Form.name.placeholder')}
+                            tooltip={t('Form.name.tooltip')}
                         />
 
 
-
-
-
-
-                        {/** Address */}
-                        <FieldInputText
-                            id="address"
-                            name='address'
-                            title='Adresse'
-                            value={initialData?.address}
-                            error={formState.errors?.address}
-                            placeholder="Adresse..."
-                            tooltip="adresse associée..."
-                        />
-
-                        {/** Address 1 */}
-                        <FieldInputText
-                            id="address1"
-                            name='address1'
-
-                            value={initialData?.address1}
-                            error={formState.errors?.address1}
-                            placeholder="adresse 1 ..."
-                            tooltip="adresse complémentaire 1 associée..."
-                        />
-
-                        {/** Address 3 */}
-                        <FieldInputText
-                            id="address3"
-                            name='address3'
-
-                            value={initialData?.address3}
-                            error={formState.errors?.address3}
-                            placeholder="adresse 2 ..."
-                            tooltip="adresse complémentaire 2 associée..."
+                        {/** Machines */}
+                        <MachinesDropDown
+                            id='machine'
+                            name="machine"
+                            title={t('Form.machine.label')}
+                            value={initialData?.machine}
+                            options={machines}
+                            onChange={(e: any) => { onChangedMachine(e); }}
+                            error={formState.errors?.machine}
+                            placeholder={t('Form.machine.placeholder')}
+                            tooltip={t('Form.machine.tooltip')}
                         />
 
 
-
-                        {/** bloc */}
-                        <FieldInputText
-                            id="bloc"
-                            name='bloc'
-                            title='Bloc'
-                            value={initialData?.bloc}
-                            error={formState.errors?.bloc}
-                            placeholder="bloc... : ex: 3 ou 3B"
-                            tooltip="Bloc ou bâtiment dans un lotissement ou parc industriel..."
+                        {/** Type */}
+                        <TagsTypesDropDown
+                            id='type'
+                            name="type"
+                            title={t('Form.type.label')}
+                            value={initialData?.type}
+                            options={types}
+                            onChange={(e: any) => { onChangedType(e); }}
+                            error={formState.errors?.type}
+                            placeholder={t('Form.type.placeholder')}
+                            tooltip={t('Form.type.tooltip')}
                         />
 
 
+                        {/** Memory */}
+                        <TagsMemoriesDropDown
+                            id='memory'
+                            name="memory"
+                            title={t('Form.memory.label')}
+                            value={initialData?.memory}
+                            options={memories}
+                            onChange={(e: any) => { onChangedMemory(e); }}
+                            error={formState.errors?.memory}
+                            placeholder={t('Form.memory.placeholder')}
+                            tooltip={t('Form.memory.tooltip')}
+                        />
 
 
+                        {/** Tables */}
+                        <TagsTablesDropDown
+                            id='table'
+                            name="table"
+                            title={t('Form.table.label')}
+                            value={initialData?.table}
+                            options={tables}
+                            onChange={(e: any) => { onChangedTable(e); }}
+                            error={formState.errors?.table}
+                            placeholder={t('Form.table.placeholder')}
+                            tooltip={t('Form.table.tooltip')}
+                        />
 
-                        {/** floor */}
+                        {/** DB */}
                         <FieldInputNumber
-                            id="floor"
-                            name='floor'
-                            title='Étage'
-                            value={initialData?.floor}
-                            error={formState.errors?.floor}
-                            placeholder="étage... : ex: 3"
-                            tooltip="numéro d'étage, du plateau..."
+                            id='db'
+                            name="db"
+                            title={t('Form.DB.label')}
+                            value={initialData?.db}
+                            // onChange={(e: any) => { onChangedTable(e); }}
+                            error={formState.errors?.db}
+                            placeholder={t('Form.DB.placeholder')}
+                            tooltip={t('Form.DB.tooltip')}
+                        />
+
+                        {/** BYTE */}
+                        <FieldInputNumber
+                            id='byte'
+                            name="byte"
+                            title={t('Form.BYTE.label')}
+                            value={initialData?.byte}
+                            // onChange={(e: any) => { onChangedTable(e); }}
+                            error={formState.errors?.byte}
+                            placeholder={t('Form.BYTE.placeholder')}
+                            tooltip={t('Form.BYTE.tooltip')}
+                        />
+
+                        {/** BIT Offset */}
+                        <FieldInputTextSlider
+                            id='bit'
+                            name="bit"
+                            title={t('Form.BIT.label')}
+                            value={initialData?.bit}
+                            // onChange={(e: any) => { onChangedTable(e); }}
+                            error={formState.errors?.bit}
+                            placeholder={t('Form.BIT.placeholder')}
+                            tooltip={t('Form.BIT.tooltip')}
+                            min={0}
+                            max={7}
                         />
 
 
 
 
+                        {/** ACTIVE */}
+                        <FieldInputCheckbox
+                            id="active"
+                            name='active'
+                            title={t('Form.active.label')}
+                            value={initialData.active}
+                            onChange={(value) => { initialData.active = value; setUpdate(!update) }}
+                            error={formState.errors?.active}
+                            tooltip={t('Form.active.tooltip')}
+                        />
 
-                        {/** number */}
+                        {/** CYCLE */}
+                        <FieldInputNumber
+                            id='cycle'
+                            name="cycle"
+                            title={t('Form.cycle.label')}
+                            value={initialData?.cycle}
+                            // onChange={(e: any) => { onChangedTable(e); }}
+                            error={formState.errors?.cycle}
+                            placeholder={t('Form.cycle.placeholder')}
+                            tooltip={t('Form.cycle.tooltip')}
+                            render={initialData.active === true}
+                        />
+
+                        {/** DELTA */}
+                        <FieldInputCheckbox
+                            id="delta"
+                            name='delta'
+                            title={t('Form.delta.label')}
+                            value={initialData.delta}
+                            onChange={(e) => { initialData.delta = e; setUpdate(!update) }}
+                            error={formState.errors?.delta}
+                            tooltip={t('Form.delta.tooltip')}
+                            render={initialData.active === true}
+                        />
+
+                        {/** Delta Float */}
+                        <FieldInputNumber
+                            id='deltaFloat'
+                            name="deltaFloat"
+                            title={t('Form.deltaFloat.label')}
+                            value={initialData?.deltaFloat}
+                            // onChange={(e: any) => { onChangedTable(e); }}
+                            error={formState.errors?.deltaFloat}
+                            placeholder={t('Form.deltaFloat.placeholder')}
+                            tooltip={t('Form.deltaFloat.tooltip')}
+                            render={initialData.active === true && initialData.delta === true}
+                        />
+
+                        {/** Delta Int */}
+                        <FieldInputNumber
+                            id='deltaInt'
+                            name="deltaInt"
+                            title={t('Form.deltaInt.label')}
+                            value={initialData?.deltaInt}
+                            // onChange={(e: any) => { onChangedTable(e); }}
+                            error={formState.errors?.deltaInt}
+                            placeholder={t('Form.deltaInt.placeholder')}
+                            tooltip={t('Form.deltaInt.tooltip')}
+                            render={initialData.active === true && initialData.delta === true}
+                        />
+
+                        {/** DELTA Bool */}
+                        <FieldInputCheckbox
+                            id="deltaBool"
+                            name='deltaBool'
+                            title={t('Form.deltaBool.label')}
+                            value={initialData.deltaBool}
+                            onChange={(e) => { initialData.deltaBool = e; setUpdate(!update) }}
+                            error={formState.errors?.deltaBool}
+                            tooltip={t('Form.deltaBool.tooltip')}
+                            render={initialData.active === true && initialData.delta === true}
+                        />
+
+                        {/** DELTA DateTime */}
+                        <FieldInputDateTime
+                            id='deltaDateTime'
+                            name="deltaDateTime"
+                            title={t('Form.deltaDateTime.label')}
+                            value={initialData?.deltaDateTime}
+                            // onChange={(e: any) => { onChangedTable(e); }}
+                            error={formState.errors?.deltaDateTime}
+                            placeholder={t('Form.deltaDateTime.placeholder')}
+                            tooltip={t('Form.deltaDateTime.tooltip')}
+                            render={initialData.active === true && initialData.delta === true}
+                        />
+
+
+
+                        {/** DEFAULT */}
+                        <FieldInputCheckbox
+                            id="vDefault"
+                            name='vDefault'
+                            title={t('Form.vDefault.label')}
+                            value={initialData.vDefault}
+                            onChange={(e) => { initialData.vDefault = e; setUpdate(!update) }}
+                            error={formState.errors?.vDefault}
+                            tooltip={t('Form.vDefault.tooltip')}
+                        />
+
+                        {/** Default Float */}
+                        <FieldInputNumber
+                            id='vFloat'
+                            name="vFloat"
+                            title={t('Form.vFloat.label')}
+                            value={initialData?.vFloat}
+                            // onChange={(e: any) => { onChangedTable(e); }}
+                            error={formState.errors?.vFloat}
+                            placeholder={t('Form.vFloat.placeholder')}
+                            tooltip={t('Form.vFloat.tooltip')}
+                            render={initialData.vDefault === true}
+                        />
+
+                        {/** Default Int */}
+                        <FieldInputNumber
+                            id='vInt'
+                            name="vInt"
+                            title={t('Form.vInt.label')}
+                            value={initialData?.vInt}
+                            // onChange={(e: any) => { onChangedTable(e); }}
+                            error={formState.errors?.vInt}
+                            placeholder={t('Form.vInt.placeholder')}
+                            tooltip={t('Form.vInt.tooltip')}
+                            render={initialData.vDefault === true}
+                        />
+
+                        {/** Default Bool */}
+                        <FieldInputCheckbox
+                            id="vBool"
+                            name='vBool'
+                            title={t('Form.vBool.label')}
+                            value={initialData.vBool}
+                            onChange={(e) => { initialData.vBool = e; setUpdate(!update) }}
+                            error={formState.errors?.vBool}
+                            tooltip={t('Form.vBool.tooltip')}
+                            render={initialData.vDefault === true}
+                        />
+
+                        {/** Default DateTime */}
+                        <FieldInputDateTime
+                            id='vDateTime'
+                            name="vDateTime"
+                            title={t('Form.vDateTime.label')}
+                            value={initialData?.vDateTime}
+                            // onChange={(e: any) => { onChangedTable(e); }}
+                            error={formState.errors?.vDateTime}
+                            placeholder={t('Form.vDateTime.placeholder')}
+                            tooltip={t('Form.vDateTime.tooltip')}
+                            render={initialData.vDefault === true}
+                        />
+
+
+                        {/** COUNTER */}
+                        <FieldInputCheckbox
+                            id="counter"
+                            name='counter'
+                            title={t('Form.counter.label')}
+                            value={initialData.counter}
+                            onChange={(e) => { initialData.counter = e; setUpdate(!update) }}
+                            error={formState.errors?.counter}
+                            tooltip={t('Form.counter.tooltip')}
+                        />
+
+                        {/** COMPTEUR TYPE */}
+                        <FieldInputNumber
+                            id='counterType'
+                            name="counterType"
+                            title={t('Form.counterType.label')}
+                            value={initialData?.counterType}
+                            // onChange={(e: any) => { onChangedTable(e); }}
+                            error={formState.errors?.counterType}
+                            placeholder={t('Form.counterType.placeholder')}
+                            tooltip={t('Form.counterType.tooltip')}
+                            render={initialData.counter === true}
+                        />
+
+
+                        {/** MESURE */}
+                        <FieldInputCheckbox
+                            id="mesure"
+                            name='mesure'
+                            title={t('Form.mesure.label')}
+                            value={initialData.mesure}
+                            onChange={(e) => { initialData.mesure = e; setUpdate(!update) }}
+                            error={formState.errors?.mesure}
+                            tooltip={t('Form.mesure.tooltip')}
+                        />
+
+                        {/** MESURE MIN */}
+                        <FieldInputNumber
+                            id='mesureMin'
+                            name="mesureMin"
+                            title={t('Form.mesureMin.label')}
+                            value={initialData?.mesureMin}
+                            // onChange={(e: any) => { onChangedTable(e); }}
+                            error={formState.errors?.mesureMin}
+                            placeholder={t('Form.mesureMin.placeholder')}
+                            tooltip={t('Form.mesureMin.tooltip')}
+                            render={initialData.mesure === true}
+                        />
+
+                        {/** MESURE MAX */}
+                        <FieldInputNumber
+                            id='mesureMax'
+                            name="mesureMax"
+                            title={t('Form.mesureMax.label')}
+                            value={initialData?.mesureMax}
+                            // onChange={(e: any) => { onChangedTable(e); }}
+                            error={formState.errors?.mesureMax}
+                            placeholder={t('Form.mesureMax.placeholder')}
+                            tooltip={t('Form.mesureMax.tooltip')}
+                            render={initialData.mesure === true}
+                        />
+
+
+                        {/** MESURE Unit */}
+                        <MeasuresUnitsDropDown
+                            id='measureUnit'
+                            name="measureUnit"
+                            title={t('Form.measureUnit.label')}
+                            value={initialData?.measureUnit}
+                            options={measureUnits}
+                            onChange={(e: any) => { onChangedMeasureUnits(e); }}
+                            error={formState.errors?.measureUnit}
+                            placeholder={t('Form.measureUnit.placeholder')}
+                            tooltip={t('Form.measureUnit.tooltip')}
+                            render={initialData.mesure === true}
+                        />
+
+                        {/** MQTT TOPICS */}
                         <FieldInputText
-                            id="number"
-                            name='number'
-                            title='Numéro'
-                            value={initialData.number}
-                            error={formState.errors?.number}
-                            placeholder="numéro... : ex: 6B ou 3, 3A"
-                            tooltip="numéro de porte de destination..."
+                            id="mqtt_topic"
+                            name='mqtt_topic'
+                            title={t('Form.mqtt_topic.label')}
+                            value={initialData?.mqtt_topic}
+                            error={formState.errors?.mqtt_topic}
+                            placeholder={t('Form.mqtt_topic.placeholder')}
+                            tooltip={t('Form.mqtt_topic.tooltip')}
+                        />
+
+                        {/** WEBHOOK PATH */}
+                        <FieldInputText
+                            id="webhook"
+                            name='webhook'
+                            title={t('Form.webhook.label')}
+                            value={initialData?.webhook}
+                            error={formState.errors?.webhook}
+                            placeholder={t('Form.webhook.placeholder')}
+                            tooltip={t('Form.webhook.tooltip')}
                         />
 
 
+                        {/** LABORATORY */}
+                        <FieldInputCheckbox
+                            id="laboratory"
+                            name='laboratory'
+                            title={t('Form.laboratory.label')}
+                            value={initialData.laboratory}
+                            onChange={(e) => { initialData.laboratory = e; setUpdate(!update) }}
+                            error={formState.errors?.laboratory}
+                            tooltip={t('Form.laboratory.tooltip')}
+                        />
 
+
+                        {/** FORMULA */}
+                        <FieldInputCheckbox
+                            id="formula"
+                            name='formula'
+                            title={t('Form.formula.label')}
+                            value={initialData.formula}
+                            onChange={(e) => { initialData.formula = e; setUpdate(!update) }}
+                            error={formState.errors?.formula}
+                            tooltip={t('Form.formula.tooltip')}
+                        />
+
+                        {/** FORMULA CALCULUS */}
+                        <FieldInputEditor
+                            id="formCalculus"
+                            name='formCalculus'
+                            title={t('Form.formCalculus.label')}
+                            value={initialData?.formCalculus}
+                            error={formState.errors?.formCalculus}
+                            placeholder={t('Form.formCalculus.placeholder')}
+                            tooltip={t('Form.formCalculus.tooltip')}
+                            render={initialData.formula === true}
+                        />
+
+                        {/** FORMULA PROCESSING */}
+                        <FieldInputNumber
+                            id='formProcessing'
+                            name="formProcessing"
+                            title={t('Form.formProcessing.label')}
+                            value={initialData?.formProcessing}
+                            // onChange={(e: any) => { onChangedTable(e); }}
+                            error={formState.errors?.formProcessing}
+                            placeholder={t('Form.formProcessing.placeholder')}
+                            tooltip={t('Form.formProcessing.tooltip')}
+                            render={initialData.formula === true}
+                        />
+
+                        {/** ERROR */}
+                        <FieldInputCheckbox
+                            id="error"
+                            name='error'
+                            title={t('Form.error.label')}
+                            value={initialData.error}
+                            onChange={(e) => { initialData.error = e; setUpdate(!update) }}
+                            error={formState.errors?.error}
+                            tooltip={t('Form.error.tooltip')}
+                            disabled={type !== 2}
+                        />
+
+                        {/** MESSAGE D'ERREUR */}
+                        <FieldInputText
+                            id="errorMsg"
+                            name='errorMsg'
+                            title={t('Form.errorMsg.label')}
+                            value={initialData?.errorMsg}
+                            error={formState.errors?.errorMsg}
+                            // placeholder={t('Form.errorMsg.placeholder')}
+                            tooltip={t('Form.errorMsg.tooltip')}
+                            render={initialData.error === true}
+                            disabled={type !== 2}
+                        />
+
+                        {/** MESSAGE D'ERREUR STAMP*/}
+                        <FieldInputText
+                            id="errorStamp"
+                            name='errorStamp'
+                            title={t('Form.errorStamp.label')}
+                            value={initialData?.errorStamp}
+                            error={formState.errors?.errorStamp}
+                            // placeholder={t('Form.errorStamp.placeholder')}
+                            tooltip={t('Form.errorStamp.tooltip')}
+                            render={initialData.error === true}
+                            disabled={type !== 2}
+                        />
+
+                        {/** ALARM ENABLE */}
+                        <FieldInputCheckbox
+                            id="alarmEnable"
+                            name='alarmEnable'
+                            title={t('Form.alarmEnable.label')}
+                            value={initialData.alarmEnable}
+                            onChange={(e) => { initialData.alarmEnable = e; setUpdate(!update) }}
+                            error={formState.errors?.alarmEnable}
+                            tooltip={t('Form.alarmEnable.tooltip')}
+                        />
+
+
+                        {/** ALARM */}
+                        <AlarmsDropDown
+                            id='alarm'
+                            name="alarm"
+                            title={t('Form.alarm.label')}
+                            value={initialData?.alarm}
+                            options={alarms}
+                            onChange={(e: any) => { onChangedAlarms(e); }}
+                            error={formState.errors?.alarm}
+                            placeholder={t('Form.alarm.placeholder')}
+                            tooltip={t('Form.alarm.tooltip')}
+                            render={initialData.alarmEnable === true}
+                        />
+
+
+                        {/** PERSISTENCE ENABLE */}
+                        <FieldInputCheckbox
+                            id="persistenceEnable"
+                            name='persistenceEnable'
+                            title={t('Form.persistenceEnable.label')}
+                            value={initialData.persistenceEnable}
+                            onChange={(e) => { initialData.persistenceEnable = e; setUpdate(!update) }}
+                            error={formState.errors?.persistenceEnable}
+                            tooltip={t('Form.persistenceEnable.tooltip')}
+                        />
+
+                        {/** PERSISTENCE OFFSET ENABLE*/}
+                        <FieldInputCheckbox
+                            id="persOffsetEnable"
+                            name='persOffsetEnable'
+                            title={t('Form.persOffsetEnable.label')}
+                            value={initialData.persOffsetEnable}
+                            onChange={(e) => { initialData.persOffsetEnable = e; setUpdate(!update) }}
+                            error={formState.errors?.persOffsetEnable}
+                            tooltip={t('Form.persOffsetEnable.tooltip')}
+                            render={initialData.persistenceEnable === true}
+                        />
+
+                        {/** PERSISTENCE OFFSET FLOAT*/}
+                        <FieldInputNumber
+                            id='persOffsetFloat'
+                            name="persOffsetFloat"
+                            title={t('Form.persOffsetFloat.label')}
+                            value={initialData?.persOffsetFloat}
+                            // onChange={(e: any) => { onChangedTable(e); }}
+                            error={formState.errors?.persOffsetFloat}
+                            placeholder={t('Form.persOffsetFloat.placeholder')}
+                            tooltip={t('Form.persOffsetFloat.tooltip')}
+                            render={initialData.persistenceEnable === true && initialData.persOffsetEnable === true}
+                        />
+
+                        {/** PERSISTENCE OFFSET INT*/}
+                        <FieldInputNumber
+                            id='persOffsetInt'
+                            name="persOffsetInt"
+                            title={t('Form.persOffsetInt.label')}
+                            value={initialData?.persOffsetInt}
+                            // onChange={(e: any) => { onChangedTable(e); }}
+                            error={formState.errors?.persOffsetInt}
+                            placeholder={t('Form.persOffsetInt.placeholder')}
+                            tooltip={t('Form.persOffsetInt.tooltip')}
+                            render={initialData.persistenceEnable === true && initialData.persOffsetEnable === true}
+                        />
+
+                        {/** PERSISTENCE OFFSET BOOLEAN*/}
+                        <FieldInputCheckbox
+                            id="persOffsetBool"
+                            name='persOffsetBool'
+                            title={t('Form.persOffsetBool.label')}
+                            value={initialData.persOffsetBool}
+                            onChange={(e) => { initialData.persOffsetBool = e; setUpdate(!update) }}
+                            error={formState.errors?.persOffsetBool}
+                            tooltip={t('Form.persOffsetBool.tooltip')}
+                            render={initialData.persistenceEnable === true && initialData.persOffsetEnable === true}
+                        />
+
+                        {/** PERSISTENCE OFFSET DATETIME*/}
+                        <FieldInputDateTime
+                            id='persOffsetDateTime'
+                            name="persOffsetDateTime"
+                            title={t('Form.persOffsetDateTime.label')}
+                            value={initialData?.persOffsetDateTime}
+                            // onChange={(e: any) => { onChangedTable(e); }}
+                            error={formState.errors?.persOffsetDateTime}
+                            placeholder={t('Form.persOffsetDateTime.placeholder')}
+                            tooltip={t('Form.persOffsetDateTime.tooltip')}
+                            render={initialData.persistenceEnable === true && initialData.persOffsetEnable === true}
+                        />
+
+                        {/** COMMENT */}
+                        <FieldInputText
+                            id="comment"
+                            name='comment'
+                            title={t('Form.comment.label')}
+                            value={initialData?.comment}
+                            error={formState.errors?.comment}
+                            placeholder={t('Form.comment.placeholder')}
+                            tooltip={t('Form.comment.tooltip')}
+                        />
+
+                        {/** LIST */}
+                        <TagsListsDropDown
+                            id='list'
+                            name="list"
+                            title={t('Form.list.label')}
+                            value={initialData?.list}
+                            options={lists}
+                            onChange={(e: any) => { onChangedLists(e); }}
+                            error={formState.errors?.list}
+                            placeholder={t('Form.list.placeholder')}
+                            tooltip={t('Form.list.tooltip')}
+                        />
 
 
 
 
                         {/** Command options */}
                         <ButtonBarCreate
+                            name="buttonBarCreate"
+                            key='buttonBarCreate'
                             // onSaveClick={onSubmit}
                             onCancelClick={onCancel}
                             onModeChanged={e => handleModeChanged(e)}
@@ -746,6 +1091,7 @@ export default function PostForm({ formAction, type, initialData }: OBI.Location
 
             {/* Display last record */}
             <OutputRecord catalog={catalog} loading={lazyLoading} />
+            <OutputError catalog={errorCatalog} loading={lazyLoading} />
 
         </div>
 

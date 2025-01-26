@@ -144,6 +144,7 @@ export const ExportsService = {
      * @param fileName Name of the file to be created without extension
      */
     downloadAsXLSX(data: any, fileName: any) {
+        console.log(data);
         const worksheet = XLSX.utils.json_to_sheet(data);
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, "obi1");
@@ -257,6 +258,7 @@ export const ExportsService = {
 
             // Get Lazy Data
             Service.download(lazyEventSet).then((data: any) => {
+                // console.log('data form exportsService', data);
                 this.downloadAsXLSX(data, name + '_' + Math.floor(Date.now() / 1000))
                 res.processing = false
                 res.result = data;

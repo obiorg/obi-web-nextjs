@@ -8,10 +8,8 @@ import { useEffect, useState } from "react"
 import ReactIcons from "@/src/obi/components/Icons/ReactIcons"
 import { CompaniesModel } from "@/src/obi/models/businesses/CompaniesModel"
 import { CompaniesService } from "@/src/obi/service/businesses/CompaniesService"
-import { DataTableFilterMeta } from "primereact/datatable"
 import { Dropdown } from "primereact/dropdown"
 import { Skeleton } from "primereact/skeleton"
-import { useTranslations } from "next-intl"
 
 
 // Define the props that the PostForm component expects
@@ -56,22 +54,22 @@ export default function CompaniesDropDown({
     render = true,
 }: CompaniesDropDownProps) {
 
-    
 
     // lazy for request
     const [lazyParams, setLazyParams] = useState(
         (new CompaniesModel()).
             getStandardParam({ field: 'company', order: 1 },
                 CompaniesService.defaultFilters()));
-    // Manage Timeout
-    let loadLazyTimeout: any = undefined;
+
 
 
     // catalog processing
     const [selectedCatalog, setSelectedCatalog] = useState<any>(value);
     const [catalogs, setCatalogs] = useState<any>([]);
     const [lazyLoading, setLazyLoading] = useState(true);
-    const [initCatalog, setInitCatalog] = useState(false);
+
+    // Manage Timeout
+    let loadLazyTimeout: any = undefined;
 
 
 
@@ -111,8 +109,6 @@ export default function CompaniesDropDown({
         _lazyParams.filters.global.value = e.filter === '' ? null : e.filter;
         _lazyParams.filters.global.matchMode = 'contains';
         setLazyParams(() => { return { ..._lazyParams } });
-        // console.log('onChangedFilter', e, lazyParams);
-
     }
 
     /**
@@ -128,7 +124,6 @@ export default function CompaniesDropDown({
         _lazyParams.filters.global.value = filter === '' ? null : filter;
         _lazyParams.filters.global.matchMode = 'contains';
         setLazyParams(() => { return { ..._lazyParams } });
-        // console.log('onLazyLoad', e, lazyParams);
     }
 
     /**
@@ -157,7 +152,8 @@ export default function CompaniesDropDown({
                 for (let i = lazyParams.first; (i < lazyParams.rows && i < data.length); i++) {
                     // console.log('for i', i, data[i])
                     _catalogs[i] = {
-                        label: data[i].company + ' - ' + data[i].designation + ' [' + data[i].id + ']',
+                        label: data[i].company + ' - ' + data[i].designation
+                            + ' [' + data[i].id + ']',
                         value: data[i].id,
                         catalogs: data[i]
                     };
@@ -178,7 +174,6 @@ export default function CompaniesDropDown({
     useEffect(() => {
         loadCatalogs();
     }, [lazyParams]);
-
 
 
 
@@ -221,8 +216,8 @@ export default function CompaniesDropDown({
                     filter
                     onFilter={onChangedFilter}
                     showFilterClear
-                    emptyFilterMessage="Recherche sans résultat..."
-                    emptyMessage="Vide !"
+                    emptyFilterMessage={emptyFilterMessage}
+                    emptyMessage={emptyMessage}
 
                     // loading={lazyLoading}
                     virtualScrollerOptions={

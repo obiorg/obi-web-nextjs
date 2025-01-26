@@ -196,30 +196,43 @@ export const TagsTablesService = {
         formState: any,
         formData: FormData | any): Promise<any> {
 
-        // From default model adapt values
+        // Recover model object
         let model = (new TagsTablesModel());
         let data: any = model.defaults;
+        // Recover original data type
         let dataType: any = model.type;
 
-        // Transmited data
-        let defaults: any = {};
-        for (const [key, value] of formData) {
-            // console.log(`default >> ${key}: ${value}\n`);
-            defaults[key] = value;
-        }
+        // // Recover data from form
+        // let dataForm: any = {};
+        // for (const [key, value] of formData) {
+        //     // console.log(`default >> ${key}: ${value}\n`);
+        //     dataForm[key] = value;
+        // }
 
+        // Inject form data into the model
         for (const [key, value] of formData) {
-            // console.log(`process >> ${key}: ${value}\n`);
+            //console.log(`process >> ${key}: ${value} with dataType = ${dataType[key]}\n`);
+
+            // Set form value
             data[key] = value;
 
-            // Change all string number to Number
+            // Adapt form value depending on type
+            //
+            // Adapt Number value
             if (dataType[key] === Number) {
                 data[key] = value === '' ? undefined : Number(value);
                 // console.log(`key ${key} is a number and value is ${value} \n`);
             }
-
+            // Adapt boolean value
+            else if (dataType[key] === Boolean) {
+                //console.log(`key ${key} is a boolean and value is ${value} \n`);
+                data[key] = value === 'true' || value === '1' || value === 'on' ? true : false;
+                //console.log('data['+ key + '] = ' + data[key]);
+            }
         }
-        delete data.compagnies;
+        delete data.companies;
+        // console.log('TagsTables >> data', data);
+        // console.log('TagsTables >> data stringify', JSON.stringify(data));
 
         // Define URL
         const url = process.env.httpPath + '/tags/tables';
@@ -245,15 +258,19 @@ export const TagsTablesService = {
             if (res.ok) {
                 // console.log('Promise resolved and HTTP status is successful');
                 const dataset: any = await res.json();
-                return dataset;
+                return JSON.parse(dataset);
             }
             // On fail !
             else {
                 let datas: any = await res.json();
-                // console.log(datas);
+                console.log(datas);
                 let dataset: any = {};
                 if (datas.issues !== undefined && datas.issues.length > 0) {
-                    dataset = { errors: ZodHelper.issuesFlatten(datas.issues[0].unionErrors, 0) };
+                    if (datas.issues[0].unionErrors) {
+                        dataset = { errors: ZodHelper.issuesFlatten(datas.issues[0].unionErrors, 0) };
+                    } else {
+                        dataset = datas;
+                    }
                     dataset['error'] = {};
                     dataset['error'].message = datas.issues[0].code;
                     dataset['error'].stack = datas.issues[0].message;
@@ -287,6 +304,8 @@ export const TagsTablesService = {
         }
 
     },
+
+
 
     async processAll(formState: any, datas: any): Promise<any> {
         let res: any = [];
@@ -370,37 +389,50 @@ export const TagsTablesService = {
     },
 
 
-    async update(
-        formState: any,
-        formData: FormData | any): Promise<any> {
+     async update(
+         formState: any,
+         formData: FormData | any): Promise<any> {
+ 
+         // Recover model object
+         let model = (new TagsTablesModel());
+         let data: any = model.defaults;
+         // Recover original data type
+         let dataType: any = model.type;
+ 
+         // // Recover data from form
+         // let dataForm: any = {};
+         // for (const [key, value] of formData) {
+         //     // console.log(`default >> ${key}: ${value}\n`);
+         //     dataForm[key] = value;
+         // }
+ 
+         // Inject form data into the model
+         for (const [key, value] of formData) {
+             //console.log(`process >> ${key}: ${value} with dataType = ${dataType[key]}\n`);
+ 
+             // Set form value
+             data[key] = value;
+ 
+             // Adapt form value depending on type
+             //
+             // Adapt Number value
+             if (dataType[key] === Number) {
+                 data[key] = value === '' ? undefined : Number(value);
+                 // console.log(`key ${key} is a number and value is ${value} \n`);
+             }
+             // Adapt boolean value
+             else if (dataType[key] === Boolean) {
+                 //console.log(`key ${key} is a boolean and value is ${value} \n`);
+                 data[key] = value === 'true' || value === '1' || value === 'on' ? true : false;
+                 //console.log('data['+ key + '] = ' + data[key]);
+             }
+         }
 
-        // From default model adapt values
-        let model = (new TagsTablesModel());
-        let data: any = model.defaults;
-        let dataType: any = model.type;
-
-        // Transmited data
-        let defaults: any = {};
-        for (const [key, value] of formData) {
-            // console.log(`default >> ${key}: ${value}\n`);
-            defaults[key] = value;
-        }
-
-        for (const [key, value] of formData) {
-            // console.log(`process >> ${key}: ${value}\n`);
-            data[key] = value;
-
-
-            // Change all string number to Number
-            if (dataType[key] === Number) {
-                data[key] = value === '' ? undefined : Number(value);
-                // console.log(`key ${key} is a number and value is ${value} \n`);
-            }
-
-        }
-        delete data.compagnies;
-
-
+         delete data.companies;
+         // console.log('TagsTables >> data', data);
+         // console.log('TagsTables >> data stringify', JSON.stringify(data));
+ 
+ 
         const url = process.env.httpPath + '/tags/tables/' + data.id;
 
 

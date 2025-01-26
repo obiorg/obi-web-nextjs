@@ -3,7 +3,9 @@
 import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button } from "primereact/button";
+import { Editor } from "primereact/editor";
 import { InputText } from "primereact/inputtext";
+import { InputTextarea } from "primereact/inputtextarea";
 import { SplitButton } from "primereact/splitbutton";
 import { Toast } from "primereact/toast";
 import React, { useEffect, useRef, useState } from "react";
@@ -11,7 +13,7 @@ import { useFormStatus } from "react-dom";
 
 
 // Define the props that the PostForm component expects
-interface FieldInputTextProps {
+interface FieldInputEditorProps {
     id?: string;                         // ID of the component
     name?: string;                       // Name of the component
     title?: string;                      // preceding title of dropdown
@@ -30,19 +32,14 @@ interface FieldInputTextProps {
 }
 
 
-export default function FieldInputText({
-    id,
-    name,
-    title,
-    value,
-    onChange,
-    error,
-    placeholder,
-    tooltip,
-    tooltipOptions,
-    disabled,
-    render = true
-}: FieldInputTextProps) {
+export default function FieldInputEditor(
+    { id, name, title,
+        value,
+        onChange,
+        error, placeholder, tooltip, tooltipOptions,
+        disabled,
+        render = true
+    }: FieldInputEditorProps) {
 
 
 
@@ -56,18 +53,19 @@ export default function FieldInputText({
                         </label>
                     </div>
 
-                    <InputText
+                    <InputTextarea 
                         id={id}
                         name={name}
                         defaultValue={value}
                         onChange={onChange}
                         className={'col-12 md:col-5  pl-2 mb-2 input-value ' + (error ? 'p-invalid' : '')}
-
+                        style={{ height: '320px' }}
                         placeholder={placeholder}
                         // required
-                        tooltip={tooltip}
-                        tooltipOptions={tooltipOptions ? tooltipOptions : { position: 'bottom' }}
+                        // tooltip={tooltip}
+                        // tooltipOptions={tooltipOptions ? tooltipOptions : { position: 'bottom' }}
                         disabled={disabled}
+                        readOnly={disabled}
                     />
 
                     <div className={'col-12 md:col-4 p-0 m-0 text-left align-content-center'}>

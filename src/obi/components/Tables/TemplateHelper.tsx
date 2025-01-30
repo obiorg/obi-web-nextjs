@@ -11,7 +11,7 @@ import { classNames } from "primereact/utils";
 
 
 exports.datetimeObj = (date: any) => {
-    if (date === undefined || date === null) {
+    if (date === undefined || date === null || date === '' || date === 0) {
         return null;
     }
 
@@ -19,7 +19,7 @@ exports.datetimeObj = (date: any) => {
     if (date) {
         dateParts = date.split('-')
     }
-
+    if(dateParts.length < 6)    return null;
     var jsDate = new Date(
         dateParts[0],
         dateParts[1] - 1,
@@ -504,7 +504,8 @@ exports.tagsMemory = (rowData: any) => {
 exports.tag = (rowData: any) => {
     return <label>
         {rowData.tags?.name + ' - '
-            + rowData.tags?.comment
+            + (rowData.tags?.comment ? rowData.tags?.comment : '')
+            + ' [' + rowData.tags?.machine + '-]'
             + ' (' + rowData.tags?.company
             + ') [' + rowData.tags?.id + ']'} </label>
 }

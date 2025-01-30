@@ -37,7 +37,6 @@ interface TagsDropDownProps {
 }
 
 
-
 export default function TagsDropDown({
     id,
     name,
@@ -56,45 +55,78 @@ export default function TagsDropDown({
 
 
     const [lazyParams, setLazyParams] = useState(
-        new TagsModel().
-            getStandardParam([{ field: 'company', order: 1 }, { field: 'machine', order: 1 }, { field: 'name', order: 1 }],
+        (new TagsModel()).
+            getStandardParam(
+                [{ field: 'company', order: 1 },
+                { field: 'machine', order: 1 },
+                { field: 'name', order: 1 }],
                 TagsService.defaultFilters()));
 
-    /**
-     * Managing catlog
-     */
+    const defaultLazyParams = () => {
+        setLazyParams((new TagsModel()).
+            getStandardParam(
+                [{ field: 'company', order: 1 },
+                { field: 'machine', order: 1 },
+                { field: 'name', order: 1 }],
+                TagsService.defaultFilters()));
+    };
+
+
+
+    // catalog processing
     const [selectedCatalog, setSelectedCatalog] = useState<any>(value);
     const [catalogs, setCatalogs] = useState<any>([]);
     const [lazyLoading, setLazyLoading] = useState(true);
-    const [initCatalog, setInitCatalog] = useState(false);
 
-
+    // Manage Timeout
     let loadLazyTimeout: any = undefined;
 
+    const focusInputRef = useRef<any>('');
 
 
     /**
      * Restaure data on init
      */
     useEffect(() => {
-        // if (initCatalog === false) {
-        //     const _catalogs = Array.from({ length: 100000 });
-        //     const lazyEventSet = { lazyEvent: JSON.stringify(lazyParams) };
-        //     // Get Lazy Data
-        //     TagsService.getLazy(lazyEventSet).then((data: any) => {
-        //         for (let i = lazyParams.first; i < lazyParams.rows; i++) {
-        //             _catalogs[i] = {
-        //                 label: data[i].type + ' - ' + data[i].designation + '(' + data[i].business + '/' + data[i].company + ') [' + data[i].id + ']',
-        //                 value: data[i].id,
-        //                 catalogs: data[i]
-        //             };
-        //         }
-        //         setCatalogs(_catalogs);
-        //         setLazyLoading(false);
-        //     });
-        //     setInitCatalog(true);
 
-        // }
+        if (value && value !== undefined && value !== null) {
+            console.log('reload value defined', value);
+            let filters: any = lazyParams.filters;
+            console.log('reload filter defined', filters);
+            // USING ID
+            //
+            filters.id = {
+                "operator": "and",
+                "constraints": [
+                    {
+                        "value": value,
+                        "matchMode": "equals",
+                        "type": "numeric"
+                    }
+                ]
+            };
+            let _lazyParams = lazyParams;
+            _lazyParams.filters = filters;
+            setLazyParams(() => { return { ..._lazyParams } });
+
+            console.log('InputRef', focusInputRef);
+            // focusInputRef?.currentValue = value;
+
+            loadData();
+        } else {
+            console.log('reload value else', value);
+            setLazyParams(() => {
+                return {
+                    ...(new TagsModel()).
+                        getStandardParam(
+                            [{ field: 'company', order: 1 },
+                            { field: 'machine', order: 1 },
+                            { field: 'name', order: 1 }],
+                            TagsService.defaultFilters())
+                }
+            });
+            loadData();
+        }
         // setSelectedCatalog(value);
     }, [value]);
 
@@ -105,7 +137,32 @@ export default function TagsDropDown({
     }
 
     const onChangedFilter = (e: any) => {
+        let filters: any = lazyParams.filters;
+        if (e.filter === '') {
+            filters.id = {
+                "operator": "and",
+                "constraints": [
+                    {
+                        "value": value,
+                        "matchMode": "equals",
+                        "type": "numeric"
+                    }
+                ]
+            };
+        } else {
+            filters.id = {
+                "operator": "and",
+                "constraints": [
+                    {
+                        "value": null,
+                        "matchMode": "equals",
+                        "type": "numeric"
+                    }
+                ]
+            };
+        }
         let _lazyParams = lazyParams;
+        _lazyParams.filters = filters;
         _lazyParams.filters.global.value = e.filter === '' ? null : e.filter;
         _lazyParams.filters.global.matchMode = 'contains';
         setLazyParams(() => { return { ..._lazyParams } });
@@ -127,7 +184,7 @@ export default function TagsDropDown({
         setLazyParams(() => { return { ..._lazyParams } });
     }
 
-    const loadData = (e: any) => {
+    const loadData = () => {
         // console.log('useEffect reload');
         setLazyLoading(true);
 
@@ -149,7 +206,9 @@ export default function TagsDropDown({
                 for (let i = lazyParams.first; (i < lazyParams.rows && i < data.length); i++) {
                     // console.log('for i', i, data[i])
                     _catalogs[i] = {
-                        label: data[i].name + ' - ' + data[i].machines + '(' + data[i].business + '/' + data[i].companies + ') [' + data[i].id + ']',
+                        label: data[i].name + ' - [' + data[i].machines.name + ' - '
+                            + data[i].machines.address + ']  [' + data[i].id + '] '
+                            + data[i].comment,
                         value: data[i].id,
                         catalogs: data[i]
                     };
@@ -168,8 +227,9 @@ export default function TagsDropDown({
      * Main data effect depending on lazyParams
      */
     useEffect(() => {
-        loadData(lazyParams);
+        loadData();
     }, [lazyParams]);
+
 
 
 
@@ -185,7 +245,10 @@ export default function TagsDropDown({
                     </label>
                 </div>
 
+
                 <Dropdown
+                    id={id}
+                    name={name}
                     value={selectedCatalog}
 
                     options={catalogs}
@@ -193,15 +256,21 @@ export default function TagsDropDown({
 
                     className={'col-12 md:col-5  pl-2 mb-2 input-value ' + (error ? 'p-invalid' : '')}
                     placeholder={placeholder}
+                    // required
+                    tooltip={tooltip}
+                    tooltipOptions={tooltipOptions ? tooltipOptions : { position: 'bottom' }}
 
 
                     showClear
                     filter
                     onFilter={onChangedFilter}
                     showFilterClear
+                    focusInputRef={focusInputRef}
+
                     emptyFilterMessage={emptyFilterMessage}
                     emptyMessage={emptyMessage}
-
+                    checkmark={true} highlightOnSelect={false}
+                    // editable
                     // loading={lazyLoading}
                     virtualScrollerOptions={
                         {

@@ -20,7 +20,9 @@
         "Storage": {
           "title": "CO2 storage tanks",
           "description": "Show all volume of CO2 storage tank"
-        }
+        },
+        "title": "CO2",
+        "description": "CO2 meter data"
       }
     },
     "home": {
@@ -326,6 +328,48 @@
         "label": "Description",
         "placeholder": "A description...",
         "tooltip": "Associate a full description"
+      }
+    }
+  },
+  "persistences": {
+    "Create": {
+      "title": "Creation of persistence"
+    },
+    "Edit": {
+      "title": "Change persistence",
+      "subTitle": "Below edit persistence"
+    },
+    "Form": {
+      "tag": {
+        "label": "Tag",
+        "placeholder": "Select a tag",
+        "tooltip": "Associate a tag with the archive method"
+      },
+      "method": {
+        "label": "Method",
+        "tooltip": "Associate an archive method in the tag",
+        "placeholder": "Select a method"
+      },
+      "comment": {
+        "label": "Description",
+        "placeholder": "ex: allows you to define the association",
+        "tooltip": "Provide a description of the tag - method association"
+      },
+      "company": {
+        "label": "Company",
+        "placeholder": "Select a company",
+        "tooltip": "Associate a company with the TAG archive method"
+      },
+      "activate": {
+        "label": "Enable",
+        "tooltip": "Enable persistence"
+      }
+    }
+  },
+  "tagsList": {
+    "Form": {
+      "company": {
+        "label": "Company"
       }
     }
   }

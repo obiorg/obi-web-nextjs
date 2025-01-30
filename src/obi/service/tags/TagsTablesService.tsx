@@ -253,7 +253,7 @@ export const TagsTablesService = {
                     body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
                 }
             )
-
+            // console.log('Fetching data from finish res', res);
             // On success
             if (res.ok) {
                 // console.log('Promise resolved and HTTP status is successful');

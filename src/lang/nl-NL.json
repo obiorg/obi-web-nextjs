@@ -17,7 +17,11 @@
       "title": "Voorbeeld van geneste route"
     },
     "dashboard": {
-      "title": "Dashboard"
+      "title": "Dashboard",
+      "CO2": {
+        "title": "CO2",
+        "description": "CO2 -metergegevens"
+      }
     }
   },
   "header": {
@@ -309,6 +313,48 @@
         "label": "Beschrijving",
         "placeholder": "Een beschrijving...",
         "tooltip": "Voeg een volledige beschrijving toe"
+      }
+    }
+  },
+  "persistences": {
+    "Create": {
+      "title": "Doorzettingsvermogen creëren"
+    },
+    "Edit": {
+      "title": "Verander de persistentie",
+      "subTitle": "Hieronder bewerk persistentie"
+    },
+    "Form": {
+      "tag": {
+        "label": "Tag",
+        "placeholder": "Selecteer een label",
+        "tooltip": "Associeer een tag met de archiefmethode"
+      },
+      "method": {
+        "label": "Methode",
+        "tooltip": "Koppel een archiveringsmethode aan de tag",
+        "placeholder": "Selecteer een methode"
+      },
+      "comment": {
+        "label": "Beschrijving",
+        "placeholder": "ex: hiermee kunt u de associatie definiëren",
+        "tooltip": "Geef een beschrijving van de koppeling tussen tag en methode"
+      },
+      "company": {
+        "label": "Bedrijf",
+        "placeholder": "Selecteer een bedrijf",
+        "tooltip": "Koppel een bedrijf aan de tag-archiefmethode"
+      },
+      "activate": {
+        "label": "Inschakelen",
+        "tooltip": "Doorzettingsvermogen inschakelen"
+      }
+    }
+  },
+  "tagsList": {
+    "Form": {
+      "company": {
+        "label": "Bedrijf"
       }
     }
   }

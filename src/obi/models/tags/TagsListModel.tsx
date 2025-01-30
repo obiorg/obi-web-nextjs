@@ -22,12 +22,12 @@ export class TagsListModel extends Model {
             created: 0,
             changed: 0,
 
-            
+
             company: undefined,
             type: undefined,
             list: undefined,
-            designation: '',
-            comment: '',
+            designation: undefined,
+            comment: undefined,
 
             companies: {},
             tags_lists_types: {},
@@ -44,7 +44,7 @@ export class TagsListModel extends Model {
         this.map.set('deleted', 'boolean');
         this.map.set('created', 'datetime');
         this.map.set('changed', 'datetime');
-        
+
         this.map.set('company', 'numeric');
         this.map.set('type', 'numeric');
         this.map.set('list', 'text');
@@ -59,7 +59,7 @@ export class TagsListModel extends Model {
             deleted: Boolean,
             created: Date,
             changed: Date,
-            
+
             company: Number,
             type: Number,
             list: String,

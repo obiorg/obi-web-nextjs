@@ -428,7 +428,6 @@ export const TagsService = {
         delete data.tags_tables;
         delete data.tags_types;
         delete data.tags;
-        delete data.tags;
         // console.log('TagsService >> data', data);
         // console.log('TagsService >> data stringify', JSON.stringify(data));
 
@@ -632,7 +631,6 @@ export const TagsService = {
         delete data.tags_tables;
         delete data.tags_types;
         delete data.tags;
-        delete data.tags;
         // console.log('TagsService >> data', data);
         // console.log('TagsService >> data stringify', JSON.stringify(data));
 
@@ -666,7 +664,7 @@ export const TagsService = {
             // On fail !
             else {
                 let datas: any = await res.json();
-                console.log(datas);
+                // console.log(datas);
                 let dataset: any = {};
                 // console.log('onUpdating datas', datas);
                 if (datas.issues !== undefined && datas.issues.length > 0 && datas.issues[0]?.unionErrors) {
@@ -711,7 +709,7 @@ export const TagsService = {
         data: any[]): Promise<any> {
 
         const url = process.env.httpPath + '/tags/update';
-        console.log(data, JSON.stringify(data));
+        // console.log(data, JSON.stringify(data));
 
         // Fetch data from API
         try {

@@ -145,7 +145,7 @@ export class Model {
     let filter = (filtered === undefined) ? '{}' : filtered;
     return {
       first: 0,
-      rows: 10,
+      rows: 150,
       page: pg,
       pageCount: 0,
       pk: 'id',

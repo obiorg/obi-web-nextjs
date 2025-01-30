@@ -149,6 +149,14 @@ const TagsPage = () => {
             })} />;
     }
 
+    const persistenceEnable = (rowData: any) => {
+        return <i className={
+            classNames('pi', {
+                'true-icon pi-check text-green-600': rowData?.persistenceEnable,
+                'false-icon pi-times text-red-600': !rowData?.persistenceEnable
+            })} />;
+    }
+
     const persOffsetEnable = (rowData: any) => {
         return <i className={
             classNames('pi', {
@@ -228,7 +236,7 @@ const TagsPage = () => {
         { field: 'alarmEnable', header: 'Alarme ON', dataType: "boolean", body: templateHelper.alarmEnable, sortable: true, filter: true, filterElement: templateHelper.booleanFilterTemplate, style: { textAlign: 'center', minWidth: '6rem' } },
         { field: 'alarm', header: 'Alarme', dataType: 'numeric', bodyTemplate: templateHelper.alarm, sortable: true, filter: true, filterField: "alarm", showFilterMatchModes: false, filterPlaceholder: 'Alarme...', filterElement: sysComponentsHelper.alarms_lazyFilter },
 
-
+        { field: 'persistenceEnable', header: 'Persistence', dataType: "boolean", body: persistenceEnable, sortable: true, filter: true, filterElement: templateHelper.booleanFilterTemplate, style: { textAlign: 'center', minWidth: '6rem' } },
         { field: 'persOffsetEnable', header: 'Pers. Offset  ON', dataType: "boolean", body: templateHelper.persOffsetEnable, sortable: true, filter: true, filterElement: templateHelper.booleanFilterTemplate, style: { textAlign: 'center', minWidth: '6rem' } },
         { field: 'persOffsetFloat', header: 'Pers. Offset Fl.', dataType: 'numeric', sortable: true, filter: true },
         { field: 'persOffsetInt', header: 'Pers. Offset Int', dataType: 'numeric', sortable: true, filter: true },

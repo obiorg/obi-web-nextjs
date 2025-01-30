@@ -1,68 +1,65 @@
 
 
 import { PersistencesModel } from "../../models/persistences/PersistencesModel";
+import { ZodHelper } from "../../utilities/helpers/zodHelper";
 
 
 
 
-    // Define the shape of the form errors Persistences
-    interface PersistencesFormErrors {
+// Define the shape of the form errors Persistences
+interface PersistencesFormErrors {
+    id?: string[];
+    deleted?: string[];
+    created?: string[];
+    changed?: string[];
+
+    company?: string[];
+    tag?: string[];
+    method?: string[];
+    activate?: string[];
+    comment?: string[];
+}
+
+// Define the shape of the form state
+interface PersistencesFormState {
+    errors: PersistencesFormErrors;
+}
+
+// Define the props that the PostForm component expects
+interface PersistencesPostFormProps {
+    formAction: any; // The action to perform when the form is submitted
+    type: number; // 0: create, 1: update, 2: destroy (delete), 3: read
+    initialData: {
+        // The initial data for the form fields
+        id: number;
+        deleted: boolean;
+        created: Date;
+        changed: Date;
+
+        company: number;
+        tag: number;
+        method: number;
+        activate: boolean;
+        comment: string;
+    };
+}
+
+// Define an interface for the form state
+interface PersistencesPostFormState {
+    errors: {
         id?: string[];
         deleted?: string[];
         created?: string[];
         changed?: string[];
-        entity?: string[];
-        designation?: string[];
-        builded?: string[];
-        main?: string[];
-        activated?: string[];
-        logoPath?: string[];
-        location?: string[];
-    }
 
-    // Define the shape of the form state
-    interface PersistencesFormState {
-        errors: PersistencesFormErrors;
-    }
-
-    // Define the props that the PostForm component expects
-    interface PersistencesPostFormProps {
-        formAction: any; // The action to perform when the form is submitted
-        type: number; // 0: create, 1: update, 2: destroy (delete), 3: read
-        initialData: {
-            // The initial data for the form fields
-            id: number;
-            deleted: boolean;
-            created: Date;
-            changed: Date;
-
-            entity: string;
-            designation: string;
-            builded: boolean;
-            main: number;
-            activated: boolean;
-            logoPath: string;
-            location: number;
-        };
-    }
-
-    // Define an interface for the form state
-    interface PersistencesPostFormState {
-        errors: {
-            id?: string[];
-            deleted?: string[];
-            created?: string[];
-            changed?: string[];
-            entity?: string[];
-            designation?: string[];
-            builded?: string[];
-            main?: string[];
-            activated?: string[];
-            logoPath?: string[];
-            location?: string[];
-            _form?: string[];
-        };
-    }
+        company?: string[];
+        tag?: string[];
+        method?: string[];
+        activate?: string[];
+        comment?: string[];
+        _form?: string[];
+    };
+}
 
 
 
@@ -190,64 +187,125 @@ export const PersistencesService = {
      * @returns 
      */
     async create(
-        formState: PersistencesFormState,
-        formData: FormData | any): Promise<PersistencesFormState> {
+        formState: any,
+        formData: FormData | any): Promise<any> {
 
-        // console.log('formData', formData);
-        let data: any;
+        // Recover model object
+        let model = (new PersistencesModel());
+        let data: any = model.defaults;
+        // Recover original data type
+        let dataType: any = model.type;
 
-        if (formData.id) {
-            data = formData;
-        } else {
-            data = {
-                id: undefined, //(formData.get("id") === '') ? undefined : Number(formData.get("id")),
-                deleted: formData.get("deleted") === "true",
-                created: formData.get("created"),
-                changed: formData.get("changed"),
+        // // Recover data from form
+        // let dataForm: any = {};
+        // for (const [key, value] of formData) {
+        //     // console.log(`default >> ${key}: ${value}\n`);
+        //     dataForm[key] = value;
+        // }
 
-                location: formData.get("location"),
-                designation: formData.get("designation"),
-                group: formData.get("group"),
-                country: (formData.get("country") === '') ? undefined : Number(formData.get("country")),
-                state: (formData.get("state") === '') ? undefined : Number(formData.get("state")),
-                city: (formData.get("city") === '') ? undefined : Number(formData.get("city")),
-                address: formData.get("address"),
-                address1: formData.get("address1"),
-                address3: formData.get("address3"),
-                bloc: formData.get("bloc"),
-                floor: (formData.get("floor") === '') ? undefined : Number(formData.get("floor")),
-                number: formData.get("number"),
-            };
+        // Inject form data into the model
+        for (const [key, value] of formData) {
+            //console.log(`process >> ${key}: ${value} with dataType = ${dataType[key]}\n`);
+
+            // Set form value
+            data[key] = value;
+
+            // Adapt form value depending on type
+            //
+            // Adapt Number value
+            if (dataType[key] === Number) {
+                data[key] = value === '' ? undefined : Number(value);
+                // console.log(`key ${key} is a number and value is ${value} \n`);
+            }
+            // Adapt boolean value
+            else if (dataType[key] === Boolean) {
+                //console.log(`key ${key} is a boolean and value is ${value} \n`);
+                data[key] = value === 'true' || value === '1' || value === 'on' ? true : false;
+                //console.log('data['+ key + '] = ' + data[key]);
+            }
         }
-        // console.log(data);
-        // console.log(formState);
 
+        delete data.companies;
+        delete data.persistences;
+        delete data.machines;
+        delete data.pers_method;
+        // console.log('PersistencesService >> data', data);
+        // console.log('PersistencesService >> data stringify', JSON.stringify(data));
 
+        // Define URL
         const url = process.env.httpPath + '/persistences';
 
+        // Fetch data from API
+        try {
+            const res = await fetch(
+                url,
+                {
+                    method: "POST",
+                    mode: "cors", // no-cors, *cors, same-origin
+                    cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                    credentials: "same-origin", // include, *same-origin, omit
+                    headers: {
+                        "Content-Type": "application/json",
+                        'Cache-Control': 'no-cache'
+                    },
+                    body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
+                }
+            )
 
-        const res = await fetch(
-            url,
-            {
-                method: "POST",
-                mode: "cors", // no-cors, *cors, same-origin
-                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                credentials: "same-origin", // include, *same-origin, omit
-                headers: {
-                    "Content-Type": "application/json",
-                    'Cache-Control': 'no-cache'
-                },
-                body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
+            // On success
+            if (res.ok) {
+                // console.log('Promise resolved and HTTP status is successful');
+                const dataset: any = await res.json();
+                return JSON.parse(dataset);
             }
-        )
-        const dataset: PersistencesFormState = await res.json();
-        return dataset;
+            // On fail !
+            else {
+                let datas: any = await res.json();
+                // console.log(datas);
+                let dataset: any = {};
+                if (datas.issues !== undefined && datas.issues.length > 0) {
+                    if (datas.issues[0].unionErrors) {
+                        dataset = { errors: ZodHelper.issuesFlatten(datas.issues[0].unionErrors, 0) };
+                    } else {
+                        dataset = datas;
+                    }
+                    dataset['error'] = {};
+                    dataset['error'].message = datas.issues[0].code;
+                    dataset['error'].stack = datas.issues[0].message;
+                } else {
+                    dataset = datas;
+                }
+                dataset['status'] = res.status;
+                dataset['message'] = res.statusText;
+                return dataset;
+            }
+
+
+
+        } catch (error) {
+            if (error instanceof SyntaxError) {
+                // Unexpected token < in JSON
+                console.log('There was a SyntaxError', error);
+
+            } else {
+                console.log('There was an error', error);
+                // Promise.reject(error);
+                return ({
+                    name: 'Fetching',
+                    message: 'Check OAP API is running or database is reachable',
+                    error: error,
+                    // errors: datas,
+                    url: url,
+                    status: 500,
+                });
+            }
+        }
 
     },
 
     async processAll(formState: any, datas: any): Promise<any> {
         let res: any = [];
-        datas.forEach((row:any, index:any) => {
+        datas.forEach((row: any, index: any) => {
             PersistencesService.create(formState, row).then((res_row) => {
                 console.log('res_row', res_row, 'res', res);
                 res.push(res_row);
@@ -258,104 +316,246 @@ export const PersistencesService = {
         return res;
     },
 
-    async createMany(data: any[]): Promise<any[]> {
+    async createMany(data: any[]): Promise<any> {
 
         const url = process.env.httpPath + '/persistences/create';
 
-        const res = await fetch(
-            url,
-            {
-                method: "POST",
-                mode: "cors", // no-cors, *cors, same-origin
-                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                credentials: "same-origin", // include, *same-origin, omit
-                headers: {
-                    "Content-Type": "application/json",
-                    'Cache-Control': 'no-cache'
-                },
-                body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
+        // Fetch data from API
+        try {
+            const res = await fetch(
+                url,
+                {
+                    method: "POST",
+                    mode: "cors", // no-cors, *cors, same-origin
+                    cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                    credentials: "same-origin", // include, *same-origin, omit
+                    headers: {
+                        "Content-Type": "application/json",
+                        'Cache-Control': 'no-cache'
+                    },
+                    body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
+                }
+            )
+
+            // On success
+            if (res.ok) {
+                // console.log('Promise resolved and HTTP status is successful');
+                const dataset: any = await res.json();
+                return dataset;
             }
-        )
-        const dataset: PersistencesFormState[] = await res.json();
-        return dataset;
+            // On fail !
+            else {
+                let datas: any = await res.json();
+                // console.log(datas);
+                let dataset: any = {};
+                if (datas.issues !== undefined && datas.issues.length > 0 && datas.issues[0]?.unionErrors) {
+                    dataset = { errors: ZodHelper.issuesFlatten(datas.issues[0].unionErrors, 0) };
+                    dataset['error'] = {};
+                    dataset['error'].message = datas.issues[0].code;
+                    dataset['error'].stack = datas.issues[0].message;
+                } else {
+                    dataset = datas;
+                }
+                dataset['status'] = res.status;
+                dataset['message'] = res.statusText;
+                return dataset;
+            }
+
+
+
+        } catch (error) {
+            if (error instanceof SyntaxError) {
+                // Unexpected token < in JSON
+                console.log('There was a SyntaxError', error);
+
+            } else {
+                console.log('There was an error', error);
+                // Promise.reject(error);
+                return ({
+                    name: 'Fetching',
+                    message: 'Check OAP API is running or database is reachable',
+                    error: error,
+                    // errors: datas,
+                    url: url,
+                    status: 500,
+                });
+            }
+        }
 
     },
 
 
     async update(
-        formState: PersistencesFormState,
-        formData: FormData | any): Promise<PersistencesFormState> {
+        formState: any,
+        formData: FormData | any): Promise<any> {
 
+        // Recover model object
+        let model = (new PersistencesModel());
+        let data: any = model.defaults;
+        // Recover original data type
+        let dataType: any = model.type;
 
-        let data = {
-            id: (formData.get("id") === '') ? undefined : Number(formData.get("id")),
-            deleted: formData.get("deleted") === "on",
-            created: formData.get("created"),
-            changed: formData.get("changed"),
+        // // Recover data from form
+        // let dataForm: any = {};
+        // for (const [key, value] of formData) {
+        //     // console.log(`default >> ${key}: ${value}\n`);
+        //     dataForm[key] = value;
+        // }
 
-            location: formData.get("location"),
-            designation: formData.get("designation"),
-            group: formData.get("group"),
-            country: (formData.get("country") === '') ? undefined : Number(formData.get("country")),
-            state: (formData.get("state") === '') ? undefined : Number(formData.get("state")),
-            city: (formData.get("city") === '') ? undefined : Number(formData.get("city")),
-            address: formData.get("address"),
-            address1: formData.get("address1"),
-            address3: formData.get("address3"),
-            bloc: formData.get("bloc"),
-            floor: (formData.get("floor") === '') ? undefined : Number(formData.get("floor")),
-            number: formData.get("number"),
-        };
-        // console.log(data);
-        // console.log(formState);
+        // Inject form data into the model
+        for (const [key, value] of formData) {
+            //console.log(`process >> ${key}: ${value} with dataType = ${dataType[key]}\n`);
+
+            // Set form value
+            data[key] = value;
+
+            // Adapt form value depending on type
+            //
+            // Adapt Number value
+            if (dataType[key] === Number) {
+                data[key] = value === '' ? undefined : Number(value);
+                // console.log(`key ${key} is a number and value is ${value} \n`);
+            }
+            // Adapt boolean value
+            else if (dataType[key] === Boolean) {
+                //console.log(`key ${key} is a boolean and value is ${value} \n`);
+                data[key] = value === 'true' || value === '1' || value === 'on' ? true : false;
+                //console.log('data['+ key + '] = ' + data[key]);
+            }
+        }
+
+        
+        delete data.companies;
+        delete data.persistences;
+        delete data.pers_method;
+        // console.log('PersistencesService >> data', data);
+        // console.log('PersistencesService >> data stringify', JSON.stringify(data));
 
 
         const url = process.env.httpPath + '/persistences/' + data.id;
 
 
-        const res = await fetch(
-            url,
-            {
-                method: "PUT",
-                mode: "cors", // no-cors, *cors, same-origin
-                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                credentials: "same-origin", // include, *same-origin, omit
-                headers: {
-                    "Content-Type": "application/json",
-                    'Cache-Control': 'no-cache'
-                },
-                body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
+        // Fetch data from API
+        try {
+            const res = await fetch(
+                url,
+                {
+                    method: "PUT",
+                    mode: "cors", // no-cors, *cors, same-origin
+                    cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                    credentials: "same-origin", // include, *same-origin, omit
+                    headers: {
+                        "Content-Type": "application/json",
+                        'Cache-Control': 'no-cache'
+                    },
+                    body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
+                }
+            )
+
+            // On success
+            if (res.ok) {
+                // console.log('Promise resolved and HTTP status is successful');
+                const dataset: any = await res.json();
+                return JSON.parse(dataset);
             }
-        )
-        const dataset: PersistencesFormState = await res.json();
-        return dataset;
+            // On fail !
+            else {
+                let datas: any = await res.json();
+                // console.log(datas);
+                let dataset: any = {};
+                // console.log('onUpdating datas', datas);
+                if (datas.issues !== undefined && datas.issues.length > 0 && datas.issues[0]?.unionErrors) {
+                    dataset = { errors: ZodHelper.issuesFlatten(datas.issues[0].unionErrors, 0) };
+                    dataset['error'] = {};
+                    dataset['error'].message = datas.issues[0].code;
+                    dataset['error'].stack = datas.issues[0].message;
+                } else {
+                    dataset = datas;
+                }
+                dataset['status'] = res.status;
+                dataset['message'] = res.statusText;
+                return dataset;
+            }
+
+
+
+        } catch (error) {
+            if (error instanceof SyntaxError) {
+                // Unexpected token < in JSON
+                console.log('There was a SyntaxError', error);
+
+            } else {
+                console.log('There was an error', error);
+                // Promise.reject(error);
+                return ({
+                    name: 'Fetching',
+                    message: 'Check OAP API is running or database is reachable',
+                    error: error,
+                    // errors: datas,
+                    url: url,
+                    status: 500,
+                });
+            }
+        }
 
 
     },
 
 
     async updateMany(
-        data: any[]): Promise<any[]> {
+        data: any[]): Promise<any> {
 
         const url = process.env.httpPath + '/persistences/update';
-        // console.log(data);
-        const res = await fetch(
-            url,
-            {
-                method: "POST",
-                mode: "cors", // no-cors, *cors, same-origin
-                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                credentials: "same-origin", // include, *same-origin, omit
-                headers: {
-                    "Content-Type": "application/json",
-                    'Cache-Control': 'no-cache'
-                },
-                body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
-            }
-        )
-        const dataset: any = await res.json();
-        return dataset;
+        // console.log(data, JSON.stringify(data));
 
+        // Fetch data from API
+        try {
+
+            const res = await fetch(
+                url,
+                {
+                    method: "POST",
+                    mode: "cors", // no-cors, *cors, same-origin
+                    cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                    credentials: "same-origin", // include, *same-origin, omit
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Content-Length': '1000000'
+                    },
+                    body: JSON.stringify(data), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
+                }
+            )
+            // console.log("PersistencesService response", res);
+            const dataset: any = await res.json();
+            // console.log('PersistencesService >> result from api machines ', dataset);
+            return dataset;
+        } catch (error) {
+            if (error instanceof SyntaxError) {
+                // Unexpected token < in JSON
+                console.log('There was a SyntaxError', error);
+                return ({
+                    name: 'Fetching',
+                    message: 'Check OAP API is running or database is reachable',
+                    error: error,
+                    // data: data,
+                    url: url,
+                    status: 500,
+                });
+
+            } else {
+                console.log('There was an error', error);
+                // Promise.reject(error);
+                return ({
+                    name: 'Fetching',
+                    message: 'Check OAP API is running or database is reachable',
+                    error: error,
+                    // errors: datas,
+                    url: url,
+                    status: 500,
+                });
+            }
+        }
     },
 
 

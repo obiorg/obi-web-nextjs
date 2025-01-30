@@ -17,7 +17,11 @@
       "title": "مثال على الطريق المتداخل"
     },
     "dashboard": {
-      "title": "لوحة القيادة"
+      "title": "لوحة القيادة",
+      "CO2": {
+        "title": "CO2",
+        "description": "بيانات متر ثاني أكسيد الكربون"
+      }
     }
   },
   "header": {
@@ -308,6 +312,48 @@
         "label": "وصف",
         "placeholder": "وصف...",
         "tooltip": "ربط وصف كامل"
+      }
+    }
+  },
+  "persistences": {
+    "Create": {
+      "title": "خلق الثبات"
+    },
+    "Edit": {
+      "title": "تغيير الثبات",
+      "subTitle": "أدناه تعديل الثبات"
+    },
+    "Form": {
+      "tag": {
+        "label": "علامة",
+        "placeholder": "حدد علامة",
+        "tooltip": "ربط علامة بطريقة الأرشفة"
+      },
+      "method": {
+        "label": "طريقة",
+        "tooltip": "ربط طريقة أرشيف في العلامة",
+        "placeholder": "حدد طريقة"
+      },
+      "comment": {
+        "label": "وصف",
+        "placeholder": "على سبيل المثال: يسمح لك بتعريف الارتباط",
+        "tooltip": "قدم وصفًا لجمعية العلامات - الطريقة"
+      },
+      "company": {
+        "label": "شركة",
+        "placeholder": "حدد شركة",
+        "tooltip": "قم بربط شركة مع طريقة أرشيف الوسم"
+      },
+      "activate": {
+        "label": "يُمكَِن",
+        "tooltip": "تنشيط الثبات"
+      }
+    }
+  },
+  "tagsList": {
+    "Form": {
+      "company": {
+        "label": "شركة"
       }
     }
   }

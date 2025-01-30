@@ -155,7 +155,7 @@ export default function PostForm({ formAction, type, initialData }: OBI.TagsTabl
             if (type === 0 || type === 2) {
                 // console.log('start create');
                 TagsTablesService.create(formState, formData).then((data: any) => {
-                    console.log('Data saved', data);
+                    // console.log('Data saved', data);
                     if (data.errors || data.status === 500) {
                         formState.errors = { errors: {} };
                         formState.errors = data.errors;
@@ -164,7 +164,7 @@ export default function PostForm({ formAction, type, initialData }: OBI.TagsTabl
                     } else {
                         formState.errors = { errors: {} };
                         setCatalog(data);
-                        setErrorCatalog({});
+                        setErrorCatalog(undefined);
                         showSuccess('Création réussie !', data.table + ' - ' + data.designation + '(' + data.companies + ') [' + data.id + ']',);
                         saveModeProcess()
                     }
@@ -187,7 +187,7 @@ export default function PostForm({ formAction, type, initialData }: OBI.TagsTabl
                     } else {
                         formState.errors = { errors: {} };
                         setCatalog(data);
-                        setErrorCatalog({});
+                        setErrorCatalog(undefined);
                         showSuccess('Création réussie !', data.table + ' - ' + data.designation + '(' + data.companies + ') [' + data.id + ']',);
                         saveModeProcess()
                     }

@@ -3,7 +3,6 @@
 // this is a client component
 'use client'
 
-import { TagsModel } from "@/src/obi/models/tags/TagsModel"
 import { Toast } from "primereact/toast"
 import React, { useEffect, useRef, useState } from "react"
 import { useFormState } from "react-dom"
@@ -14,13 +13,27 @@ import { OBI } from "@/src/types"
 
 import DialogError from "@/src/obi/components/Dialog/DialogError"
 import FieldInputCheckbox from "@/src/obi/components/Inputs/FieldInputCheckbox"
+import FieldInputDateTime from "@/src/obi/components/Inputs/FieldInputDateTime"
+import FieldInputEditor from "@/src/obi/components/Inputs/FieldInputEditor"
+import FieldInputNumber from "@/src/obi/components/Inputs/FieldInputNumber"
 import FieldInputText from "@/src/obi/components/Inputs/FieldInputText"
+import FieldInputTextSlider from "@/src/obi/components/Inputs/FieldInputTextSlider"
 import FieldOutputLabel from "@/src/obi/components/Inputs/FieldOutputLabel"
 import OutputError from "@/src/obi/components/Output/OutputError"
 import OutputRecord from "@/src/obi/components/Output/OutputRecord"
 import ButtonBarCreate from "@/src/obi/components/Validations/ButtonBarCreate"
+import { AlarmsModel } from "@/src/obi/models/alarms/AlarmsModel"
+import { CompaniesModel } from "@/src/obi/models/businesses/CompaniesModel"
+import { MachinesModel } from "@/src/obi/models/connexions/MachinesModel"
+import { MeasuresUnitsModel } from "@/src/obi/models/measures/MeasuresUnitsModel"
+import { TagsListModel } from "@/src/obi/models/tags/TagsListModel"
+import { TagsMemoriesModel } from "@/src/obi/models/tags/TagsMemoriesModel"
+import { TagsTablesModel } from "@/src/obi/models/tags/TagsTablesModel"
+import { TagsTypesModel } from "@/src/obi/models/tags/TagsTypesModel"
+import { AlarmsService } from "@/src/obi/service/alarms/AlarmsService"
 import { CompaniesService } from "@/src/obi/service/businesses/CompaniesService"
 import { MachinesService } from "@/src/obi/service/connexions/MachinesService"
+import { MeasuresUnitsService } from "@/src/obi/service/measures/MeasuresUnitsService"
 import { TagsMemoriesService } from "@/src/obi/service/tags/TagsMemoriesService"
 import { TagsService } from "@/src/obi/service/tags/TagsService"
 import { TagsTablesService } from "@/src/obi/service/tags/TagsTablesService"
@@ -28,29 +41,15 @@ import { TagsTypesService } from "@/src/obi/service/tags/TagsTypesService"
 import { useTranslations } from "next-intl"
 import { useRouter } from "next/navigation"
 import { BlockUI } from "primereact/blockui"
-import { Messages } from "primereact/messages"
+import AlarmsDropDown from "../../alarms/components/AlarmsDropDown"
 import CompaniesDropDown from "../../businesses/companies/components/CompaniesDropDown"
 import MachinesDropDown from "../../connexions/machines/components/MachinesDropDown"
+import MeasuresUnitsDropDown from "../../measures/units/components/MeasuresUnitsDropDown"
+import TagsListsDropDown from "../list/components/TagsListsDropDown"
 import TagsMemoriesDropDown from "../memories/components/TagsMemoriesDropDown"
 import TagsTablesDropDown from "../tables/components/TagsTablesDropDown"
 import TagsTypesDropDown from "../types/components/TagsTypesDropDown"
-import FieldInputNumber from "@/src/obi/components/Inputs/FieldInputNumber"
-import FieldInputDateTime from "@/src/obi/components/Inputs/FieldInputDateTime"
-import FieldInputTextSlider from "@/src/obi/components/Inputs/FieldInputTextSlider"
-import MeasuresUnitsDropDown from "../../measures/units/components/MeasuresUnitsDropDown"
-import { MeasuresUnitsService } from "@/src/obi/service/measures/MeasuresUnitsService"
-import FieldInputEditor from "@/src/obi/components/Inputs/FieldInputEditor"
-import AlarmsDropDown from "../../alarms/components/AlarmsDropDown"
-import { AlarmsService } from "@/src/obi/service/alarms/AlarmsService"
-import { AlarmsModel } from "@/src/obi/models/alarms/AlarmsModel"
-import { MachinesModel } from "@/src/obi/models/connexions/MachinesModel"
-import { TagsMemoriesModel } from "@/src/obi/models/tags/TagsMemoriesModel"
-import { TagsTablesModel } from "@/src/obi/models/tags/TagsTablesModel"
-import { MeasuresUnitsModel } from "@/src/obi/models/measures/MeasuresUnitsModel"
-import { TagsTypesModel } from "@/src/obi/models/tags/TagsTypesModel"
-import TagsListsDropDown from "../list/components/TagsListsDropDown"
-import { TagsListModel } from "@/src/obi/models/tags/TagsListModel"
-import { TagsListsService } from "@/src/obi/service/tags/TagsListService"
+import { TagsListService } from "@/src/obi/service/tags/TagsListService"
 
 
 
@@ -208,7 +207,7 @@ export default function PostForm({ formAction, type, initialData }: OBI.TagsPost
             if (type === 0 || type === 2) {
                 // console.log('start create');
                 TagsService.create(formState, formData).then((data: any) => {
-                    console.log('Data saved', data);
+                    // console.log('Data saved', data);
                     if (data.errors || data.status === 500) {
                         formState.errors = { errors: {} };
                         formState.errors = data.errors;
@@ -232,7 +231,7 @@ export default function PostForm({ formAction, type, initialData }: OBI.TagsPost
             // Manage update processing
             else if (type === 1) {
                 TagsService.update(formState, formData).then((data: any) => {
-                    console.log('Data saved', data);
+                    // console.log('Data saved', data);
                     if (data.errors || data.status === 500) {
                         formState.errors = { errors: {} };
                         formState.errors = data.errors;
@@ -302,7 +301,7 @@ export default function PostForm({ formAction, type, initialData }: OBI.TagsPost
 
 
     /**
-     * Countries catalog update list
+     * Catalogs
      */
     const [companies, setCompanies] = useState<any>([]);
     const [machines, setMachines] = useState<any>([]);
@@ -315,7 +314,7 @@ export default function PostForm({ formAction, type, initialData }: OBI.TagsPost
     const [reload, setReload] = useState(false);
 
     const [lazyParams, setLazyParams] = useState(
-        new TagsModel().
+        new CompaniesModel().
             getStandardParam({ field: 'company', order: 1 }, CompaniesService.defaultFilters()));
     const [lazyParamsMachines, setLazyParamsMachines] = useState(
         new MachinesModel().
@@ -341,7 +340,7 @@ export default function PostForm({ formAction, type, initialData }: OBI.TagsPost
             getStandardParam([{ field: 'business', order: 1 },
             { field: 'company', order: 1 }, { field: 'tag', order: 1 },
             { field: 'group', order: 1 }, { field: 'name', order: 1 }],
-                TagsListsService.defaultFilters()));
+                TagsListService.defaultFilters()));
 
 
 
@@ -428,6 +427,7 @@ export default function PostForm({ formAction, type, initialData }: OBI.TagsPost
                     className="p-fluid"
                 >
                     <div className="col-12">
+
                         {type === 1 ? <>
                             {/** id */}
                             <FieldOutputLabel

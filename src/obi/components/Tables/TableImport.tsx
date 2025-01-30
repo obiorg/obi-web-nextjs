@@ -273,23 +273,41 @@ export default function TableImport({
     const doProcessCreate = async (e: any) => new Promise((resolve, reject) => {
         if (e.create.length > 0) {
             services.createMany(e.create).then((datas: any) => {
-                // If unable to create 
-                console.log('createMany - result', datas);
-                if (!datas.ok) {
-                    //console.log('createMany - process error');
+
+                if ((datas?.errors) || (datas && datas[0] === null)) {
+
+
+                    console.log('createMany - process error', datas);
                     e.create.forEach((catalog: any) => {
-                        datas.errors.items.forEach((err: any) => {
-                            console.log('Error: ', err);
-                            const firstKey = Object.keys(err.errors)[0]; // Get first key
-                            console.log('catalog index', catalog.index, 'err index', err.index);
-                            if (catalog.index === err.index && importedData) {
-                                let dv: any = importedData[catalog.index];
-                                dv.transaction = -1;
-                                dv.commentRet = '' + firstKey + ' > ' + err.errors[firstKey];
-                            }
-                        })
+                        if (datas[0] !== null) {
+                            let errCatalog: any = [];
+                            datas.errors.forEach((err: any) => {
+                                let keys = Object.keys(err.errors);
+                                let commentError = '';
+                                keys.forEach((k: any) => {
+                                    commentError = commentError + ' | ' + k + '>' + err.errors[k];
+                                });
+                                if (importedData) {
+                                    let dv: any = importedData[catalog.index];
+                                    dv.transaction = -1;
+                                    dv.commentRet = commentError;
+                                }
+                                if (keys.length > 0) errCatalog.push(err);
+                                // const firstKey = Object.keys(err.errors)[0]; // Get first key
+                                // console.log('catalog index', catalog.index, 'err index', err.index);
+                                // if (catalog.index === err.index && importedData) {
+                                //     let dv: any = importedData[catalog.index];
+                                //     dv.transaction = -1;
+                                //     dv.commentRet = '' + firstKey + ' > ' + err.errors[firstKey];
+                                // }
+                            })
+                            setErrorCatalog(errCatalog);
+                        }
                     });
                     showError('Erreur', 'Erreur lors de la création des données');
+                } else if ((datas?.error)) {
+                    setErrorCatalog(datas);
+
                 } else {
                     //console.log('createMany - process success !');
                     e.create.forEach((catalog: any) => {
@@ -300,7 +318,7 @@ export default function TableImport({
                         }
                     });
                 }
-                resolve('Successfully');
+                resolve(importedData);
             });
         } else {
             resolve('Skipped');
@@ -331,7 +349,7 @@ export default function TableImport({
     const doProcessUpdate = async (e: any) => new Promise((resolve, reject) => {
         if (e.update.length > 0) {
             let dataUpdate = payloadManagement(e.update);
-            console.log('update - process', dataUpdate);
+            // console.log('update - process', dataUpdate);
             dataUpdate.forEach(async (payload: any[], index: number) => {
 
                 services.updateMany(payload).then((datas: any) => {

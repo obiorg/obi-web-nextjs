@@ -14,6 +14,7 @@ import DashCardCCT from '@/src/obi/components/App/DashCardCCT';
 import DashCardCO2Tanks from '@/src/obi/components/App/DashCardCO2Tanks';
 import ReactIcons from '@/src/obi/components/Icons/ReactIcons';
 import { useTranslations } from 'next-intl';
+import DashCardBBT from '@/src/obi/components/App/DashCardBBT';
 
 
 const lineData: ChartData = {
@@ -307,116 +308,48 @@ const Dashboard = ({ }: HomeProps) => {
     const BBTs = (() => {
         const icon_gr = 'bi';
         const icon = 'BiSolidBeer';
-        const units = ['hl', 'bar', '°C', '°C', 'u'];
-        const patterns = ['#0', '#0.00', '#0.0', '#0.0', '0'];
+        const units = ['hl', '°C', 'u', 'u'];
+        const patterns = ['#0', '#0.0', '0', '0'];
         const items = [
             {
-                id: 'TOD35',
-                name: 'TOD 35',
-                tags: [37, 1, 72, 56, 17], // Volume, Pression, T°milieu, T°basse, état
+                id: 'TBF01',
+                name: 'TBF 01',
+                tags: [162, 156, 174, 168], // Volume, Température, Produit, Etat
                 icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
             },
             {
-                id: 'TOD36',
-                name: 'TOD 36',
-                tags: [38, 2, 73, 57, 18], // Volume, Pression, T°milieu, T°basse, état
+                id: 'TBF02',
+                name: 'TBF 02',
+                tags: [163, 157, 175, 169], // Volume, Température, Produit, Etat
                 icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
             },
             {
-                id: 'TOD37',
-                name: 'TOD 37',
-                tags: [42, 3, 74, 58, 19], // Volume, Pression, T°milieu, T°basse, état
+                id: 'TBF03',
+                name: 'TBF 03',
+                tags: [164, 158, 176, 170], // Volume, Température, Produit, Etat
+                icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
+            },
+
+
+            
+            {
+                id: 'TBF04',
+                name: 'TBF 04',
+                tags: [165, 159, 177, 171], // Volume, Température, Produit, Etat
                 icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
             },
             {
-                id: 'TOD38',
-                name: 'TOD 38',
-                tags: [43, 4, 75, 59, 20], // Volume, Pression, T°milieu, T°basse, état
+                id: 'TBF05',
+                name: 'TBF 05',
+                tags: [166, 160, 178, 172], // Volume, Température, Produit, Etat
                 icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
             },
-
-
-
-
-            // {
-            //     id: 'TOD39',
-            //     name: 'TOD 39',
-            //     tags: [44, 5, 76, 60, 21], // Volume, Pression, T°milieu, T°basse, état
-            //     icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
-            // },
-            // {
-            //     id: 'TOD40',
-            //     name: 'TOD 40',
-            //     tags: [45, 6, 77, 61, 22], // Volume, Pression, T°milieu, T°basse, état
-            //     icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
-            // },
-            // {
-            //     id: 'TOD41',
-            //     name: 'TOD 41',
-            //     tags: [46, 7, 78, 62, 23], // Volume, Pression, T°milieu, T°basse, état
-            //     icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
-            // },
-            // {
-            //     id: 'TOD42',
-            //     name: 'TOD 42',
-            //     tags: [47, 8, 79, 63, 24], // Volume, Pression, T°milieu, T°basse, état
-            //     icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
-            // },
-
-
-
-
-            // {
-            //     id: 'TOD43',
-            //     name: 'TOD 43',
-            //     tags: [48, 9, 80, 64, 25], // Volume, Pression, T°milieu, T°basse, état
-            //     icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
-            // },
-            // {
-            //     id: 'TOD44',
-            //     name: 'TOD 44',
-            //     tags: [49, 10, 81, 65, 26], // Volume, Pression, T°milieu, T°basse, état
-            //     icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
-            // },
-            // {
-            //     id: 'TOD45',
-            //     name: 'TOD 45',
-            //     tags: [50, 11, 82, 66, 27], // Volume, Pression, T°milieu, T°basse, état
-            //     icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
-            // },
-            // {
-            //     id: 'TOD46',
-            //     name: 'TOD 46',
-            //     tags: [51, 12, 83, 67, 28], // Volume, Pression, T°milieu, T°basse, état
-            //     icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
-            // },
-
-
-
-            // {
-            //     id: 'TOD47',
-            //     name: 'TOD 47',
-            //     tags: [52, 13, 84, 68, 29], // Volume, Pression, T°milieu, T°basse, état
-            //     icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
-            // },
-            // {
-            //     id: 'TOD48',
-            //     name: 'TOD 48',
-            //     tags: [53, 14, 85, 69, 30], // Volume, Pression, T°milieu, T°basse, état
-            //     icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
-            // },
-            // {
-            //     id: 'TOD17',
-            //     name: 'TOD 17',
-            //     tags: [54, 15, 86, 70, 31], // Volume, Pression, T°milieu, T°basse, état
-            //     icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
-            // },
-            // {
-            //     id: 'TOD18',
-            //     name: 'TOD 18',
-            //     tags: [55, 16, 87, 71, 32], // Volume, Pression, T°milieu, T°basse, état
-            //     icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
-            // }
+            {
+                id: 'TBF06',
+                name: 'TBF 06',
+                tags: [167, 161, 179, 173], // Volume, Température, Produit, Etat
+                icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
+            },
 
 
 
@@ -427,8 +360,8 @@ const Dashboard = ({ }: HomeProps) => {
                 {
                     items.map((item) => {
                         return true ?
-                            <DashCardCCT
-                                key={'dashCardCCT_key_' + item.id}
+                            <DashCardBBT
+                                key={'dashCardBBT_key_' + item.id}
                                 id={item.id}
                                 name={item.name}
                                 icon_gr={item.icon_gr}
@@ -522,12 +455,13 @@ const Dashboard = ({ }: HomeProps) => {
             <p>{t('dashboard.BBT.description')}</p>
 
             <div className="grid">
-                {/* {CCTs()} */}
+                {BBTs()}
             </div>
 
 
             <hr />
-            <h1>Stock CO2</h1>
+            <h2>{t('dashboard.CO2.title')}</h2>
+            <p>{t('dashboard.CO2.description')}</p>
 
             <div className="grid">
                 {CO2_Tanks()}

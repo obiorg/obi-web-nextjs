@@ -6,9 +6,10 @@ import { useEffect, useRef, useState } from "react"
 
 
 import { TagsListModel } from "@/src/obi/models/tags/TagsListModel"
-import { TagsListsService } from "@/src/obi/service/tags/TagsListService"
+import { TagsListService } from "@/src/obi/service/tags/TagsListService"
 import { Dropdown } from "primereact/dropdown"
 import { Skeleton } from "primereact/skeleton"
+import ReactIcons from "@/src/obi/components/Icons/ReactIcons"
 
 
 // Define the props that the PostForm component expects
@@ -56,10 +57,10 @@ export default function TagsListsDropDown({
 
     const [lazyParams, setLazyParams] = useState(
         new TagsListModel().
-            getStandardParam([{ field: 'company', order: 1 }, 
-                { field: 'type', order: 1 }, 
-                { field: 'list', order: 1 }],
-                TagsListsService.defaultFilters()));
+            getStandardParam([{ field: 'company', order: 1 },
+            { field: 'type', order: 1 },
+            { field: 'list', order: 1 }],
+                TagsListService.defaultFilters()));
 
 
 
@@ -146,12 +147,12 @@ export default function TagsListsDropDown({
             const lazyEventSet = { lazyEvent: JSON.stringify(lazyParams) };
 
             // Get Lazy Data
-            TagsListsService.getLazy(lazyEventSet).then((data: any) => {
+            TagsListService.getLazy(lazyEventSet).then((data: any) => {
                 // console.log(lazyParams.rows, data, catalogs);
                 for (let i = lazyParams.first; (i < lazyParams.rows && i < data.length); i++) {
                     // console.log('for i', i, data[i])
                     _catalogs[i] = {
-                        label: data[i].list + ' - ' + data[i].designation + '(' + data[i].type + '/' + data[i].company +  ') [' + data[i].id + ']',
+                        label: data[i].list + ' - ' + data[i].designation + '(' + data[i].type + '/' + data[i].company + ') [' + data[i].id + ']',
                         value: data[i].id,
                         catalogs: data[i]
                     };

@@ -236,13 +236,9 @@ export default function DashCardBBT(
 
                         <div className='flex flex-column w-full'>
                             <span className="flex block text-500 font-medium text-3xl mb-2 justify-content-end">
-                                {name}
+                                {productDisplayed} : {name}
                             </span>
 
-                            <div className="flex text-900 text-md justify-content-end align-content-center w-100">
-                                {productDisplayed}
-                                <ReactIcons group="fa6" icon="FaArrowsTurnToDots" className='ml-3' />
-                            </div>
 
                             <div className="flex text-900 text-md justify-content-end align-content-center w-100">
                                 {stateDisplayed}
@@ -251,12 +247,29 @@ export default function DashCardBBT(
                         </div>
                     </span>
 
+
+
                     <div>
                         <div className='flex flex-auto justify-content-between'>
                             <div>
                                 {/* Pression */}
                                 {/* <ReactIcons group="gi" icon="GiPressureCooker" className='mr-3' /> */}
                                 <span className="text-green-500 font-medium text-3xl">
+                                    <NumericFormat
+                                        value={temperature}
+                                        suffix={' '}
+                                        thousandSeparator=' '
+                                        decimalScale={1}
+                                        displayType="text"
+                                    />
+                                </span>
+                                <span className="text-xl">{units[1]}</span><br />
+
+
+
+                                {/* Pression */}
+                                {/* <ReactIcons group="gi" icon="GiPressureCooker" className='mr-3' /> */}
+                                {/* <span className="text-green-500 font-medium text-3xl">
                                     <NumericFormat
                                         value={pressure}
                                         suffix={' '}
@@ -265,19 +278,8 @@ export default function DashCardBBT(
                                         displayType="text"
                                     />
                                 </span>
-                                <span className="text-500">{units[1]}</span><br />
+                                <span className="text-500">{units[1]}</span><br /> */}
 
-                                {/* Middle Temperature */}
-                                {/* <ReactIcons group="fa6" icon="FaTemperatureLow" className='mr-3' /> */}
-                                <NumericFormat
-                                    className="text-green-500 font-medium"
-                                    value={temperature}
-                                    suffix={' '}
-                                    thousandSeparator=' '
-                                    decimalScale={1}
-                                    displayType="text"
-                                />
-                                <span className="text-500">{units[2]} (Tm)</span><br />
 
 
                                 {/* Date line */}

@@ -1,557 +1,563 @@
 {
-    "common": {
-        "footer": "tutoriel d'internationalisation"
+  "common": {
+    "footer": "tutoriel d'internationalisation"
+  },
+  "page": {
+    "dashboard": {
+      "title": "Tableau de bord",
+      "description": "Bienvenu sur votre tableau de board",
+      "CCT": {
+        "short": "CCT",
+        "label": "Tank de fermentation",
+        "description": "Données des tanks de fermentation"
+      },
+      "BBT": {
+        "short": "BBT",
+        "label": "Tank de bière fini",
+        "description": "Données des tanks de bière finie"
+      },
+      "CO2": {
+        "Storage": {
+          "title": "Tank de stock CO2",
+          "description": "Présente le volume de stockage de CO2"
+        },
+        "title": "CO2",
+        "description": "Données du compteur CO2"
+      },
+      "actions": {
+        "previous": "Précédent",
+        "pause": "Pause",
+        "play": "Play",
+        "next": "Suivant"
+      }
     },
-    "page": {
-        "dashboard": {
-            "title": "Tableau de bord",
-            "description": "Bienvenu sur votre tableau de board",
-            "CCT": {
-                "short": "CCT",
-                "label": "Tank de fermentation",
-                "description": "Données des tanks de fermentation"
-            },
-            "BBT": {
-                "short": "BBT",
-                "label": "Tank de bière fini",
-                "description": "Données des tanks de bière finie"
-            },
-            "CO2": {
-                "Storage": {
-                    "title": "Tank de stock CO2",
-                    "description": "Présente le volume de stockage de CO2"
-                },
-                "title": "CO2",
-                "description": "Données du compteur CO2"
-            }
-        },
-        "home": {
-            "head": {
-                "title": "Next.js i18n exemple",
-                "meta": {
-                    "description": "Next.js i18n exemple - Français"
-                }
-            },
-            "title": "Bienvenue à <b>Next.js i18n didacticiel</b>",
-            "description": "Vous consultez actuellement la page d'accueil en Français 🚀"
-        },
-        "nested": {
-            "title": "Exemple d'itinéraire imbriqué"
+    "home": {
+      "head": {
+        "title": "Next.js i18n exemple",
+        "meta": {
+          "description": "Next.js i18n exemple - Français"
         }
+      },
+      "title": "Bienvenue à <b>Next.js i18n didacticiel</b>",
+      "description": "Vous consultez actuellement la page d'accueil en Français 🚀"
     },
-    "global": {
-        "Form": {
-            "id": {
-                "label": "ID",
-                "placeholder": "Numéro d'identification unique",
-                "tooltip": "Référence au code d'identification unique"
-            },
-            "deleted": {
-                "label": "Supprimé",
-                "placeholder": "Supprimer logiquement...",
-                "tooltip": "Indique si l'élément est supprimé logiquement"
-            },
-            "created": {
-                "label": "Créé le",
-                "placeholder": "Date de création",
-                "tooltip": "Indique la date de création de l'élément"
-            },
-            "changed": {
-                "label": "Modifié le",
-                "placeholder": "Date de dernière modification",
-                "tooltip": "Indique la date de dernière modification de l'élément"
-            },
-            "designation": {
-                "label": "Désignation",
-                "placeholder": "CECI DESIGNATION LE CODE",
-                "tooltip": "Définir une designation du code"
-            },
-            "comment": {
-                "label": "Commentaire",
-                "placeholder": "ex: un commentaire",
-                "tooltip": "Définir un commentaire détaillé"
-            },
-            "company": {
-                "label": "Société",
-                "placeholder": "Sélectionner une société",
-                "tooltip": "Associer le code société"
-            },
-            "type": {
-                "label": "Type",
-                "placeholder": "Sélectionner un type",
-                "tooltip": "Associer le code type"
-            }
-        },
-        "Msg": {
-            "loading": "Chargement...",
-            "error": "Une erreur est survenue",
-            "success": "Opération réussie",
-            "Error": {
-                "title": "Erreur",
-                "message": "Une erreur est survenue",
-                "Value": {
-                    "required": "Valeur requise",
-                    "min": "Valeur trop petite",
-                    "max": "Valeur trop grande",
-                    "max255": "Valeur trop grande ! Max à 255",
-                    "email": "Adresse email invalide",
-                    "pattern": "Format invalide",
-                    "unique": "Valeur déjà existante"
-                }
-            }
-        }
-    },
-    "connectionMachine": {
-        "title": "Connexions Machines",
-        "subTitle": "Définition des accès aux machines...",
-        "Table": {
-            "title": "Liste des machines",
-            "subTitle": "Liste des connexions aux machines..."
-        },
-        "Create": {
-            "title": "Création d'une machine",
-            "subTitle": "Ci-dessous \"CREER\" une nouvelle machine"
-        },
-        "Edit": {
-            "title": "Edition d'une machine",
-            "subTitle": "Ci-dessous \"EDITER\" la machine sélectionnée"
-        },
-        "Form": {
-            "company": {
-                "label": "Société",
-                "placeholder": "Code de la société",
-                "tooltip": "Associer le code de la société"
-            },
-            "address": {
-                "label": "Adresse ",
-                "placeholder": "Adresse IP, lien de connexion",
-                "tooltip": "Défini l'adresse IP de connexion"
-            },
-            "mask": {
-                "label": "Masque",
-                "placeholder": "Masque de sous-réseau",
-                "tooltip": "Défini le masque de sous-réseau"
-            },
-            "dns": {
-                "label": "DNS",
-                "placeholder": "Serveur DNS",
-                "tooltip": "Défini le serveur DNS"
-            },
-            "IPv6": {
-                "label": "IPv6",
-                "placeholder": "Adresse IPv6",
-                "tooltip": "Défini l'adresse IPv6"
-            },
-            "port": {
-                "label": "Port",
-                "placeholder": "Port de connexion",
-                "tooltip": "Défini le port de connexion"
-            },
-            "name": {
-                "label": "Nom",
-                "placeholder": "Nom de la machine",
-                "tooltip": "Défini le nom de la machine"
-            },
-            "rack": {
-                "label": "Rack",
-                "placeholder": "Emplacement dans le rack, défaut: 0",
-                "tooltip": "Défini l'emplacement dans le rack"
-            },
-            "slot": {
-                "label": "Slot",
-                "placeholder": "Emplacement dans le slot, défaut: 2",
-                "tooltip": "Défini l'emplacement dans le slot"
-            },
-            "driver": {
-                "label": "Driver",
-                "placeholder": "Sélection du driver",
-                "tooltip": "Défini le driver de connexion"
-            },
-            "mqtt": {
-                "label": "Source MQTT",
-                "placeholder": "L'adresse définie correspond à la source mqtt",
-                "tooltip": "Active l'adresse définie en tank que source mqtt"
-            },
-            "mqtt_user": {
-                "label": "MQTT User",
-                "placeholder": "Nom d'utilisateur MQTT",
-                "tooltip": "Défini le nom d'utilisateur MQTT"
-            },
-            "mqtt_password": {
-                "label": "MQTT Password",
-                "placeholder": "Mot de passe MQTT",
-                "tooltip": "Défini le mot de passe MQTT"
-            },
-            "webhook": {
-                "label": "Webhook",
-                "placeholder": "Adresse du webhook",
-                "tooltip": "Défini l'adresse du webhook"
-            },
-            "webhook_secret": {
-                "label": "Webhook Secret",
-                "placeholder": "Secret du webhook",
-                "tooltip": "Défini le secret du webhook"
-            },
-            "bus": {
-                "label": "Bus",
-                "placeholder": "Bus de communication",
-                "tooltip": "Défini le bus de communication"
-            },
-            "description": {
-                "label": "Description",
-                "placeholder": "Description de la machine",
-                "tooltip": "Défini la description de la machine"
-            },
-            "linkSrouce": {
-                "label": "Type de lien"
-            },
-            "linkSource": {
-                "IP": {
-                    "label": "IPv4"
-                },
-                "MQTT": {
-                    "label": "MQTT"
-                },
-                "Webhook": {
-                    "label": "Webhook"
-                },
-                "Bus": {
-                    "label": "Bus"
-                }
-            },
-            "addressIPv4": {
-                "label": "Adresse IPv4",
-                "placeholder": "###.###.###.###",
-                "tooltip": "Définir une adresse IPv4 de connexion"
-            },
-            "addressLink": {
-                "label": "Lien adressage",
-                "placeholder": "lien de connexion...",
-                "tooltip": "Définir une adresse de connexion à la source"
-            }
-        },
-        "import": {
-            "table": {
-                "title": "Importer - Connexions Machine"
-            }
-        }
-    },
-    "tags": {
-        "title": "Tags",
-        "subTitle": "Gestion des tags...",
-        "Form": {
-            "company": {
-                "label": "Société",
-                "placeholder": "Sélectionner une société",
-                "tooltip": "Associer le code société"
-            },
-            "name": {
-                "label": "Tags",
-                "placeholder": "###_###",
-                "tooltip": "Définir un nom pour le tag"
-            },
-            "machine": {
-                "placeholder": "Code machine",
-                "tooltip": "Associer un code machine",
-                "label": "Machine"
-            },
-            "type": {
-                "label": "Type variable",
-                "placeholder": "Sélectionner le type",
-                "tooltip": "Associer un type"
-            },
-            "memory": {
-                "label": "Mémoire",
-                "placeholder": "Sélectionner la mémoire",
-                "tooltip": "Associer un type de mémoire"
-            },
-            "table": {
-                "label": "Table (tags)",
-                "placeholder": "Sélectionner une table",
-                "tooltip": "Associer une table"
-            },
-            "DB": {
-                "label": "Bloc de données",
-                "placeholder": "ex: 340",
-                "tooltip": "Insérer un nombre entier"
-            },
-            "BYTE": {
-                "label": "BYTE",
-                "placeholder": "ex: 0",
-                "tooltip": "Insérer un nombre représentant le byte de référence au DB"
-            },
-            "BIT": {
-                "label": "BIT Offset",
-                "placeholder": "ex: 5",
-                "tooltip": "Insérer le numéro de bit entre 0 et 7 correspondant au byte"
-            },
-            "active": {
-                "label": "Lecture - Active",
-                "tooltip": "Activer la lecture cyclique"
-            },
-            "cycle": {
-                "label": "Cycle (sec)",
-                "placeholder": "ex: 10",
-                "tooltip": "Insérer un cycle de lecture automatique"
-            },
-            "delta": {
-                "label": "Cycle Delta",
-                "tooltip": "Active la mise à jour par valeur delta"
-            },
-            "deltaFloat": {
-                "label": "Delta - Réel",
-                "placeholder": "ex: 12.3",
-                "tooltip": "Insérer un delta de type réel (nombre à virgule)"
-            },
-            "deltaInt": {
-                "label": "Delta - Entier",
-                "placeholder": "ex: 3",
-                "tooltip": "Insérer un delta de type entier (nombre sans virgule)"
-            },
-            "deltaBool": {
-                "label": "Delta - Etat",
-                "tooltip": "Active la prise en charge d'inversion d'état comme cycle"
-            },
-            "deltaDateTime": {
-                "label": "Delta - Temps",
-                "placeholder": "ex: 00/00/01 01:00:00",
-                "tooltip": "Insérer une durée cyclique \"Tout les ...\""
-            },
-            "vDateTime": {
-                "label": "Temps (par défaut)",
-                "placeholder": "ex: 00/00/01 01:00:00",
-                "tooltip": "Insérer une durée de temps par défaut"
-            },
-            "vBool": {
-                "label": "Etat (par défaut)",
-                "tooltip": "Insérer un état par défaut"
-            },
-            "vInt": {
-                "label": "Entier (par défaut)",
-                "tooltip": "Insérer un nombre entier",
-                "placeholder": "ex: 12"
-            },
-            "vFloat": {
-                "label": "Réel (par défaut)",
-                "placeholder": "ex: 12.3",
-                "tooltip": "Insérer un nombre réel"
-            },
-            "vDefault": {
-                "label": "Valeur par défaut",
-                "tooltip": "Activer la gestion de valeur par défaut"
-            },
-            "counterType": {
-                "label": "Compteur - Type",
-                "placeholder": "ex: 2",
-                "tooltip": "Définir le type de compteur"
-            },
-            "counter": {
-                "label": "Comptage",
-                "tooltip": "Active le tags comme compteur"
-            },
-            "mesure": {
-                "label": "Mesurage",
-                "tooltip": "Active le tag comme valeur de mesure"
-            },
-            "mesureMin": {
-                "label": "Mesure minimale",
-                "placeholder": "ex: 0.05",
-                "tooltip": "Insérer une valeur de mesure minimale lors de la mesure"
-            },
-            "mesureMax": {
-                "label": "Mesure maximale",
-                "placeholder": "ex: 50.0",
-                "tooltip": "Insérer une valeur de mesure maximale lors de la mesure"
-            },
-            "measureUnit": {
-                "label": "Mesure - unité",
-                "placeholder": "Sélectionner l'unité de mesure",
-                "tooltip": "Insérer l'unité de mesure du tag"
-            },
-            "mqtt_topic": {
-                "label": "MQTT TOPIC",
-                "placeholder": "lien topic mqtt",
-                "tooltip": "Insérer le lien du topic associé au tag"
-            },
-            "webhook": {
-                "label": "Webhook - Lien",
-                "placeholder": "lien webhook",
-                "tooltip": "Insérer le lien du webhook associé au tag"
-            },
-            "laboratory": {
-                "label": "Laboratoire - Tag",
-                "tooltip": "Associer le tag en tant que valeur laboratoire"
-            },
-            "formula": {
-                "label": "Formule - Tag",
-                "tooltip": "Référence le tag comme formule de calcul"
-            },
-            "formCalculus": {
-                "label": "Formule",
-                "placeholder": "[#22]*2",
-                "tooltip": "Insérer un type de formule - [#22]*22"
-            },
-            "formProcessing": {
-                "label": "Déclencheur formule",
-                "placeholder": "ex : 0",
-                "tooltip": "Sélectionner un déclencheur - defaut 0 - par changement tag"
-            },
-            "error": {
-                "label": "Erreur détecté",
-                "tooltip": "Indique qu'une erreur a été détecté"
-            },
-            "errorMsg": {
-                "label": "Erreur - message",
-                "tooltip": "Retour le message d'erreur détecté"
-            },
-            "errorStamp": {
-                "label": "Erreur - Moment",
-                "tooltip": "Indique le moment de l'erreur"
-            },
-            "alarmEnable": {
-                "label": "Alarme - Type",
-                "tooltip": "Associe le tag au type alarme"
-            },
-            "alarm": {
-                "label": "Alarme",
-                "placeholder": "Sélectionner l'alarme associé",
-                "tooltip": "Indiquer l'alarme associé au tag"
-            },
-            "persistenceEnable": {
-                "label": "Persistence tag",
-                "tooltip": "Indique si le tag est archivable"
-            },
-            "persOffsetEnable": {
-                "label": "Persistence - Offset",
-                "tooltip": "Active l'offset lors de la persistence"
-            },
-            "persOffsetFloat": {
-                "label": "Offset - Réel (pers.)",
-                "placeholder": "ex: 0.05",
-                "tooltip": "Indique l'offset à appliquer sur un réel lors de la persistence"
-            },
-            "persOffsetInt": {
-                "label": "Offset - Entier",
-                "placeholder": "ex: 3",
-                "tooltip": "Indique l'offset à appliquer sur une valeur entière"
-            },
-            "persOffsetBool": {
-                "label": "Offset - Etat",
-                "tooltip": "Indique l'offset d'état "
-            },
-            "persOffsetDateTime": {
-                "label": "Offset - Temps",
-                "placeholder": "ex : 00/00/01 01:00:00",
-                "tooltip": "Indique un offset de temps lors de l'archive"
-            },
-            "comment": {
-                "label": "Description",
-                "placeholder": "Une description",
-                "tooltip": "Insérer une description du tag"
-            },
-            "list": {
-                "label": "Liste (associée)",
-                "placeholder": "Sélectionner une liste",
-                "tooltip": "Associer une liste au référence entier comme éléments d'affichage"
-            }
-        },
-        "Create": {
-            "title": "Création d'un Tag",
-            "subTitle": "Ci-dessous ajouter un Tag"
-        },
-        "Edit": {
-            "title": "Modifier le Tag",
-            "subTitle": "Ci-dessous éditer un Tag"
-        }
-    },
-    "header": {
-        "lang": {
-            "active": "Langue active"
-        }
-    },
-    "tagstables": {
-        "Create": {
-            "title": "Création - Table pour Tags",
-            "subTitle": "Ajouter une table pouvant contenir les tags"
-        },
-        "Edit": {
-            "title": "Edition - Table pour Tags",
-            "subTitle": "Editer une table de tags"
-        },
-        "Form": {
-            "company": {
-                "label": "Société",
-                "placeholder": "Sélectionner une société",
-                "tooltip": "Associer le code de société"
-            },
-            "table": {
-                "label": "Table",
-                "placeholder": "###_###",
-                "tooltip": "Définir un code pour la table"
-            },
-            "designation": {
-                "label": "Désignation",
-                "placeholder": "ex: VAPEUR - BOSCH 1",
-                "tooltip": "Définir une designation du code de table"
-            },
-            "comment": {
-                "label": "Description",
-                "placeholder": "Une description...",
-                "tooltip": "Associer une description complète"
-            }
-        }
-    },
-    "persistences": {
-        "Edit": {
-            "title": "Modifier la persistence",
-            "subTitle": "Ci-dessous éditer la persistence"
-        },
-        "Create": {
-            "title": "Création d'une persistence",
-            "subTitle": "Ci-dessous ajouter une persistence"
-        },
-        "Form": {
-            "tag": {
-                "label": "Tag",
-                "placeholder": "Sélectionner un tag",
-                "tooltip": "Associer un tag à la méthode d'archive"
-            },
-            "method": {
-                "label": "Méthode",
-                "placeholder": "Sélectionner une méthode",
-                "tooltip": "Associer une méthode d'archive au tag"
-            },
-            "comment": {
-                "label": "Description",
-                "placeholder": "ex : vous permet de définir l'association",
-                "tooltip": "Fournir une description de l'association tag - méthode"
-            },
-            "company": {
-                "label": "Société",
-                "placeholder": "Sélectionner une société",
-                "tooltip": "Associer une société à la méthode d'archive du tag"
-            },
-            "activate": {
-                "label": "Activer",
-                "tooltip": "Activer la persistence"
-            }
-        }
-    },
-    "tagsList": {
-        "Create": {
-            "title": "Création d'une liste (pour Tag)",
-            "subTitle": "Ci-dessous, créer la liste pour un type de tag"
-        },
-        "Edit": {
-            "title": "Edition d'une liste (pour Tag)",
-            "subTitle": "Ci-dessous, éditer la liste pour un type de tag"
-        },
-        "Form": {
-            "list": {
-                "label": "Liste",
-                "placeholder": "Code de la liste",
-                "tooltip": "Définir un code pour la liste"
-            }
-        }
+    "nested": {
+      "title": "Exemple d'itinéraire imbriqué"
     }
+  },
+  "global": {
+    "Form": {
+      "id": {
+        "label": "ID",
+        "placeholder": "Numéro d'identification unique",
+        "tooltip": "Référence au code d'identification unique"
+      },
+      "deleted": {
+        "label": "Supprimé",
+        "placeholder": "Supprimer logiquement...",
+        "tooltip": "Indique si l'élément est supprimé logiquement"
+      },
+      "created": {
+        "label": "Créé le",
+        "placeholder": "Date de création",
+        "tooltip": "Indique la date de création de l'élément"
+      },
+      "changed": {
+        "label": "Modifié le",
+        "placeholder": "Date de dernière modification",
+        "tooltip": "Indique la date de dernière modification de l'élément"
+      },
+      "designation": {
+        "label": "Désignation",
+        "placeholder": "CECI DESIGNATION LE CODE",
+        "tooltip": "Définir une designation du code"
+      },
+      "comment": {
+        "label": "Commentaire",
+        "placeholder": "ex: un commentaire",
+        "tooltip": "Définir un commentaire détaillé"
+      },
+      "company": {
+        "label": "Société",
+        "placeholder": "Sélectionner une société",
+        "tooltip": "Associer le code société"
+      },
+      "type": {
+        "label": "Type",
+        "placeholder": "Sélectionner un type",
+        "tooltip": "Associer le code type"
+      }
+    },
+    "Msg": {
+      "loading": "Chargement...",
+      "error": "Une erreur est survenue",
+      "success": "Opération réussie",
+      "Error": {
+        "title": "Erreur",
+        "message": "Une erreur est survenue",
+        "Value": {
+          "required": "Valeur requise",
+          "min": "Valeur trop petite",
+          "max": "Valeur trop grande",
+          "max255": "Valeur trop grande ! Max à 255",
+          "email": "Adresse email invalide",
+          "pattern": "Format invalide",
+          "unique": "Valeur déjà existante"
+        }
+      }
+    }
+  },
+  "connectionMachine": {
+    "title": "Connexions Machines",
+    "subTitle": "Définition des accès aux machines...",
+    "Table": {
+      "title": "Liste des machines",
+      "subTitle": "Liste des connexions aux machines..."
+    },
+    "Create": {
+      "title": "Création d'une machine",
+      "subTitle": "Ci-dessous \"CREER\" une nouvelle machine"
+    },
+    "Edit": {
+      "title": "Edition d'une machine",
+      "subTitle": "Ci-dessous \"EDITER\" la machine sélectionnée"
+    },
+    "Form": {
+      "company": {
+        "label": "Société",
+        "placeholder": "Code de la société",
+        "tooltip": "Associer le code de la société"
+      },
+      "address": {
+        "label": "Adresse ",
+        "placeholder": "Adresse IP, lien de connexion",
+        "tooltip": "Défini l'adresse IP de connexion"
+      },
+      "mask": {
+        "label": "Masque",
+        "placeholder": "Masque de sous-réseau",
+        "tooltip": "Défini le masque de sous-réseau"
+      },
+      "dns": {
+        "label": "DNS",
+        "placeholder": "Serveur DNS",
+        "tooltip": "Défini le serveur DNS"
+      },
+      "IPv6": {
+        "label": "IPv6",
+        "placeholder": "Adresse IPv6",
+        "tooltip": "Défini l'adresse IPv6"
+      },
+      "port": {
+        "label": "Port",
+        "placeholder": "Port de connexion",
+        "tooltip": "Défini le port de connexion"
+      },
+      "name": {
+        "label": "Nom",
+        "placeholder": "Nom de la machine",
+        "tooltip": "Défini le nom de la machine"
+      },
+      "rack": {
+        "label": "Rack",
+        "placeholder": "Emplacement dans le rack, défaut: 0",
+        "tooltip": "Défini l'emplacement dans le rack"
+      },
+      "slot": {
+        "label": "Slot",
+        "placeholder": "Emplacement dans le slot, défaut: 2",
+        "tooltip": "Défini l'emplacement dans le slot"
+      },
+      "driver": {
+        "label": "Driver",
+        "placeholder": "Sélection du driver",
+        "tooltip": "Défini le driver de connexion"
+      },
+      "mqtt": {
+        "label": "Source MQTT",
+        "placeholder": "L'adresse définie correspond à la source mqtt",
+        "tooltip": "Active l'adresse définie en tank que source mqtt"
+      },
+      "mqtt_user": {
+        "label": "MQTT User",
+        "placeholder": "Nom d'utilisateur MQTT",
+        "tooltip": "Défini le nom d'utilisateur MQTT"
+      },
+      "mqtt_password": {
+        "label": "MQTT Password",
+        "placeholder": "Mot de passe MQTT",
+        "tooltip": "Défini le mot de passe MQTT"
+      },
+      "webhook": {
+        "label": "Webhook",
+        "placeholder": "Adresse du webhook",
+        "tooltip": "Défini l'adresse du webhook"
+      },
+      "webhook_secret": {
+        "label": "Webhook Secret",
+        "placeholder": "Secret du webhook",
+        "tooltip": "Défini le secret du webhook"
+      },
+      "bus": {
+        "label": "Bus",
+        "placeholder": "Bus de communication",
+        "tooltip": "Défini le bus de communication"
+      },
+      "description": {
+        "label": "Description",
+        "placeholder": "Description de la machine",
+        "tooltip": "Défini la description de la machine"
+      },
+      "linkSrouce": {
+        "label": "Type de lien"
+      },
+      "linkSource": {
+        "IP": {
+          "label": "IPv4"
+        },
+        "MQTT": {
+          "label": "MQTT"
+        },
+        "Webhook": {
+          "label": "Webhook"
+        },
+        "Bus": {
+          "label": "Bus"
+        }
+      },
+      "addressIPv4": {
+        "label": "Adresse IPv4",
+        "placeholder": "###.###.###.###",
+        "tooltip": "Définir une adresse IPv4 de connexion"
+      },
+      "addressLink": {
+        "label": "Lien adressage",
+        "placeholder": "lien de connexion...",
+        "tooltip": "Définir une adresse de connexion à la source"
+      }
+    },
+    "import": {
+      "table": {
+        "title": "Importer - Connexions Machine"
+      }
+    }
+  },
+  "tags": {
+    "title": "Tags",
+    "subTitle": "Gestion des tags...",
+    "Form": {
+      "company": {
+        "label": "Société",
+        "placeholder": "Sélectionner une société",
+        "tooltip": "Associer le code société"
+      },
+      "name": {
+        "label": "Tags",
+        "placeholder": "###_###",
+        "tooltip": "Définir un nom pour le tag"
+      },
+      "machine": {
+        "placeholder": "Code machine",
+        "tooltip": "Associer un code machine",
+        "label": "Machine"
+      },
+      "type": {
+        "label": "Type variable",
+        "placeholder": "Sélectionner le type",
+        "tooltip": "Associer un type"
+      },
+      "memory": {
+        "label": "Mémoire",
+        "placeholder": "Sélectionner la mémoire",
+        "tooltip": "Associer un type de mémoire"
+      },
+      "table": {
+        "label": "Table (tags)",
+        "placeholder": "Sélectionner une table",
+        "tooltip": "Associer une table"
+      },
+      "DB": {
+        "label": "Bloc de données",
+        "placeholder": "ex: 340",
+        "tooltip": "Insérer un nombre entier"
+      },
+      "BYTE": {
+        "label": "BYTE",
+        "placeholder": "ex: 0",
+        "tooltip": "Insérer un nombre représentant le byte de référence au DB"
+      },
+      "BIT": {
+        "label": "BIT Offset",
+        "placeholder": "ex: 5",
+        "tooltip": "Insérer le numéro de bit entre 0 et 7 correspondant au byte"
+      },
+      "active": {
+        "label": "Lecture - Active",
+        "tooltip": "Activer la lecture cyclique"
+      },
+      "cycle": {
+        "label": "Cycle (sec)",
+        "placeholder": "ex: 10",
+        "tooltip": "Insérer un cycle de lecture automatique"
+      },
+      "delta": {
+        "label": "Cycle Delta",
+        "tooltip": "Active la mise à jour par valeur delta"
+      },
+      "deltaFloat": {
+        "label": "Delta - Réel",
+        "placeholder": "ex: 12.3",
+        "tooltip": "Insérer un delta de type réel (nombre à virgule)"
+      },
+      "deltaInt": {
+        "label": "Delta - Entier",
+        "placeholder": "ex: 3",
+        "tooltip": "Insérer un delta de type entier (nombre sans virgule)"
+      },
+      "deltaBool": {
+        "label": "Delta - Etat",
+        "tooltip": "Active la prise en charge d'inversion d'état comme cycle"
+      },
+      "deltaDateTime": {
+        "label": "Delta - Temps",
+        "placeholder": "ex: 00/00/01 01:00:00",
+        "tooltip": "Insérer une durée cyclique \"Tout les ...\""
+      },
+      "vDateTime": {
+        "label": "Temps (par défaut)",
+        "placeholder": "ex: 00/00/01 01:00:00",
+        "tooltip": "Insérer une durée de temps par défaut"
+      },
+      "vBool": {
+        "label": "Etat (par défaut)",
+        "tooltip": "Insérer un état par défaut"
+      },
+      "vInt": {
+        "label": "Entier (par défaut)",
+        "tooltip": "Insérer un nombre entier",
+        "placeholder": "ex: 12"
+      },
+      "vFloat": {
+        "label": "Réel (par défaut)",
+        "placeholder": "ex: 12.3",
+        "tooltip": "Insérer un nombre réel"
+      },
+      "vDefault": {
+        "label": "Valeur par défaut",
+        "tooltip": "Activer la gestion de valeur par défaut"
+      },
+      "counterType": {
+        "label": "Compteur - Type",
+        "placeholder": "ex: 2",
+        "tooltip": "Définir le type de compteur"
+      },
+      "counter": {
+        "label": "Comptage",
+        "tooltip": "Active le tags comme compteur"
+      },
+      "mesure": {
+        "label": "Mesurage",
+        "tooltip": "Active le tag comme valeur de mesure"
+      },
+      "mesureMin": {
+        "label": "Mesure minimale",
+        "placeholder": "ex: 0.05",
+        "tooltip": "Insérer une valeur de mesure minimale lors de la mesure"
+      },
+      "mesureMax": {
+        "label": "Mesure maximale",
+        "placeholder": "ex: 50.0",
+        "tooltip": "Insérer une valeur de mesure maximale lors de la mesure"
+      },
+      "measureUnit": {
+        "label": "Mesure - unité",
+        "placeholder": "Sélectionner l'unité de mesure",
+        "tooltip": "Insérer l'unité de mesure du tag"
+      },
+      "mqtt_topic": {
+        "label": "MQTT TOPIC",
+        "placeholder": "lien topic mqtt",
+        "tooltip": "Insérer le lien du topic associé au tag"
+      },
+      "webhook": {
+        "label": "Webhook - Lien",
+        "placeholder": "lien webhook",
+        "tooltip": "Insérer le lien du webhook associé au tag"
+      },
+      "laboratory": {
+        "label": "Laboratoire - Tag",
+        "tooltip": "Associer le tag en tant que valeur laboratoire"
+      },
+      "formula": {
+        "label": "Formule - Tag",
+        "tooltip": "Référence le tag comme formule de calcul"
+      },
+      "formCalculus": {
+        "label": "Formule",
+        "placeholder": "[#22]*2",
+        "tooltip": "Insérer un type de formule - [#22]*22"
+      },
+      "formProcessing": {
+        "label": "Déclencheur formule",
+        "placeholder": "ex : 0",
+        "tooltip": "Sélectionner un déclencheur - defaut 0 - par changement tag"
+      },
+      "error": {
+        "label": "Erreur détecté",
+        "tooltip": "Indique qu'une erreur a été détecté"
+      },
+      "errorMsg": {
+        "label": "Erreur - message",
+        "tooltip": "Retour le message d'erreur détecté"
+      },
+      "errorStamp": {
+        "label": "Erreur - Moment",
+        "tooltip": "Indique le moment de l'erreur"
+      },
+      "alarmEnable": {
+        "label": "Alarme - Type",
+        "tooltip": "Associe le tag au type alarme"
+      },
+      "alarm": {
+        "label": "Alarme",
+        "placeholder": "Sélectionner l'alarme associé",
+        "tooltip": "Indiquer l'alarme associé au tag"
+      },
+      "persistenceEnable": {
+        "label": "Persistence tag",
+        "tooltip": "Indique si le tag est archivable"
+      },
+      "persOffsetEnable": {
+        "label": "Persistence - Offset",
+        "tooltip": "Active l'offset lors de la persistence"
+      },
+      "persOffsetFloat": {
+        "label": "Offset - Réel (pers.)",
+        "placeholder": "ex: 0.05",
+        "tooltip": "Indique l'offset à appliquer sur un réel lors de la persistence"
+      },
+      "persOffsetInt": {
+        "label": "Offset - Entier",
+        "placeholder": "ex: 3",
+        "tooltip": "Indique l'offset à appliquer sur une valeur entière"
+      },
+      "persOffsetBool": {
+        "label": "Offset - Etat",
+        "tooltip": "Indique l'offset d'état "
+      },
+      "persOffsetDateTime": {
+        "label": "Offset - Temps",
+        "placeholder": "ex : 00/00/01 01:00:00",
+        "tooltip": "Indique un offset de temps lors de l'archive"
+      },
+      "comment": {
+        "label": "Description",
+        "placeholder": "Une description",
+        "tooltip": "Insérer une description du tag"
+      },
+      "list": {
+        "label": "Liste (associée)",
+        "placeholder": "Sélectionner une liste",
+        "tooltip": "Associer une liste au référence entier comme éléments d'affichage"
+      }
+    },
+    "Create": {
+      "title": "Création d'un Tag",
+      "subTitle": "Ci-dessous ajouter un Tag"
+    },
+    "Edit": {
+      "title": "Modifier le Tag",
+      "subTitle": "Ci-dessous éditer un Tag"
+    }
+  },
+  "header": {
+    "lang": {
+      "active": "Langue active"
+    }
+  },
+  "tagstables": {
+    "Create": {
+      "title": "Création - Table pour Tags",
+      "subTitle": "Ajouter une table pouvant contenir les tags"
+    },
+    "Edit": {
+      "title": "Edition - Table pour Tags",
+      "subTitle": "Editer une table de tags"
+    },
+    "Form": {
+      "company": {
+        "label": "Société",
+        "placeholder": "Sélectionner une société",
+        "tooltip": "Associer le code de société"
+      },
+      "table": {
+        "label": "Table",
+        "placeholder": "###_###",
+        "tooltip": "Définir un code pour la table"
+      },
+      "designation": {
+        "label": "Désignation",
+        "placeholder": "ex: VAPEUR - BOSCH 1",
+        "tooltip": "Définir une designation du code de table"
+      },
+      "comment": {
+        "label": "Description",
+        "placeholder": "Une description...",
+        "tooltip": "Associer une description complète"
+      }
+    }
+  },
+  "persistences": {
+    "Edit": {
+      "title": "Modifier la persistence",
+      "subTitle": "Ci-dessous éditer la persistence"
+    },
+    "Create": {
+      "title": "Création d'une persistence",
+      "subTitle": "Ci-dessous ajouter une persistence"
+    },
+    "Form": {
+      "tag": {
+        "label": "Tag",
+        "placeholder": "Sélectionner un tag",
+        "tooltip": "Associer un tag à la méthode d'archive"
+      },
+      "method": {
+        "label": "Méthode",
+        "placeholder": "Sélectionner une méthode",
+        "tooltip": "Associer une méthode d'archive au tag"
+      },
+      "comment": {
+        "label": "Description",
+        "placeholder": "ex : vous permet de définir l'association",
+        "tooltip": "Fournir une description de l'association tag - méthode"
+      },
+      "company": {
+        "label": "Société",
+        "placeholder": "Sélectionner une société",
+        "tooltip": "Associer une société à la méthode d'archive du tag"
+      },
+      "activate": {
+        "label": "Activer",
+        "tooltip": "Activer la persistence"
+      }
+    }
+  },
+  "tagsList": {
+    "Create": {
+      "title": "Création d'une liste (pour Tag)",
+      "subTitle": "Ci-dessous, créer la liste pour un type de tag"
+    },
+    "Edit": {
+      "title": "Edition d'une liste (pour Tag)",
+      "subTitle": "Ci-dessous, éditer la liste pour un type de tag"
+    },
+    "Form": {
+      "list": {
+        "label": "Liste",
+        "placeholder": "Code de la liste",
+        "tooltip": "Définir un code pour la liste"
+      }
+    }
+  }
 }

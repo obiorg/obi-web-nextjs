@@ -15,6 +15,9 @@ import DashCardCO2Tanks from '@/src/obi/components/App/DashCardCO2Tanks';
 import ReactIcons from '@/src/obi/components/Icons/ReactIcons';
 import { useTranslations } from 'next-intl';
 import DashCardBBT from '@/src/obi/components/App/DashCardBBT';
+import { TabPanel, TabView } from 'primereact/tabview';
+import { Button } from 'primereact/button';
+import { InputNumber } from 'primereact/inputnumber';
 
 
 const lineData: ChartData = {
@@ -331,7 +334,7 @@ const Dashboard = ({ }: HomeProps) => {
             },
 
 
-            
+
             {
                 id: 'TBF04',
                 name: 'TBF 04',
@@ -436,36 +439,154 @@ const Dashboard = ({ }: HomeProps) => {
 
     });
 
+    const tabViewRef = useRef<any>();
+    const [tabViewIndex, setTabViewIndex] = useState(0);
+    const [tabViewIsInAuto, setTabViewIsInAuto] = useState(false);
+
+
+
+    const [secondsPassed, setSecondsPassed] = useState(0);
+    const [autoTime, setAutoTime] = useState<any>(10);
+    const onAutoTimeChanged = (e: any) => {
+        e.value >= 10 ? setAutoTime(e.value) : setAutoTime(10);
+    };
+
+
+    useEffect(() => {
+        if (tabViewIsInAuto) {
+            const intervalTimeRef = setInterval(() => {
+                if (secondsPassed >= autoTime) {
+                    onTabViewNext();
+                    setSecondsPassed(0);
+                } else {
+                    setSecondsPassed(secondsPassed + 1);
+                }
+            }, 1000);
+
+            return () => {
+                clearInterval(intervalTimeRef);
+            }
+        }
+    }, [tabViewIsInAuto, tabViewIndex, secondsPassed]);
+
+
+
+    const onTabViewPrevious = (() => {
+        let tb: any = tabViewRef.current;
+        if (tabViewIndex === 0 && tabViewRef.current) {
+            setTabViewIndex(tb.props.children.length - 1);
+        } else {
+            setTabViewIndex(tabViewIndex - 1)
+        }
+    });
+
+    const onPause = (() => {
+        setTabViewIsInAuto(!tabViewIsInAuto);
+    });
+    const onPlay = (() => {
+        setTabViewIsInAuto(!tabViewIsInAuto);
+    });
+
+    const onTabViewNext = (() => {
+        let tb: any = tabViewRef.current;
+        if (tabViewIndex === tb.props.children.length - 1) {
+            setTabViewIndex(0);
+        } else {
+            setTabViewIndex(tabViewIndex + 1)
+        }
+    });
+
+
 
     const t = useTranslations('page');
     return (
         <>
-            
+            <div className="flex">
+                <div className="flex-initial flex align-items-center justify-content-center font-bold pr-5 border-round">
+                    <h1 className=''>{t('dashboard.title')}</h1>
+                </div>
 
-            <h1>{t('dashboard.title')}</h1>
+                <Button icon="pi pi-angle-left"
+                    className="mr-1 p-button-rounded p-button-help"
+                    aria-label={t('dashboard.actions.previous')}
+                    onClick={onTabViewPrevious}
+                />
+                <Button icon="pi pi-pause"
+                    className="mr-1 p-button-rounded p-button-secondary"
+                    aria-label={t('dashboard.actions.pause')}
+                    visible={tabViewIsInAuto}
+                    onClick={onPause}
+                />
+                <Button icon="pi pi-play"
+                    className="mr-1 p-button-rounded p-button-success"
+                    aria-label={t('dashboard.actions.play')}
+                    visible={!tabViewIsInAuto}
+                    onClick={onPlay}
+                />
+                <Button icon="pi pi-angle-right"
+                    className="mr-1 p-button-rounded p-button-info"
+                    aria-label={t('dashboard.actions.next')}
+                    onClick={onTabViewNext}
+                />
 
-            <h2>{t('dashboard.CCT.short')}</h2>
-
-            <div className="grid">
-                {CCTs()}
+                <InputNumber value={autoTime}
+                    onValueChange={onAutoTimeChanged}
+                    suffix=" s"
+                    showButtons
+                    decrementButtonClassName="p-button-danger"
+                    incrementButtonClassName="p-button-success"
+                    // buttonLayout="horizontal" 
+                    step={5}
+                    min={10}
+                    className='ml-1 p-0 w-auto h-3rem'
+                    size={1}
+                />
+                {secondsPassed}
             </div>
 
-            <hr />
-            <h2>{t('dashboard.BBT.short')}</h2>
-            <p>{t('dashboard.BBT.description')}</p>
+            <TabView
+                activeIndex={tabViewIndex}
+                onTabChange={(e) => setTabViewIndex(e.index)}
+                ref={tabViewRef}
 
-            <div className="grid">
-                {BBTs()}
-            </div>
+            >
+
+                <TabPanel header={t('dashboard.CCT.short')} key="tab1"
+                    nextButton={<Button icon="pi pi-angle-right" className="p-button-rounded p-button-info" />}
+                >
 
 
-            <hr />
-            <h2>{t('dashboard.CO2.title')}</h2>
-            <p>{t('dashboard.CO2.description')}</p>
+                    <h2>{t('dashboard.CCT.short')}</h2>
 
-            <div className="grid">
-                {CO2_Tanks()}
-            </div>
+                    <div className="grid">
+                        {CCTs()}
+                    </div>
+                    <hr />
+                </TabPanel>
+
+
+                <TabPanel header={t('dashboard.BBT.short')} key="tab2" >
+                    <h2>{t('dashboard.BBT.short')}</h2>
+                    <p>{t('dashboard.BBT.description')}</p>
+
+                    <div className="grid">
+                        {BBTs()}
+                    </div>
+                    <hr />
+                </TabPanel>
+
+
+                <TabPanel header={t('dashboard.CO2.title')} key="tab3" >
+                    <h2>{t('dashboard.CO2.title')}</h2>
+                    <p>{t('dashboard.CO2.description')}</p>
+
+                    <div className="grid">
+                        {CO2_Tanks()}
+                    </div>
+                    <hr />
+                </TabPanel>
+
+            </TabView>
         </>
     );
 };

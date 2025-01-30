@@ -21,6 +21,12 @@
       "CO2": {
         "title": "CO2",
         "description": "CO2 -metergegevens"
+      },
+      "actions": {
+        "previous": "Vorig",
+        "pause": "Pauze",
+        "play": "Toneelstuk",
+        "next": "Volgende"
       }
     }
   },

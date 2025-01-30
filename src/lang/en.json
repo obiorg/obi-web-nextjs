@@ -23,6 +23,12 @@
         },
         "title": "CO2",
         "description": "CO2 meter data"
+      },
+      "actions": {
+        "previous": "Previous",
+        "pause": "Break",
+        "play": "Play",
+        "next": "Following"
       }
     },
     "home": {

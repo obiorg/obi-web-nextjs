@@ -115,7 +115,7 @@ export default function FieldCountriesDropDown(
                         name={name}
                         value={selectedCatalog}
                         options={catalogs}
-                        onChange={onChangeCatalog}
+                        onChanged={onChangeCatalog}
                         className={'col-12 md:col-5  pl-2 mb-2 input-value ' + (error ? 'p-invalid' : '')}
                         placeholder={placeholder}
                         // required

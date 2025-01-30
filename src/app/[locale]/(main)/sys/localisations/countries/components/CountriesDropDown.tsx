@@ -23,6 +23,14 @@ interface CountriesDropDownProps {
     placeholder?: string;               // placeholder
     tooltip?: string;                   // tooltip text
     tooltipOptions?: any;               // options for tooltip
+
+    options?: any; // options
+    className?: string;
+    showClear?: boolean; //
+    filter?: boolean; //
+    showFilterClear?: boolean; //
+    emptyFilterMessage?: string; //
+    emptyMessage?: string; // Message to display when no items are found
 }
 
 
@@ -33,7 +41,8 @@ export default function CountriesDropDown({
     // title, 
     value,
     onChanged,
-    placeholder, tooltip, tooltipOptions
+    placeholder, tooltip, tooltipOptions,
+    options
 }: CountriesDropDownProps) {
 
 

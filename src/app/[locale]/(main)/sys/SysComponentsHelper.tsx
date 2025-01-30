@@ -54,7 +54,7 @@ exports.alarmsClasses_lazyFilter = (options: any) => {
 exports.alarms_lazyFilter = (options: any) => {
     return <AlarmsDropDown
         value={options.value}
-        onChanged={(e: any) => {
+        onChange={(e: any) => {
             options.filterCallback(e.value);
         }}
     />;
@@ -146,7 +146,7 @@ exports.business_lazyFilter = (options: any) => {
 exports.company_lazyFilter = (options: any) => {
     return <CompaniesDropDown
         value={options.value}
-        onChanged={(e: any) => {
+        onChange={(e: any) => {
             options.filterCallback(e.value);
         }}
     />;
@@ -168,7 +168,7 @@ exports.entity_lazyFilter = (options: any) => {
 exports.machines_lazyFilter = (options: any) => {
     return <MachinesDropDown
         value={options.value}
-        onChanged={(e: any) => {
+        onChange={(e: any) => {
             options.filterCallback(e.value);
         }}
     />;
@@ -176,7 +176,7 @@ exports.machines_lazyFilter = (options: any) => {
 exports.machinesDrivers_lazyFilter = (options: any) => {
     return <MachinesDriversDropDown
         value={options.value}
-        onChanged={(e: any) => {
+        onChange={(e: any) => {
             options.filterCallback(e.value);
         }}
     />;
@@ -315,7 +315,7 @@ exports.measuresLimits_lazyFilter = (options: any) => {
 exports.measuresUnits_lazyFilter = (options: any) => {
     return <MeasuresUnitsDropDown
         value={options.value}
-        onChanged={(e: any) => {
+        onChange={(e: any) => {
             options.filterCallback(e.value);
         }}
     />;
@@ -330,7 +330,7 @@ exports.measuresUnits_lazyFilter = (options: any) => {
 exports.persistencesMethods_lazyFilter = (options: any) => {
     return <PersistencesMethodsDropDown
         value={options.value}
-        onChanged={(e: any) => {
+        onChange={(e: any) => {
             options.filterCallback(e.value);
         }}
     />;
@@ -393,7 +393,7 @@ exports.tagsLists_lazyFilter = (options: any) => {
 exports.tagsListTypes_lazyFilter = (options: any) => {
     return <TagsListTypesDropDown
         value={options.value}
-        onChanged={(e: any) => {
+        onChange={(e: any) => {
             options.filterCallback(e.value);
         }}
     />;
@@ -455,7 +455,7 @@ exports.usersAccounts_lazyFilter = (options: any) => {
 exports.usersAccountRoles_lazyFilter = (options: any) => {
     return <TagsListsDropDown
         value={options.value}
-        onChanged={(e: any) => {
+        onChange={(e: any) => {
             options.filterCallback(e.value);
         }}
     />;
@@ -465,7 +465,7 @@ exports.usersAccountRoles_lazyFilter = (options: any) => {
 exports.usersEmailVerified_lazyFilter = (options: any) => {
     return <TagsListTypesDropDown
         value={options.value}
-        onChanged={(e: any) => {
+        onChange={(e: any) => {
             options.filterCallback(e.value);
         }}
     />;
@@ -475,7 +475,7 @@ exports.usersEmailVerified_lazyFilter = (options: any) => {
 exports.usersExternalProviders_lazyFilter = (options: any) => {
     return <TagsMemoriesDropDown
         value={options.value}
-        onChanged={(e: any) => {
+        onChange={(e: any) => {
             options.filterCallback(e.value);
         }}
     />;
@@ -485,7 +485,7 @@ exports.usersExternalProviders_lazyFilter = (options: any) => {
 exports.usersHashingAlgorithms_lazyFilter = (options: any) => {
     return <TagsDropDown
         value={options.value}
-        onChanged={(e: any) => {
+        onChange={(e: any) => {
             options.filterCallback(e.value);
         }}
     />;
@@ -494,7 +494,7 @@ exports.usersHashingAlgorithms_lazyFilter = (options: any) => {
 exports.usersLoginDataExternal_lazyFilter = (options: any) => {
     return <TagsTablesDropDown
         value={options.value}
-        onChanged={(e: any) => {
+        onChange={(e: any) => {
             options.filterCallback(e.value);
         }}
     />;
@@ -503,7 +503,7 @@ exports.usersLoginDataExternal_lazyFilter = (options: any) => {
 exports.usersLoginData_lazyFilter = (options: any) => {
     return <TagsTypesDropDown
         value={options.value}
-        onChanged={(e: any) => {
+        onChange={(e: any) => {
             options.filterCallback(e.value);
         }}
     />;
@@ -512,7 +512,7 @@ exports.usersLoginData_lazyFilter = (options: any) => {
 exports.usersPermissions_lazyFilter = (options: any) => {
     return <TagsTypesDropDown
         value={options.value}
-        onChanged={(e: any) => {
+        onChange={(e: any) => {
             options.filterCallback(e.value);
         }}
     />;
@@ -521,7 +521,7 @@ exports.usersPermissions_lazyFilter = (options: any) => {
 exports.usersRolePermissions_lazyFilter = (options: any) => {
     return <TagsTypesDropDown
         value={options.value}
-        onChanged={(e: any) => {
+        onChange={(e: any) => {
             options.filterCallback(e.value);
         }}
     />;
@@ -530,7 +530,7 @@ exports.usersRolePermissions_lazyFilter = (options: any) => {
 exports.usersRoles_lazyFilter = (options: any) => {
     return <TagsTypesDropDown
         value={options.value}
-        onChanged={(e: any) => {
+        onChange={(e: any) => {
             options.filterCallback(e.value);
         }}
     />;

@@ -25,11 +25,11 @@ export class TagsListContentsModel extends Model {
             company: undefined,
             list: undefined,
             content: 0,
-            value: '',
+            value: undefined,
             default: false,
             width: 0.0,
             height: 0.0,
-            comment: '',
+            comment: undefined,
 
             companies: {},
             tags_lists: {},

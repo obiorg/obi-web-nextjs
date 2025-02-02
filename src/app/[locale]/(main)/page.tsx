@@ -407,12 +407,8 @@ const Dashboard = ({ }: HomeProps) => {
                 tags: [33], // Tons, Pressure, MaxCapacityTons, 
                 icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
             },
-
-
-
-
-
         ];
+
 
         return (
             <>
@@ -433,11 +429,65 @@ const Dashboard = ({ }: HomeProps) => {
 
                     })
                 }
-
             </>
         );
-
     });
+
+
+    const CO2_Bilan = (() => {
+        const icon_gr = 'md';
+        const icon = 'MdCo2';
+        const units = ['kg', 'bar', 'kg', '°C', 'u'];
+        const patterns = ['#0', '#0.00', '#0.0', '#0.0', '0'];
+        const items = [
+            {
+                id: 'co2_prod_secheur',
+                name: 'Prod. Sécheurs',
+                tags: [126], // Tons, Pressure, MaxCapacityTons, 
+                icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
+            },
+            {
+                id: 'TANK02',
+                name: 'TANK 02',
+                tags: [35], // Tons, Pressure, MaxCapacityTons, 
+                icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
+            },
+            {
+                id: 'TANK03',
+                name: 'TANK 03',
+                tags: [33], // Tons, Pressure, MaxCapacityTons, 
+                icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
+            },
+        ];
+
+
+        return (
+            <>
+                {
+                    items.map((item: any) => {
+                        return true ?
+                            <DashCardCO2Tanks
+                                key={'dashCardCO2_key_' + item.id}
+                                id={item.id}
+                                name={item.name}
+                                icon_gr={item.icon_gr}
+                                icon={item.icon}
+                                tags={item.tags}
+                                units={item.units}
+                                patterns={item.patterns}
+                            />
+                            : false
+
+                    })
+                }
+            </>
+        );
+    });
+
+
+
+
+
 
     const tabViewRef = useRef<any>();
     const [tabViewIndex, setTabViewIndex] = useState(0);
@@ -446,9 +496,9 @@ const Dashboard = ({ }: HomeProps) => {
 
 
     const [secondsPassed, setSecondsPassed] = useState(0);
-    const [autoTime, setAutoTime] = useState<any>(10);
+    const [autoTime, setAutoTime] = useState<any>(60);
     const onAutoTimeChanged = (e: any) => {
-        e.value >= 10 ? setAutoTime(e.value) : setAutoTime(10);
+        e.value >= 10 ? setAutoTime(e.value) : setAutoTime(60);
     };
 
 
@@ -582,6 +632,9 @@ const Dashboard = ({ }: HomeProps) => {
 
                     <div className="grid">
                         {CO2_Tanks()}
+                    </div>
+                    <div className="grid">
+                        {CO2_Bilan()}
                     </div>
                     <hr />
                 </TabPanel>

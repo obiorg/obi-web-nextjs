@@ -6,7 +6,7 @@ import { Button } from "primereact/button";
 import { Menu } from "primereact/menu";
 import { Toast } from "primereact/toast";
 import { Toolbar } from "primereact/toolbar";
-import React, {  useRef } from "react";
+import React, { useRef } from "react";
 
 
 // Define the props that the PostForm component expects
@@ -103,6 +103,9 @@ interface TableToolbarProps {
     onSizeChanged?: (e: any) => void;
     onFilterModeChanged?: (e: any) => void;
     onStateStorageChanged?: (e: any) => void;
+
+    componentLeft?: any; // should contain id key
+    componentRight?: any; // should contain id key
 }
 
 
@@ -130,7 +133,10 @@ export default function TableToolbar({ id, name,
     onReload,
     onSizeChanged,
     onFilterModeChanged,
-    onStateStorageChanged
+    onStateStorageChanged,
+
+    componentLeft = <></>,
+    componentRight = <></>,
 }: TableToolbarProps) {
 
 
@@ -324,11 +330,22 @@ export default function TableToolbar({ id, name,
                 </Link>
                 : null}
 
+            {/* left component */}
+            <div className="mr-2">
+                {componentLeft}
+            </div>
+
         </React.Fragment>
     );
 
     const endContent = (
         <React.Fragment>
+
+            {/* Right component */}
+            <div className="mr-2">
+                {componentRight}
+            </div>
+
             {catalogSelected ? <>
                 <form onSubmit={deleteAction}>
                     <Button type='submit' label={deleteLabel} icon={deleteIcon} severity="danger" className={deleteClassName}
@@ -349,6 +366,8 @@ export default function TableToolbar({ id, name,
                 aria-controls="popup_menu" aria-haspopup
                 tooltip='Options' tooltipOptions={{ position: 'bottom' }}
             />
+
+
 
         </React.Fragment>
     );

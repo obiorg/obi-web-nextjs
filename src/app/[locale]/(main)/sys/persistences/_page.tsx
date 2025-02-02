@@ -1,11 +1,14 @@
 'use client';
 
 import Table from '@/src/obi/components/Tables/Table';
+import { Button } from '@/src/obi/components/Validations/Button';
 import { PersistencesModel } from '@/src/obi/models/persistences/PersistencesModel';
 import { PersistencesService } from '@/src/obi/service/persistences/PersistencesService';
 import { ExportsService } from '@/src/obi/utilities/export/ExportsService';
+import Link from 'next/link';
 import { classNames } from 'primereact/utils';
-import { useState } from 'react';
+import React, { useState } from 'react';
+
 
 
 
@@ -38,7 +41,19 @@ const PersistencesPage = () => {
 
     ]);
 
+    const extensionMenu = <React.Fragment>
+        {/* Pick  */}
+        <Link href='./pick' >
+            <Button
+                label='Pick' icon='pi pi-code'
+                className='mr-2'
+                tooltip='Pick Method'
+                tooltipOptions={{ position: 'bottom' }}
+            />
+        </Link>
 
+
+    </React.Fragment>;
 
     return (<>
 
@@ -49,6 +64,7 @@ const PersistencesPage = () => {
             columns={columns}
             exportColumnsStyle={ExportsService.pdfColumnsStyle(columns)}
             services={PersistencesService}
+            componentLeft={extensionMenu}
         />
 
     </>)

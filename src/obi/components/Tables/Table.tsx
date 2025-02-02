@@ -28,6 +28,9 @@ interface TableProps {
     columns: any, // columns representings the table
     exportColumnsStyle: any, //use for export columns
     services: any,                // a service allowing request
+
+    componentLeft?: any; // should contain id key
+    componentRight?: any; // should contain id key
 }
 
 
@@ -41,6 +44,10 @@ export default function Table({
     columns,
     exportColumnsStyle,
     services,
+    
+
+    componentLeft = <></>,
+    componentRight = <></>,
 }: TableProps) {
 
     const [loading, setLoading] = useState(false);
@@ -302,6 +309,10 @@ export default function Table({
                 onExportCSV={(e: any) => ExportsService.exportToCSV(services, lazyParams, prefix)}
                 onExportExcel={(e: any) => ExportsService.exportToExcel(services, lazyParams, prefix)}
                 onExportPDF={(e: any) => ExportsService.exportToPDF(services, lazyParams, prefix, columns, exportColumnsStyle)}
+            
+                componentLeft={componentLeft}
+                componentRight={componentRight}
+            
             />
 
             <DialogError

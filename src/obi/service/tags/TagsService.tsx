@@ -548,7 +548,11 @@ export const TagsService = {
                 // console.log(datas);
                 let dataset: any = {};
                 if (datas.issues !== undefined && datas.issues.length > 0 && datas.issues[0]?.unionErrors) {
-                    dataset = { errors: ZodHelper.issuesFlatten(datas.issues[0].unionErrors, 0) };
+                    if (datas.issues[0].unionErrors) {
+                        dataset = { errors: ZodHelper.issuesFlatten(datas.issues[0].unionErrors, 0) };
+                    } else {
+                        dataset = datas;
+                    }
                     dataset['error'] = {};
                     dataset['error'].message = datas.issues[0].code;
                     dataset['error'].stack = datas.issues[0].message;
@@ -668,7 +672,11 @@ export const TagsService = {
                 let dataset: any = {};
                 // console.log('onUpdating datas', datas);
                 if (datas.issues !== undefined && datas.issues.length > 0 && datas.issues[0]?.unionErrors) {
-                    dataset = { errors: ZodHelper.issuesFlatten(datas.issues[0].unionErrors, 0) };
+                    if (datas.issues[0].unionErrors) {
+                        dataset = { errors: ZodHelper.issuesFlatten(datas.issues[0].unionErrors, 0) };
+                    } else {
+                        dataset = datas;
+                    }
                     dataset['error'] = {};
                     dataset['error'].message = datas.issues[0].code;
                     dataset['error'].stack = datas.issues[0].message;
@@ -713,7 +721,7 @@ export const TagsService = {
 
         // Fetch data from API
         try {
-            
+
             const res = await fetch(
                 url,
                 {

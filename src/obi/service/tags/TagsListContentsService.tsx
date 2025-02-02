@@ -288,7 +288,7 @@ export const TagsListContentsService = {
 
             if (dataType[key] === Number) {
                 data[key] = value === '' ? undefined : Number(value);
-                // console.log(`key ${key} is a number and value is ${value} \n`);
+                // console.log(`key ${key} is a number and value is ${value} with value data key ${data[key]} \n`);
             }
 
         }
@@ -299,6 +299,8 @@ export const TagsListContentsService = {
         // Define URL
         const url = process.env.httpPath + '/tags/listcontents';
 
+
+        console.log(data);
         // Fetch data from API
         try {
             const res = await fetch(
@@ -328,7 +330,11 @@ export const TagsListContentsService = {
                 // console.log(datas);
                 let dataset: any = {};
                 if (datas.issues !== undefined && datas.issues.length > 0) {
-                    dataset = { errors: ZodHelper.issuesFlatten(datas.issues[0].unionErrors, 0) };
+                    if (datas.issues[0].unionErrors) {
+                        dataset = { errors: ZodHelper.issuesFlatten(datas.issues[0].unionErrors, 0) };
+                    } else {
+                        dataset = datas;
+                    }
                     dataset['error'] = {};
                     dataset['error'].message = datas.issues[0].code;
                     dataset['error'].stack = datas.issues[0].message;
@@ -409,7 +415,11 @@ export const TagsListContentsService = {
                 // console.log(datas);
                 let dataset: any = {};
                 if (datas.issues !== undefined && datas.issues.length > 0) {
-                    dataset = { errors: ZodHelper.issuesFlatten(datas.issues[0].unionErrors, 0) };
+                    if (datas.issues[0].unionErrors) {
+                        dataset = { errors: ZodHelper.issuesFlatten(datas.issues[0].unionErrors, 0) };
+                    } else {
+                        dataset = datas;
+                    }
                     dataset['error'] = {};
                     dataset['error'].message = datas.issues[0].code;
                     dataset['error'].stack = datas.issues[0].message;
@@ -510,7 +520,11 @@ export const TagsListContentsService = {
                 console.log(datas);
                 let dataset: any = {};
                 if (datas.issues !== undefined && datas.issues.length > 0) {
-                    dataset = { errors: ZodHelper.issuesFlatten(datas.issues[0].unionErrors, 0) };
+                    if (datas.issues[0].unionErrors) {
+                        dataset = { errors: ZodHelper.issuesFlatten(datas.issues[0].unionErrors, 0) };
+                    } else {
+                        dataset = datas;
+                    }
                     dataset['error'] = {};
                     dataset['error'].message = datas.issues[0].code;
                     dataset['error'].stack = datas.issues[0].message;

@@ -363,5 +363,79 @@
         "label": "Bedrijf"
       }
     }
+  },
+  "tagsListContents": {
+    "Create": {
+      "title": "Tags Lijst Inhoud - Creatie",
+      "subTitle": "Maak de lijstinhoud om een ​​tag te definiëren"
+    },
+    "Edit": {
+      "title": "Tags Lijst Content - editie",
+      "subTitle": "Bewerk de lijstinhoud voor het definiëren van een tag"
+    },
+    "Form": {
+      "content": {
+        "label": "Sleutel",
+        "placeholder": "Definieer de sleutel",
+        "tooltip": "Voeg een inhoudsleutel in"
+      },
+      "value": {
+        "label": "Waarde",
+        "placeholder": "Bijv: Key Definitie",
+        "tooltip": "Voeg een definitie of aanduiding van de sleutel in"
+      },
+      "default": {
+        "label": "Standaard",
+        "tooltip": "Geef aan als standaardwaarde"
+      },
+      "width": {
+        "label": "Breedte",
+        "placeholder": "Ex: 150",
+        "tooltip": "Plaats een breedte voor grafische inhoud"
+      },
+      "height": {
+        "label": "Hoogte",
+        "placeholder": "Ex: 200",
+        "tooltip": "Voeg een hoogte in voor grafische inhoud"
+      },
+      "comment": {
+        "label": "Opmerking",
+        "placeholder": "Ex: een beschrijving",
+        "tooltip": "Voeg een beschrijving in voor inhoud"
+      }
+    }
+  },
+  "global": {
+    "Form": {
+      "id": {
+        "label": "Id",
+        "placeholder": "Enkel identificatienummer",
+        "tooltip": "Verwijzing naar de enkele identificatiecode"
+      },
+      "created": {
+        "label": "Gecreëerd",
+        "placeholder": "Datum van creatie",
+        "tooltip": "Geeft de datum van het creëren van het element aan"
+      },
+      "changed": {
+        "label": "Aangepast van de",
+        "placeholder": "Laatste wijzigingsdatum",
+        "tooltip": "Geeft de datum van laatste aanpassing van het element aan"
+      },
+      "deleted": {
+        "label": "Verwijderd",
+        "tooltip": "Geef aan of het element logisch is verwijderd"
+      },
+      "company": {
+        "label": "Bedrijf",
+        "placeholder": "Selecteer een bedrijf",
+        "tooltip": "Associeer de bedrijfscode"
+      },
+      "list": {
+        "label": "Lijst",
+        "placeholder": "Selecteer een lijst",
+        "tooltip": "Voeg een lijst in om te associëren"
+      }
+    }
   }
 }

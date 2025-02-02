@@ -126,7 +126,7 @@ export default function AlarmsDropDown({
         _lazyParams.first = first;
         _lazyParams.rows = last;
         _lazyParams.filters.global.value = filter === '' ? null : filter;
-        _lazyParams.filters.global.matchMode = 'contains';
+        _lazyParams.fiters.global.matchMode = 'contains';
         setLazyParams(() => { return { ..._lazyParams } });
     }
 

@@ -22,7 +22,7 @@
           "description": "Présente le volume de stockage de CO2"
         },
         "title": "CO2",
-        "description": "Données du compteur CO2"
+        "description": "Données des compteurs CO2"
       },
       "actions": {
         "previous": "Précédent",
@@ -86,6 +86,11 @@
         "label": "Type",
         "placeholder": "Sélectionner un type",
         "tooltip": "Associer le code type"
+      },
+      "list": {
+        "label": "Liste",
+        "placeholder": "Sélectionner une liste",
+        "tooltip": "Insérer une liste à associer"
       }
     },
     "Msg": {
@@ -557,6 +562,47 @@
         "label": "Liste",
         "placeholder": "Code de la liste",
         "tooltip": "Définir un code pour la liste"
+      }
+    }
+  },
+  "tagsListContents": {
+    "Create": {
+      "title": "Contenu de liste de tags - Création",
+      "subTitle": "Créer le contenu de liste permettant de définir un tag"
+    },
+    "Edit": {
+      "title": "Contenu de liste de tags - Edition",
+      "subTitle": "Editer le contenu de liste permettant de définir un tag"
+    },
+    "Form": {
+      "content": {
+        "label": "Clé",
+        "placeholder": "Définir la clé",
+        "tooltip": "Insérer une clé de contenu"
+      },
+      "value": {
+        "label": "Valeur",
+        "placeholder": "ex: definition de clé",
+        "tooltip": "Insérer une définition ou désignation de clé"
+      },
+      "default": {
+        "label": "Par défaut",
+        "tooltip": "Indiquer comme valeur par défaut"
+      },
+      "width": {
+        "label": "Largeur",
+        "placeholder": "ex: 150",
+        "tooltip": "Insérer une largeur pour le contenu graphique"
+      },
+      "height": {
+        "label": "Hauteur",
+        "placeholder": "ex: 200",
+        "tooltip": "Insérer une hauteur pour le contenu graphique"
+      },
+      "comment": {
+        "label": "Commentaire",
+        "placeholder": "ex: une description",
+        "tooltip": "Insérer une description pour le contenu"
       }
     }
   }

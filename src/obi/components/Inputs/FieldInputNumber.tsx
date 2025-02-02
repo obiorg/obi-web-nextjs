@@ -61,7 +61,7 @@ export default function FieldInputNumber({
                         value={value}
                         onChange={onChange}
                         className={'col-12 md:col-5   mb-2 input-value ' + (error ? 'p-invalid' : '')}
-
+                        useGrouping={false}
                         placeholder={placeholder}
                         // required
                         tooltip={tooltip}

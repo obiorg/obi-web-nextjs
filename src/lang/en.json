@@ -378,5 +378,79 @@
         "label": "Company"
       }
     }
+  },
+  "tagsListContents": {
+    "Create": {
+      "title": "Tags list content - Creation",
+      "subTitle": "Create the list content to define a tag"
+    },
+    "Edit": {
+      "title": "Tags list content - Edition",
+      "subTitle": "Edit the list content for defining a tag"
+    },
+    "Form": {
+      "content": {
+        "label": "Key",
+        "placeholder": "Define the key",
+        "tooltip": "Insert a content key"
+      },
+      "value": {
+        "label": "Value",
+        "placeholder": "Ex: key definition",
+        "tooltip": "Insert a definition or designation of key"
+      },
+      "default": {
+        "label": "By default",
+        "tooltip": "Indicate as default value"
+      },
+      "width": {
+        "label": "Width",
+        "placeholder": "Ex: 150",
+        "tooltip": "Insert a width for graphic content"
+      },
+      "height": {
+        "label": "Height",
+        "placeholder": "Ex: 200",
+        "tooltip": "Insert a height for graphic content"
+      },
+      "comment": {
+        "label": "Comment",
+        "placeholder": "Ex: a description",
+        "tooltip": "Insert a description for content"
+      }
+    }
+  },
+  "global": {
+    "Form": {
+      "id": {
+        "label": "Id",
+        "placeholder": "Single identification number",
+        "tooltip": "Reference to the single identification code"
+      },
+      "created": {
+        "label": "Created",
+        "placeholder": "Date of creation",
+        "tooltip": "Indicates the date of creation of the element"
+      },
+      "changed": {
+        "label": "Modified the",
+        "placeholder": "Last modification date",
+        "tooltip": "Indicates the date of last modification of the element"
+      },
+      "deleted": {
+        "label": "Deleted",
+        "tooltip": "Indicate if the element is logically deleted"
+      },
+      "company": {
+        "label": "Company",
+        "placeholder": "Select a company",
+        "tooltip": "Associate the Company Code"
+      },
+      "list": {
+        "label": "List",
+        "placeholder": "Select a list",
+        "tooltip": "Insert a list to associate"
+      }
+    }
   }
 }

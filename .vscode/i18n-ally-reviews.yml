@@ -13,3 +13,15 @@ reviews:
             suggestion: ''
             type: approve
             time: '2024-12-29T21:20:35.014Z'
+  tagsListContents.Form.content.label:
+    locales:
+      fr:
+        comments:
+          - user:
+              name: Hendrick
+              email: 19176533+kfoxone@users.noreply.github.com
+            id: _8iCP-tq5ZqbC7jjrGyMk
+            comment: ''
+            suggestion: ''
+            type: approve
+            time: '2025-02-02T20:08:21.531Z'

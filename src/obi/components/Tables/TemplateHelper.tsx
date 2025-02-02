@@ -467,10 +467,12 @@ exports.persistencesStandard = (rowData: any) => {
  * Tags
  */
 exports.tagsListContent = (rowData: any) => {
+    // console.log(rowData);
     return <label>
-        {rowData.tags_lists_content?.tags_lists?.list + ' - '
-            + rowData.tags_lists_content?.content
-            + ' [' + rowData.tags_lists_content?.id + ']'} </label>
+        {rowData.tags_lists?.list + ' - '
+            + rowData.tags_lists?.designation
+            + '(t:' + rowData.tags_lists?.type + '/c:' + rowData.tags_lists?.company + ')'
+            + ' [' + rowData.tags_lists?.id + ']'} </label>
 }
 
 exports.tagsList = (rowData: any) => {

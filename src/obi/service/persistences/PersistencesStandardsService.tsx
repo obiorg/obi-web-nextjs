@@ -257,7 +257,7 @@ export const PersistencesStandardsService = {
 
     async processAll(formState: any, datas: any): Promise<any> {
         let res: any = [];
-        datas.forEach((row:any, index:any) => {
+        datas.forEach((row: any, index: any) => {
             PersistencesStandardsService.create(formState, row).then((res_row) => {
                 console.log('res_row', res_row, 'res', res);
                 res.push(res_row);
@@ -424,5 +424,26 @@ export const PersistencesStandardsService = {
         const dataset: any[] = await res.json();
         return dataset;
     },
+
+
+    async averageMinMaxHour(tag: number, limit: number): Promise<any[]> {
+        const url = process.env.httpPath + '/persistences/standards/average/min/max/hour/' + tag + '/' + limit;
+        const res = await fetch(
+            url,
+            {
+                method: "GET",
+                mode: "cors", // no-cors, *cors, same-origin
+                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: "same-origin", // include, *same-origin, omit
+                headers: {
+                    "Content-Type": "application/json",
+                    'Cache-Control': 'no-cache'
+                },
+            }
+        )
+        const dataset: any = await res.json();
+        return dataset;
+    },
+
 
 };

@@ -18,6 +18,13 @@ import DashCardBBT from '@/src/obi/components/App/DashCardBBT';
 import { TabPanel, TabView } from 'primereact/tabview';
 import { Button } from 'primereact/button';
 import { InputNumber } from 'primereact/inputnumber';
+import OneSetCard from '@/src/obi/components/App/OneSetCard';
+import { Avatar } from 'primereact/avatar';
+import { Dialog } from 'primereact/dialog';
+import { Chart } from 'primereact/chart';
+import { PersistenceStandardService } from '@/src/obi/service/persistences/PersistenceStandardService copy';
+import { PersistencesStandardsService } from '@/src/obi/service/persistences/PersistencesStandardsService';
+import { SelectButton } from 'primereact/selectbutton';
 
 
 const lineData: ChartData = {
@@ -549,6 +556,119 @@ const Dashboard = ({ }: HomeProps) => {
 
 
     const t = useTranslations('page');
+
+
+
+
+
+
+    const [visible, setVisible] = useState(false);
+    const [refresh, setRefresh] = useState(false);
+    const [chartData, setChartData] = useState({});
+    const [chartOptions, setChartOptions] = useState({});
+    const [hours, setHours] = useState(24);
+    const hoursItems = [
+        { name: '1h', value: 1 },
+        { name: '8h', value: 8 },
+        { name: '24h', value: 24 },
+        { name: '48h', value: 48 },
+        { name: '72h', value: 72 }
+    ];
+    useEffect(() => {
+        const documentStyle = getComputedStyle(document.documentElement);
+        const textColor = documentStyle.getPropertyValue('--text-color');
+        const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
+        const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
+        const options = {
+            maintainAspectRatio: false,
+            aspectRatio: 0.6,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: textColor
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    ticks: {
+                        color: textColorSecondary
+                    },
+                    grid: {
+                        color: surfaceBorder
+                    }
+                },
+                y: {
+                    ticks: {
+                        color: textColorSecondary
+                    },
+                    grid: {
+                        color: surfaceBorder
+                    }
+                }
+            }
+        };
+        setChartOptions(options);
+        if (visible) {
+            PersistencesStandardsService.averageMinMaxHour(180, hours).then((data: any) => {
+                // console.log(data);
+                const labels = data.map((d: any) => d.Time).reverse();
+                const average = data.map((d: any) => d.Average).reverse();
+                const minimal = data.map((d: any) => d.Minimal).reverse();
+                const maximal = data.map((d: any) => d.Maximal).reverse();
+                // console.log(labels, average, minimal, maximal);
+                const chartDatas = {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Moyenne',
+                            data: average,
+                            fill: false,
+                            borderColor: documentStyle.getPropertyValue('--blue-500'),
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Minima',
+                            data: minimal,
+                            fill: false,
+                            borderColor: documentStyle.getPropertyValue('--pink-500'),
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Maxima',
+                            data: maximal,
+                            fill: false,
+                            borderColor: documentStyle.getPropertyValue('--pink-900'),
+                            tension: 0.4
+                        }
+                    ]
+                };
+                setChartData(chartDatas);
+            });
+        }
+
+
+
+
+    }, [visible, refresh, hours]);
+
+
+    const headerElement = (
+        <div className="inline-flex align-items-center justify-content-center gap-2">
+            <Avatar image="//layout/images/obi/obi-signet-dim.svg" shape="circle" />
+            <span className="font-bold white-space-nowrap">TBF CO2 Contre pression [bar]</span>
+        </div>
+    );
+
+    const footerContent = (
+        <div>
+            <Button label="Actualiser" icon="pi pi-refresh" onClick={() => setRefresh(!refresh)} autoFocus />
+            <Button label="Ok" icon="pi pi-check" onClick={() => setVisible(false)} autoFocus />
+        </div>
+    );
+
+
+
     return (
         <>
             <div className="flex">
@@ -618,6 +738,38 @@ const Dashboard = ({ }: HomeProps) => {
                 <TabPanel header={t('dashboard.BBT.short')} key="tab2" >
                     <h2>{t('dashboard.BBT.short')}</h2>
                     <p>{t('dashboard.BBT.description')}</p>
+
+                    <div className="grid">
+                        <OneSetCard
+                            id='TBF_Pressure'
+                            name='TBF CO2 Pres.'
+                            tags={[180]}
+                            icon_gr='md'
+                            icon='MdCompress'
+                            units={['bar']}
+                            patterns={[2]}
+                            onClick={() => setVisible(true)}
+                        />
+                        <Dialog visible={visible} modal
+                            header={headerElement}
+                            footer={footerContent}
+                            maximizable={true}
+                            style={{ width: '50rem' }} onHide={() => { if (!visible) return; setVisible(false); }}>
+                            <p className="m-0">
+                                <div className="card flex justify-content-center mb-2">
+                                    <div className="p-inputgroup flex-1 flex justify-content-center">
+                                        <span className="p-inputgroup-addon">
+                                            <i className="pi pi-clock"></i>
+                                        </span>
+                                        <SelectButton value={hours} onChange={(e) => setHours(e.value)} optionLabel="name" options={hoursItems} />
+                                    </div>
+                                </div>
+                            </p>
+                            <Chart type="line" className='card flex justify-content-center' data={chartData} options={chartOptions} />
+                        </Dialog>
+
+                    </div>
+                    <hr />
 
                     <div className="grid">
                         {BBTs()}

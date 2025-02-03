@@ -1,14 +1,17 @@
 import { Metadata } from "next";
-import TagsListCreate from "./_page";
+import TagsListUpdate from "./_page";
 
 
 export const metadata: Metadata = {
-    title: "Tags 🏷 - List - Create",
-    description: "Create a new list corresponding for tag",
+    title: "Tags 🏷 - Lists - Update",
+    description: "Update the specified Liste of tags",
+};
+interface TagsListUpdateProps {
+    params: any,
+}
+
+const PageTagsListUpdate = ({ params }: TagsListUpdateProps) => {
+    return (<><TagsListUpdate params={params} /></>)
 };
 
-const PageTagsListCreate = () => {
-    return (<><TagsListCreate /></>)
-};
-
-export default PageTagsListCreate;
+export default PageTagsListUpdate;

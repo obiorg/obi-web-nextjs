@@ -374,7 +374,7 @@ exports.persistencesStandards_lazyFilter = (options: any) => {
 exports.tagsListContents_lazyFilter = (options: any) => {
     return <TagsListContentsDropDown
         value={options.value}
-        onChanged={(e: any) => {
+        onChange={(e: any) => {
             options.filterCallback(e.value);
         }}
     />;
@@ -446,7 +446,7 @@ exports.tagsTypes_lazyFilter = (options: any) => {
 exports.usersAccounts_lazyFilter = (options: any) => {
     return <TagsListContentsDropDown
         value={options.value}
-        onChanged={(e: any) => {
+        onChange={(e: any) => {
             options.filterCallback(e.value);
         }}
     />;

@@ -44,12 +44,13 @@ const PersistencesPage = () => {
     const extensionMenu = <React.Fragment>
         {/* Pick  */}
         <Link href='./pick' >
-            <Button
-                label='Pick' icon='pi pi-code'
+            {/* <Button
+                label='Pick' 
+                icon='pi pi-code'
                 className='mr-2'
                 tooltip='Pick Method'
                 tooltipOptions={{ position: 'bottom' }}
-            />
+            /> */}
         </Link>
 
 

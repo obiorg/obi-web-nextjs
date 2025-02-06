@@ -1,5 +1,4 @@
 import Layout from '@/src/layout/layout';
-import { Metadata } from 'next';
 
 interface AppLayoutProps {
     children: React.ReactNode;

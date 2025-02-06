@@ -1,0 +1,21 @@
+
+.highcharts-title {
+    font-size: 2em!important;
+    font-weight: 600!important;
+    margin: 0.5em 0;
+}
+
+.highcharts-container {
+    width: 100%!important;
+    height: 100%;
+}
+
+.graphic-container {
+    width: 100%!important;
+    height: 100%;
+}
+
+.highcharts-root {
+    width: 100%!important;
+    height: 100%;
+}

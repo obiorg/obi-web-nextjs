@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
+
 import { Menu } from 'primereact/menu';
 import { useContext, useEffect, useRef, useState } from 'react';
 
@@ -8,46 +9,21 @@ import { ProductService } from '@/src/demo/service/ProductService';
 import { LayoutContext } from '@/src/layout/context/layoutcontext';
 
 import { Demo } from '@/src/types';
-import { ChartData, ChartOptions } from 'chart.js';
+import { ChartOptions } from 'chart.js';
 
+import DashCardBBT from '@/src/obi/components/App/DashCardBBT';
 import DashCardCCT from '@/src/obi/components/App/DashCardCCT';
 import DashCardCO2Tanks from '@/src/obi/components/App/DashCardCO2Tanks';
+import OneSetCard from '@/src/obi/components/App/OneSetCard';
+import OneSetCardHightChart from '@/src/obi/components/App/OneSetCardHighChart';
 import ReactIcons from '@/src/obi/components/Icons/ReactIcons';
 import { useTranslations } from 'next-intl';
-import DashCardBBT from '@/src/obi/components/App/DashCardBBT';
-import { TabPanel, TabView } from 'primereact/tabview';
 import { Button } from 'primereact/button';
 import { InputNumber } from 'primereact/inputnumber';
-import OneSetCard from '@/src/obi/components/App/OneSetCard';
-import { Avatar } from 'primereact/avatar';
-import { Dialog } from 'primereact/dialog';
-import { Chart } from 'primereact/chart';
-import { PersistenceStandardService } from '@/src/obi/service/persistences/PersistenceStandardService copy';
-import { PersistencesStandardsService } from '@/src/obi/service/persistences/PersistencesStandardsService';
-import { SelectButton } from 'primereact/selectbutton';
+import { TabPanel, TabView } from 'primereact/tabview';
 
 
-const lineData: ChartData = {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-    datasets: [
-        {
-            label: 'First Dataset',
-            data: [65, 59, 80, 81, 56, 55, 40],
-            fill: false,
-            backgroundColor: '#2f4860',
-            borderColor: '#2f4860',
-            tension: 0.4
-        },
-        {
-            label: 'Second Dataset',
-            data: [28, 48, 40, 19, 86, 27, 90],
-            fill: false,
-            backgroundColor: '#00bb7e',
-            borderColor: '#00bb7e',
-            tension: 0.4
-        }
-    ]
-};
+
 
 type HomeProps = {
 
@@ -138,12 +114,7 @@ const Dashboard = ({ }: HomeProps) => {
         }
     }, [layoutConfig.colorScheme]);
 
-    const formatCurrency = (value: number) => {
-        return value?.toLocaleString('en-US', {
-            style: 'currency',
-            currency: 'USD'
-        });
-    };
+
 
     const titleHeader = (
         <span className='flex flex-auto justify-content-between'>
@@ -379,6 +350,7 @@ const Dashboard = ({ }: HomeProps) => {
                                 tags={item.tags}
                                 units={item.units}
                                 patterns={item.patterns}
+                                chart={true}
                             />
                             : false
 
@@ -390,11 +362,69 @@ const Dashboard = ({ }: HomeProps) => {
 
     });
 
+    const O2_Bilan = (() => {
+        const icon_gr = 'si';
+        const icon = 'SiOxygen';
+        const units = ['ppm', 'bar', 'kg', '°C', 'u'];
+        const patterns = [3, 0, 0, 0, 0];
+        const items = [
+            {
+                id: 'O2_Daw',
+                name: 'Oxy. DAW',
+                tags: [193], // 
+                icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
+            },
+            {
+                id: 'O2_Separator',
+                name: 'Oxy. Séparateur',
+                tags: [191], // 
+                icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
+            },
+            {
+                id: 'O2_Filtration',
+                name: 'Oxy. Filtration',
+                tags: [192], //
+                icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
+            },
+            {
+                id: 'O2_Centec',
+                name: 'Oxy. Centec',
+                tags: [189], // 
+                icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
+            },
+        ];
+
+
+        return (
+            <>
+                {
+                    items.map((item: any) => {
+                        return true ?
+                            <OneSetCardHightChart
+                                key={'O2Bilan_key_' + item.id}
+                                id={item.id}
+                                name={item.name}
+                                icon_gr={item.icon_gr}
+                                icon={item.icon}
+                                tags={item.tags}
+                                units={item.units}
+                                patterns={item.patterns}
+                                chart={true}
+                                chartTitle={'Bilan O2 ' + item.name}
+                            />
+                            : false
+
+                    })
+                }
+            </>
+        );
+    });
+
     const CO2_Tanks = (() => {
         const icon_gr = 'md';
         const icon = 'MdCo2';
         const units = ['kg', 'bar', 'kg', '°C', 'u'];
-        const patterns = ['#0', '#0.00', '#0.0', '#0.0', '0'];
+        const patterns = [0, 0, 0, 0, 0];
         const items = [
             {
                 id: 'TANK01',
@@ -422,7 +452,17 @@ const Dashboard = ({ }: HomeProps) => {
                 {
                     items.map((item) => {
                         return true ?
-                            <DashCardCO2Tanks
+                            // <DashCardCO2Tanks
+                            //     key={'dashCardCO2_key_' + item.id}
+                            //     id={item.id}
+                            //     name={item.name}
+                            //     icon_gr={item.icon_gr}
+                            //     icon={item.icon}
+                            //     tags={item.tags}
+                            //     units={item.units}
+                            //     patterns={item.patterns}
+                            // />
+                            <OneSetCardHightChart
                                 key={'dashCardCO2_key_' + item.id}
                                 id={item.id}
                                 name={item.name}
@@ -431,6 +471,8 @@ const Dashboard = ({ }: HomeProps) => {
                                 tags={item.tags}
                                 units={item.units}
                                 patterns={item.patterns}
+                                chart={true}
+                                chartTitle={'Stock CO2 ' + item.name}
                             />
                             : false
 
@@ -490,6 +532,8 @@ const Dashboard = ({ }: HomeProps) => {
             </>
         );
     });
+
+
 
 
 
@@ -556,116 +600,6 @@ const Dashboard = ({ }: HomeProps) => {
 
 
     const t = useTranslations('page');
-
-
-
-
-
-
-    const [visible, setVisible] = useState(false);
-    const [refresh, setRefresh] = useState(false);
-    const [chartData, setChartData] = useState({});
-    const [chartOptions, setChartOptions] = useState({});
-    const [hours, setHours] = useState(24);
-    const hoursItems = [
-        { name: '1h', value: 1 },
-        { name: '8h', value: 8 },
-        { name: '24h', value: 24 },
-        { name: '48h', value: 48 },
-        { name: '72h', value: 72 }
-    ];
-    useEffect(() => {
-        const documentStyle = getComputedStyle(document.documentElement);
-        const textColor = documentStyle.getPropertyValue('--text-color');
-        const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
-        const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
-        const options = {
-            maintainAspectRatio: false,
-            aspectRatio: 0.6,
-            plugins: {
-                legend: {
-                    labels: {
-                        color: textColor
-                    }
-                }
-            },
-            scales: {
-                x: {
-                    ticks: {
-                        color: textColorSecondary
-                    },
-                    grid: {
-                        color: surfaceBorder
-                    }
-                },
-                y: {
-                    ticks: {
-                        color: textColorSecondary
-                    },
-                    grid: {
-                        color: surfaceBorder
-                    }
-                }
-            }
-        };
-        setChartOptions(options);
-        if (visible) {
-            PersistencesStandardsService.averageMinMaxHour(180, hours).then((data: any) => {
-                // console.log(data);
-                const labels = data.map((d: any) => d.Time).reverse();
-                const average = data.map((d: any) => d.Average).reverse();
-                const minimal = data.map((d: any) => d.Minimal).reverse();
-                const maximal = data.map((d: any) => d.Maximal).reverse();
-                // console.log(labels, average, minimal, maximal);
-                const chartDatas = {
-                    labels: labels,
-                    datasets: [
-                        {
-                            label: 'Moyenne',
-                            data: average,
-                            fill: false,
-                            borderColor: documentStyle.getPropertyValue('--blue-500'),
-                            tension: 0.4
-                        },
-                        {
-                            label: 'Minima',
-                            data: minimal,
-                            fill: false,
-                            borderColor: documentStyle.getPropertyValue('--pink-500'),
-                            tension: 0.4
-                        },
-                        {
-                            label: 'Maxima',
-                            data: maximal,
-                            fill: false,
-                            borderColor: documentStyle.getPropertyValue('--pink-900'),
-                            tension: 0.4
-                        }
-                    ]
-                };
-                setChartData(chartDatas);
-            });
-        }
-
-
-
-
-    }, [visible, refresh, hours]);
-
-
-    const headerElement = (
-        <div className="inline-flex align-items-center justify-content-center gap-2">
-            <Avatar image="//layout/images/obi/obi-signet-dim.svg" shape="circle" />
-            <span className="font-bold white-space-nowrap">TBF CO2 Contre pression [bar]</span>
-        </div>
-    );
-
-    const footerContent = (
-        <div>
-            <Button label="Actualiser" icon="pi pi-refresh" onClick={() => setRefresh(!refresh)} autoFocus />
-            <Button label="Ok" icon="pi pi-check" onClick={() => setVisible(false)} autoFocus />
-        </div>
-    );
 
 
 
@@ -740,7 +674,7 @@ const Dashboard = ({ }: HomeProps) => {
                     <p>{t('dashboard.BBT.description')}</p>
 
                     <div className="grid">
-                        <OneSetCard
+                        {/* <OneSetCard
                             id='TBF_Pressure'
                             name='TBF CO2 Pres.'
                             tags={[180]}
@@ -748,31 +682,28 @@ const Dashboard = ({ }: HomeProps) => {
                             icon='MdCompress'
                             units={['bar']}
                             patterns={[2]}
-                            onClick={() => setVisible(true)}
+                            chart={true}
+                        /> */}
+                        <OneSetCardHightChart
+                            id='TBF_PressureHC'
+                            name='TBF CO2 Pres. HC'
+                            tags={[180]}
+                            icon_gr='md'
+                            icon='MdCompress'
+                            units={['bar']}
+                            patterns={[2]}
+                            chart={true}
+                            chartTitle='TBF CO2 Pres. HC'
                         />
-                        <Dialog visible={visible} modal
-                            header={headerElement}
-                            footer={footerContent}
-                            maximizable={true}
-                            style={{ width: '50rem' }} onHide={() => { if (!visible) return; setVisible(false); }}>
-                            <p className="m-0">
-                                <div className="card flex justify-content-center mb-2">
-                                    <div className="p-inputgroup flex-1 flex justify-content-center">
-                                        <span className="p-inputgroup-addon">
-                                            <i className="pi pi-clock"></i>
-                                        </span>
-                                        <SelectButton value={hours} onChange={(e) => setHours(e.value)} optionLabel="name" options={hoursItems} />
-                                    </div>
-                                </div>
-                            </p>
-                            <Chart type="line" className='card flex justify-content-center' data={chartData} options={chartOptions} />
-                        </Dialog>
-
                     </div>
                     <hr />
 
                     <div className="grid">
                         {BBTs()}
+                    </div>
+                    <hr />
+                    <div className="grid">
+                        {O2_Bilan()}
                     </div>
                     <hr />
                 </TabPanel>
@@ -785,8 +716,22 @@ const Dashboard = ({ }: HomeProps) => {
                     <div className="grid">
                         {CO2_Tanks()}
                     </div>
+
+
+                    <hr />
                     <div className="grid">
-                        {CO2_Bilan()}
+                        {/* {CO2_Bilan()} */}
+                        <OneSetCard
+                            id='CO2_SECHEUR_KG'
+                            name='CO2 Prod. Sécheur'
+                            tags={[126]}
+                            icon_gr='md'
+                            icon='MdCompress'
+                            units={['kg']}
+                            patterns={[0]}
+                            chart={true}
+                            chartTitle='Production CO2 Sécheur'
+                        />
                     </div>
                     <hr />
                 </TabPanel>

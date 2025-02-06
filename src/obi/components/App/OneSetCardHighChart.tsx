@@ -6,18 +6,12 @@ import Moment from "react-moment";
 import { NumericFormat } from "react-number-format";
 import { TagsService } from "../../service/tags/TagsService";
 import ReactIcons from "../Icons/ReactIcons";
-import { Dialog } from 'primereact/dialog';
-import { Chart } from 'primereact/chart';
-import { BlockUI } from 'primereact/blockui';
-import { Button } from 'primereact/button';
-import { Avatar } from 'primereact/avatar';
-import { PersistencesStandardsService } from '../../service/persistences/PersistencesStandardsService';
-import { SelectButton } from 'primereact/selectbutton';
 import DialogChartPersistence from './DialogChartPersistence';
+import DialogHightChartPersistence from './DialogHightChartPersistence';
 
 
 // Define the props that the PostForm component expects
-interface OneSetCardProps {
+interface OneSetCardHightChartProps {
     id?: string;                         // ID of the component
     name?: string;                       // Name of the component
 
@@ -36,11 +30,11 @@ interface OneSetCardProps {
 
     chart?: boolean; // enable chart
     chartTitle?: string; // chart title
-
+    chartSubTitle?: string; // chart subtitle
 }
 
 
-export default function OneSetCard(
+export default function OneSetCardHightChart(
     {
         id,
         name,
@@ -57,9 +51,10 @@ export default function OneSetCard(
         refresh_s = 15,
 
         chart = false,
-        chartTitle = 'Chart OneSet Card',
+        chartTitle = undefined,
+        chartSubTitle = undefined
 
-    }: OneSetCardProps) {
+    }: OneSetCardHightChartProps) {
 
 
 
@@ -209,7 +204,7 @@ export default function OneSetCard(
             </div>
 
 
-            <DialogChartPersistence
+            <DialogHightChartPersistence
                 id={id}
                 name={name}
                 title={chartTitle}

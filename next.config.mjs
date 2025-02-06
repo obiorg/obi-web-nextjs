@@ -32,7 +32,10 @@ const nextConfig = {
     // experimental: {
     //     newNextLinkBehavior: false,
     // },
-
+    images: {
+        loader: "akamai",
+        path: "/",
+      },
     /**
      * Setup the basePath for application
      */

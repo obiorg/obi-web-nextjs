@@ -7,6 +7,7 @@ import { NumericFormat } from "react-number-format";
 import { TagsListContentsService } from "../../service/tags/TagsListContentsService";
 import { TagsService } from "../../service/tags/TagsService";
 import ReactIcons from "../Icons/ReactIcons";
+import DialogChartPersistence from './DialogChartPersistence';
 
 
 // Define the props that the PostForm component expects
@@ -27,6 +28,8 @@ interface DashCardBBTProps {
     refresh?: boolean; // enable automatic refresh defaulat true
     refresh_s?: number; // Number of seconds before auto-refresh, default 15 seconds,
 
+    chart?: boolean; // enable chart
+    chartTitle?: string; // chart title
 }
 
 
@@ -45,6 +48,8 @@ export default function DashCardBBT(
 
         refresh = true,
         refresh_s = 15,
+        chart = false,
+        chartTitle = 'Chart BBT Card',
 
     }: DashCardBBTProps) {
 
@@ -222,9 +227,23 @@ export default function DashCardBBT(
 
 
 
+    // Dialog Chart
+    const [visible, setVisible] = useState(false);
+
     return (
         <>
-            <div id={'DashCardBBT_' + id} className="col-12 lg:col-6 xl:col-3">
+            <DialogChartPersistence
+                id={id}
+                name={name}
+                title={chartTitle}
+                tags={tags}
+                units={units}
+                visible={visible && chart}
+                onChangedVisible={(e: any) => { setVisible(e) }}
+            />
+            <div id={'DashCardBBT_' + id} className={'col-12 lg:col-6 xl:col-3 ' +( chart ? 'cursor-pointer':'')}
+                onClick={(e: any) => { setVisible(true && chart);  }}
+            >
                 <div className="card mb-0 p-2">
 
                     <span className='flex flex-auto justify-content-between'>

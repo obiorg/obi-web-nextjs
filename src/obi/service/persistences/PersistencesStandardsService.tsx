@@ -426,8 +426,66 @@ export const PersistencesStandardsService = {
     },
 
 
-    async averageMinMaxHour(tag: number, limit: number): Promise<any[]> {
+    async averageMinMaxMinutes(tag: number, limit: number): Promise<any[]> {
+        const url = process.env.httpPath + '/persistences/standards/average/min/max/minute/' + tag + '/' + limit;
+        const res = await fetch(
+            url,
+            {
+                method: "GET",
+                mode: "cors", // no-cors, *cors, same-origin
+                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: "same-origin", // include, *same-origin, omit
+                headers: {
+                    "Content-Type": "application/json",
+                    'Cache-Control': 'no-cache'
+                },
+            }
+        )
+        const dataset: any = await res.json();
+        return dataset;
+    },
+
+
+    async averageMinMaxHours(tag: number, limit: number): Promise<any[]> {
         const url = process.env.httpPath + '/persistences/standards/average/min/max/hour/' + tag + '/' + limit;
+        const res = await fetch(
+            url,
+            {
+                method: "GET",
+                mode: "cors", // no-cors, *cors, same-origin
+                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: "same-origin", // include, *same-origin, omit
+                headers: {
+                    "Content-Type": "application/json",
+                    'Cache-Control': 'no-cache'
+                },
+            }
+        )
+        const dataset: any = await res.json();
+        return dataset;
+    },
+
+    async averageMinMaxDays(tag: number, limit: number): Promise<any[]> {
+        const url = process.env.httpPath + '/persistences/standards/average/min/max/day/' + tag + '/' + limit;
+        const res = await fetch(
+            url,
+            {
+                method: "GET",
+                mode: "cors", // no-cors, *cors, same-origin
+                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: "same-origin", // include, *same-origin, omit
+                headers: {
+                    "Content-Type": "application/json",
+                    'Cache-Control': 'no-cache'
+                },
+            }
+        )
+        const dataset: any = await res.json();
+        return dataset;
+    },
+
+    async averageMinMaxMonths(tag: number, limit: number): Promise<any[]> {
+        const url = process.env.httpPath + '/persistences/standards/average/min/max/month/' + tag + '/' + limit;
         const res = await fetch(
             url,
             {

@@ -27,9 +27,9 @@ type RootLayoutProps = {
     params: { locale: string };
 };
 
-export function generateStaticParams() {
-    return locales.map((locale) => ({ locale }));
-}
+// export function generateStaticParams() {
+//     return locales.map((locale) => ({ locale }));
+// }
 
 export const viewport: Viewport = {
     themeColor: '#colorHere',
@@ -76,12 +76,6 @@ export default async function RootLayout({
             + '") : while ' + `locales = >> ${locales} <<`
             + ` and routing locales : >>  ${routing.locales} <<`);
     }
-
-
-    /** Prime react */
-    // const { layoutConfig } = useContext(LayoutContext);
-
-
 
     // Providing all messages to the client
     // side is the easiest way to get started

@@ -7,8 +7,8 @@ const withNextIntl = createNextIntlPlugin();
 const nextConfig = {
     env: {
         // PC
-        // httpPath: 'http://[::1]:7022/obi/api/v1',
-        // httpsPath: 'https://[::1]:7023/obi/api/v1'
+        httpPath: 'http://[::1]:7022/obi/api/v1',
+        httpsPath: 'https://[::1]:7023/obi/api/v1'
 
         // // Use at home
         // httpPath: 'http://192.168.1.75:7022/obi/api/v1',
@@ -22,8 +22,8 @@ const nextConfig = {
         // httpsPath: 'https://[::1]:7023/api',
 
         // Server
-        httpPath: 'http://10.242.14.3:7022/obi/api/v1',
-        httpsPath: 'https://10.242.14.3:7023/obi/api/v1',
+        // httpPath: 'http://10.242.14.3:7022/obi/api/v1',
+        // httpsPath: 'https://10.242.14.3:7023/obi/api/v1',
     },
 
     trailingSlash: true,
@@ -32,10 +32,7 @@ const nextConfig = {
     // experimental: {
     //     newNextLinkBehavior: false,
     // },
-    images: {
-        loader: "akamai",
-        path: "/",
-      },
+
     /**
      * Setup the basePath for application
      */

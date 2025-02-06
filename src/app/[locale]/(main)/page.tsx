@@ -1,22 +1,18 @@
-/* eslint-disable @next/next/no-img-element */
+
 'use client';
 
 import { Menu } from 'primereact/menu';
 import { useContext, useEffect, useRef, useState } from 'react';
 
 
-import { ProductService } from '@/src/demo/service/ProductService';
 import { LayoutContext } from '@/src/layout/context/layoutcontext';
 
-import { Demo } from '@/src/types';
-import { ChartOptions } from 'chart.js';
 
 import DashCardBBT from '@/src/obi/components/App/DashCardBBT';
 import DashCardCCT from '@/src/obi/components/App/DashCardCCT';
 import DashCardCO2Tanks from '@/src/obi/components/App/DashCardCO2Tanks';
 import OneSetCard from '@/src/obi/components/App/OneSetCard';
 import OneSetCardHightChart from '@/src/obi/components/App/OneSetCardHighChart';
-import ReactIcons from '@/src/obi/components/Icons/ReactIcons';
 import { useTranslations } from 'next-intl';
 import { Button } from 'primereact/button';
 import { InputNumber } from 'primereact/inputnumber';
@@ -25,86 +21,24 @@ import { TabPanel, TabView } from 'primereact/tabview';
 
 
 
-type HomeProps = {
 
-};
 
-const Dashboard = ({ }: HomeProps) => {
+const Dashboard = () => {
     // console.log("Dashboard", locale);
+    // Language support
+    const t = useTranslations('page');
 
-    const [products, setProducts] = useState<Demo.Product[]>([]);
-    const menu1 = useRef<Menu>(null);
-    const menu2 = useRef<Menu>(null);
-    const [lineOptions, setLineOptions] = useState<ChartOptions>({});
     const { layoutConfig } = useContext(LayoutContext);
 
     const applyLightTheme = () => {
-        const lineOptions: ChartOptions = {
-            plugins: {
-                legend: {
-                    labels: {
-                        color: '#495057'
-                    }
-                }
-            },
-            scales: {
-                x: {
-                    ticks: {
-                        color: '#495057'
-                    },
-                    grid: {
-                        color: '#ebedef'
-                    }
-                },
-                y: {
-                    ticks: {
-                        color: '#495057'
-                    },
-                    grid: {
-                        color: '#ebedef'
-                    }
-                }
-            }
-        };
-
-        setLineOptions(lineOptions);
+      
     };
 
     const applyDarkTheme = () => {
-        const lineOptions = {
-            plugins: {
-                legend: {
-                    labels: {
-                        color: '#ebedef'
-                    }
-                }
-            },
-            scales: {
-                x: {
-                    ticks: {
-                        color: '#ebedef'
-                    },
-                    grid: {
-                        color: 'rgba(160, 167, 181, .3)'
-                    }
-                },
-                y: {
-                    ticks: {
-                        color: '#ebedef'
-                    },
-                    grid: {
-                        color: 'rgba(160, 167, 181, .3)'
-                    }
-                }
-            }
-        };
-
-        setLineOptions(lineOptions);
+        
     };
 
-    useEffect(() => {
-        ProductService.getProductsSmall().then((data) => setProducts(data));
-    }, []);
+  
 
     useEffect(() => {
         if (layoutConfig.colorScheme === 'light') {
@@ -116,31 +50,6 @@ const Dashboard = ({ }: HomeProps) => {
 
 
 
-    const titleHeader = (
-        <span className='flex flex-auto justify-content-between'>
-            {/* icon */}
-            <div className="flex align-items-center justify-content-center bg-blue-100 border-round"
-                style={{ width: '2.5rem', height: '2.5rem' }}>
-                <ReactIcons group="gi" icon="GiChemicalTank" className="text-blue-500 text-2xl" />
-            </div>
-            TOD 35
-        </span>
-    );
-
-    const header = (
-        <></>
-    );
-    const footer = (
-        <>
-            {/* Date line */}
-            <div className="flex flex-row-reverse justify-content-start mt-0">
-                <div className="vertical-align-middle">
-                    <label >13:10:15</label>
-                    <ReactIcons group="fa" icon="FaClock" className='ml-3' />
-                </div>
-            </div>
-        </>
-    );
 
 
     const CCTs = (() => {
@@ -535,29 +444,24 @@ const Dashboard = ({ }: HomeProps) => {
 
 
 
+    // TAB VIEW CONTROL
+    const tabViewRef = useRef<any>();   // TabView reference
+    const [tabViewIndex, setTabViewIndex] = useState(0); // active index of TabView
+    const [tabViewIsInAuto, setTabViewIsInAuto] = useState(false); // indicate if TabView is in auto mode
+    const [secondsPassed, setSecondsPassed] = useState(0);  // seconds passed in auto mode
+    const [autoTime, setAutoTime] = useState<any>(60);  // seconds specifying end of auto mode
 
-
-
-
-
-    const tabViewRef = useRef<any>();
-    const [tabViewIndex, setTabViewIndex] = useState(0);
-    const [tabViewIsInAuto, setTabViewIsInAuto] = useState(false);
-
-
-
-    const [secondsPassed, setSecondsPassed] = useState(0);
-    const [autoTime, setAutoTime] = useState<any>(60);
+    // Change auto time which is limint duration on active tab view 
     const onAutoTimeChanged = (e: any) => {
         e.value >= 10 ? setAutoTime(e.value) : setAutoTime(60);
     };
 
-
+    // Effect on tab view auto mode to switch over tab 
     useEffect(() => {
         if (tabViewIsInAuto) {
             const intervalTimeRef = setInterval(() => {
                 if (secondsPassed >= autoTime) {
-                    onTabViewNext();
+                    onTabViewForward();
                     setSecondsPassed(0);
                 } else {
                     setSecondsPassed(secondsPassed + 1);
@@ -571,8 +475,8 @@ const Dashboard = ({ }: HomeProps) => {
     }, [tabViewIsInAuto, tabViewIndex, secondsPassed]);
 
 
-
-    const onTabViewPrevious = (() => {
+    // Tab view Seek Backward
+    const onTabViewBackward = (() => {
         let tb: any = tabViewRef.current;
         if (tabViewIndex === 0 && tabViewRef.current) {
             setTabViewIndex(tb.props.children.length - 1);
@@ -581,14 +485,16 @@ const Dashboard = ({ }: HomeProps) => {
         }
     });
 
+    // TabView Seek Foward in auto mode
     const onPause = (() => {
         setTabViewIsInAuto(!tabViewIsInAuto);
     });
+    // TabView Seek Foward
     const onPlay = (() => {
         setTabViewIsInAuto(!tabViewIsInAuto);
     });
 
-    const onTabViewNext = (() => {
+    const onTabViewForward = (() => {
         let tb: any = tabViewRef.current;
         if (tabViewIndex === tb.props.children.length - 1) {
             setTabViewIndex(0);
@@ -599,7 +505,7 @@ const Dashboard = ({ }: HomeProps) => {
 
 
 
-    const t = useTranslations('page');
+    
 
 
 
@@ -613,7 +519,7 @@ const Dashboard = ({ }: HomeProps) => {
                 <Button icon="pi pi-angle-left"
                     className="mr-1 p-button-rounded p-button-help"
                     aria-label={t('dashboard.actions.previous')}
-                    onClick={onTabViewPrevious}
+                    onClick={onTabViewBackward}
                 />
                 <Button icon="pi pi-pause"
                     className="mr-1 p-button-rounded p-button-secondary"
@@ -630,7 +536,7 @@ const Dashboard = ({ }: HomeProps) => {
                 <Button icon="pi pi-angle-right"
                     className="mr-1 p-button-rounded p-button-info"
                     aria-label={t('dashboard.actions.next')}
-                    onClick={onTabViewNext}
+                    onClick={onTabViewForward}
                 />
 
                 <InputNumber value={autoTime}

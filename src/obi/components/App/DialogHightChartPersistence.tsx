@@ -13,10 +13,11 @@ import { useEffect, useState } from "react";
 import { PersistencesStandardsService } from '../../service/persistences/PersistencesStandardsService';
 
 import React, { useRef } from 'react';
-import * as Highcharts from 'highcharts';
+// import * as Highcharts from 'highcharts';
+import accessibility from 'highcharts/modules/accessibility';
 import HighchartsReact from 'highcharts-react-official';
 // Load Highcharts modules
-require('highcharts/modules/accessibility')(Highcharts);
+// require('highcharts/modules/accessibility')(Highcharts);
 import '/src/styles/hightchart/hightchart.css'
 
 // Define the props that the PostForm component expects
@@ -52,6 +53,8 @@ export default function DialogHightChartPersistence(
 
 
     const [update, setUpdate] = useState(false);
+
+    var Highcharts = require('highcharts');
     Highcharts.setOptions({
         lang: {
             // locale: 'fr',
@@ -424,8 +427,8 @@ export default function DialogHightChartPersistence(
                     <div key={'DialogChartPersistence_dialog_charts_' + id}
                         className="graphic-container"
                         ref={hightChartDivRef}
-                        >
-                        <HighchartsReact highcharts={Highcharts} ref={hightChartRef}  options={options}
+                    >
+                        <HighchartsReact highcharts={Highcharts} ref={hightChartRef} options={options}
                             className='' />
                     </div>
                 </BlockUI>

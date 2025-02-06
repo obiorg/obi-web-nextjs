@@ -9,7 +9,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
   // Ensure that a valid locale is used
   if (!locale || !routing.locales.includes(locale as never)) {
     locale = routing.defaultLocale;
-    console.log(`request >> requestLocale is >> ${locale} << `);
+    console.log(`i18n\\request >> locale = routing.defaultLocale is >> ${locale} << `);
     
   }
 
@@ -17,8 +17,8 @@ export default getRequestConfig(async ({ requestLocale }) => {
     locale,
     messages: (
       await (locale === "fr"
-        ? import(`./../lang/fr.json`)
-        : import(`./../lang/${locale}.json`))
+        ? import(`@/src/lang/fr.json`)
+        : import(`@/src/lang/${locale}.json`))
     ).default,
   };
 });

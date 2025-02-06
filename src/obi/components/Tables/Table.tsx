@@ -144,7 +144,6 @@ export default function Table({
     }, [lazyParams]);
 
 
-
     /**
      *
      * @param event for page changed

@@ -72,7 +72,7 @@ export default function LocationsDropDown({
 
         }
         setSelectedCatalog(value);
-    }, [value]);
+    }, [initCatalog, value]);
 
 
     const onChangeCatalog = (e: { value: any }) => {

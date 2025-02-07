@@ -55,18 +55,18 @@ export const metadata: Metadata = {
         ttl: 604800
     },
 
-    icon: {
-        url: "/favicon.ico"
-    },
-    // icons: {
-    //     icon: '/favicon.ico',
-    //     shortcut: '//favicon.ico',
-    //     apple: '/favicon.ico.',
-    //     other: {
-    //       rel: '/favicon.ico',
-    //       url: '/apple-touch-icon-precomposed.png',
-    //     },
-    //   },
+    // icon: {
+    //     url: "/favicon.ico"
+    // },
+    icons: {
+        icon: '/favicon.ico',
+        // shortcut: '//favicon.ico',
+        // apple: '/favicon.ico.',
+        // other: {
+        //   rel: '/favicon.ico',
+        //   url: '/apple-touch-icon-precomposed.png',
+        // },
+      },
     generator: 'Next.js',
     applicationName: 'OBI',
     referrer: 'origin-when-cross-origin',

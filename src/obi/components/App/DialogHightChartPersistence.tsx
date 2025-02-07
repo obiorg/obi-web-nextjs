@@ -52,7 +52,7 @@ export default function DialogHightChartPersistence(
     const [update, setUpdate] = useState(false);
     const chartComponentRef = useRef<HighchartsReact.RefObject>(null);
     const dialogChartContent = useRef<HTMLDivElement>(null);
-    const [options, setOptions] = useState<Higcharts.Options>({
+    const [options, setOptions] = useState<any>({
         lang: {
             locale: 'fr',
             accessibility: {

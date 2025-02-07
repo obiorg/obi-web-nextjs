@@ -229,7 +229,7 @@ export default function DialogHightChartPersistence(
     useEffect(() => {
         // const chart = chartComponent?.current.chart;
         // console.log(chartComponentRef); //($(window).height());
-        console.log(dialogChartContent);
+        // console.log(dialogChartContent);
         
     }, [])
 

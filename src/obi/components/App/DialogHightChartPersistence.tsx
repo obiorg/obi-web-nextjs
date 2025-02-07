@@ -13,12 +13,8 @@ import { useEffect, useState } from "react";
 import { PersistencesStandardsService } from '../../service/persistences/PersistencesStandardsService';
 
 import React, { useRef } from 'react';
-// import * as Highcharts from 'highcharts';
-import accessibility from 'highcharts/modules/accessibility';
-import HighchartsReact from 'highcharts-react-official';
-// Load Highcharts modules
-// require('highcharts/modules/accessibility')(Highcharts);
-import '/src/styles/hightchart/hightchart.css'
+import Highcharts from 'highcharts'
+import HighchartsReact from 'highcharts-react-official'
 
 // Define the props that the PostForm component expects
 interface DialogHightChartPersistenceProps {
@@ -49,20 +45,27 @@ export default function DialogHightChartPersistence(
         visible = false,
         onChangedVisible,
 
-    }: DialogHightChartPersistenceProps) {
+    }: DialogHightChartPersistenceProps, props: HighchartsReact.Props) {
 
-
+        
+    //
     const [update, setUpdate] = useState(false);
-
-    var Highcharts = require('highcharts');
-    Highcharts.setOptions({
+    const chartComponentRef = useRef<HighchartsReact.RefObject>(null);
+    const dialogChartContent = useRef<HTMLDivElement>(null);
+    const [options, setOptions] = useState<Higcharts.Options>({
         lang: {
-            // locale: 'fr',
+            locale: 'fr',
             accessibility: {
-
-            }
-        },
+            },
+        },  
         chart: {
+            
+            type: 'spline',
+            zooming: {
+                type: 'x'
+            },
+            height: ((9 / 16) * 100) + '%' // 16:9 ratio
+            // Managing chart color
             // backgroundColor: {
             //     linearGradient: [0, 0, 500, 500],
             //     stops: [
@@ -70,107 +73,115 @@ export default function DialogHightChartPersistence(
             //         [1, 'rgb(240, 240, 255)']
             //     ]
             // },
-            borderWidth: 2,
+            // borderWidth: 2,
             // plotBackgroundColor: 'rgba(255, 255, 255, .9)',
-            plotShadow: true,
-            plotBorderWidth: 1
+            // plotShadow: true,
+            // plotBorderWidth: 1,
         },
 
-    });
-    const [options, setOptions] = useState({
-        lang: {
-            locale: 'fr'
-        },
-
-        accessibility: {
-            enabled: true,
-            // screenReaderSection: {
-            //     beforeChartFormat: '<{headingTagName}>' +
-            //         '{chartTitle}</{headingTagName}><div>{chartSubtitle}</div>' +
-            //         '<div>{chartLongdesc}</div><div>{xAxisDescription}</div><div>' +
-            //         '{yAxisDescription}</div>'
-            // }
-        },
-
-        chart: {
-            type: 'spline',
-            zooming: {
-                type: 'x'
-            }
-        },
-
-        title: {
-            text: title,
-            // align: 'left'
-        },
-
-
-        subtitle: {
-            text: (subtitle ? subtitle : ''),
-            align: 'left'
-        },
-
-        tooltip: {
-            valueDecimals: 2,
-            crosshairs: true,
-            shared: true
-        },
-
-        xAxis: {
-            type: 'datetime'
-        },
-
-        yAxis: [{ // Primary axis
-            className: 'highcharts-color-0',
-            title: {
-                text: units[0]
+    
+            accessibility: {
+                enabled: true,
+                screenReaderSection: {
+                    beforeChartFormat: '<{headingTagName}>' +
+                        '{chartTitle}</{headingTagName}><div>{chartSubtitle}</div>' +
+                        '<div>{chartLongdesc}</div><div>{xAxisDescription}</div><div>' +
+                        '{yAxisDescription}</div>'
+                }
             },
-            labels: {
-                format: '{value}'
-            }
-        }],
+    
 
-        units: [[
-            'millisecond', // unit name
-            [1, 2, 5, 10, 20, 25, 50, 100, 200, 500] // allowed multiples
-        ], [
-            'second',
-            [1, 2, 5, 10, 15, 30]
-        ], [
-            'minute',
-            [1, 2, 5, 10, 15, 30]
-        ], [
-            'hour',
-            [1, 2, 3, 4, 6, 8, 12]
-        ], [
-            'day',
-            [1, 2]
-        ], [
-            'week',
-            [1, 2]
-        ], [
-            'month',
-            [1, 2, 3, 4, 6]
-        ], [
-            'year',
-            null
-
-        ]],
-
-        series: [{
-            data: [],
-            lineWidth: 4,
-            name: title
-        }],
-        plotOptions: {
-            line: {
-                dataLabels: {
-                    enabled: true
+    
+            title: {
+                text: title,
+                // align: 'left'
+            },
+    
+    
+            subtitle: {
+                text: (subtitle ? subtitle : ''),
+                align: 'left'
+            },
+    
+            tooltip: {
+                valueDecimals: 2,
+                crosshairs: true,
+                shared: true
+            },
+    
+            xAxis: {
+                type: 'datetime'
+            },
+    
+            yAxis: [{ // Primary axis
+                className: 'highcharts-color-0',
+                title: {
+                    text: units[0]
                 },
-                enableMouseTracking: false
-            }
-        },
-    });
+                labels: {
+                    format: '{value}'
+                }
+            }],
+    
+            units: [[
+                'millisecond', // unit name
+                [1, 2, 5, 10, 20, 25, 50, 100, 200, 500] // allowed multiples
+            ], [
+                'second',
+                [1, 2, 5, 10, 15, 30]
+            ], [
+                'minute',
+                [1, 2, 5, 10, 15, 30]
+            ], [
+                'hour',
+                [1, 2, 3, 4, 6, 8, 12]
+            ], [
+                'day',
+                [1, 2]
+            ], [
+                'week',
+                [1, 2]
+            ], [
+                'month',
+                [1, 2, 3, 4, 6]
+            ], [
+                'year',
+                null
+    
+            ]],
+    
+            series: [{
+                data: [],
+                lineWidth: 4,
+                name: title
+            }],
+            plotOptions: {
+                line: {
+                    dataLabels: {
+                        enabled: true
+                    },
+                    enableMouseTracking: false
+                }
+            },
+
+            exporting: {
+                chartOptions: { // specific options for the exported image
+                    plotOptions: {
+                        series: {
+                            dataLabels: {
+                                enabled: true
+                            }
+                        }
+                    }
+                },
+                fallbackToExportServer: false
+            },
+        }
+    );
+
+
+    
+
     const [minutes, setMinutes] = useState(60);
     const [hours, setHours] = useState(24);
     const [days, setDays] = useState(7);
@@ -214,11 +225,12 @@ export default function DialogHightChartPersistence(
         // { name: 'Année', value: 5 }
     ];
 
-    const hightChartRef = React.useRef<any>();
-    const hightChartDivRef = React.useRef<any>();
+
     useEffect(() => {
-        console.log(hightChartDivRef); //($(window).height());
-        console.log(hightChartRef); //($(window).height());
+        // const chart = chartComponent?.current.chart;
+        // console.log(chartComponentRef); //($(window).height());
+        console.log(dialogChartContent);
+        
     }, [])
 
 
@@ -367,8 +379,8 @@ export default function DialogHightChartPersistence(
 
     const headerElement = (
         <div className="inline-flex align-items-center justify-content-center gap-2">
-            <Avatar image="/layout/images/obi/obi-signet-dim.svg" shape="circle" />
-            <Image src='//layout/images/obi/obi-signet-dim.svg' className='circle' width="32" height="32" />
+            {/* <Avatar image="/layout/images/obi/obi-signet-dim.svg" shape="circle" />
+            <Image src='//layout/images/obi/obi-signet-dim.svg' className='circle' width="32" height="32" /> */}
             <span className="font-bold white-space-nowrap">{title}</span>
         </div>
     );
@@ -404,7 +416,8 @@ export default function DialogHightChartPersistence(
                 header={headerElement}
                 footer={footerContent}
                 maximizable={true}
-                style={{ width: '50rem' }} onHide={() => { if (!visible) return; onChangedVisible && onChangedVisible(false); }}>
+                // style={{ width: '50rem' }} 
+                onHide={() => { if (!visible) return; onChangedVisible && onChangedVisible(false); }}>
                 <BlockUI blocked={loading} >
                     <div key={'DialogChartPersistence_dialog_menu_' + id} className="card flex justify-content-center mb-2">
                         <div key='DialogChartPersistence_dialog_menu_period' className="p-inputgroup flex-1 flex justify-content-center">
@@ -425,11 +438,15 @@ export default function DialogHightChartPersistence(
                     </div>
 
                     <div key={'DialogChartPersistence_dialog_charts_' + id}
-                        className="graphic-container"
-                        ref={hightChartDivRef}
+                        ref={dialogChartContent}
+                        className="h-auto"
                     >
-                        <HighchartsReact highcharts={Highcharts} ref={hightChartRef} options={options}
-                            className='' />
+                        <HighchartsReact 
+                        highcharts={Highcharts} 
+                        ref={chartComponentRef} 
+                        options={options}
+                        {...props}
+                             />
                     </div>
                 </BlockUI>
             </Dialog>

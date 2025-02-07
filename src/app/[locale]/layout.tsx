@@ -17,7 +17,7 @@ import { routing } from '@/src/i18n/routing';
 import { Metadata, Viewport } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
-import Head from 'next/head';
+
 import { notFound } from 'next/navigation';
 
 // import '@/public/themes/lara-dark-teal/theme.css';
@@ -27,9 +27,9 @@ type RootLayoutProps = {
     params: { locale: string };
 };
 
-// export function generateStaticParams() {
-//     return locales.map((locale) => ({ locale }));
-// }
+export function generateStaticParams() {
+    return locales.map((locale) => ({ locale }));
+}
 
 export const viewport: Viewport = {
     themeColor: '#colorHere',
@@ -55,6 +55,40 @@ export const metadata: Metadata = {
         ttl: 604800
     },
 
+    icon: {
+        url: "/favicon.ico"
+    },
+    // icons: {
+    //     icon: '/favicon.ico',
+    //     shortcut: '//favicon.ico',
+    //     apple: '/favicon.ico.',
+    //     other: {
+    //       rel: '/favicon.ico',
+    //       url: '/apple-touch-icon-precomposed.png',
+    //     },
+    //   },
+    generator: 'Next.js',
+    applicationName: 'OBI',
+    referrer: 'origin-when-cross-origin',
+    keywords: ['OBI', 'Brewery', 'Bralico'],
+    authors: [{ name: 'Raphaël' }, { name: 'Hervé', url: 'https://bralico-congo.com/' }],
+    creator: 'Raphaël Hendrick',
+    publisher: 'Raphaël Hendrick',
+    formatDetection: {
+        email: false,
+        address: false,
+        telephone: false,
+    },
+    metadataBase: new URL('http://localhost:7020/obi/'),
+    alternates: {
+      canonical: '/',
+      languages: {
+        'en': '/en',
+        'fr': '/fr',
+        'ar': '/ar',
+        'nl-NL': '/nl-NL',
+      },
+    },
 };
 
 export default async function RootLayout({
@@ -88,9 +122,9 @@ export default async function RootLayout({
                 <head>
                     <link id="theme-css" href={'/obi/themes/lara-dark-teal/theme.css'} rel="stylesheet" key="k_theme-css" />
                 </head>
-                <Head>
-                    <link rel="icon" href="/favicon.ico" />
-                </Head>
+
+                    
+
 
                 <body>
 

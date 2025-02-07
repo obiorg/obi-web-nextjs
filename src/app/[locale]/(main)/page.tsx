@@ -195,6 +195,72 @@ const Dashboard = () => {
 
     });
 
+
+
+    const BBT_CO2GLY = (() => {
+        const icon_gr = 'md';
+        const icon = 'MdCompress';        
+        const units = ['bar', '', '', ''];
+        const patterns = [2, 2];
+        const icon_gr1 = 'md';
+        const icon1 = 'MdOutlineSevereCold';
+        const units1 = ['°C', '', '', ''];
+        const items = [
+            {
+                id: 'TBF_CO2Frais',
+                name: 'TBF CO2 Frais',
+                tags: [180], 
+                icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
+            },
+            {
+                id: 'TBF_CO2Equilibrium',
+                name: 'TBF CO2 Equilibrium',
+                tags: [194], 
+                icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
+            },
+            {
+                id: 'TBF_TGlycol_1',
+                name: 'TBF T° Glycol 1',
+                tags: [195], 
+                icon_gr: icon_gr1, icon: icon1, units: units1, patterns: patterns,
+            },
+            {
+                id: 'TBF_TGlycol_2',
+                name: 'TBF T° Glycol 2',
+                tags: [196], 
+                icon_gr: icon_gr1, icon: icon1, units: units1, patterns: patterns,
+            },
+
+
+        ];
+
+        return (
+            <>
+                {
+                    items.map((item) => {
+                        return true ?
+                            <OneSetCardHightChart
+                            key={'BBTCO2_key_' + item.id}
+                            id={item.id}
+                                name={item.name}
+                                icon_gr={item.icon_gr}
+                                icon={item.icon}
+                                tags={item.tags}
+                                units={item.units}
+                                patterns={item.patterns}
+                                chart={true}
+                                chartTitle={item.name}
+                            />
+                            : false
+                    })
+                }
+
+            </>
+        );
+
+    });
+
+    
     const BBTs = (() => {
         const icon_gr = 'bi';
         const icon = 'BiSolidBeer';
@@ -578,29 +644,8 @@ const Dashboard = () => {
                 <TabPanel header={t('dashboard.BBT.short')} key="tab2" >
                     <h2>{t('dashboard.BBT.short')}</h2>
                     <p>{t('dashboard.BBT.description')}</p>
-
                     <div className="grid">
-                        {/* <OneSetCard
-                            id='TBF_Pressure'
-                            name='TBF CO2 Pres.'
-                            tags={[180]}
-                            icon_gr='md'
-                            icon='MdCompress'
-                            units={['bar']}
-                            patterns={[2]}
-                            chart={true}
-                        /> */}
-                        <OneSetCardHightChart
-                            id='TBF_PressureHC'
-                            name='TBF CO2 Pres. HC'
-                            tags={[180]}
-                            icon_gr='md'
-                            icon='MdCompress'
-                            units={['bar']}
-                            patterns={[2]}
-                            chart={true}
-                            chartTitle='TBF CO2 Pres. HC'
-                        />
+                        {BBT_CO2GLY()}
                     </div>
                     <hr />
 

@@ -27,7 +27,7 @@ interface DialogHightChartPersistenceProps {
     tags: number[];         // Table containing tags number in the order Volume, Pression, T°middle, T°Bottom, State
     units: string[]; // Table containing units in corresponding to each tags
     patterns?: number[]; // Define the patterns corresponding to each tags
-
+    varDeltas?: boolean[]; // Define the corresponding tags as delta values not changing value
     visible?: boolean; // enable automatic refresh defaulat true
     onChangedVisible?: (e: boolean) => void; // The callback function to be called when the button is clicked
 }
@@ -41,30 +41,33 @@ export default function DialogHightChartPersistence(
         subtitle = undefined,
         tags,
         units,
-
+        varDeltas = [false],
         visible = false,
         onChangedVisible,
 
     }: DialogHightChartPersistenceProps, props: HighchartsReact.Props) {
 
-        
+
     //
     const [update, setUpdate] = useState(false);
-    const chartComponentRef = useRef<HighchartsReact.RefObject>(null);
-    const dialogChartContent = useRef<HTMLDivElement>(null);
+    const chartComponentRef = useRef<any>();
+    const dialogChartContent = useRef<any>();
+    const dialogChart = useRef<any>();
+    const [maximized, setMaximized] = useState(false);
+    const [graphHeight, setGraphHeight] = useState('100%');
     const [options, setOptions] = useState<any>({
         lang: {
             locale: 'fr',
             accessibility: {
             },
-        },  
+        },
         chart: {
-            
+
             type: 'spline',
             zooming: {
                 type: 'x'
             },
-            height: ((9 / 16) * 100) + '%' // 16:9 ratio
+            // height: ((9 / 16) * 100) + '%' // 16:9 ratio
             // Managing chart color
             // backgroundColor: {
             //     linearGradient: [0, 0, 500, 500],
@@ -79,108 +82,108 @@ export default function DialogHightChartPersistence(
             // plotBorderWidth: 1,
         },
 
-    
-            accessibility: {
-                enabled: true,
-                screenReaderSection: {
-                    beforeChartFormat: '<{headingTagName}>' +
-                        '{chartTitle}</{headingTagName}><div>{chartSubtitle}</div>' +
-                        '<div>{chartLongdesc}</div><div>{xAxisDescription}</div><div>' +
-                        '{yAxisDescription}</div>'
-                }
-            },
-    
 
-    
+        accessibility: {
+            enabled: true,
+            screenReaderSection: {
+                beforeChartFormat: '<{headingTagName}>' +
+                    '{chartTitle}</{headingTagName}><div>{chartSubtitle}</div>' +
+                    '<div>{chartLongdesc}</div><div>{xAxisDescription}</div><div>' +
+                    '{yAxisDescription}</div>'
+            }
+        },
+
+
+
+        title: {
+            text: title,
+            // align: 'left'
+        },
+
+
+        subtitle: {
+            text: (subtitle ? subtitle : ''),
+            align: 'left'
+        },
+
+        tooltip: {
+            valueDecimals: 2,
+            crosshairs: true,
+            shared: true
+        },
+
+        xAxis: {
+            type: 'datetime'
+        },
+
+        yAxis: [{ // Primary axis
+            className: 'highcharts-color-0',
             title: {
-                text: title,
-                // align: 'left'
+                text: units[0]
             },
-    
-    
-            subtitle: {
-                text: (subtitle ? subtitle : ''),
-                align: 'left'
-            },
-    
-            tooltip: {
-                valueDecimals: 2,
-                crosshairs: true,
-                shared: true
-            },
-    
-            xAxis: {
-                type: 'datetime'
-            },
-    
-            yAxis: [{ // Primary axis
-                className: 'highcharts-color-0',
-                title: {
-                    text: units[0]
-                },
-                labels: {
-                    format: '{value}'
-                }
-            }],
-    
-            units: [[
-                'millisecond', // unit name
-                [1, 2, 5, 10, 20, 25, 50, 100, 200, 500] // allowed multiples
-            ], [
-                'second',
-                [1, 2, 5, 10, 15, 30]
-            ], [
-                'minute',
-                [1, 2, 5, 10, 15, 30]
-            ], [
-                'hour',
-                [1, 2, 3, 4, 6, 8, 12]
-            ], [
-                'day',
-                [1, 2]
-            ], [
-                'week',
-                [1, 2]
-            ], [
-                'month',
-                [1, 2, 3, 4, 6]
-            ], [
-                'year',
-                null
-    
-            ]],
-    
-            series: [{
-                data: [],
-                lineWidth: 4,
-                name: title
-            }],
-            plotOptions: {
-                line: {
-                    dataLabels: {
-                        enabled: true
-                    },
-                    enableMouseTracking: false
-                }
-            },
+            labels: {
+                format: '{value}'
+            }
+        }],
 
-            exporting: {
-                chartOptions: { // specific options for the exported image
-                    plotOptions: {
-                        series: {
-                            dataLabels: {
-                                enabled: true
-                            }
+        units: [[
+            'millisecond', // unit name
+            [1, 2, 5, 10, 20, 25, 50, 100, 200, 500] // allowed multiples
+        ], [
+            'second',
+            [1, 2, 5, 10, 15, 30]
+        ], [
+            'minute',
+            [1, 2, 5, 10, 15, 30]
+        ], [
+            'hour',
+            [1, 2, 3, 4, 6, 8, 12]
+        ], [
+            'day',
+            [1, 2]
+        ], [
+            'week',
+            [1, 2]
+        ], [
+            'month',
+            [1, 2, 3, 4, 6]
+        ], [
+            'year',
+            null
+
+        ]],
+
+        series: [{
+            data: [],
+            lineWidth: 4,
+            name: title
+        }],
+        plotOptions: {
+            line: {
+                dataLabels: {
+                    enabled: true
+                },
+                enableMouseTracking: false
+            }
+        },
+
+        exporting: {
+            chartOptions: { // specific options for the exported image
+                plotOptions: {
+                    series: {
+                        dataLabels: {
+                            enabled: true
                         }
                     }
-                },
-                fallbackToExportServer: false
+                }
             },
-        }
+            fallbackToExportServer: false
+        },
+    }
     );
 
 
-    
+
 
     const [minutes, setMinutes] = useState(60);
     const [hours, setHours] = useState(24);
@@ -195,6 +198,8 @@ export default function DialogHightChartPersistence(
         { name: '30m', value: 30, default: false },
         { name: '60m', value: 60, default: true },
         { name: '120m', value: 120, default: false },
+        { name: '1800m', value: 1800, default: false },
+        { name: '3600m', value: 3600, default: false },
     ];
     const hoursItems = [
         { name: '1h', value: 1, default: false },
@@ -226,13 +231,61 @@ export default function DialogHightChartPersistence(
     ];
 
 
-    useEffect(() => {
-        // const chart = chartComponent?.current.chart;
-        // console.log(chartComponentRef); //($(window).height());
-        // console.log(dialogChartContent);
-        
-    }, [])
 
+
+    const onResize = (e: any) => {
+        // console.log(e.target.innerHeight);
+        // options.chart.height = ((9 / 16) * e.target.innerHeight) + '%';
+        // setOptions(options);
+        // console.log('onResize', dialogChart.current.getContent().clientHeight);
+    }
+
+    const onMaximize = (e: any) => {
+        // console.log(e.target.innerHeight);
+        // options.chart.height = ((9 / 16) * e.target.innerHeight) + '%';
+        // setOptions(options);
+        // console.log('onMaximize',
+        //     // 'ChartContent : ', dialogChartContent,
+        //     'Event', e,
+        //     'OriginalEvent.view.outerHeight', e.originalEvent.view.outerHeight,
+        //     'OriginalEvent.view.outerWidth', e.originalEvent.view.outerWidth,
+        //     // 'DialogChart', dialogChart,
+        //     // 'DialogChartProps', dialogChart.current.props,
+        //     // 'DialogChartGetContent', dialogChart.current.getContent(),
+        //     'DialogChartGetContentHeight', dialogChart.current.getContent().clientHeight,
+        //     // 'DialogChart.children', dialogChart.current.getContent().children[0],
+        //     // 'DialogChart.children[0].clientHeight', dialogChart.current.getContent().children[0].clientHeight,
+        // );
+
+        // // console.log('onMaximize', 'clientHeight = ', dialogChart.current.getContent().clientHeight, 
+        // //                 'clientWidth = ', dialogChart.current.getContent().clientWidth);
+        // // e.maximized ? setGraphHeight('100%') : setGraphHeight('50%');
+        // setMaximized(e.maximized);
+
+
+        // console.log('chartComponentRef',
+        //     chartComponentRef
+        // );
+        // chartComponentRef.current.container.current.clientHeight = dialogChart.current.getContent().clientHeight;
+
+        setMaximized(e.maximized);
+    }
+
+    const onShow = () => {
+        // console.log('onShow', 'clientHeight = ', dialogChart.current.getContent().clientHeight,
+        //     'clientWidth = ', dialogChart.current.getContent().clientWidth);
+        // // setOptions(() => {
+        // //     return {
+        // //         ...options,
+        // //         chart: {
+        // //             // height: ((9 / 16) * dialogChart.current.getContent().clientHeight) + '%',
+        // //             height: dialogChart.current.clientHeight,
+        // //         }
+        // //     }
+        // // })
+        // console.log('onShow', dialogChart.current);
+        // setGraphHeight(dialogChart.current.getContent().clientHeight + '%');
+    }
 
 
 
@@ -241,16 +294,34 @@ export default function DialogHightChartPersistence(
             let tag = tags[0];
             setLoading(true);
             if (period === 0) {
-                onMinutesChange(tag, minutes);
+                if (varDeltas[0]===false) {
+                    onMinutesChange(tag, minutes);
+                } else {
+                    onMinutesDeltaChange(tag, minutes);
+                }
             } else if (period === 1) {
-                onHoursChange(tag, hours);
+                if (varDeltas[0]===false) {
+                    onHoursChange(tag, hours);
+                } else {
+                    onHoursDeltaChange(tag, hours);
+                }
             } else if (period === 2) {
-                onDaysChange(tag, days);
+                if (varDeltas[0]===false) {
+                    onDaysChange(tag, days);
+                } else {
+                    onDaysDeltaChange(tag, days);
+                }
             } else if (period === 4) {
-                onMonthsChange(tag, months);
+                if (varDeltas[0]===false) {
+                    onMonthsChange(tag, months);
+                } else {
+                    onMonthsDeltaChange(tag, months);
+                }
             }
         }
-    }, [visible, update, period, minutes, hours, days, months]);
+        
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [visible, update, period, minutes, hours, days, months, tags, varDeltas]);
 
     const onMinutesChange = (tag: number, limits: number) => {
         PersistencesStandardsService.averageMinMaxMinutes(tag, limits).then((data: any) => {
@@ -375,6 +446,67 @@ export default function DialogHightChartPersistence(
     }
 
 
+    const onMinutesDeltaChange = (tag: number, limits: number) => {
+        PersistencesStandardsService.deltaInMinutes(tag, limits).then((data: any) => {
+            let _options = options;
+            _options.series = [];
+            _options.series.push(
+                {
+                    data: data.map((d: any) => [(new Date(d.created)).getTime(), d.delta]).reverse(),
+                    lineWidth: 1.0,
+                    name: 'Delta'
+                },
+            )
+            setOptions(() => { return { ..._options } });
+            setLoading(false);
+        });
+    }
+    const onHoursDeltaChange = (tag: number, limits: number) => {
+        PersistencesStandardsService.deltaInHours(tag, limits).then((data: any) => {
+            let _options = options;
+            _options.series = [];
+            _options.series.push(
+                {
+                    data: data.map((d: any) => [(new Date(d.created)).getTime(), d.delta]).reverse(),
+                    lineWidth: 1.0,
+                    name: 'Delta'
+                },
+            )
+            setOptions(() => { return { ..._options } });
+            setLoading(false);
+        });
+    }
+    const onDaysDeltaChange = (tag: number, limits: number) => {
+        PersistencesStandardsService.deltaInDays(tag, limits).then((data: any) => {
+            let _options = options;
+            _options.series = [];
+            _options.series.push(
+                {
+                    data: data.map((d: any) => [(new Date(d.created)).getTime(), d.delta]).reverse(),
+                    lineWidth: 1.0,
+                    name: 'Delta'
+                },
+            )
+            setOptions(() => { return { ..._options } });
+            setLoading(false);
+        });
+    }
+    const onMonthsDeltaChange = (tag: number, limits: number) => {
+        PersistencesStandardsService.deltaInMonths(tag, limits).then((data: any) => {
+            let _options = options;
+            _options.series = [];
+            _options.series.push(
+                {
+                    data: data.map((d: any) => [(new Date(d.created)).getTime(), d.delta]).reverse(),
+                    lineWidth: 1.0,
+                    name: 'Delta'
+                },
+            )
+            setOptions(() => { return { ..._options } });
+            setLoading(false);
+        });
+    }
+
 
 
     const headerElement = (
@@ -412,15 +544,25 @@ export default function DialogHightChartPersistence(
         <>
             <Dialog
                 key={'DialogChartPersistence_dialog_' + id}
-                visible={visible} modal
+                ref={dialogChart}
+                visible={visible}
+                modal
                 header={headerElement}
                 footer={footerContent}
                 maximizable={true}
+                maximized={maximized}
                 // style={{ width: '50rem' }} 
-                onHide={() => { if (!visible) return; onChangedVisible && onChangedVisible(false); }}>
+                onHide={() => { if (!visible) return; onChangedVisible && onChangedVisible(false); }}
+                onResize={onResize}
+                onMaximize={onMaximize}
+                onShow={onShow}
+            >
                 <BlockUI blocked={loading} >
-                    <div key={'DialogChartPersistence_dialog_menu_' + id} className="card flex justify-content-center mb-2">
-                        <div key='DialogChartPersistence_dialog_menu_period' className="p-inputgroup flex-1 flex justify-content-center">
+                    <div key={'DialogChartPersistence_dialog_menu_' + id}
+                        className="card flex justify-content-center mb-2 p-2"
+                    >
+                        <div key='DialogChartPersistence_dialog_menu_period'
+                            className="p-inputgroup flex-1 flex justify-content-center">
                             <span className="p-inputgroup-addon">
                                 <i className="pi pi-calendar"></i>
                             </span>
@@ -439,14 +581,16 @@ export default function DialogHightChartPersistence(
 
                     <div key={'DialogChartPersistence_dialog_charts_' + id}
                         ref={dialogChartContent}
-                        className="h-auto"
+                        className="border-1 border-primary-500 p-10 min-h-full"
                     >
-                        <HighchartsReact 
-                        highcharts={Highcharts} 
-                        ref={chartComponentRef} 
-                        options={options}
-                        {...props}
-                             />
+
+                        <HighchartsReact
+                            highcharts={Highcharts}
+                            ref={chartComponentRef}
+                            options={options}
+                            {...props}
+                            containerProps={{ style: { height: { graphHeight } } }}
+                        />
                     </div>
                 </BlockUI>
             </Dialog>

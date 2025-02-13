@@ -1,13 +1,15 @@
 'use client';
 
 import 'moment-timezone';
+import { Button } from 'primereact/button';
 import { useCallback, useEffect, useState } from "react";
 import Moment from "react-moment";
 import { NumericFormat } from "react-number-format";
 import { TagsService } from "../../service/tags/TagsService";
 import ReactIcons from "../Icons/ReactIcons";
-import DialogChartPersistence from './DialogChartPersistence';
 import DialogHightChartPersistence from './DialogHightChartPersistence';
+import DialogTablePersistence from './DialogTablePersistence';
+import { PersistencesStandardsService } from '../../service/persistences/PersistencesStandardsService';
 
 
 // Define the props that the PostForm component expects
@@ -20,6 +22,7 @@ interface OneSetCardHightChartProps {
     tags: number[];         // Table containing tags number in the order Volume, Pression, T°middle, T°Bottom, State
     units: string[]; // Table containing units in corresponding to each tags
     patterns: any; // Define the patterns corresponding to each tags
+    varDeltas?: boolean[]; // Define the corresponding tags as delta values not changing value
 
     onClick?: (e: any) => void; // The callback function to be called when the button is clicked
     onChange?: (e: any) => void; // when change occur in mode
@@ -31,6 +34,10 @@ interface OneSetCardHightChartProps {
     chart?: boolean; // enable chart
     chartTitle?: string; // chart title
     chartSubTitle?: string; // chart subtitle
+
+    table?: boolean; // enable chart
+    tableTitle?: string; // chart title
+    tableSubTitle?: string; // chart subtitle
 }
 
 
@@ -43,6 +50,7 @@ export default function OneSetCardHightChart(
         tags,
         units,
         patterns,
+        varDeltas = [false],
         onClick,
         onChange,
         error,
@@ -52,7 +60,11 @@ export default function OneSetCardHightChart(
 
         chart = false,
         chartTitle = undefined,
-        chartSubTitle = undefined
+        chartSubTitle = undefined,
+
+        table = false,
+        tableTitle = undefined,
+        tableSubTitle = undefined
 
     }: OneSetCardHightChartProps) {
 
@@ -68,46 +80,86 @@ export default function OneSetCardHightChart(
 
     // Manage dialog visibility
     const [visible, setVisible] = useState(false);
+    const [visibleTable, setVisibleTable] = useState(false);
 
     /**
      * Get value listed by tags
      */
     const fetchData = useCallback(() => {
-        // Get Lazy Data
-        TagsService.getByIds(tags).then((data: any) => {
-            // console.log('tag : ' + tags[cursor] + ' cursor : ' + cursor + ' = ', data)
-            if (data.status && data.status !== 200) {
-                // console.log(data.status + ' in OneSetCard reading tag ' + tags[cursor]);
-                console.log('OneSetCard >> Error', data);
-                return 0;
-            } else {
-                // console.log('OneSetCard >> success', data);
+        if (varDeltas[0]) {
+            PersistencesStandardsService.deltaInDays(tags[0], 1).then((data: any) => {
+                setParams(data[0].delta);
+                setChanging(!changing);
+            }).then(() => {
+                TagsService.getByIds(tags).then((data: any) => {
+                    // console.log('tag : ' + tags[cursor] + ' cursor : ' + cursor + ' = ', data)
+                    if (data.status && data.status !== 200) {
+                        // console.log(data.status + ' in OneSetCard reading tag ' + tags[cursor]);
+                        console.log('OneSetCard >> Error', data);
+                        return 0;
+                    } else {
+                        // console.log('OneSetCard >> success', data);
 
-                data.forEach((tag: any) => {
-                    tags.forEach((tagId: any) => {
-                        if (tagId === tag.id) {
-                            switch (tags.indexOf(tagId)) {
-                                case 0:
-                                    setParams(tag.vFloat);
-                                    if (updated === undefined || updated > data.vStamp) {
-                                        setUpdated(data.vStamp);
+                        data.forEach((tag: any) => {
+                            tags.forEach((tagId: any) => {
+                                if (tagId === tag.id) {
+                                    switch (tags.indexOf(tagId)) {
+                                        case 0:
+                                            if (updated === undefined || updated > data.vStamp) {
+                                                setUpdated(data.vStamp);
+                                            }
+
+                                            break;
                                     }
+                                }
+                            });
+                            setChanging(!changing);
+                        });
 
-                                    break;
-                            }
-                        }
-                    });
-                    setChanging(!changing);
+                        let update: any[] = data.map((d: any) => { return [Date.parse(d.vStamp.replace('Z', ''))]; });
+                        setUpdated(new Date(Math.min.apply(null, update)));
+
+
+                    }
                 });
+            })
+        } else {
+            // Get Lazy Data
+            TagsService.getByIds(tags).then((data: any) => {
+                // console.log('tag : ' + tags[cursor] + ' cursor : ' + cursor + ' = ', data)
+                if (data.status && data.status !== 200) {
+                    // console.log(data.status + ' in OneSetCard reading tag ' + tags[cursor]);
+                    console.log('OneSetCard >> Error', data);
+                    return 0;
+                } else {
+                    // console.log('OneSetCard >> success', data);
 
-                let update: any[] = data.map((d: any) => { return [Date.parse(d.vStamp.replace('Z', ''))]; });
-                setUpdated(new Date(Math.min.apply(null, update)));
+                    data.forEach((tag: any) => {
+                        tags.forEach((tagId: any) => {
+                            if (tagId === tag.id) {
+                                switch (tags.indexOf(tagId)) {
+                                    case 0:
+                                        setParams(tag.vFloat);
+                                        if (updated === undefined || updated > data.vStamp) {
+                                            setUpdated(data.vStamp);
+                                        }
+
+                                        break;
+                                }
+                            }
+                        });
+                        setChanging(!changing);
+                    });
+
+                    let update: any[] = data.map((d: any) => { return [Date.parse(d.vStamp.replace('Z', ''))]; });
+                    setUpdated(new Date(Math.min.apply(null, update)));
 
 
-            }
-        });
+                }
+            });
+        }
 
-    }, [])
+    }, [tags])
 
     /**
      * Get value listed by tags
@@ -155,8 +207,8 @@ export default function OneSetCardHightChart(
 
     return (
         <>
-            <div id={'OneSetCard_' + id} className={'col-12 lg:col-6 xl:col-3 ' + (chart ? 'cursor-pointer' : '')}
-                onClick={(e: any) => { setVisible(true && chart); }}
+            <div id={'OneSetCard_' + id} className={'col-12 lg:col-6 xl:col-3 '}
+
             >
                 <div className="card mb-0 p-2">
 
@@ -164,6 +216,7 @@ export default function OneSetCardHightChart(
                         {/* icon */}
                         <div className="flex align-items-center justify-content-center bg-yellow-100 border-round m-2"
                             style={{ width: '4.5rem', height: '3.5rem' }}>
+
                             <ReactIcons group={icon_gr} icon={icon} className="text-orange-500 text-5xl" />
                         </div>
 
@@ -185,25 +238,46 @@ export default function OneSetCardHightChart(
 
                     </span>
 
-                    <div>
-                        <div className='flex flex-column justify-content-between'>
-                            {/* Volume  */}
-                            <div className='flex flex-column align-content-center justify-content-center '>
-
+                    <div className="flex justify-content-between flex-wrap">
+                        <div className='flex justify-content-start flex-wrap'>
+                            <div className='flex align-items-center justify-content-start mr-2'>
                                 <div>
                                     {/* Date line */}
                                     <ReactIcons group="fa" icon="FaClock" className='mr-3' />
                                     <Moment date={updated}
                                         format='HH:mm:ss'
+                                        className='mr-3'
                                     />
+                                    ({tags[0]}<ReactIcons group="fa" icon="FaTag" className='ml-1' />)
                                 </div>
+                            </div>
+                        </div>
+
+                        <div className='flex justify-content-end flex-wrap'>
+                            <div className='flex align-items-center justify-content-end ml-2'>
+                                <div >
+                                    <Button className='m-0 p-1 bg-primary border-none border-noround ml-1'
+                                        onClick={(e: any) => { setVisible(true && chart); }}
+                                    >
+                                        <ReactIcons group="fa" icon="FaChartLine" className='' />
+                                    </Button>
+                                </div>
+                                {table ?
+                                    <div >
+                                        <Button className='m-0 p-1 bg-primary border-none border-noround ml-1'
+                                            onClick={(e: any) => { setVisibleTable(true && table) }}
+                                        >
+                                            <ReactIcons group="bs" icon="BsTable" className='' />
+                                        </Button>
+                                    </div>
+                                    : <></>}
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-
+            {/* + (chart ? 'cursor-pointer' : '') */}
             <DialogHightChartPersistence
                 id={id}
                 name={name}
@@ -211,9 +285,25 @@ export default function OneSetCardHightChart(
                 tags={tags}
                 units={units}
                 patterns={patterns}
+                varDeltas={varDeltas}
                 visible={visible}
                 onChangedVisible={(e: any) => { setVisible(e) }}
             />
+
+
+            {visibleTable ?
+                <DialogTablePersistence
+                    id={id}
+                    name={name}
+                    title={tableTitle}
+                    tags={tags}
+                    units={units}
+                    patterns={patterns}
+                    varDeltas={varDeltas}
+                    visible={visibleTable}
+                    onChangedVisible={(e: any) => { setVisibleTable(e) }}
+                />
+                : <></>}
         </>
     );
 }

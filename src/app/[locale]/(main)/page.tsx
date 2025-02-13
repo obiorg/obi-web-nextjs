@@ -1,7 +1,6 @@
 
 'use client';
 
-import { Menu } from 'primereact/menu';
 import { useContext, useEffect, useRef, useState } from 'react';
 
 
@@ -10,13 +9,15 @@ import { LayoutContext } from '@/src/layout/context/layoutcontext';
 
 import DashCardBBT from '@/src/obi/components/App/DashCardBBT';
 import DashCardCCT from '@/src/obi/components/App/DashCardCCT';
-import DashCardCO2Tanks from '@/src/obi/components/App/DashCardCO2Tanks';
-import OneSetCard from '@/src/obi/components/App/OneSetCard';
 import OneSetCardHightChart from '@/src/obi/components/App/OneSetCardHighChart';
+import { PersistencesStandardsService } from '@/src/obi/service/persistences/PersistencesStandardsService';
+
 import { useTranslations } from 'next-intl';
 import { Button } from 'primereact/button';
 import { InputNumber } from 'primereact/inputnumber';
 import { TabPanel, TabView } from 'primereact/tabview';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
 
 
 
@@ -31,14 +32,14 @@ const Dashboard = () => {
     const { layoutConfig } = useContext(LayoutContext);
 
     const applyLightTheme = () => {
-      
+
     };
 
     const applyDarkTheme = () => {
-        
+
     };
 
-  
+
 
     useEffect(() => {
         if (layoutConfig.colorScheme === 'light') {
@@ -199,7 +200,7 @@ const Dashboard = () => {
 
     const BBT_CO2GLY = (() => {
         const icon_gr = 'md';
-        const icon = 'MdCompress';        
+        const icon = 'MdCompress';
         const units = ['bar', '', '', ''];
         const patterns = [2, 2];
         const icon_gr1 = 'md';
@@ -209,25 +210,25 @@ const Dashboard = () => {
             {
                 id: 'TBF_CO2Frais',
                 name: 'TBF CO2 Frais',
-                tags: [180], 
+                tags: [180],
                 icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
             },
             {
                 id: 'TBF_CO2Equilibrium',
                 name: 'TBF CO2 Equilibrium',
-                tags: [194], 
+                tags: [194],
                 icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
             },
             {
                 id: 'TBF_TGlycol_1',
-                name: 'TBF T° Glycol 1',
-                tags: [195], 
+                name: 'TBF T° Glycol Entrée',
+                tags: [195],
                 icon_gr: icon_gr1, icon: icon1, units: units1, patterns: patterns,
             },
             {
                 id: 'TBF_TGlycol_2',
-                name: 'TBF T° Glycol 2',
-                tags: [196], 
+                name: 'TBF T° Glycol Sortie',
+                tags: [196],
                 icon_gr: icon_gr1, icon: icon1, units: units1, patterns: patterns,
             },
 
@@ -240,8 +241,8 @@ const Dashboard = () => {
                     items.map((item) => {
                         return true ?
                             <OneSetCardHightChart
-                            key={'BBTCO2_key_' + item.id}
-                            id={item.id}
+                                key={'BBTCO2_key_' + item.id}
+                                id={item.id}
                                 name={item.name}
                                 icon_gr={item.icon_gr}
                                 icon={item.icon}
@@ -260,7 +261,7 @@ const Dashboard = () => {
 
     });
 
-    
+
     const BBTs = (() => {
         const icon_gr = 'bi';
         const icon = 'BiSolidBeer';
@@ -427,16 +428,6 @@ const Dashboard = () => {
                 {
                     items.map((item) => {
                         return true ?
-                            // <DashCardCO2Tanks
-                            //     key={'dashCardCO2_key_' + item.id}
-                            //     id={item.id}
-                            //     name={item.name}
-                            //     icon_gr={item.icon_gr}
-                            //     icon={item.icon}
-                            //     tags={item.tags}
-                            //     units={item.units}
-                            //     patterns={item.patterns}
-                            // />
                             <OneSetCardHightChart
                                 key={'dashCardCO2_key_' + item.id}
                                 id={item.id}
@@ -461,26 +452,46 @@ const Dashboard = () => {
     const CO2_Bilan = (() => {
         const icon_gr = 'md';
         const icon = 'MdCo2';
-        const units = ['kg', 'bar', 'kg', '°C', 'u'];
-        const patterns = ['#0', '#0.00', '#0.0', '#0.0', '0'];
+        const units = ['kg', '%', 'ppm', 'kg/h'];
+        const patterns = [0, 1, 2, 3];
         const items = [
             {
-                id: 'co2_prod_secheur',
-                name: 'Prod. Sécheurs',
-                tags: [126], // Tons, Pressure, MaxCapacityTons, 
-                icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
+                id: 'CO2_sepa_purity',
+                name: 'Pureté',
+                tags: [200],
+                icon_gr: icon_gr, icon: icon, units: [units[1]], patterns: [patterns[1]],
             },
             {
-                id: 'TANK02',
-                name: 'TANK 02',
-                tags: [35], // Tons, Pressure, MaxCapacityTons, 
-                icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
+                id: 'CO2_sepa_O2',
+                name: 'Oxygène',
+                tags: [199],
+                icon_gr: icon_gr, icon: icon, units: [units[2]], patterns: [patterns[2]],
             },
             {
-                id: 'TANK03',
-                name: 'TANK 03',
-                tags: [33], // Tons, Pressure, MaxCapacityTons, 
-                icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
+                id: 'co2_sepa_recup',
+                name: 'Envoi - Cave',
+                tags: [197],
+                icon_gr: icon_gr, icon: icon, units: [units[0]], patterns: [patterns[0]],
+                varDeltas: [true],
+            },
+            {
+                id: 'co2_secheur_prod',
+                name: 'Prod. Sécheur',
+                tags: [126],
+                icon_gr: icon_gr, icon: icon, units: [units[0]], patterns: [patterns[0]],
+                varDeltas: [true],
+            },
+            {
+                id: 'CO2_ballon_niveau',
+                name: 'Niveau Ballon',
+                tags: [202],
+                icon_gr: icon_gr, icon: icon, units: [units[1]], patterns: [patterns[1]],
+            },
+            {
+                id: 'CO2_cooling_vannepurge',
+                name: 'Vanne de purge',
+                tags: [206],
+                icon_gr: icon_gr, icon: icon, units: [units[1]], patterns: [patterns[0]],
             },
         ];
 
@@ -490,8 +501,8 @@ const Dashboard = () => {
                 {
                     items.map((item: any) => {
                         return true ?
-                            <DashCardCO2Tanks
-                                key={'dashCardCO2_key_' + item.id}
+                            <OneSetCardHightChart
+                                key={'CO2Parm_key_' + item.id}
                                 id={item.id}
                                 name={item.name}
                                 icon_gr={item.icon_gr}
@@ -499,6 +510,11 @@ const Dashboard = () => {
                                 tags={item.tags}
                                 units={item.units}
                                 patterns={item.patterns}
+                                varDeltas={item.varDeltas ? item.varDeltas:[false]}
+                                chart={true}
+                                chartTitle={'CO2 ' + item.name}
+                                table={true}
+                                tableTitle={'CO2 ' + item.name}
                             />
                             : false
 
@@ -571,8 +587,6 @@ const Dashboard = () => {
 
 
 
-    
-
 
 
     return (
@@ -626,6 +640,7 @@ const Dashboard = () => {
                 ref={tabViewRef}
 
             >
+                
 
                 <TabPanel header={t('dashboard.CCT.short')} key="tab1"
                     nextButton={<Button icon="pi pi-angle-right" className="p-button-rounded p-button-info" />}
@@ -671,8 +686,8 @@ const Dashboard = () => {
 
                     <hr />
                     <div className="grid">
-                        {/* {CO2_Bilan()} */}
-                        <OneSetCard
+                        {CO2_Bilan()}
+                        {/* <OneSetCard
                             id='CO2_SECHEUR_KG'
                             name='CO2 Prod. Sécheur'
                             tags={[126]}
@@ -682,7 +697,7 @@ const Dashboard = () => {
                             patterns={[0]}
                             chart={true}
                             chartTitle='Production CO2 Sécheur'
-                        />
+                        /> */}
                     </div>
                     <hr />
                 </TabPanel>

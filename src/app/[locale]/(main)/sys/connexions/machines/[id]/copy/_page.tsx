@@ -1,6 +1,8 @@
 // src/app/posts/[id]/edit/page.tsx
 // The [id] in the folder name indicates that this is a dynamic route, corresponding to a specific post ID.
 
+'use client';
+
 import React, { useEffect, useRef, useState } from 'react';
 
 

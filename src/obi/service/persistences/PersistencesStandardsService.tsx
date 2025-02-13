@@ -504,4 +504,95 @@ export const PersistencesStandardsService = {
     },
 
 
+
+
+
+    async deltaInMinutes(tag: number, limit: number): Promise<any[]> {
+        const url = process.env.httpPath + '/persistences/standards/delta/minute/' + tag + '/' + limit;
+        const res = await fetch(
+            url,
+            {
+                method: "GET",
+                mode: "cors", // no-cors, *cors, same-origin
+                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: "same-origin", // include, *same-origin, omit
+                headers: {
+                    "Content-Type": "application/json",
+                    'Cache-Control': 'no-cache'
+                },
+            }
+        ).then((res: any) => {
+            const dataset: any = res.json();
+            return dataset;
+        });
+        return Promise.resolve(res);
+    },
+
+
+    async deltaInHours(tag: number, limit: number): Promise<any[]> {
+        const url = process.env.httpPath + '/persistences/standards/delta/hour/' + tag + '/' + limit;
+        const res = await fetch(
+            url,
+            {
+                method: "GET",
+                mode: "cors", // no-cors, *cors, same-origin
+                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: "same-origin", // include, *same-origin, omit
+                headers: {
+                    "Content-Type": "application/json",
+                    'Cache-Control': 'no-cache'
+                },
+            }
+        ).then((res: any) => {
+            const dataset: any = res.json();
+            return dataset;
+        });
+        return Promise.resolve(res);
+    },
+
+
+    async deltaInDays(tag: number, limit: number): Promise<any[]> {
+        const url = process.env.httpPath + '/persistences/standards/delta/day/' + tag + '/' + limit;
+        const res = await fetch(
+            url,
+            {
+                method: "GET",
+                mode: "cors", // no-cors, *cors, same-origin
+                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: "same-origin", // include, *same-origin, omit
+                headers: {
+                    "Content-Type": "application/json",
+                    'Cache-Control': 'no-cache'
+                },
+            }
+        ).then((res: any) => {
+            const dataset: any = res.json();
+            return dataset;
+        });
+        return Promise.resolve(res);
+    },
+
+
+    async deltaInMonths(tag: number, limit: number): Promise<any[]> {
+        const url = process.env.httpPath + '/persistences/standards/delta/month/' + tag + '/' + limit;
+        const res = await fetch(
+            url,
+            {
+                method: "GET",
+                mode: "cors", // no-cors, *cors, same-origin
+                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: "same-origin", // include, *same-origin, omit
+                headers: {
+                    "Content-Type": "application/json",
+                    'Cache-Control': 'no-cache'
+                },
+            }
+        ).then((res: any) => {
+            const dataset: any = res.json();
+            return dataset;
+        });
+        return Promise.resolve(res);
+    },
+
+
 };

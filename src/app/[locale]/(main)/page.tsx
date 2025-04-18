@@ -407,18 +407,21 @@ const Dashboard = () => {
                 name: 'TANK 01',
                 tags: [34], // Tons, Pressure, MaxCapacityTons, 
                 icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
+                varDeltas: [false],
             },
             {
                 id: 'TANK02',
                 name: 'TANK 02',
                 tags: [35], // Tons, Pressure, MaxCapacityTons, 
                 icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
+                varDeltas: [false],
             },
             {
                 id: 'TANK03',
                 name: 'TANK 03',
                 tags: [33], // Tons, Pressure, MaxCapacityTons, 
                 icon_gr: icon_gr, icon: icon, units: units, patterns: patterns,
+                varDeltas: [false],
             },
         ];
 
@@ -437,8 +440,11 @@ const Dashboard = () => {
                                 tags={item.tags}
                                 units={item.units}
                                 patterns={item.patterns}
+                                varDeltas={item.varDeltas ? item.varDeltas : [false]}
                                 chart={true}
                                 chartTitle={'Stock CO2 ' + item.name}
+                                table={true}
+                                tableTitle={'Stock CO2 ' + item.name}
                             />
                             : false
 
@@ -459,13 +465,13 @@ const Dashboard = () => {
                 id: 'CO2_sepa_purity',
                 name: 'Pureté',
                 tags: [200],
-                icon_gr: icon_gr, icon: icon, units: [units[1]], patterns: [patterns[1]],
+                icon_gr: icon_gr, icon: icon, units: [units[2]], patterns: [patterns[1]],
             },
             {
                 id: 'CO2_sepa_O2',
                 name: 'Oxygène',
                 tags: [199],
-                icon_gr: icon_gr, icon: icon, units: [units[2]], patterns: [patterns[2]],
+                icon_gr: icon_gr, icon: icon, units: [units[1]], patterns: [patterns[2]],
             },
             {
                 id: 'co2_sepa_recup',
@@ -510,7 +516,7 @@ const Dashboard = () => {
                                 tags={item.tags}
                                 units={item.units}
                                 patterns={item.patterns}
-                                varDeltas={item.varDeltas ? item.varDeltas:[false]}
+                                varDeltas={item.varDeltas ? item.varDeltas : [false]}
                                 chart={true}
                                 chartTitle={'CO2 ' + item.name}
                                 table={true}
@@ -524,7 +530,123 @@ const Dashboard = () => {
         );
     });
 
+    const CO2_Counter = (() => {
+        const icon_gr = 'md';
+        const icon = 'MdCo2';
+        const units = ['h', '%', 'ppm', 'kg/h'];
+        const patterns = [0, 1, 2, 3];
+        const items = [
+            {
+                id: 'CO2_RunComp_1',
+                name: 'CO1 Marche [h]',
+                tags: [209],
+                icon_gr: icon_gr, icon: icon, units: [units[0]], patterns: [patterns[1]],
+                varDeltas: [true],
+            },
+            {
+                id: 'CO2_RunComp_2',
+                name: 'CO2 Marche [h]',
+                tags: [211],
+                icon_gr: icon_gr, icon: icon, units: [units[0]], patterns: [patterns[1]],
+                varDeltas: [true],
+            },
+        ];
 
+
+        return (
+            <>
+                {
+                    items.map((item: any) => {
+                        return true ?
+                            <OneSetCardHightChart
+                                key={'CO2Counter_key_' + item.id}
+                                id={item.id}
+                                name={item.name}
+                                icon_gr={item.icon_gr}
+                                icon={item.icon}
+                                tags={item.tags}
+                                units={item.units}
+                                patterns={item.patterns}
+                                varDeltas={item.varDeltas ? item.varDeltas : [false]}
+                                chart={true}
+                                chartTitle={'CO2 ' + item.name}
+
+                                table={true}
+                                tableTitle={'CO2 ' + item.name}
+                            />
+                            : false
+
+                    })
+                }
+            </>
+        );
+    });
+
+    const CO2_ConsoDepart = (() => {
+        const icon_gr = 'md';
+        const icon = 'MdCo2';
+        const units = ['kg', '%', 'ppm', 'kg/h'];
+        const patterns = [0, 1, 2, 3];
+        const items = [
+            {
+                id: 'CO2_ConsoDepart_Siroperie',
+                name: 'Conso. Siroperie [kg]',
+                tags: [116],
+                icon_gr: icon_gr, icon: icon, units: [units[0]], patterns: [patterns[1]],
+                varDeltas: [true],
+            },
+            {
+                id: 'CO2_ConsoDepart_Filtration',
+                name: 'Conso. Filtration [kg]',
+                tags: [117],
+                icon_gr: icon_gr, icon: icon, units: [units[0]], patterns: [patterns[1]],
+                varDeltas: [true],
+            },
+            {
+                id: 'CO2_ConsoDepart_Brassage',
+                name: 'Conso. Brassage [kg]',
+                tags: [119],
+                icon_gr: icon_gr, icon: icon, units: [units[0]], patterns: [patterns[1]],
+                varDeltas: [true],
+            },
+            {
+                id: 'CO2_ConsoDepart_Conditionnement',
+                name: 'Conso. Condition. [kg]',
+                tags: [118],
+                icon_gr: icon_gr, icon: icon, units: [units[0]], patterns: [patterns[1]],
+                varDeltas: [true],
+            },
+        ];
+
+
+        return (
+            <>
+                {
+                    items.map((item: any) => {
+                        return true ?
+                            <OneSetCardHightChart
+                                key={'CO2Counter_key_' + item.id}
+                                id={item.id}
+                                name={item.name}
+                                icon_gr={item.icon_gr}
+                                icon={item.icon}
+                                tags={item.tags}
+                                units={item.units}
+                                patterns={item.patterns}
+                                varDeltas={item.varDeltas ? item.varDeltas : [false]}
+                                chart={true}
+                                chartTitle={'CO2 ' + item.name}
+
+                                table={true}
+                                tableTitle={'CO2 ' + item.name}
+                            />
+                            : false
+
+                    })
+                }
+            </>
+        );
+    });
 
     // TAB VIEW CONTROL
     const tabViewRef = useRef<any>();   // TabView reference
@@ -640,7 +762,7 @@ const Dashboard = () => {
                 ref={tabViewRef}
 
             >
-                
+
 
                 <TabPanel header={t('dashboard.CCT.short')} key="tab1"
                     nextButton={<Button icon="pi pi-angle-right" className="p-button-rounded p-button-info" />}
@@ -687,19 +809,19 @@ const Dashboard = () => {
                     <hr />
                     <div className="grid">
                         {CO2_Bilan()}
-                        {/* <OneSetCard
-                            id='CO2_SECHEUR_KG'
-                            name='CO2 Prod. Sécheur'
-                            tags={[126]}
-                            icon_gr='md'
-                            icon='MdCompress'
-                            units={['kg']}
-                            patterns={[0]}
-                            chart={true}
-                            chartTitle='Production CO2 Sécheur'
-                        /> */}
                     </div>
                     <hr />
+                    {/* <div className="grid">
+                        {CO2_Counter()}
+                    </div>
+                    <hr /> */}
+                    <div className="grid">
+                        {CO2_ConsoDepart()}
+                    </div>
+                    <hr />
+
+
+                    
                 </TabPanel>
 
             </TabView>

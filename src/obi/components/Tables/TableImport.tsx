@@ -524,7 +524,7 @@ export default function TableImport({
                     row.id = id;
                     row.transaction = trans;
                 });
-                //console.log('toCreate', toCreate, 'toUpdate', toUpdate, 'toRemove', toDelete);
+                console.log('toCreate', toCreate, 'toUpdate', toUpdate, 'toRemove', toDelete);
 
                 setLazyParams((lazyParams: any) => { return { ...lazyParams } });
 
@@ -609,7 +609,7 @@ export default function TableImport({
 
 
 
-
+            <p>Assurez d avoir une colonne transaction avec : 0: création, 1: modification, 2: suppression</p>
 
 
             <DataTable

@@ -521,6 +521,7 @@ export default function DialogHightChartPersistence(
         <div>
             <Button label="Actualiser" icon="pi pi-refresh" onClick={() => setUpdate(!update)} autoFocus />
             <Button label="Ok" icon="pi pi-check" onClick={() => onChangedVisible && onChangedVisible(false)} autoFocus />
+            <Button label="Annuler" icon={"pi pi-times"}  className={'' + loading ? '':'hidden'} onClick={() => setLoading(false)} autoFocus />
         </div>
     );
 
